@@ -1,0 +1,116 @@
+---
+title: "check"
+author: "Indra Boving"
+date: "11/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+library(broom)
+```
+
+## Stem hydraulics - to visualize as you go: 
+```{r}
+data <- read_csv(here("2021-11-06 quag flowdata.csv")) %>% 
+  filter(keep == "TRUE") 
+
+data.day1 <- data %>% 
+  filter(t.day < 311)
+
+data.day1 %>% 
+  ggplot(aes(x = Ptreat.MPa, y = Q.g.s, color = measure)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) +
+  facet_wrap(~numbr) +
+  labs(x = "Pressure (Mpa)", 
+       y = "Flow (g/sec)", 
+       title = "Distal branch hydraulics - Midland, Pre-burn") +
+  theme_bw()
+
+
+data.day2 <- data %>% 
+  filter(t.day < 312, t.day > 311)
+
+data.day2 %>% 
+  ggplot(aes(x = Ptreat.MPa, y = Q.g.s, color = measure)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) +
+  facet_wrap(~numbr) +
+  labs(x = "Pressure (Mpa)", 
+       y = "Flow (g/sec)", 
+       title = "Distal branch hydraulics - Midland, Pre-burn") +
+  theme_bw()
+
+data.day3 <- data %>% 
+  filter(t.day < 313) %>% 
+  filter (t.day > 312)
+
+data.day3 %>% 
+  ggplot(aes(x = Ptreat.MPa, y = Q.g.s)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) +
+  facet_wrap(~numbr) +
+  labs(x = "Pressure (Mpa)", 
+       y = "Flow (g/sec)", 
+       title = "Distal branch hydraulics - Midland, Pre-burn") +
+  theme_bw()
+```
+
+
+```{r}
+data <- read_csv(here("2021-11-06 quag flowdata.csv")) %>% 
+  filter(keep == "TRUE") 
+
+data.day4 <- data %>% 
+  filter(t.day < 315) %>% 
+  filter (t.day > 314)
+
+data.day4 %>% 
+  ggplot(aes(x = Ptreat.MPa, y = Q.g.s)) +
+  geom_point() +
+  geom_smooth(se = FALSE, method = lm) +
+  facet_wrap(~numbr) +
+  labs(x = "Pressure (Mpa)", 
+       y = "Flow (g/sec)", 
+       title = "Distal branch hydraulics - Midland, Pre-burn") +
+  theme_bw()
+```
+
+
+```{r}
+#lmfit.quag<- data %>% 
+  #group_by(stemID) %>% 
+
+lmer.fit <- lme4::lmer(Ptreat.MPa ~ Q.g.s | stemID, data= data) 
+
+  lm(Ptreat.MPa ~ Q.g.s, data = data)
+
+tidy.lm <- tidy(lmfit.quag)
+
+slope <- tidy.lm %>% 
+  filter(term == "Q.g.s") %>% 
+  select(estimate) %>% 
+  pull()
+
+data %>% 
+  mutate(slope = slope)
+```
+
+### Leaf
+
+```{r}
+leaf_data_q <- read_csv(here("Desktop", "conductR", "2021-11-06 quag leaf flowdata.csv")) %>% 
+  filter(keep == "TRUE") %>% 
+  select(sp, numbr, stemID, nomID, Q.g.s, rmQ.g.s)
+
+leaf_data_q %>% 
+  ggplot(aes(y = ))
+
+leaf_data_manual <- read_csv(here("Desktop", "conductR", "2021-11-06 quag leaf measureddata.csv"))
+
+leaf_data_all <- cbind(leaf_data_q, leaf_data_manual)
+```
+
