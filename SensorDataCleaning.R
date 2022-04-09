@@ -62,12 +62,32 @@ RT.dendro$Growth_um <- RT.dendro$rawRadius - min(RT.dendro$rawRadius, na.rm=T)
 RT.dendro$Growth_sc <- RT.dendro$Growth_um/max(RT.dendro$Growth_um,na.rm=T) * 10  
 #kill the dendrometer readings
 RT.long <- RT.long[which(RT.long$Sensor!="S1Radius"),]
+# label RT
+RT.long$Loc <- "RT"
 
+# data from broke ED03
+start.date <- as_date("03/03/22 11:29:54", format="%d/%m/%y %H:%M:%S") # deployment date of ED03
+RTtree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLOW.TOTAL.2","SAP.FLOW.TOTAL.3"), Tree=c("2381","2384","2382","2010"))
+RT.old <- read.csv("Data_05042022/sapflow/20220326-173619 Log Download_ED03_RT.csv", header=T, na.strings = "-1004600",skip = 3)
+RT.old <- RT.old[-1,]
+colnames(RT.old)[1] <- "Date.Time"
+RT.old$Date.Time  <- lubridate::as_datetime(RT.old$Date.Time,format="%d/%m/%y %H:%M:%S")
+RT.old <- RT.old[which(RT.old$Date.Time>start.date),]
 
+RT.old$SAP.FLOW.TOTAL <- as.numeric(RT.old$SAP.FLOW.TOTAL)
+RT.old$SAP.FLOW.TOTAL.1 <- as.numeric(RT.old$SAP.FLOW.TOTAL.1)
+RT.old$SAP.FLOW.TOTAL.2 <- as.numeric(RT.old$SAP.FLOW.TOTAL.2)
+#RT.old$SAP.FLOW.TOTAL.3 <- as.numeric(RT.old$SAP.FLOW.TOTAL.3)
+#RT.old$S1Radius <- as.numeric(RT.old$S1Radius)
 
-plot(Sapflow~Date.Time, RT.long, col=factor(Tree), pch=".")
-abline(h=0)
-lines(Growth_sc~Date.Time, RT.dendro, col="red")
+# quick switch from wide to long form, including only SAP.FLOW.TOTAL columns
+RT.old.wide <- RT.old %>% select(Date.Time, SAP.FLOW.TOTAL,SAP.FLOW.TOTAL.1,SAP.FLOW.TOTAL.2)
+RT.old.long <- pivot_longer(RT.old.wide, names_to="Sensor",col=-1, values_to = "Sapflow")
+
+# name the trees
+RT.old.long$Tree <- RTtree.names$Tree[match(RT.old.long$Sensor, RTtree.names$Sensor)]
+# label RT
+RT.old.long$Loc <- "RT"
 
 
 
@@ -103,9 +123,8 @@ TS.long <- pivot_longer(TS.wide, names_to="Sensor",col=-1, values_to = "Sapflow"
 TS.long$Tree <- TStree.names$Tree[match(TS.long$Sensor, TStree.names$Sensor)]
   # switch sensor 3 on reprog.date
 TS.long$Tree[which(TS.long$Sensor=="SAP.FLOW.TOTAL.2" & TS.long$Date.Time>sensor.switch.date)] <- "2009"
-plot(Sapflow~Date.Time, TS.long, col=factor(Tree), pch=".")
-abline(h=0)
-
+# label TS
+TS.long$Loc <- "TS"
 
 
 
@@ -138,10 +157,34 @@ MS.long <- pivot_longer(MS.wide, names_to="Sensor",col=-1, values_to = "Sapflow"
 
 # name the trees
 MS.long$Tree <- MStree.names$Tree[match(MS.long$Sensor, MStree.names$Sensor)]
+# label MS
+MS.long$Loc <- "MS"
+
+
+######### Combine all Data ########
+sap <- rbind(RT.long, MS.long, TS.long, RT.old.long)
+sapmax <- sap %>% group_by(Tree) %>% summarize(maxSapflow = max(Sapflow, na.rm=T))
+sap$Sapflow.st <- sap$Sapflow/sapmax$maxSapflow[match(sap$Tree, sapmax$Tree)]
+sap$Loc <- factor(sap$Loc)
+
+plot(Sapflow.st~Date.Time, sap, col=factor(Loc), pch=".", ylim=c(-.5,1))
+for(i in unique(sap$Tree)){
+  lines(Sapflow.st~Date.Time, sap[which(sap$Tree==i),], col=Loc)
+}
+abline(h=0)
+
+quartz(width=6, height=3)
+ggplot(sap, aes(x=Date.Time, y=Sapflow.st, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc) + ylim(-.5,1)
 
 
 plot(Sapflow~Date.Time, MS.long, col=factor(Tree), pch=".")
 abline(h=0)
+plot(Sapflow~Date.Time, TS.long, col=factor(Tree), pch=".")
+abline(h=0)
+
+plot(Sapflow~Date.Time, RT.long, col=factor(Tree), pch=".")
+abline(h=0)
+lines(Growth_sc~Date.Time, RT.dendro, col="red")
 
 
 
