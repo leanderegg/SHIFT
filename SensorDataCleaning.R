@@ -58,8 +58,8 @@ RT.long$Tree[RT.long$Sensor=="S1Radius"] <- "2381"
 RT.dendro <- RT.long[which(RT.long$Sensor=="S1Radius"),]
 colnames(RT.dendro)[3] <- "rawRadius"
 RT.dendro$Growth_um <- RT.dendro$rawRadius - min(RT.dendro$rawRadius, na.rm=T)
-  # create a 0-10 scaled version for plotting over sapflow
-RT.dendro$Growth_sc <- RT.dendro$Growth_um/max(RT.dendro$Growth_um,na.rm=T) * 10  
+  # create a 0-1 scaled version for plotting over sapflow
+RT.dendro$Growth_sc <- RT.dendro$Growth_um/max(RT.dendro$Growth_um,na.rm=T)  
 #kill the dendrometer readings
 RT.long <- RT.long[which(RT.long$Sensor!="S1Radius"),]
 # label RT
@@ -174,13 +174,15 @@ for(i in unique(sap$Tree)){
 abline(h=0)
 
 quartz(width=6, height=3)
-ggplot(sap, aes(x=Date.Time, y=Sapflow.st, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc) + ylim(-.5,1)
+ggplot(sap, aes(x=Date.Time, y=Sapflow.st, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc) + ylim(-.5,1) +
+  geom_line(data=RT.dendro, aes(y=Growth_sc)) # add dendrometer
 
 
 plot(Sapflow~Date.Time, MS.long, col=factor(Tree), pch=".")
 abline(h=0)
-plot(Sapflow~Date.Time, TS.long, col=factor(Tree), pch=".")
+plot(Sapflow~Date.Time, TS.long, col=factor(Tree), pch=".", ylim=c(-.2,1))
 abline(h=0)
+abline(v=as_datetime("2022-03-28 12:00:00"), col="blue") # rain event
 
 plot(Sapflow~Date.Time, RT.long, col=factor(Tree), pch=".")
 abline(h=0)
