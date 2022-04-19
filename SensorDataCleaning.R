@@ -161,11 +161,16 @@ MS.long$Tree <- MStree.names$Tree[match(MS.long$Sensor, MStree.names$Sensor)]
 MS.long$Loc <- "MS"
 
 
+
 ######### Combine all Data ########
 sap <- rbind(RT.long, MS.long, TS.long, RT.old.long)
 sapmax <- sap %>% group_by(Tree) %>% summarize(maxSapflow = max(Sapflow, na.rm=T))
 sap$Sapflow.st <- sap$Sapflow/sapmax$maxSapflow[match(sap$Tree, sapmax$Tree)]
 sap$Loc <- factor(sap$Loc)
+
+
+
+
 
 plot(Sapflow.st~Date.Time, sap, col=factor(Loc), pch=".", ylim=c(-.5,1))
 for(i in unique(sap$Tree)){
@@ -174,7 +179,7 @@ for(i in unique(sap$Tree)){
 abline(h=0)
 
 quartz(width=6, height=3)
-ggplot(sap, aes(x=Date.Time, y=Sapflow.st, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc) + ylim(-.5,1) +
+ggplot(sap[which(sap$Tree==2009),], aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc)  +
   geom_line(data=RT.dendro, aes(y=Growth_sc)) # add dendrometer
 
 
