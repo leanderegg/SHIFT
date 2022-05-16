@@ -54,6 +54,11 @@ latlon$Species[grep("B",latlon$Name )] <- "B"
 latlon$Species[grep("L",latlon$Name )] <- "L"
 ##### Water Potentials
 
+## table for linking tree numbers with sites
+treesite <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="Tree_Sites", skip=0, na = "NA")
+
+
+####### Water Potentials 
 #Date: 228 WP + LWC
 wpwc228 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="228 WP + LWC", skip=5, na = "NA")
 
@@ -95,9 +100,8 @@ wp228pd <- wpwc228 %>%
                , values_to="MPa"
                , values_drop_na=TRUE)
 # add in sampling date
-# assign 3/11 date to predawns appropriately
-wp228pd$Date[which(wp228pd$Date=="3/8 (MD); 3/11 (PD)")] <- "3/11/2022"
-wp228pd$Date <- as_date(wp228pd$Date, format="%m/%d/%Y")
+# assign 2/28 date to predawns appropriately
+wp228pd$Date <- as_date("2022-02-28")
 
 
 wp228md <- wpwc228 %>%
@@ -111,8 +115,8 @@ wp228md <- wpwc228 %>%
                , values_drop_na=TRUE)
 # add in sampling date
 # assign 3/8 date to middays appropriately
-wp228md$Date[which(wp228md$Date=="3/8 (MD); 3/11 (PD)")] <- "3/8/2022"
-wp228md$Date <- as_date(wp228md$Date, format="%m/%d/%Y")
+wp228md$Date <- as_date("2022-02-28")
+
 
 
 #average to tree
@@ -133,7 +137,7 @@ wp228 <- left_join(wp228all, latlon, by= c("Tag"="Tree"))
 
 
 
-#3.8.22 and 3.11.22
+####### ++ 3.08.22 & 3.11.22 #########
 wp38pd <- wpwc38 %>%
   filter(!is.na(Tag)) %>%
   select(!matches("_g_")) %>% 
@@ -179,6 +183,50 @@ wp38all <- full_join(wp38pdind, wp38mdind, by=c("Tag", "WOY"))
 wp38 <- left_join(wp38all, latlon, by= c("Tag"="Tree"))
 #wp38$Edrop <- wp38$MD_MPa - wp38$PD_MPa
 
+
+####### ++ 3.15.22 #########
+wp315pd <- wpwc315 %>%
+  filter(!is.na(Tag)) %>%
+  select(!matches("_g_")) %>% 
+  select(1:3,6,matches("PD")) %>% 
+  select(-PD_bulk_wet, -PD_bulk_dry, -PD_avg) %>% 
+  pivot_longer(cols=matches("PD[1-9]") 
+               , names_to="PD"
+               , values_to="MPa"
+               , values_drop_na=TRUE)
+# add in sampling date
+# assign 3/11 date to predawns appropriately
+wp315pd$Date <- as_date("2022-03-15")
+
+
+wp315md <- wpwc315 %>%
+  filter(!is.na(Tag)) %>%
+  select(!matches("_g_")) %>% 
+  select(1:3,6,matches("MD")) %>% 
+  select(-MD_bulk_wet, -MD_bulk_dry, -MD_avg) %>% 
+  pivot_longer(cols=matches("MD[1-9]") 
+               , names_to="MD"
+               , values_to="MPa"
+               , values_drop_na=TRUE)
+# add in sampling date
+# assign 3/15 date to middays appropriately
+wp315md$Date <- as_date("2022-03-15")
+
+
+#average to tree
+wp315pdind <- wp315pd %>% group_by(Tag) %>% summarise(Date.PD=unique(Date),PD_MPa = mean(MPa))
+wp315pdind$WOY <- week(wp315pdind$Date.PD)
+wp315mdind <- wp315md %>% group_by(Tag) %>% summarise(Date.MD=unique(Date),MD_MPa = mean(MPa))
+wp315mdind$Date.MD[which(is.na(wp315mdind$Date.MD))] <- as_date("2022-03-08") # missing date for one value
+wp315mdind$WOY <- week(wp315mdind$Date.MD)
+
+
+#add in lat lon
+wp315all <- full_join(wp315pdind, wp315mdind, by=c("Tag", "WOY"))
+
+
+wp315 <- left_join(wp315all, latlon, by= c("Tag"="Tree"))
+#wp315$Edrop <- wp315$MD_MPa - wp315$PD_MPa
 
 
 
@@ -334,8 +382,11 @@ wp411 <- left_join(wp411pdind, latlon, by= c("Tag"="Tree"))
 
 ################# Combine Ind average WPs together ###########
 
-wp.ind <- rbind(wp38, wp330, wp44, wp411)
+wp.ind <- rbind(wp228,wp38, wp315, wp330, wp44, wp411)
 wp.ind <- wp.ind[!is.na(wp.ind$Latitude),] 
+wp.ind$Site <- treesite$Site[match(wp.ind$Tag, treesite$Tag)]
+wp.ind$Plot <- treesite$Plot[match(wp.ind$Tag, treesite$Tag)]
+
 
 latlonproj <- CRS("+proj=longlat +datum=WGS84")
 wp.ind.ll <- SpatialPoints(coords = data.frame(wp.ind$Longitude, wp.ind$Latitude), proj4string = latlonproj)
@@ -347,15 +398,38 @@ wp.indsp <- SpatialPointsDataFrame(wp.ind.aea, wp.ind)
 ########### DATA VIZ ##############
 
 
-
-ggplot(wp.ind[wp.ind$PD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
+# quick look at how the sites compare.
+ggplot(wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="B"  & wp.ind$WOY %in% c(11,14)),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
   geom_point() + 
-  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L"),],shape=15) +
+  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L" & wp.ind$WOY %in% c(11,14)),],shape=15) +
   facet_wrap(facets = ~WOY)
 
 
+### quick LL maps with terrain as background
+ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$PD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa))+
+  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
+  facet_wrap(facets = ~WOY)
 
-ggplot(as.data.frame(wp.ind.))
+ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$MD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa))+
+  geom_point(data=wp.ind[which(wp.ind$MD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa)) +
+  facet_wrap(facets = ~WOY)
+
+
+##### look at site differences
+ggplot(wp.ind, aes(x=Site, y=PD_MPa, fill=Site)) + geom_boxplot() + facet_wrap(facets = ~WOY)
+
+ggplot(wp.ind, aes(x=Site, y=MD_MPa, fill=Site)) + geom_boxplot() + facet_wrap(facets = ~WOY)
+
+
+### look at trees through time
+ggplot(wp.ind, aes(x=WOY, y=PD_MPa, col=Species, Shape=Tag)) + geom_line() + facet_wrap(facets=~Site)
+
+
+### Only LL trees through time
+ggplot(wp.ind[wp.ind$Site=="LL",], aes(x=WOY, y=PD_MPa, col=Plot, Shape=Tag)) + geom_line(aes(linetype=Species))
+
+
+
 
 #@########3 Failed mapping
 # c(left = -97.1268, bottom = 31.536245, right = -97.099334, top = 31.559652))
@@ -365,13 +439,6 @@ myMap <- get_map(location=c(left=-120.051, bottom=34.6853,right= - 120.0401, top
 
 LLMap <-get_map(location=c(left=-120.0487, bottom=34.689,right= - 120.0455, top=34.6925), source="google", maptype="terrain", zoom=14)
 
-ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$PD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa))+
-  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
-  facet_wrap(facets = ~WOY)
-
-ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$MD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa))+
-  geom_point(data=wp.ind[which(wp.ind$MD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa)) +
-  facet_wrap(facets = ~WOY)
 
 plot(sdem,ylim=bbox(wp.ind.aea)[2,1:2], xlim=bbox(wp.ind.aea)[1,1:2]) 
 points(wp.ind.aea)
