@@ -9,5 +9,69 @@ output: html_document
 library(janitor)
 library(here)
 library(tidyverse)
+library(lubridate)
 ```
 
+Read in data: 
+```{r}
+ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>% 
+  clean_names() %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  mutate(week = week(date)) %>% 
+  mutate(tree = as.factor(tree)) %>% 
+  mutate(alas = total_area/sapwood_area) 
+
+dlookr::diagnose(ks_data)
+```
+
+Look at it!
+
+```{r}
+ks_data %>% 
+ggplot(aes(y = kl_g_s_mm_m_pa_nat, x = date, color = tree)) +
+  geom_point() + 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Kleaf over time")
+```
+
+```{r}
+ks_data %>% 
+ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = date, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Kstem over time")
+```
+
+```{r}
+ks_data %>% 
+  filter(plc > 0) %>% 
+ggplot(aes(y = plc, x = date, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("PLC over time")
+```
+
+```{r}
+ks_data %>% 
+  filter(plc > 0) %>% 
+ggplot(aes(y = k_g_mm_s_m_pa_max, x = date, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Max flow over time")
+```
+
+```{r}
+ks_data %>% 
+  filter(plc > 0) %>% 
+ggplot(aes(y = log(alas), x = k_g_mm_s_m_pa_nat, color = tree)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+ks_data %>% 
+  filter(plc > 0) %>% 
+ggplot(aes(y = alas, x = k_g_mm_s_m_pa_nat, color = tree)) +
+  geom_smooth(method = "lm", se = F) +
+  geom_point() 
+```
