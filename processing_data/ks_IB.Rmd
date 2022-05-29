@@ -10,6 +10,7 @@ library(janitor)
 library(here)
 library(tidyverse)
 library(lubridate)
+library(readxl)
 ```
 
 Read in data: 
@@ -23,6 +24,32 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
 
 dlookr::diagnose(ks_data)
 ```
+
+```{r}
+####### Water Potentials 
+#Date: 228 WP + LWC
+wpwc228 <- read_excel(here("Data_05042022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="228 WP + LWC", skip=5, na = "NA") %>% as.data.frame()
+
+#Date: 38-311 WP + LWC
+wpwc38 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="38-311 WP + LWC", skip=5, na = "NA")
+# remove mislabeled tree 2567 which was actually 2367 
+wpwc38 <- wpwc38[-which(wpwc38$Tag=="2567"),]
+
+#Date: 315 WP + LWC
+wpwc315 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="315 WP + LWC", skip=5, na = "NA")
+
+#Date: 330 WP + LWC (core)
+wpwc330 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="330 WP + LWC", skip=5, na = "NA")
+
+#Date: 411-412 WP + LWC (satellite)
+wpwc44 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="44 WP + LWC", skip=5, na = "NA")
+
+#Date: 411-412 WP + LWC
+wpwc411 <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="411-412 WP + LWC", skip=5, na = "NA")
+
+
+```
+
 
 Look at it!
 
