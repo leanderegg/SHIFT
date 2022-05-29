@@ -201,10 +201,11 @@ ks_data_wp %>%
 
 ```{r}
 ks_data_wp %>% 
-ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = mpa, color = tree)) +
+  filter(ks_g_s_mpa_nat < 0) %>% 
+ggplot(aes(y = ks_g_s_mpa_nat, x = mpa, color = tree)) +
   geom_point() + 
   geom_smooth(method = "lm", se = F)
-  ggtitle("Kleaf over time")
+  ggtitle("k over time")
 ```
 
 ```{r}
