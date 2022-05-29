@@ -13,25 +13,27 @@ library(lubridate)
 library(readxl)
 ```
 
-Read in data: 
+![QUDO Physiological Thresholds, from Weitz 2018; Jacobson and Pratt found P50 of -5.10](images/Screen%20Shot%202022-05-29%20at%203.46.12%20PM.png)
+
+Read in data:
+
 ```{r}
 ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>% 
   clean_names() %>% 
   mutate(date = lubridate::mdy(date)) %>% 
   mutate(week = week(date)) %>% 
  # mutate(tree = as.factor(tree)) %>% 
-  mutate(alas = total_area/sapwood_area) 
+  mutate(alas = total_area/sapwood_area) %>% 
+  mutate(plc = case_when(
+    plc < 0 ~ 0, 
+    TRUE == as.numeric(plc)
+  ))
 
 dlookr::diagnose(ks_data)
-
-unique(ks_data$date)
-
-
-unique(ks_data$week)
 ```
 
-Read in water potential data: 
-- We measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
+Read in water potential data: - We measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
+
 ```{r}
 ####### Water Potentials 
 #Date: 228 WP + LWC
@@ -181,20 +183,23 @@ wp_alldates_md_summary <- wp_alldates_md %>%
     week == 12 ~ 13, 
     TRUE ~ as.numeric(week))) %>% 
   ungroup() %>% 
-  dplyr::select(-date, -plot_number, -species, -md)
+  dplyr::select(-date, -plot_number, -species, -md, -mpa)
 ```
-Combine WP data into Ks dataset: 
+
+Combine WP data into Ks dataset:
+
 ```{r}
 ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week")) %>% 
   mutate(tree = as.factor(tree)) %>% 
-  mutate(date = date)
+  mutate(date = date) %>% 
+  distinct()
 ```
 
-
 Look at it!
+
 ```{r}
 ks_data_wp %>% 
-  ggplot(aes(y = mpa, x = date, color = tree)) +
+  ggplot(aes(y = mean_md, x = date, color = tree)) +
   geom_point() + 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) 
 ```
@@ -202,11 +207,13 @@ ks_data_wp %>%
 ```{r}
 ks_data_wp %>% 
   filter(ks_g_s_mpa_nat < 0) %>% 
-ggplot(aes(y = ks_g_s_mpa_nat, x = mpa, color = tree)) +
+ggplot(aes(y = ks_g_s_mpa_nat, x = mean_md, color = tree)) +
   geom_point() + 
   geom_smooth(method = "lm", se = F)
-  ggtitle("k over time")
+  ggtitle("flow over time")
 ```
+
+Not much of a trend, and possible leaks that were included?
 
 ```{r}
 ks_data_wp %>% 
@@ -217,7 +224,16 @@ ggplot(aes(y = kl_g_s_mm_m_pa_nat, x = date, color = tree)) +
 ```
 
 ```{r}
-ks_data %>% 
+ks_data_wp %>% 
+ggplot(aes(y = ks_g_s_mm_m_pa_max, x = date, color = tree)) +
+  geom_point() + 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Ks max over time")
+```
+
+```{r}
+ks_data_wp %>% 
+  filter(ks_g_s_mm_m_pa_max > 0) %>% 
 ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = date, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
@@ -225,7 +241,7 @@ ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = date, color = tree)) +
 ```
 
 ```{r}
-ks_data %>% 
+ks_data_wp %>% 
   filter(plc > 0) %>% 
 ggplot(aes(y = plc, x = date, color = tree)) +
   geom_point()+ 
@@ -233,21 +249,24 @@ ggplot(aes(y = plc, x = date, color = tree)) +
   ggtitle("PLC over time")
 ```
 
+These are mega high PLC values...vacuum infiltration maybe doesn't work as well as hoped? Not sure how to do it better that we did, though....
+
 ```{r}
-ks_data %>% 
+ks_data_wp %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = k_g_mm_s_m_pa_max, x = date, color = tree)) +
+ggplot(aes(y = plc, x = mean_md*-1, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("Max flow over time")
+  ggtitle("'Natural Vulnerability Curve'")
 ```
+
 ```{r}
-ks_data %>% 
+ks_data_wp %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = k_g_mm_s_m_pa_max, x = mpa, color = tree)) +
+ggplot(aes(y = k_g_mm_s_m_pa_max, x = mean_md*-1, color = tree)) +
   geom_point()+ 
-  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("Max flow over time")
+  #geom_line(method = loess, se = F) +
+  ggtitle("Ks curve")
 ```
 
 ```{r}
@@ -259,7 +278,7 @@ ggplot(aes(y = log(alas), x = k_g_mm_s_m_pa_nat, color = as.factor(tree))) +
 ```
 
 ```{r}
-ks_data %>% 
+ks_data_wp %>% 
   filter(plc > 0) %>% 
 ggplot(aes(y = alas, x = k_g_mm_s_m_pa_nat, color = tree)) +
   geom_smooth(method = "lm", se = F) +
