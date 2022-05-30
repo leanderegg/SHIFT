@@ -26,17 +26,14 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
   mutate(week = week(date)) %>% 
  # mutate(tree = as.factor(tree)) %>% 
   mutate(alas = total_area/sapwood_area) %>% 
-  dplyr::mutate(plc = dplyr::case_when(
-<<<<<<< HEAD
+  dplyr::mutate(plc = dplyr::case_when( #this isn't working....!!!
     plc < 0 ~ 0, 
-=======
-    plc <= 0 ~ 0, 
->>>>>>> a0561bc5dc1d5a60577c3de86981bf453d5e3305
     plc > 100 ~ NA_real_,
     TRUE == as.numeric(plc)
   )) 
 
 dlookr::diagnose(ks_data)
+class(ks_data$plc)
 ```
 
 Read in water potential data: - We measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
@@ -201,6 +198,18 @@ ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week")) %>%
   mutate(date = date) %>% 
   distinct()
 ```
+
+Read in Ks leaf dry mass data: 
+```{r}
+ks_sla <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="Ks DATA", na = "NA") %>% 
+  clean_names() 
+  
+ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), all.x =T) %>% 
+  mutate(tree = as.factor(tree)) %>% 
+  distinct()
+  
+```
+
 
 Look at it!
 
