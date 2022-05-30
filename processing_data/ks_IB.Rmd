@@ -25,12 +25,13 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
   mutate(date = lubridate::mdy(date)) %>% 
   mutate(week = week(date)) %>% 
  # mutate(tree = as.factor(tree)) %>% 
-  mutate(alas = total_area/sapwood_area) %>% 
-  dplyr::mutate(plc = dplyr::case_when( #this isn't working....!!!
-    plc < 0 ~ 0, 
-    plc > 100 ~ NA_real_,
-    TRUE == as.numeric(plc)
-  )) 
+  mutate(alas = total_area/sapwood_area) 
+# %>% 
+  # dplyr::mutate(plc = dplyr::case_when( #this isn't working....!!!
+  #   plc < 0 ~ 0, 
+  #   plc > 100 ~ NA_real_,
+  #   TRUE == as.numeric(plc)
+  # )) 
 
 dlookr::diagnose(ks_data)
 class(ks_data$plc)
@@ -199,19 +200,37 @@ ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week")) %>%
   distinct()
 ```
 
-Read in Ks leaf dry mass data: 
+Read in Ks leaf dry mass data and calculate SLA: 
+
 ```{r}
 ks_sla <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="Ks DATA", na = "NA") %>% 
   clean_names() 
   
-ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), all.x =T) %>% 
+ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), all.x = T) %>% 
   mutate(tree = as.factor(tree)) %>% 
-  distinct()
-  
+  distinct() %>% 
+  mutate(sla_mm_g = total_area/dry_wt_g, 
+         lma_g_mm = dry_wt_g/total_area) 
+```
+
+Look at it all: 
+
+#Correlations: 
+
+```{r}
+ggally_plot <- ks_data_wp_sla %>% 
+  select(ks_g_s_mpa_max, ks_g_s_mpa_nat, k_g_mm_s_m_pa_nat, k_g_mm_s_m_pa_max, kl_g_s_mm_m_pa_nat, kl_g_s_mm_m_pa_max, sla_mm_g, lma_g_mm, alas, mean_md, total_area, sapwood_area, tree) %>% 
+  as.data.frame() %>% 
+  filter(sapwood_area != 0) %>% 
+  mutate(tree_id = tree)
+
+dlookr::diagnose(ggally_plot)
+
+GGally::ggpairs(ggally_plot, ggplot2::aes(aes(color = tree))) #also not working? Error in is.finite(x) : default method not implemented for type 'list'
 ```
 
 
-Look at it!
+#Hydraulics over time: 
 
 ```{r}
 ks_data_wp %>% 
