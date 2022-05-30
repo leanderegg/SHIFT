@@ -27,7 +27,11 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
  # mutate(tree = as.factor(tree)) %>% 
   mutate(alas = total_area/sapwood_area) %>% 
   dplyr::mutate(plc = dplyr::case_when(
+<<<<<<< HEAD
     plc < 0 ~ 0, 
+=======
+    plc <= 0 ~ 0, 
+>>>>>>> a0561bc5dc1d5a60577c3de86981bf453d5e3305
     plc > 100 ~ NA_real_,
     TRUE == as.numeric(plc)
   )) 
