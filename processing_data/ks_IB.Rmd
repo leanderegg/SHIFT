@@ -17,6 +17,8 @@ library(readxl)
 
 Read in data:
 
+NOTE: add SLA, corresponding predawns, and TLPs?
+
 ```{r}
 ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>% 
   clean_names() %>% 
@@ -27,7 +29,7 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
   mutate(plc = case_when(
     plc < 0 ~ 0, 
     TRUE == as.numeric(plc)
-  ))
+  )) 
 
 dlookr::diagnose(ks_data)
 ```
@@ -237,8 +239,19 @@ ks_data_wp %>%
 ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = date, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("Kstem over time")
+  ggtitle("Kstem native over time")
 ```
+
+```{r}
+ks_data_wp %>% 
+  filter(ks_g_s_mm_m_pa_max > 0) %>% 
+ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = total_area, color = tree)) +
+  geom_point()+ 
+  geom_smooth(method = "lm", se = F) +
+  ggtitle("Kstem native by leaf area")
+```
+
+Higher leaf area = greater flow
 
 ```{r}
 ks_data_wp %>% 
@@ -249,7 +262,7 @@ ggplot(aes(y = plc, x = date, color = tree)) +
   ggtitle("PLC over time")
 ```
 
-These are mega high PLC values...vacuum infiltration maybe doesn't work as well as hoped? Not sure how to do it better that we did, though....
+These are mega high PLC values...vacuum infiltration maybe doesn't work as well as hoped? Or we did a bad job collecting? Not sure how to do it better that we did, though....
 
 ```{r}
 ks_data_wp %>% 
@@ -283,4 +296,20 @@ ks_data_wp %>%
 ggplot(aes(y = alas, x = k_g_mm_s_m_pa_nat, color = tree)) +
   geom_smooth(method = "lm", se = F) +
   geom_point() 
+```
+
+```{r}
+ks_data_wp %>% 
+ggplot(aes(y = total_area, x = date, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("temporal changes in leaf area")
+```
+
+```{r}
+ks_data_wp %>% 
+ggplot(aes(y = length_total_mm, x = date, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("temporal changes in stem length")
 ```
