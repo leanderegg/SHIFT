@@ -25,19 +25,24 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
   mutate(date = lubridate::mdy(date)) %>% 
   mutate(week = week(date)) %>% 
  # mutate(tree = as.factor(tree)) %>% 
-  mutate(alas = total_area/sapwood_area) 
+  mutate(alas = total_area/sapwood_area, #make columns we want 
+         prop_0yr = length_y0_mm/length_total_mm, 
+         prop_1yr = length_y1_mm/length_total_mm, 
+         prop_2yr = length_y2_mm/length_total_mm, 
+         prop_3yr = length_y3_mm/length_total_mm)
 # %>% 
-  # dplyr::mutate(plc = dplyr::case_when( #this isn't working....!!!
-  #   plc < 0 ~ 0, 
-  #   plc > 100 ~ NA_real_,
-  #   TRUE == as.numeric(plc)
-  # )) 
+# dplyr::mutate(plc = dplyr::case_when( ####this isn't working....!!!
+#   plc < 0 ~ 0,
+#   #plc > 100 ~ NA_real_,
+#   TRUE == as.numeric(plc)
+# ))
 
 dlookr::diagnose(ks_data)
-class(ks_data$plc)
 ```
 
-Read in water potential data: - We measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
+Read in water potential data: 
+
+Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
 ```{r}
 ####### Water Potentials 
@@ -78,6 +83,7 @@ wpwc523 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.x
 
 wpwc525 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()
 ```
+Fix that data to be long: 
 
 ```{r}
 wp315md <- wpwc315 %>%
@@ -200,7 +206,7 @@ ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week")) %>%
   distinct()
 ```
 
-Read in Ks leaf dry mass data and calculate SLA: 
+Read in Ks leaf dry mass data and calculate SLA, LMA: 
 
 ```{r}
 ks_sla <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="Ks DATA", na = "NA") %>% 
@@ -210,7 +216,17 @@ ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), al
   mutate(tree = as.factor(tree)) %>% 
   distinct() %>% 
   mutate(sla_mm_g = total_area/dry_wt_g, 
-         lma_g_mm = dry_wt_g/total_area) 
+         lma_g_mm = dry_wt_g/total_area) %>% 
+   mutate(tree_id = tree, #change names to be better
+          k_max = k_g_mm_s_m_pa_nat, 
+          k_nat = k_g_mm_s_m_pa_nat, 
+          Ks_max = ks_g_s_mm_m_pa_max, 
+          Ks_nat = ks_g_s_mm_m_pa_nat, 
+          Kl_max = kl_g_s_mm_m_pa_max, 
+          Kl_nat = kl_g_s_mm_m_pa_nat) %>% 
+  mutate(plc_new = if_else(plc < 0, 0, plc)) %>% 
+  #filter(plc_new > -100) %>% 
+  select(-mean_plc_tree)
 ```
 
 Look at it all: 
@@ -219,14 +235,14 @@ Look at it all:
 
 ```{r}
 ggally_plot <- ks_data_wp_sla %>% 
-  select(ks_g_s_mpa_max, ks_g_s_mpa_nat, k_g_mm_s_m_pa_nat, k_g_mm_s_m_pa_max, kl_g_s_mm_m_pa_nat, kl_g_s_mm_m_pa_max, sla_mm_g, lma_g_mm, alas, mean_md, total_area, sapwood_area, tree) %>% 
+  select(k_max, k_nat, Ks_max, Ks_nat, Kl_max, Kl_nat, plc, sla_mm_g, lma_g_mm, alas, mean_md,tree_id) %>% 
+   filter(sla_mm_g < 300) %>% #some absurdly large values (why? --> check later) 
   as.data.frame() %>% 
-  filter(sapwood_area != 0) %>% 
-  mutate(tree_id = tree)
+  drop_na()
 
-dlookr::diagnose(ggally_plot)
+#dlookr::diagnose(ggally_plot)
 
-GGally::ggpairs(ggally_plot, ggplot2::aes(aes(color = tree))) #also not working? Error in is.finite(x) : default method not implemented for type 'list'
+GGally::ggpairs(ggally_plot, ggplot2::aes(color = tree_id)) #also not working? Error in is.finite(x) : default method not implemented for type 'list'
 ```
 
 
@@ -240,9 +256,9 @@ ks_data_wp %>%
 ```
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(ks_g_s_mpa_nat < 0) %>% 
-ggplot(aes(y = ks_g_s_mpa_nat, x = mean_md, color = tree)) +
+ggplot(aes(y = k_nat, x = mean_md, color = tree)) +
   geom_point() + 
   geom_smooth(method = "lm", se = F)
   ggtitle("flow over time")
@@ -354,4 +370,9 @@ ggplot(aes(y = length_total_mm, x = date, color = tree)) +
   ggtitle("temporal changes in stem length")
 ```
 
-\#Stem proportions:
+#Stem proportions:
+```{r}
+ks_data_wp_sla %>% 
+  ggplot(aes(y = prop_)
+```
+
