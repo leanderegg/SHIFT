@@ -40,7 +40,7 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
 dlookr::diagnose(ks_data)
 ```
 
-Read in water potential data: 
+Read in water potential data:
 
 Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
@@ -58,7 +58,7 @@ wpwc38 <- wpwc38[-which(wpwc38$tag=="2567"),]
 wpwc315 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()
 
 #Date: 325 WP + LWC
-wpwc325 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325 WP + LWC", skip=5, na = "NA") %>% clean_names()
+wpwc325 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()
 
 #Date: 330 WP + LWC (core)
 wpwc330 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="330 WP + LWC", skip=5, na = "NA") %>% clean_names()
@@ -83,7 +83,8 @@ wpwc523 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.x
 
 wpwc525 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()
 ```
-Fix that data to be long: 
+
+Fix that data to be long:
 
 ```{r}
 wp315md <- wpwc315 %>%
@@ -152,6 +153,7 @@ wp413md <- wpwc413 %>%
   mutate(date = mdy("04-13-2022"))
 
 #For 4.25
+###Note: 2367 MD are from tree 2365, as we are missing it from 2367
 wp425md <- wpwc425 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
@@ -163,7 +165,8 @@ wp425md <- wpwc425 %>%
                , names_to="md"
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
-  mutate(date = mdy("04-25-2022"))
+  mutate(date = mdy("04-25-2022")) 
+  
 
 wp523md <- wpwc523 %>%
   as.data.frame() %>% 
@@ -200,13 +203,13 @@ wp_alldates_md_summary <- wp_alldates_md %>%
 Combine WP data into Ks dataset:
 
 ```{r}
-ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week")) %>% 
+ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week"), all.x = T) %>% 
   mutate(tree = as.factor(tree)) %>% 
   mutate(date = date) %>% 
   distinct()
 ```
 
-Read in Ks leaf dry mass data and calculate SLA, LMA: 
+Read in Ks leaf dry mass data and calculate SLA, LMA:
 
 ```{r}
 ks_sla <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="Ks DATA", na = "NA") %>% 
@@ -229,9 +232,9 @@ ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), al
   select(-mean_plc_tree)
 ```
 
-Look at it all: 
+Look at it all:
 
-#Correlations: 
+\#Correlations:
 
 ```{r}
 ggally_plot <- ks_data_wp_sla %>% 
@@ -245,8 +248,7 @@ ggally_plot <- ks_data_wp_sla %>%
 GGally::ggpairs(ggally_plot, ggplot2::aes(color = tree_id)) #also not working? Error in is.finite(x) : default method not implemented for type 'list'
 ```
 
-
-#Hydraulics over time: 
+\#Hydraulics over time:
 
 ```{r}
 ks_data_wp %>% 
@@ -258,9 +260,9 @@ ks_data_wp %>%
 ```{r}
 ks_data_wp_sla %>% 
   filter(ks_g_s_mpa_nat < 0) %>% 
-ggplot(aes(y = k_nat, x = mean_md, color = tree)) +
+ggplot(aes(y = k_nat, x = date, color = tree)) +
   geom_point() + 
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F)+
   ggtitle("flow over time")
 ```
 
@@ -273,6 +275,7 @@ ggplot(aes(y =Kl_nat, x = date, color = tree)) +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kleaf over time")
 ```
+
 ```{r}
 ks_data_wp_sla %>% 
 ggplot(aes(y =Kl_max, x = date, color = tree)) +
@@ -297,7 +300,8 @@ ggplot(aes(y = Ks_nat, x = date, color = tree)) +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem native over time")
 ```
-#Hydraulics by other traits: 
+
+\#Hydraulics by other traits:
 
 ```{r}
 ks_data_wp_sla %>% 
@@ -310,7 +314,7 @@ ggplot(aes(y = Ks_nat, x = total_area, color = tree)) +
 
 Higher leaf area = greater flow...makes sense.
 
-#PLC
+\#PLC
 
 ```{r}
 ks_data_wp_sla %>% 
@@ -332,7 +336,7 @@ ggplot(aes(y = plc, x = mean_md*-1)) +
   ggtitle("'Natural Vulnerability Curve'")
 ```
 
-Something may be off with those very wet 2347s...look back at notes? Could have been after the rain event, so maybe we should use the MPa from right before the rain occured as that is more indicative of the stress they were under? 
+Something may be off with those very wet 2347s...look back at notes? Could have been after the rain event, so maybe we should use the MPa from right before the rain occurred as that is more indicative of the stress they were under?
 
 ```{r}
 ks_data_wp_sla %>% 
@@ -342,7 +346,8 @@ ggplot(aes(y = Ks_nat, x = mean_md*-1, color = tree)) +
   geom_smooth(method = "lm", se = F) +
   ggtitle("Ks curve")
 ```
-#Other traits: 
+
+\#Other traits:
 
 Also look back at outliers - some very high Ks values for 2343.
 
@@ -372,7 +377,8 @@ ggplot(aes(y = total_area, x = date, color = tree)) +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("temporal changes in leaf area")
 ```
-#Stem length stuff: 
+
+\#Stem length stuff:
 
 ```{r}
 ks_data_wp_sla %>% 
@@ -384,9 +390,32 @@ ggplot(aes(y = length_total_mm, x = date, color = tree)) +
 
 ```{r}
 ks_data_wp_sla %>% 
-  ggplot(aes(y = prop_0yr, x = date, color = tree))  +
+  ggplot(aes(y = prop_0yr, x = week, color = tree))  +
   geom_point() + 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("temporal changes in Y0")
 ```
 
+```{r}
+ks_data_wp_sla %>% 
+  ggplot(aes(y = prop_1yr, x = week, color = tree))  +
+  geom_point() + 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("temporal changes in Y1")
+```
+
+\#Sapflow data:
+
+```{r}
+sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>% 
+  clean_names() %>% 
+  mutate(date = date(date_time), 
+         week = week(date)) %>% 
+  filter(week %in% c(11, 13, 15, 17, 21),
+         tree %in% c(2343, 2356, 2347, 2365, 2367, 2369)) %>% 
+  group_by(date, tree) %>% 
+  slice(which.max(sapflow_st))
+  
+```
+
+OK, but which sapflow column to use (sapflow vs. sapflow_st), and what are the units of these? Need to get into g/sec/mm/MPa either way. Also, how to extract max sapflow?

@@ -8,7 +8,8 @@
 # and eventually Decagon temp/RH + PAR and HOBO Temp/rH data
 
 # started 04.05.22 by LDLA
-# last updated:
+# last updated: 
+#     05.31.22 by IB: wrote sapflow to .csv for accessing in other scripts
 
 # version notes:
 # - initial raw data files have shitty file names. Almost certainly need to rename them.
@@ -19,6 +20,7 @@ library(tidyverse) # all the tidyverse data handling functions
 library(lubridate) #Dealing with dates. 
 library(janitor) # cleaning up column names, etc.
 require(ggplot2)
+library(here) #for easier/less buggy file organization
 source("/Users/leeanderegg/Desktop/R functions, general/ggplot_helpers.R")
 
 #______________________________________________________________
@@ -169,7 +171,8 @@ sap$Sapflow.st <- sap$Sapflow/sapmax$maxSapflow[match(sap$Tree, sapmax$Tree)]
 sap$Loc <- factor(sap$Loc)
 
 
-
+###New dataset: 
+write_csv(sap, here("processed-data", "sapflow.csv"))
 
 
 plot(Sapflow.st~Date.Time, sap, col=factor(Loc), pch=".", ylim=c(-.5,1))
