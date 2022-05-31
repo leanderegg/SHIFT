@@ -218,8 +218,8 @@ ks_data_wp_sla <- merge(ks_data_wp, ks_sla, by = c("tree", "date", "branch"), al
   mutate(sla_mm_g = total_area/dry_wt_g, 
          lma_g_mm = dry_wt_g/total_area) %>% 
    mutate(tree_id = tree, #change names to be better
-          k_max = k_g_mm_s_m_pa_nat, 
-          k_nat = k_g_mm_s_m_pa_nat, 
+          k_max = ks_g_s_mpa_nat, 
+          k_nat = ks_g_s_mpa_nat, 
           Ks_max = ks_g_s_mm_m_pa_max, 
           Ks_nat = ks_g_s_mm_m_pa_nat, 
           Kl_max = kl_g_s_mm_m_pa_max, 
@@ -267,34 +267,42 @@ ggplot(aes(y = k_nat, x = mean_md, color = tree)) +
 Not much of a trend, and possible leaks that were included?
 
 ```{r}
-ks_data_wp %>% 
-ggplot(aes(y = kl_g_s_mm_m_pa_nat, x = date, color = tree)) +
+ks_data_wp_sla %>% 
+ggplot(aes(y =Kl_nat, x = date, color = tree)) +
   geom_point() + 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kleaf over time")
 ```
+```{r}
+ks_data_wp_sla %>% 
+ggplot(aes(y =Kl_max, x = date, color = tree)) +
+  geom_point() + 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Kleaf max over time")
+```
 
 ```{r}
-ks_data_wp %>% 
-ggplot(aes(y = ks_g_s_mm_m_pa_max, x = date, color = tree)) +
+ks_data_wp_sla %>% 
+ggplot(aes(y = Ks_max, x = date, color = tree)) +
   geom_point() + 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem max over time")
 ```
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(ks_g_s_mm_m_pa_max > 0) %>% 
-ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = date, color = tree)) +
+ggplot(aes(y = Ks_nat, x = date, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem native over time")
 ```
+#Hydraulics by other traits: 
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(ks_g_s_mm_m_pa_max > 0) %>% 
-ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = total_area, color = tree)) +
+ggplot(aes(y = Ks_nat, x = total_area, color = tree)) +
   geom_point()+ 
   geom_smooth(method = "lm", se = F) +
   ggtitle("Kstem native by leaf area")
@@ -302,43 +310,46 @@ ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = total_area, color = tree)) +
 
 Higher leaf area = greater flow...makes sense.
 
+#PLC
+
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = plc, x = date, color = tree)) +
-  geom_point()+ 
-  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("PLC over time")
+ggplot(aes(y = plc, x = date)) +
+  geom_point(aes(color = tree))+ 
+  geom_smooth(method = "lm", se = T, color = "black") +
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
+  ggtitle("PLC over time") 
 ```
 
-These are mega high PLC values...vacuum infiltration maybe doesn't work as well as hoped? Or we did a bad job collecting? Not sure how to do it better that we did, though....bigger branches? Collect at night?
-
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = plc, x = mean_md*-1, color = tree)) +
-  geom_point()+ 
-  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+ggplot(aes(y = plc, x = mean_md*-1)) +
+  geom_point(aes(color = tree))+ 
+  geom_smooth() +
+ # stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("'Natural Vulnerability Curve'")
 ```
 
-Something may be off with those very wet 2347s...look back at notes?
+Something may be off with those very wet 2347s...look back at notes? Could have been after the rain event, so maybe we should use the MPa from right before the rain occured as that is more indicative of the stress they were under? 
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = ks_g_s_mm_m_pa_nat, x = mean_md*-1, color = tree)) +
+ggplot(aes(y = Ks_nat, x = mean_md*-1, color = tree)) +
   geom_point()+ 
   geom_smooth(method = "lm", se = F) +
   ggtitle("Ks curve")
 ```
+#Other traits: 
 
 Also look back at outliers - some very high Ks values for 2343.
 
 ```{r}
-ks_data %>% 
+ks_data_wp_sla %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = log(alas), x = k_g_mm_s_m_pa_nat, color = as.factor(tree))) +
+ggplot(aes(y = log(alas), x = k_nat, color = as.factor(tree))) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   ggtitle("log(Al:As) vs. flow")
@@ -346,33 +357,36 @@ ggplot(aes(y = log(alas), x = k_g_mm_s_m_pa_nat, color = as.factor(tree))) +
 ```
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
   filter(plc > 0) %>% 
-ggplot(aes(y = alas, x = k_g_mm_s_m_pa_nat, color = tree)) +
+ggplot(aes(y = alas, x = k_nat, color = tree)) +
   geom_smooth(method = "lm", se = F) +
   geom_point() +
-  ggtitle("log(Al:As) vs. flow")
+  ggtitle("Al:As vs. flow")
 ```
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
 ggplot(aes(y = total_area, x = date, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("temporal changes in leaf area")
 ```
+#Stem length stuff: 
 
 ```{r}
-ks_data_wp %>% 
+ks_data_wp_sla %>% 
 ggplot(aes(y = length_total_mm, x = date, color = tree)) +
   geom_point()+ 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("temporal changes in stem length")
 ```
 
-#Stem proportions:
 ```{r}
 ks_data_wp_sla %>% 
-  ggplot(aes(y = prop_)
+  ggplot(aes(y = prop_0yr, x = date, color = tree))  +
+  geom_point() + 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("temporal changes in Y0")
 ```
 
