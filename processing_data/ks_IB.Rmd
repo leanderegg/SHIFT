@@ -15,6 +15,10 @@ library(readxl)
 
 ![QUDO Physiological Thresholds, from Weitz 2018; Jacobson and Pratt found P50 of -5.10](images/Screen%20Shot%202022-05-29%20at%203.46.12%20PM.png)
 
+Stem values maybe a lil high, Jacobson and Pratt maybe more vulnerable?
+
+P50 \~ 4
+
 Read in data:
 
 NOTE: add SLA, corresponding predawns, and TLPs?
@@ -40,6 +44,8 @@ ks_data <- read_csv(here("data", "ks_data", "ks_alldates.csv")) %>%
 dlookr::diagnose(ks_data)
 ```
 
+
+#Mpa: 
 Read in water potential data:
 
 Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
@@ -378,6 +384,14 @@ ggplot(aes(y = total_area, x = date, color = tree)) +
   ggtitle("temporal changes in leaf area")
 ```
 
+```{r}
+ks_data_wp_sla %>% 
+ggplot(aes(y = alas, x = mean_md, color = tree)) +
+  geom_point()+ 
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("leaf area x MPa")
+```
+
 \#Stem length stuff:
 
 ```{r}
@@ -404,7 +418,9 @@ ks_data_wp_sla %>%
   ggtitle("temporal changes in Y1")
 ```
 
-\#Sapflow data:
+Phenology over time
+
+#Sapflow data:
 
 ```{r}
 sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>% 
@@ -414,8 +430,48 @@ sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>%
   filter(week %in% c(11, 13, 15, 17, 21),
          tree %in% c(2343, 2356, 2347, 2365, 2367, 2369)) %>% 
   group_by(date, tree) %>% 
-  slice(which.max(sapflow_st))
+  slice(which.max(sapflow_st)) 
+
+#pull max for days we have midday MPa, then divide max flow rate by pressure gradient (PD-MD), and normalize by Max to see if that changes over time; if that changes over time. Funky trees (2343 and 2346), but not necessarily wrong (just noisy); may need to smooth out the data -- take 11-3pm average for those days. 
   
 ```
 
 OK, but which sapflow column to use (sapflow vs. sapflow_st), and what are the units of these? Need to get into g/sec/mm/MPa either way. Also, how to extract max sapflow?
+
+#Literature values: 
+
+Use these to provide context for why this matters/is a question worth pursuing: 
+
+Citation for the database: Choat B., Jansen S., Brodribb T.J., Cochard H., Delzon S., Bhaskar R., Bucci S., Feild T.S., Gleason S.M., Hacke U.G., Jacobsen A.L., Lens F., Maherali H., Martinez-Vilalta J., Mayr S., Mencuccini M., Mitchell P.J., Nardini A., Pittermann J., Pratt R.B., Sperry J.S., Westoby M., Wright I.J., Zanne A. (2012) Global convergence in the vulnerability of forests to drought. Nature 491: 752-755. 					
+
+```{r}
+xft_database_quercus<- read_excel(here("data","XFT_database_march2015.xls"), sheet="new master dataset", skip=0, na = "NA") %>% 
+  clean_names() %>% 
+  filter(genus == "Quercus") %>% 
+  mutate(p50 = p50_m_pa, 
+         genus == cleaned_genus, 
+         species = cleaned_species) %>% 
+  select(genus, species, p50)
+  
+
+indrasearch_database_quercus<- read_excel(here("data","XFT_database_march2015.xlsm"), sheet="indra_search", skip=0, na = "NA"
+                                          #, col_types = c("text", "text", "numeric", "skip", "skip", "skip", "skip")
+) %>% 
+  clean_names() %>% 
+  select(genus, species, p50) 
+
+class(indrasearch_database_quercus$p50) #reading in  numbers wrong :()
+
+quercus_p50_litvalues <- rbind(xft_database_quercus, indrasearch_database_quercus) %>% 
+  mutate(p50 = as.numeric(p50))
+```
+
+```{r}
+hist_p50 <- quercus_p50_litvalues %>% 
+  #drop_na() %>% 
+  ggplot(aes(x = p50)) +
+  geom_histogram(aes(fill = species == "douglasii"))
+hist_p50
+```
+
+
