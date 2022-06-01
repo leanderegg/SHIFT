@@ -579,14 +579,15 @@ ks_md_fig <- ks_data_wp_sla %>%
   filter(ks_g_s_m_m_pa_max > 0) %>% 
   filter(Ks_nat < 1000) %>% 
   filter(plc > -30) %>% 
-ggplot(aes(y = Ks_nat, x = mean_md)) +
+ggplot(aes(y = Ks_nat/1000, x = -1*mean_md)) +
   geom_point(aes(color = tree))+ 
   geom_smooth(method = "lm", se = T, color = "black") +
   #geom_smooth(method = "loess", se = T, color = "black") +
   #stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
  # ggtitle("PLC over water potential space") +
-  ylab("") +
-  ylab("ks (g/mm2/sec/m/Mpa)")+ th + 
+  xlab("") +
+  ylab("ks (kg m-1 sec-1 Mpa-1)") +
+    th + 
     th_colors
 
 ks_md_fig
