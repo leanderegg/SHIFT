@@ -812,7 +812,10 @@ sapflow_mpa <- ks_data_wp_sla %>%
   mutate(pressure_grad = -1*(mean_pd - mean_md), 
          date_wp = date)
 
-sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>% 
+sapflow_03312022 <- read.csv(here("processed-data", "sapflow_03312022.csv"))
+sapflow_06012022 <- read.csv(here("processed-data", "sapflow_06012022.csv"))
+
+sapflow_raw <- rbind(sapflow_03312022, sapflow_06012022) %>% 
   clean_names() %>% 
   mutate(date_sapflow = date(date_time), 
          week = week(date_sapflow)) %>% 

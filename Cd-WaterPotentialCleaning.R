@@ -13,9 +13,6 @@
 
 library(sf)
 library(raster)
-sdem <- raster::raster("Data_05042022/geospatial/DEM_sedgwick_3m.tif")
-#sdemll <- st_transform(sdem, crs= 4326)
-sdemll <- raster::projectRaster(sdem)
 
 # some namespace issue with raster and some of these packages.
 library(tidyverse)
@@ -40,6 +37,15 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
 #_______________________________________________________________
 ############# LOAD DATA ########################################
 
+###### Sedgwick DEM
+
+sdem <- raster::raster("Data_05042022/geospatial/DEM_sedgwick_3m.tif")
+#sdemll <- st_transform(sdem, crs= 4326)
+#sdemll <- raster::projectRaster(sdem)
+# make a df for plotting with ggplot
+sdem_gg <- sdem %>% 
+  rasterToPoints() %>% 
+  data.frame()
 
 #### Tree Locations
 latlon <- read.csv("Data_05042022/Trees_LatLon_v2.csv")
@@ -52,7 +58,11 @@ latlon$Tree <- str_remove(pattern="L", string=latlon$Tree)
 latlon$Species <- NA
 latlon$Species[grep("B",latlon$Name )] <- "B"
 latlon$Species[grep("L",latlon$Name )] <- "L"
-##### Water Potentials
+
+# make a latlon and utm spatial data version 
+latlon.ll <- SpatialPointsDataFrame(coords = data.frame(latlon$Longitude, latlon$Latitude), proj4string = CRS("+proj=longlat +datum=WGS84"), data=latlon)
+latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sdem))
+
 
 ## table for linking tree numbers with sites
 treesite <- read_excel("Data_05042022/WP_WC/SHIFT data collection 2022.xlsx",sheet="Tree_Sites", skip=0, na = "NA")
