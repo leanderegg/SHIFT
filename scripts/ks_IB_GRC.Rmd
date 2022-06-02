@@ -484,7 +484,28 @@ pheno_413 <- wpwc413 %>%
   clean_names() %>% 
   mutate(new_pheno = new_leaves_0_10)
 
-pheno_alldates <- rbind(pheno_218, pheno_228, pheno_315, pheno_325, pheno_413, pheno_46) %>% 
+pheno_425 <- wpwc425 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_504 <- wpwc504 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_525 <- wpwc525 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_alldates <- rbind(pheno_218, pheno_228, pheno_315, pheno_325, pheno_413, pheno_46, pheno_425, pheno_504, pheno_525) %>% 
   mutate(tree = as.numeric(tag)) %>%
   filter(tree %in% c(2343, 2346, 2347, 2365, 2367, 2369)) 
 ```
@@ -616,8 +637,9 @@ ggplot(aes(y = Kl_nat/1000, x = date, color = tree)) +
   geom_point() + 
   geom_smooth(method = "lm", se = T, color = "black") +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("Leaf-specific conductivity") +
-  ylab("Kleaf (kg m-2 sec-1 Mpa-1)") + 
+  #ggtitle("Leaf-specific conductivity") +
+  ylab("    Leaf-specific conductivity
+       (kg m-2 sec-1 Mpa-1)   ") + 
   xlab("") + 
   th + th_colors
 kl_date_fig
@@ -642,6 +664,28 @@ ggplot(aes(y = Ks_nat/1000, x = -1*mean_md)) +
 
 ks_md_fig
 ```
+####ks_blank_fig
+````{r}
+ks_blank_fig <- ks_data_wp_sla %>% 
+  filter(ks_g_s_m_m_pa_max > 0) %>% 
+  filter(Ks_nat < 1000) %>% 
+  filter(plc > -30) %>% 
+ggplot(aes(y = Ks_nat/1000, x = -1*mean_md)) +
+  #geom_point(aes(color = tree))+ 
+  #geom_smooth(method = "lm", se = T, color = "black") +
+  #geom_smooth(method = "loess", se = T, color = "black") +
+  #stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
+ # ggtitle("PLC over water potential space") +
+  xlab("") +
+  ylab("ks (kg m-1 sec-1 Mpa-1)") +
+    th + 
+    th_colors  +
+  xlim(-10,0)
+  
+
+ks_blank_fig
+```
+
 ####kl_md_fig
 ````{r}
 kl_md_fig <- ks_data_wp_sla %>% 
@@ -675,7 +719,7 @@ ggplot(aes(y = plc, x = date)) +
   geom_point(aes(color = tree))+ 
   geom_smooth(method = "lm", se = T, color = "black") +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
-  ggtitle("PLC over time") + 
+  #ggtitle("PLC over time") + 
   th + th_colors +
   xlab("") +
   ylab("PLC (%)")
@@ -705,7 +749,28 @@ plc_md_fig
 
 Something may be off with those very wet 2347s...look back at notes? Could have been after the rain event, so maybe we should use the MPa from right before the rain occurred as that is more indicative of the stress they were under?
 
- 
+####plc_blank_fig
+
+```{r}
+plc_blank_fig <- ks_data_wp_sla %>% 
+  filter(ks_g_s_m_m_pa_max > 0) %>% 
+  filter(Ks_nat < 1000) %>% 
+  filter(plc > -30) %>% 
+ # filter(plc < 60) %>% 
+ggplot(aes(y = plc, x = -1*mean_md)) +
+ # geom_point(aes(color = tree))+ 
+ # geom_smooth(method = "lm", se = T, color = "black") +
+  #geom_smooth(method = "loess", se = T, color = "black") +
+  #stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
+  #ggtitle("PLC over water potential space") +
+  ylab("PLC (%)") +
+  xlab("")+ th + 
+    th_colors +
+  ylim(0, 100) +
+  xlim(-10,0)
+  
+plc_blank_fig
+```
 #Phenology: 
 
 #####pheno_fig
@@ -714,10 +779,11 @@ pheno_fig <- pheno_alldates %>%
   ggplot(aes(y = new_pheno, x = date, color = as.factor(tree)))  +
   geom_point() + 
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
-  ggtitle("Tracking leafout")+
-  ylab("Phenology (0-10)") +
+  #ggtitle("Tracking leafout")+
+  ylab("Leafout phenology (0-10)") +
   xlab("") + th + 
-    th_colors
+    th_colors #+
+  #geom_vline(xintercept = as.numeric("2022-03-25"))
 pheno_fig
 ```
 
@@ -732,8 +798,8 @@ stem_fig <- ks_data_wp_sla %>%
   geom_point() + 
   #geom_col(position = "dodge")+
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
-  ggtitle("Stem growth")+
-  ylab("New growth ratio (Y0:Y1)") +
+  #ggtitle("Stem e")+
+  ylab("Stem elongation (Y0:Y1)") +
   xlab("") + 
   th + 
   th_colors
@@ -783,16 +849,23 @@ hist_fig <-
   ggplot(aes(x = p50)) +
   geom_histogram(aes(fill = species == "douglasii"), 
                  binwidth=.3, 
+                 center = .1,
                  #bins = 50,
                  #breaks = "Scotts",
                  #fill="#69b3a2", 
                  #color="#e9ecef", 
                 # position = position_dodge(),
-                 alpha=0.9) + 
-  theme(legend.position = "none") +
+                 alpha=0.9
+                 ) + 
+  theme(legend.position = c(.15, .85), 
+        ) +
+  scale_fill_manual(name = "", 
+       labels = c("All Quercus spp.","Q. douglasii"), 
+       values= c("#2b614e","#e5a335")
+      ) +
   ylab("Count") +
-    th_fill +
-  xlab("Published P50")
+   # th_fill +
+  xlab("Published P50 Value")
 hist_fig
 
 
@@ -803,7 +876,7 @@ ggsave(here("figures", "hist_fig.jpg"), plot = hist_fig, height = 4, width = 6, 
 
 ```{r}
 date_plot <- cowplot::plot_grid(
-        pheno_fig + theme(plot.margin = unit(c(.25, .5, 0, .5), "cm")), 
+        pheno_fig + theme(plot.margin = unit(c(.5, .25, 0, .25), "cm")), 
         kl_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
         stem_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")),
         plc_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
@@ -812,7 +885,7 @@ date_plot <- cowplot::plot_grid(
           )
 date_plot
 
-x.grob <- grid::textGrob("Date", 
+x.grob <- grid::textGrob("Date, Spring 2022", 
                    gp=grid::gpar(fontface="bold", 
                            col="black", 
                            fontsize=15)
@@ -829,7 +902,7 @@ ggsave(here("figures", "date_plot.jpg"), plot = date_plot_final, height = 6, wid
 #####mpa_plot_final
 ```{r, fig.height = 4, fig.width = 3}
 mpa_plot <- cowplot::plot_grid(
-        plc_md_fig + theme(plot.margin = unit(c(.25, .5, 0, .5), "cm")), 
+        plc_md_fig + theme(plot.margin = unit(c(.25, ., 0, .5), "cm")), 
         ks_md_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
         align='vh', vjust=.5, scale = 1,
         ncol = 1
@@ -846,6 +919,30 @@ mpa_plot_final <- gridExtra::grid.arrange(arrangeGrob(mpa_plot, bottom = x.grob)
 mpa_plot_final
 
 ggsave(here("figures", "mpa_plot.jpg"), plot = mpa_plot_final, height = 6, width = 4, units = "in")
+```
+
+#####blank_mpa_plot_final
+```{r, fig.height = 4, fig.width = 3}
+blank_plot <- cowplot::plot_grid(
+        plc_blank_fig + theme(plot.margin = unit(c(.25, 0, .25, .5), "cm")), 
+        ks_blank_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
+        align='vh',
+        vjust=.5, 
+        scale = 1,
+        ncol = 1
+          )
+
+x.grob <- grid::textGrob("Water Potential (MPa)", 
+                   gp=grid::gpar(fontface="bold", 
+                           col="black", 
+                           fontsize=15)
+                   )
+
+#add to plot
+blank_plot_final <- gridExtra::grid.arrange(arrangeGrob(blank_plot, bottom = x.grob)) 
+blank_plot_final
+
+ggsave(here("figures", "blank_mpa_plot.jpg"), plot = blank_plot_final, height = 6, width = 4, units = "in")
 ```
 
 #Sapflow data:
@@ -921,7 +1018,30 @@ sapflow_fig <- sapflow_wp %>%
 
 sapflow_fig
 
-ggsave(here("figures", "sapflow_fig.jpg"), plot = sapflow_fig, height = 4, width = 6, units = "in")
+#ggsave(here("figures", "sapflow_fig.jpg"), plot = sapflow_fig, height = 4, width = 6, units = "in")
+```
+
+#####sapflow_ks_plot_final
+
+```{r, fig.height = 4, fig.width = 3}
+sap_plot <- cowplot::plot_grid(
+        sapflow_fig+ theme(plot.margin = unit(c(.25, 0, .25, .5), "cm")), 
+        ks_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
+        align='vh', vjust=.5, scale = 1,
+        ncol = 1
+          )
+
+x.grob <- grid::textGrob("Midday Water Potential (MPa)", 
+                   gp=grid::gpar(fontface="bold", 
+                           col="black", 
+                           fontsize=15)
+                   )
+
+#add to plot
+sap_plot_final <- gridExtra::grid.arrange(arrangeGrob(sap_plot, bottom = x.grob)) 
+sap_plot_final
+
+ggsave(here("figures", "sap_plot.jpg"), plot = sap_plot_final, height = 6, width = 4, units = "in")
 ```
 
 ```{r}
