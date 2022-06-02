@@ -201,7 +201,9 @@ write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
   # ALSO NOTE: This needs to be 'zeroed' at bare minimum to believe the absolute values
   #       i.e. take the min value at night after the rain on 3/28 and subtract it from everything 
   #       so that it reaches 0 sapflow when we know there was zero sap flow.
-
+  # ALSO NOTE: something happened at RT when we installed 2010 in March 24. 
+  #       Looks like maybe something funky happened when we daisy chained them and 2081 crapped out?
+  #       almost exact time 2381 craps out, 82 and 84 have weird noise...
 #______________________________________________________________
 ############### END: Load and Clean #######################################
 #______________________________________________________________
@@ -249,6 +251,14 @@ ggplot(sap, aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yin
   geom_line(data=RT.dendro, aes(y=Growth_sc)) +  # add dendrometer
   geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
+#  huh...something happened at Weathertop/RT on March 24th when we installed 2010
+# --> did we store new constants for 2381,2,4? Because there's an immediate expansion of values
+
+ggplot(sap[which(sap$Date.Time> as_date("2022-03-14") & sap$Date.Time< as_date("2022-04-05")), ], aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
+  geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
+
+ggplot(sap[which(sap$Loc=="RT" & sap$Date.Time> as_date("2022-03-22") & sap$Date.Time< as_date("2022-03-30")), ], aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
+  geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
 
 
