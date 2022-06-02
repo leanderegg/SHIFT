@@ -24,7 +24,8 @@ th <- theme(panel.background = element_rect(fill='white', colour='black'), # Mak
           panel.grid.minor = element_blank(), 
           legend.position = "none")
 
-th_colors <-  scale_color_manual(values=met.brewer("Degas", 7))
+th_colors <-  scale_color_manual(values=met.brewer("Degas", 9))
+
 th_fill <-  scale_fill_manual(values= c("#2b614e","#e5a335"))
 
 #Degas = list(
@@ -132,6 +133,10 @@ wpwc425 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.x
 #Date: 427 WP + LWC
 wpwc427 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="427 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-27-2022")) 
+
+#Date: 504WP + LWC
+wpwc0504 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+  mutate(date = mdy("05-04-2022")) 
 
 
 #Date: 523-525 WP + LWC
@@ -243,6 +248,17 @@ wp425md <- wpwc425 %>%
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("04-25-2022")) 
   
+wp0504md <- wpwc504 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
+  pivot_longer(cols=matches("md[1-9]") 
+               , names_to="md"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("05-04-2022"))
 
 wp523md <- wpwc523 %>%
   as.data.frame() %>% 
@@ -261,11 +277,11 @@ wp523md <- wpwc523 %>%
 ###Combine all together: 
 ###
 
-wp_alldates_md <- rbind(wp523md, wp411md, wp325md, wp330md, wp315md, wp425md, wp413md) %>% 
+wp_alldates_md <- rbind(wp523md, wp411md, wp325md, wp330md, wp315md, wp425md, wp413md, wp0504md, wp228md) %>% 
   mutate(week = week(date)) %>% 
   mutate(tree = as.numeric(tag)) 
 
-wp_alldates_md_summary <- wp_alldates_md %>% 
+wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
   group_by(date, tag) %>% 
   mutate(mean_md = mean(mpa)) %>% 
   mutate(week_real = week) %>% 
@@ -273,7 +289,7 @@ wp_alldates_md_summary <- wp_alldates_md %>%
     week == 12 ~ 13, 
     TRUE ~ as.numeric(week))) %>% 
   ungroup() %>% 
-  dplyr::select(-date, -plot_number, -species, -md, -mpa)
+  dplyr::select(-plot_number, -species, -md, -mpa)
 ```
 
 ######Predawns:
@@ -284,7 +300,7 @@ wp228pd <- wpwc228 %>%
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
   dplyr::select(1:3,matches("pd")) %>% 
-  #dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
+  dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
                , values_to="mpa"
@@ -371,7 +387,18 @@ wp425pd <- wpwc425 %>%
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("04-25-2022")) 
-  
+
+wp504pd <- wpwc504 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
+  pivot_longer(cols=matches("pd[1-9]") 
+               , names_to="pd"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("05-04-2022"))
 
 wp523pd <- wpwc523 %>%
   as.data.frame() %>% 
@@ -390,11 +417,11 @@ wp523pd <- wpwc523 %>%
 ###Combine all together: 
 ###
 
-wp_alldates_pd <- rbind(wp523pd, wp411pd, wp325pd, wp330pd, wp315pd, wp425pd, wp413pd) %>% 
+wp_alldates_pd <- rbind(wp523pd, wp411pd, wp325pd, wp330pd, wp315pd, wp425pd, wp413pd, wp504pd, wp228pd) %>% 
   mutate(week = week(date)) %>% 
   mutate(tree = as.numeric(tag)) 
 
-wp_alldates_pd_summary <- wp_alldates_pd %>% 
+wp_alldates_pd_summary_premerge <- wp_alldates_pd %>% 
   group_by(date, tag) %>% 
   mutate(mean_pd = mean(mpa)) %>% 
   mutate(week_real = week) %>% 
@@ -402,7 +429,15 @@ wp_alldates_pd_summary <- wp_alldates_pd %>%
     week == 12 ~ 13, 
     TRUE ~ as.numeric(week))) %>% 
   ungroup() %>% 
-  dplyr::select(-date, -plot_number, -species, -pd, -mpa)
+  dplyr::select(-plot_number, -species, -pd, -mpa)
+
+wp_alldates_summary <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge)
+
+wp_alldates_pd_summary <- wp_alldates_pd_summary_premerge %>% 
+  select(-date)
+
+wp_alldates_md_summary <- wp_alldates_md_summary_premerge %>% 
+  select(-date)
 ```
 
 #####Phenology data: 
@@ -464,7 +499,7 @@ ks_data_wp <- merge(ks_data, wp_alldates_md_summary, by = c("tree", "week"), all
   distinct() %>% 
   select(-week_real, -tag, )
 
-ks_data_wp_md <- merge(ks_data_wp, wp_alldates_pd_summary, by = c("tree", "week"), all.x = T) %>%
+ks_data_wp_md <- merge(ks_data_wp, wp_alldates_pd_summary, by = c("tree", "week"), all = T) %>%
   mutate(tree = as.factor(tree)) %>% 
   mutate(date = date) %>% 
   distinct() %>% 
@@ -562,15 +597,30 @@ ggplot(aes(y = Ks_max, x = date, color = tree)) +
 ks_date_fig <- ks_data_wp_sla %>% 
   filter(ks_g_s_m_m_pa_max > 0) %>% 
   filter(Ks_nat < 1000) %>% 
-ggplot(aes(y = Ks_nat, x = date, color = tree)) +
+ggplot(aes(y = Ks_nat/1000, x = date, color = tree)) +
   geom_point() + 
   geom_smooth(method = "lm", se = T, color = "black") +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem native over time") +
-  ylab("ks (kg m-1 sec-1 Mpa-1)") +
+  ylab("Ks (kg m-1 sec-1 Mpa-1)") + 
   xlab("") + 
   th + th_colors
 ks_date_fig
+```
+######kl_date_fig
+```{r}
+kl_date_fig <- ks_data_wp_sla %>% 
+  filter(ks_g_s_m_m_pa_max > 0) %>% 
+  filter(Ks_nat < 1000) %>% 
+ggplot(aes(y = Kl_nat/1000, x = date, color = tree)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = T, color = "black") +
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
+  ggtitle("Leaf-specific conductivity") +
+  ylab("Kleaf (kg m-2 sec-1 Mpa-1)") + 
+  xlab("") + 
+  th + th_colors
+kl_date_fig
 ```
 
 ####ks_md_fig
@@ -591,6 +641,25 @@ ggplot(aes(y = Ks_nat/1000, x = -1*mean_md)) +
     th_colors
 
 ks_md_fig
+```
+####kl_md_fig
+````{r}
+kl_md_fig <- ks_data_wp_sla %>% 
+  filter(ks_g_s_m_m_pa_max > 0) %>% 
+  filter(Ks_nat < 1000) %>% 
+  filter(plc > -30) %>% 
+ggplot(aes(y = Kl_nat/1000, x = -1*mean_md)) +
+  geom_point(aes(color = tree))+ 
+  geom_smooth(method = "lm", se = T, color = "black") +
+  #geom_smooth(method = "loess", se = T, color = "black") +
+  #stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
+  ggtitle("Leaf-specific conductivity") +
+  xlab("") +
+  ylab("kl (kg m-2 sec-1 Mpa-1)") +
+    th + 
+    th_colors
+
+kl_md_fig
 ```
 
 #PLC - figs
@@ -620,6 +689,7 @@ plc_md_fig <- ks_data_wp_sla %>%
   filter(ks_g_s_m_m_pa_max > 0) %>% 
   filter(Ks_nat < 1000) %>% 
   filter(plc > -30) %>% 
+ # filter(plc < 60) %>% 
 ggplot(aes(y = plc, x = -1*mean_md)) +
   geom_point(aes(color = tree))+ 
   geom_smooth(method = "lm", se = T, color = "black") +
@@ -669,6 +739,11 @@ stem_fig <- ks_data_wp_sla %>%
   th_colors
 stem_fig
 ```
+```{r}
+
+```
+
+
 #Literature values: 
 
 Use these to provide context for why this matters/is a question worth pursuing: 
@@ -702,7 +777,7 @@ quercus_p50_litvalues <- rbind(xft_database_quercus, indrasearch_database_quercu
 
 #####hist_fig
 ```{r}
-hist_p50 <- 
+hist_fig <- 
   quercus_p50_litvalues %>% 
   #drop_na() %>% 
   ggplot(aes(x = p50)) +
@@ -718,7 +793,10 @@ hist_p50 <-
   ylab("Count") +
     th_fill +
   xlab("Published P50")
-hist_p50
+hist_fig
+
+
+ggsave(here("figures", "hist_fig.jpg"), plot = hist_fig, height = 4, width = 6, units = "in")
 ```
 
 #####date_plot_final
@@ -726,7 +804,7 @@ hist_p50
 ```{r}
 date_plot <- cowplot::plot_grid(
         pheno_fig + theme(plot.margin = unit(c(.25, .5, 0, .5), "cm")), 
-        ks_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
+        kl_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
         stem_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")),
         plc_date_fig + theme(plot.margin = unit(c(0, 0, 0, 0), "cm")), 
         align='vh', vjust=.5, scale = 1,
@@ -743,6 +821,9 @@ x.grob <- grid::textGrob("Date",
 #add to plot
 date_plot_final <- gridExtra::grid.arrange(arrangeGrob(date_plot, bottom = x.grob)) 
 date_plot_final
+
+
+ggsave(here("figures", "date_plot.jpg"), plot = date_plot_final, height = 6, width = 8, units = "in")
 ```
 
 #####mpa_plot_final
@@ -763,43 +844,113 @@ x.grob <- grid::textGrob("Midday Water Potential (MPa)",
 #add to plot
 mpa_plot_final <- gridExtra::grid.arrange(arrangeGrob(mpa_plot, bottom = x.grob)) 
 mpa_plot_final
+
+ggsave(here("figures", "mpa_plot.jpg"), plot = mpa_plot_final, height = 6, width = 4, units = "in")
 ```
+
 #Sapflow data:
 
 ```{r}
-sapflow_mpa <- ks_data_wp_sla %>% 
+sapflow_mpa <- wp_alldates_summary  %>% 
   select(tree, mean_pd, mean_md, week, date) %>% 
-  mutate(pressure_grad = -1*(mean_pd - mean_md))
+  mutate(pressure_grad = -1*(mean_pd - mean_md), 
+         date_wp = date)
 
-sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>% 
-  clean_names() %>% 
-  mutate(date = date(date_time), 
-         week = week(date)) %>% 
-  filter(#week %in% c(11, 13, 15, 17, 21),
-         tree %in% c(2343, 2356, 2347, 2365, 2367, 2369)) %>% 
-  group_by(week, tree) %>% 
-  slice(which.max(sapflow_st)) #take the max flow for each day 
+sapflow_03312022 <- read.csv(here("processed-data", "sapflow_03312022.csv")) %>% clean_names() 
+sapflow_06012022 <- read.csv(here("processed-data", "sapflow_06012022.csv")) %>% clean_names()
 
+#From Lee: 
+  # ALSO NOTE: This needs to be 'zeroed' at bare minimum to believe the absolute values
+  #       i.e. take the min value at night after the rain on 3/28 and subtract it from everything 
+  #       so that it reaches 0 sapflow when we know there was zero sap flow.
+  # ALSO NOTE: something happened at RT when we installed 2010 in March 24. 
+  #       Looks like maybe something funky happened when we daisy chained them and 2081 crapped out?
+  #       almost exact time 2381 craps out, 82 and 84 have weird noise...
 
-#pull max for days we have midday MPa, then divide max flow rate by pressure gradient (PD-MD), and normalize by Max to see if that changes over time; if that changes over time. Funky trees (2343 and 2346), but not necessarily wrong (just noisy); may need to smooth out the data -- take 11-3pm average for those days. 
+sapflow_raw <- rbind(sapflow_03312022, sapflow_06012022) %>% 
+  mutate(date_sapflow = date(date_time), 
+         week = week(date_sapflow)) 
+#%>% 
+  # filter(#week %in% c(11, 13, 15, 17, 21),
+  #        tree %in% c(2343, 2356, 2347, 2365, 2367, 2369)) 
 
-sapflow_wp <- merge(sapflow_raw, sapflow_mpa, by = c("date", "tree", "week")) %>% 
-  mutate(pressure_driven_flow = sapflow/pressure_grad, 
-         pdf_normed = pressure_driven_flow/max(sapflow))
+#finding minimum sapflow for each tree:
+min_flow_0328 <- sapflow_raw %>% 
+  select(tree, sapflow, date_sapflow) %>% 
+  filter(date_sapflow == "2022-03-28") %>% 
+  group_by(tree) %>% 
+  slice(which.min(sapflow)) %>% 
+  select(tree, sapflow) %>% 
+  transmute(min_sapflow = sapflow)
   
+
+sapflow_zeroed <- merge(sapflow_raw, min_flow_0328, by = c("tree")) %>% 
+  group_by(tree) %>% 
+  mutate(sapflow_zeroed = sapflow-min_sapflow) %>% 
+  ungroup() 
+  
+
+sapflow_max <- sapflow_zeroed %>% 
+  group_by(week, tree) %>% 
+  slice(which.max(sapflow)) #take the max flow for each week
+
+
+#pull max for days we have midday MPa, then divide max flow rate by pressure gradient (PD-MD), and normalize by Max to see if that changes over time;  Funky trees (2343 and 2346), but not necessarily wrong (just noisy); may need to smooth out the data -- take 11-3pm average for those days. 
+
+sapflow_wp <- merge(sapflow_max, sapflow_mpa, by = c("tree", "week")) %>% 
+  mutate(sapflow_zeroed_kg_sec = sapflow_zeroed*0.00020, #to get into kg/sec (collected as L/hr)
+         pressure_driven_flow_kg_sec = sapflow_zeroed_kg_sec/pressure_grad, #to get into kg/sec/MPa
+         pdf_normed_kg_sec = pressure_driven_flow_kg_sec/max(sapflow_zeroed_kg_sec))
 ```
 
-Visualize: 
+#####sapflow_fig
+```{r}
+sapflow_fig <- sapflow_wp %>% 
+  ggplot(aes(y = pdf_normed_kg_sec, x = date_sapflow)) +
+  geom_point(aes(color = as.factor(tree)))+ 
+  geom_smooth(method = "lm", se = T, color = "black") +
+  #geom_smooth(method = "loess", se = T, color = "black") +
+  #stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = as.factor(tree))) +
+  #ggtitle("PLC over water potential space") +
+  ylab("Normalized Sapflow (kg sec-1 MPa-1)") +
+  xlab("") + 
+  #th + 
+  th_colors +
+  ylim(-.25, 3) +
+  theme(legend.position = "none")
+
+sapflow_fig
+
+ggsave(here("figures", "sapflow_fig.jpg"), plot = sapflow_fig, height = 4, width = 6, units = "in")
+```
 
 ```{r}
 sapflow_wp %>% 
-  ggplot(aes(y = pdf_normed, x = date))  +
-  geom_point(aes(color = tree))+ 
+  ggplot(aes(y = pressure_driven_flow_kg_sec, x = date_sapflow)) +
+  geom_point(aes(color = as.factor(tree)))+ 
+  geom_smooth(method = "lm", se = T, color = "black") +
+  #geom_smooth(method = "loess", se = T, color = "black") +
+  stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = as.factor(tree))) +
+  #ggtitle("PLC over water potential space") +
+  ylab("Sapflow (kg sec-1 MPa-1)") +
+  xlab("") + 
+  #th + 
+  th_colors +
+  #ylim(-.25, 3) +
+  theme(legend.position = "none")
+```
+
+```{r}
+sapflow_wp_ks <- merge(sapflow_wp, ks_data_wp_sla)
+
+sapflow_wp_ks %>% 
+  ggplot(aes(y = pressure_driven_flow_kg_sec, x =  Ks_nat/1000))  +
+  geom_point(aes(color = as.factor(tree)))+ 
   geom_smooth(method = "lm", se = T, color = "black") +
  # stat_summary(fun.y="mean", geom="line", aes(group=factor(tree), color = tree)) +
-  ggtitle("PLC over time") + 
+  ggtitle("sapflow vs. Ks") + 
   th + th_colors +
-  xlab("") +
+  xlab("Stem flow") +
   ylab("Sapflow")
 ```
 

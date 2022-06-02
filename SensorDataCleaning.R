@@ -10,6 +10,7 @@
 # started 04.05.22 by LDLA
 # last updated: 
 #     05.31.22 by IB: wrote sapflow to .csv for accessing in other scripts
+#     06.02.22 by IB: read in new downloads and added to final sapflow.csv
 
 # version notes:
 # - initial raw data files have shitty file names. Almost certainly need to rename them.
@@ -21,7 +22,12 @@ library(lubridate) #Dealing with dates.
 library(janitor) # cleaning up column names, etc.
 require(ggplot2)
 library(here) #for easier/less buggy file organization
-source("/Users/leeanderegg/Desktop/R functions, general/ggplot_helpers.R")
+
+#source("/Users/leeanderegg/Desktop/R functions, general/ggplot_helpers.R") 
+
+#NOTE: put the above in the 'scripts' folder of the repo? 
+##i.e.: 
+##       source(here("scripts", "ggplot_helpers.R"))
 
 #______________________________________________________________
 ############### Begin: SAPFLOW - Load and Clean #######################################
@@ -34,8 +40,19 @@ sapfiles <- dir(sapflow.dir)
 #### RT sapflow  ###########
 start.date <- as_datetime("2022-03-24 17:24:33") # ED04 deployment date
 RTtree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLOW.TOTAL.2","SAP.FLOW.TOTAL.3"), Tree=c("2381","2384","2382","2010"))
-#RT <- read.csv("Data_05042022/sapflow/20220331-101209 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3)
-RT <- read.csv("Data_05042022/sapflow/20220530-111350 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3)
+
+#------- Did this before pulling and seeing Lee's changes...whoops! Another option for processing...?
+# RT_maydownload <- read.csv("Data_05042022/sapflow/20220331-101209 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3) #older version
+# RT_junedownload <- read.csv("Data_05042022/sapflow/20220503-111350 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3)
+# 
+# RT <- rbind(RT_maydownload, RT_junedownload)
+#-------
+
+RT <- read.csv("Data_05042022/sapflow/20220331-101209 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3) #older version
+#RT <- read.csv("Data_05042022/sapflow/20220503-111350 Log Download_ED04.csv", header=T, na.strings = "-1004600",skip = 3)
+
+
+
 RT <- RT[-1,]
 colnames(RT)[1] <- "Date.Time"
 RT$Date.Time  <- lubridate::as_datetime(RT$Date.Time,format="%d/%m/%y %H:%M:%S")
@@ -73,6 +90,7 @@ RT.long$Loc <- "RT"
 start.date <- as_date("03/03/22 11:29:54", format="%d/%m/%y %H:%M:%S") # deployment date of ED03
 RTtree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLOW.TOTAL.2","SAP.FLOW.TOTAL.3"), Tree=c("2381","2384","2382","2010"))
 RT.old <- read.csv("Data_05042022/sapflow/20220326-173619 Log Download_ED03_RT.csv", header=T, na.strings = "-1004600",skip = 3)
+
 RT.old <- RT.old[-1,]
 colnames(RT.old)[1] <- "Date.Time"
 RT.old$Date.Time  <- lubridate::as_datetime(RT.old$Date.Time,format="%d/%m/%y %H:%M:%S")
@@ -105,8 +123,19 @@ sensor.check2 <-as_datetime("27/04/22 11:32:28",format="%d/%m/%y %H:%M:%S") # da
 sensor.check3 <-as_datetime("04/05/22 11:32:28",format="%d/%m/%y %H:%M:%S") # date when probe 3 went back to being probe 3
 TStree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLOW.TOTAL.2","SAP.FLOW.TOTAL.3"), Tree=c("2347","2346","2349","2343"))
 
-#TS <- read.csv("Data_05042022/sapflow/20220331-130401 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
-TS <- read.csv("Data_05042022/sapflow/20220530-123409 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+#-------
+# TS_maydownload <- read.csv("Data_05042022/sapflow/20220331-130401 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+# 
+# TS_junedownload <- read.csv("Data_05042022/sapflow/20220530-123409 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+# 
+# TS <- rbind(TS_maydownload, TS_junedownload)
+#-------
+
+TS <- read.csv("Data_05042022/sapflow/20220331-130401 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+
+#TS <- read.csv("Data_05042022/sapflow/20220530-123409 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+
+
 TS <- TS[-1,]
 colnames(TS)[1] <- "Date.Time"
 TS$Date.Time  <- lubridate::as_datetime(TS$Date.Time,format="%d/%m/%y %H:%M:%S")
@@ -155,8 +184,16 @@ start.date <- as_date("03/03/22 11:29:54", format="%d/%m/%y %H:%M:%S") # ED01 de
 reprog.date <- as_datetime("26/03/22 17:23:10",format="%d/%m/%y %H:%M:%S") # date.time of reprogramming to add sensor 4
 MStree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLOW.TOTAL.2","SAP.FLOW.TOTAL.3"), Tree=c("2369","2367","2365","2360"))
 
-#MS <- read.csv("Data_05042022/sapflow/20220331-111140 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
-MS <- read.csv("Data_05042022/sapflow/20220530-103346 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+#-------
+# MS_maydownload <- read.csv("Data_05042022/sapflow/20220331-111140 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+# 
+# MS_junedownload <- read.csv("Data_05042022/sapflow/20220530-103346 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+# 
+# MS <- rbind(MS_maydownload, MS_junedownload)
+#-------
+
+MS <- read.csv("Data_05042022/sapflow/20220331-111140 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+#MS <- read.csv("Data_05042022/sapflow/20220530-103346 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
 
 MS <- MS[-1,]
 colnames(MS)[1] <- "Date.Time"
@@ -196,7 +233,8 @@ sap$Loc <- factor(sap$Loc)
 
 
 ### Write out processed Sapflow: 
-write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
+#write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
+write_csv(sap, here("processed-data", "sapflow_03312022.csv"))
   # versioned this in case we overwrite old files
   # ALSO NOTE: This needs to be 'zeroed' at bare minimum to believe the absolute values
   #       i.e. take the min value at night after the rain on 3/28 and subtract it from everything 
@@ -219,6 +257,9 @@ write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
 
 
 
+
+
+##### PLOTS #####
 
 
 plot(Sapflow.st~Date.Time, sap, col=factor(Loc), pch=".", ylim=c(-.5,1))
