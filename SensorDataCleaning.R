@@ -198,7 +198,9 @@ sap$Loc <- factor(sap$Loc)
 ### Write out processed Sapflow: 
 write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
   # versioned this in case we overwrite old files
-
+  # ALSO NOTE: This needs to be 'zeroed' at bare minimum to believe the absolute values
+  #       i.e. take the min value at night after the rain on 3/28 and subtract it from everything 
+  #       so that it reaches 0 sapflow when we know there was zero sap flow.
 
 #______________________________________________________________
 ############### END: Load and Clean #######################################
@@ -234,15 +236,23 @@ plot(Sapflow~Date.Time, TS.long, col=factor(Tree), pch=".", ylim=c(-.2,1))
 abline(h=0)
 abline(v=as_datetime("2022-03-28 12:00:00"), col="blue") # rain event
 
-plot(Sapflow~Date.Time, RT.long, col=factor(Tree), pch=".")
+plot(Sapflow~Date.Time, rbind(RT.long, RT.old.long), col=factor(Tree), pch=".")
 abline(h=0)
 lines(Growth_sc~Date.Time, RT.dendro, col="red")
 
 
+ggplot(sap, aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Loc)  +
+  geom_line(data=RT.dendro, aes(y=Growth_sc)) +  # add dendrometer
+  geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
+
+ggplot(sap, aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
+  geom_line(data=RT.dendro, aes(y=Growth_sc)) +  # add dendrometer
+  geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
 
 
-#######3 . Examinging ED01 problems ##########3
+
+####### . Examinging ED01 problems ##########3
 
 #sensor 1 actually really came to the party, it must have been weird sapflow early on.
 #it's super noisy, so probably best to switch to install location2, but we can definitely inter-relate the two
