@@ -567,7 +567,7 @@ ggplot(aes(y = Ks_nat, x = date, color = tree)) +
   geom_smooth(method = "lm", se = T, color = "black") +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem native over time") +
-  ylab("ks (g/mm2/sec/m/Mpa)") + 
+  ylab("ks (kg m-1 sec-1 Mpa-1)") +
   xlab("") + 
   th + th_colors
 ks_date_fig
