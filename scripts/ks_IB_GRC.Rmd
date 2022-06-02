@@ -567,7 +567,7 @@ ggplot(aes(y = Ks_nat, x = date, color = tree)) +
   geom_smooth(method = "lm", se = T, color = "black") +
   stat_summary(fun.y="mean", geom="line", aes(group=factor(tree))) +
   ggtitle("Kstem native over time") +
-  ylab("ks (g/mm2/sec/m/Mpa)") + 
+  ylab("ks (kg m-1 sec-1 Mpa-1)") +
   xlab("") + 
   th + th_colors
 ks_date_fig
@@ -775,9 +775,9 @@ sapflow_raw <- read.csv(here("processed-data", "sapflow.csv")) %>%
   clean_names() %>% 
   mutate(date = date(date_time), 
          week = week(date)) %>% 
-  filter(week %in% c(11, 13, 15, 17, 21),
+  filter(#week %in% c(11, 13, 15, 17, 21),
          tree %in% c(2343, 2356, 2347, 2365, 2367, 2369)) %>% 
-  group_by(date, tree) %>% 
+  group_by(week, tree) %>% 
   slice(which.max(sapflow_st)) #take the max flow for each day 
 
 
