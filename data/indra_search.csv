@@ -1,22 +1,23 @@
 ﻿genus,species,p50,doi,method,souce,notes
-Quercus,ilex,4.70,https://doi.org/10.1093/treephys/tpu059,benchtopdehydration,Martin St. Paul et al. 2014,
+Quercus,ilex,4.7,https://doi.org/10.1093/treephys/tpu059,benchtopdehydration,Martin St. Paul et al. 2014,
 Quercus,ilex,2.38,https://doi.org/10.1093/treephys/tpu059,cavitron,Martin St. Paul et al. 2014,
 Quercus,ilex,5.75,https://doi.org/10.1093/treephys/tpu059,air injection ,Martin St. Paul et al. 2014,
 Quercus,gambellii,1.08,https://doi.org/10.1111/j.1365-3040.2011.02439.x,benchtopdehydration,Sperry et al. 2011,
 Quercus,gambellii,0.45,https://doi.org/10.1111/j.1365-3040.2011.02439.x,cavitron,Sperry et al. 2011,
 Quercus,douglasii,6.27,,cavitron,Weitz et al. 20,
 Quercus,lobata,3.25,,cavitron,Weitz et al. 20,
+Quercus,douglasii,6.27,,microCT,Skelton et al. 2018,
 Quercus,douglasii,4.47,,microCT,Skelton et al. 2019,average
-Quercus,douglasii,3.30,,microCT,Skelton et al. 2019,garden
-Quercus,douglasii,5.10,,microCT,Skelton et al. 2019,wild
-Quercus,agrifolia ,1.80,,benchtopdehydration ,Skelton et al. 1955,Stem 
+Quercus,douglasii,3.3,,microCT,Skelton et al. 2019,garden
+Quercus,douglasii,5.1,,microCT,Skelton et al. 2019,wild
+Quercus,agrifolia ,1.8,,benchtopdehydration ,Skelton et al. 1955,Stem 
 Quercus,agrifolia ,1.96,,Centrifuge ,Skelton et al. 1956,Stem 
 Quercus,agrifolia ,1.97,,benchtopdehydration ,Skelton et al. 1957,NA 
 Quercus,alba ,1.37,,centrifuge ,Skelton et al. 1958,NA 
 Quercus,alba ,1.37,,centrifuge ,Skelton et al. 1959,NA 
 Quercus,berberidifolia ,4.13,,benchtopdehydration ,Skelton et al. 1960,stem 
 Quercus,berberidifolia ,1.52,,centrifuge ,Skelton et al. 1961,stem 
-Quercus,berberidifolia ,2.60,,centrifuge ,Skelton et al. 1962,NA 
+Quercus,berberidifolia ,2.6,,centrifuge ,Skelton et al. 1962,NA 
 Quercus,chrysolepis ,0.49,,centrifuge ,Skelton et al. 1963,stem 
 Quercus,coccifera ,6.96,,centrifuge ,Skelton et al. 1964,NA 
 Quercus,douglasii ,0.82,,centrifuge ,Skelton et al. 1965,stem 
@@ -24,52 +25,52 @@ Quercus,douglasii ,0.24,,centrifuge ,Skelton et al. 1966,stem 
 Quercus,falcata ,0.92,,centrifuge ,Skelton et al. 1967,NA 
 Quercus,falcata ,0.92,,centrifuge ,Skelton et al. 1968,NA 
 Quercus,frainetto ,5.46,,centrifuge ,Skelton et al. 1969,NA 
-Quercus,fusiformis ,0.50,,centrifuge ,Skelton et al. 1970,NA 
+Quercus,fusiformis ,0.5,,centrifuge ,Skelton et al. 1970,NA 
 Quercus,gambelii ,1.22,,hydraulicconductance ,Skelton et al. 1971,stem 
-Quercus,gambelii ,4.50,,benchtopdehydration ,Skelton et al. 1972,stem 
+Quercus,gambelii ,4.5,,benchtopdehydration ,Skelton et al. 1972,stem 
 Quercus,gambelii ,1.22,,hydraulicconductance ,Skelton et al. 1973,stem 
 Quercus,gambelii ,0.63,,centrifuge ,Skelton et al. 1974,stem 
 Quercus,gambelii ,0.24,,centrifuge ,Skelton et al. 1975,stem 
 Quercus,gambelii ,0.18,,centrifuge ,Skelton et al. 1976,NA 
 Quercus,garryana ,0.29,,centrifuge ,Skelton et al. 1977,stem 
-Quercus,ilex ,1.50,,hydraulicconductance ,Skelton et al. 1978,stem 
+Quercus,ilex ,1.5,,hydraulicconductance ,Skelton et al. 1978,stem 
 Quercus,ilex ,7.13,,cavitron ,Skelton et al. 1979,stem 
 Quercus,ilex ,2.02,,centrifuge ,Skelton et al. 1980,NA 
 Quercus,kelloggii ,0.31,,centrifuge ,Skelton et al. 1981,stem 
 Quercus,laevis ,1.89,,centrifuge ,Skelton et al. 1982,NA 
 Quercus,lobata ,0.84,,centrifuge ,Skelton et al. 1983,stem 
-Quercus,myrtifolia ,0.80,,benchtopdehydration ,Skelton et al. 1984,stem 
+Quercus,myrtifolia ,0.8,,benchtopdehydration ,Skelton et al. 1984,stem 
 Quercus,nigra ,1.31,,centrifuge ,Skelton et al. 1985,NA 
 Quercus,oleoides ,3.03,,centrifuge ,Skelton et al. 1986,NA 
 Quercus,pacifica ,1.85,,centrifuge ,Skelton et al. 1987,stem 
 Quercus,palustris ,5.74,,cavitron ,Skelton et al. 1988,stem 
-Quercus,petraea ,3.30,,benchtopdehydration ,Skelton et al. 1989,petiole 
+Quercus,petraea ,3.3,,benchtopdehydration ,Skelton et al. 1989,petiole 
 Quercus,petraea ,4.61,,cavitron ,Skelton et al. 1990,stem 
-Quercus,petraea ,3.50,,centrifuge ,Skelton et al. 1991,Stem 
+Quercus,petraea ,3.5,,centrifuge ,Skelton et al. 1991,Stem 
 Quercus,phellos ,1.42,,centrifuge ,Skelton et al. 1992,NA 
 Quercus,phellos ,1.42,,centrifuge ,Skelton et al. 1993,NA 
-Quercus,prinus ,1.70,,centrifuge ,Skelton et al. 1994,NA 
-Quercus,pubescens ,3.50,,hydraulicconductance ,Skelton et al. 1995,stem 
-Quercus,pubescens ,3.50,,benchtopdehydration ,Skelton et al. 1996,petiole 
-Quercus,pubescens ,3.30,,hydraulicconductance ,Skelton et al. 1997,NA 
-Quercus,robur ,2.70,,benchtopdehydration ,Skelton et al. 1998,petiole 
+Quercus,prinus ,1.7,,centrifuge ,Skelton et al. 1994,NA 
+Quercus,pubescens ,3.5,,hydraulicconductance ,Skelton et al. 1995,stem 
+Quercus,pubescens ,3.5,,benchtopdehydration ,Skelton et al. 1996,petiole 
+Quercus,pubescens ,3.3,,hydraulicconductance ,Skelton et al. 1997,NA 
+Quercus,robur ,2.7,,benchtopdehydration ,Skelton et al. 1998,petiole 
 Quercus,robur ,4.74,,cavitron ,Skelton et al. 1999,stem 
-Quercus,robur ,2.80,,centrifuge ,Skelton et al. 2000,NA 
+Quercus,robur ,2.8,,centrifuge ,Skelton et al. 2000,NA 
 Quercus,rubra ,1.61,,centrifuge ,Skelton et al. 2001,NA 
 Quercus,rubra ,3.06,,Optical/Air Injection ,Skelton et al. 2002,leaf 
-Quercus,rubra ,2.50,,NA ,Skelton et al. 2003,petiole 
+Quercus,rubra ,2.5,,NA ,Skelton et al. 2003,petiole 
 Quercus,rubra ,4.43,,cavitron ,Skelton et al. 2004,stem 
 Quercus,rubra ,1.61,,centrifuge ,Skelton et al. 2005,NA 
-Quercus,sebifera ,5.50,,centrifuge ,Skelton et al. 2006,NA 
+Quercus,sebifera ,5.5,,centrifuge ,Skelton et al. 2006,NA 
 Quercus,stellata ,1.44,,centrifuge ,Skelton et al. 2007,NA 
-Quercus,stellata ,0.10,,benchtopdehydration ,Skelton et al. 2008,stem 
+Quercus,stellata ,0.1,,benchtopdehydration ,Skelton et al. 2008,stem 
 Quercus,stellata ,1.44,,centrifuge ,Skelton et al. 2009,NA 
 Quercus,suber ,5.52,,cavitron ,Skelton et al. 2010,stem 
-Quercus,turbinella ,0.20,,centrifuge ,Skelton et al. 2011,stem 
+Quercus,turbinella ,0.2,,centrifuge ,Skelton et al. 2011,stem 
 Quercus,turbinella ,0.68,,airinjection ,Skelton et al. 2012,stem 
-Quercus,turbinella ,0.40,,centrifuge ,Skelton et al. 2013,NA 
-Quercus,wislizeni ,2.70,,centrifuge ,Skelton et al. 2014,stem 
-Quercus,wislizeni ,1.20,,Air injection ,Skelton et al. 2015,stem 
+Quercus,turbinella ,0.4,,centrifuge ,Skelton et al. 2013,NA 
+Quercus,wislizeni ,2.7,,centrifuge ,Skelton et al. 2014,stem 
+Quercus,wislizeni ,1.2,,Air injection ,Skelton et al. 2015,stem 
 Quercus,wislizeni ,0.67,,centrifuge ,Skelton et al. 2016,stem 
 Quercus,wislizeni ,2.49,,centrifuge ,Skelton et al. 2017,NA 
 Quercus,wislizeni ,1.35,,benchtopdehydration ,Skelton et al. 2018,NA 
@@ -78,17 +79,17 @@ Quercus,wislizeni ,1.72,,centrifuge ,Skelton et al. 2020,NA 
 Quercus,pacifica,6.55,https://doi.org/10.1073/pnas.2008987118,OV,Skelton et al. 2021,
 Quercus,sadleriana,2.74,https://doi.org/10.1073/pnas.2008987118,OV,Skelton et al. 2021,
 Quercus,chrysolepsis,0.49,,microCT,Percola 2019,
-Quercus,douglasii,7.20,,microCT,Percola 2019,
-Quercus,douglasii,6.80,,microCT,Percola 2019,
-Quercus,garryana,5.20,,microCT,Percola 2019,
-Quercus,garryana,8.70,,microCT,Percola 2019,
+Quercus,douglasii,7.2,,microCT,Percola 2019,
+Quercus,douglasii,6.8,,microCT,Percola 2019,
+Quercus,garryana,5.2,,microCT,Percola 2019,
+Quercus,garryana,8.7,,microCT,Percola 2019,
 Quercus,kelloggii,0.29,,microCT,Percola 2019,
 Quercus,kelloggii,0.28,,microCT,Ramirez et al. 2019,
-Quercus,wizlinzeni,4.50,,microCT,Ramirez et al. 2019,
-Quercus,wizlinzeni,5.30,,microCT,Ramirez et al. 2019,
+Quercus,wizlinzeni,4.5,,microCT,Ramirez et al. 2019,
+Quercus,wizlinzeni,5.3,,microCT,Ramirez et al. 2019,
 Quercus,pacifica,1.85,,centrifuge ,Ramirez et al. 2019,
-Quercus,berberidifolia,1.60,,centrifuge ,Ramirez et al. 2019,
+Quercus,berberidifolia,1.6,,centrifuge ,Ramirez et al. 2019,
 Quercus,agrifolia ,1.96,,centrifuge ,Chacon et al. ,
 Quercus,douglasii,2.63,,hydraulicconductance ,Pratt et al. 2020,
 Quercus,douglasii,4.84,,microCT,Pratt et al. 2020,
-Quercus,douglasii,4.30,,optical/Air Injection ,Pratt et al. 2020,
+Quercus,douglasii,4.3,,optical/Air Injection ,Pratt et al. 2020,
