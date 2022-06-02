@@ -260,7 +260,8 @@ ggplot(sap[which(sap$Date.Time> as_date("2022-03-14") & sap$Date.Time< as_date("
 ggplot(sap[which(sap$Loc=="RT" & sap$Date.Time> as_date("2022-03-22") & sap$Date.Time< as_date("2022-03-30")), ], aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
   geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
-
+ggplot(sap[which(sap$Loc=="RT" & sap$Date.Time> as_date("2022-03-24") & sap$Date.Time< as_date("2022-03-26")), ], aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0) 
+  
 
 ####### . Examinging ED01 problems ##########3
 
