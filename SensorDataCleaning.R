@@ -131,9 +131,9 @@ TStree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLO
 # TS <- rbind(TS_maydownload, TS_junedownload)
 #-------
 
-TS <- read.csv("Data_05042022/sapflow/20220331-130401 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+#TS <- read.csv("Data_05042022/sapflow/20220331-130401 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
 
-#TS <- read.csv("Data_05042022/sapflow/20220530-123409 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+TS <- read.csv("Data_05042022/sapflow/20220530-123409 Log Download_ED01.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
 
 
 TS <- TS[-1,]
@@ -192,8 +192,8 @@ MStree.names <- data.frame(Sensor=c("SAP.FLOW.TOTAL","SAP.FLOW.TOTAL.1","SAP.FLO
 # MS <- rbind(MS_maydownload, MS_junedownload)
 #-------
 
-MS <- read.csv("Data_05042022/sapflow/20220331-111140 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
-#MS <- read.csv("Data_05042022/sapflow/20220530-103346 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+#MS <- read.csv("Data_05042022/sapflow/20220331-111140 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
+MS <- read.csv("Data_05042022/sapflow/20220530-103346 Log Download_ED02.csv", header=T, na.strings = c("-1004600","-99.000"),skip = 3)
 
 MS <- MS[-1,]
 colnames(MS)[1] <- "Date.Time"
@@ -233,8 +233,8 @@ sap$Loc <- factor(sap$Loc)
 
 
 ### Write out processed Sapflow: 
-#write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
-write_csv(sap, here("processed-data", "sapflow_03312022.csv"))
+write_csv(sap, here("processed-data", "sapflow_06012022.csv"))
+#write_csv(sap, here("processed-data", "sapflow_03312022.csv"))
   # versioned this in case we overwrite old files
   # ALSO NOTE: This needs to be 'zeroed' at bare minimum to believe the absolute values
   #       i.e. take the min value at night after the rain on 3/28 and subtract it from everything 
@@ -288,7 +288,7 @@ ggplot(sap, aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yin
   geom_line(data=RT.dendro, aes(y=Growth_sc)) +  # add dendrometer
   geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
-ggplot(sap, aes(x=Date.Time, y=Sapflow, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
+ggplot(sap, aes(x=Date.Time, y=Sapflow.st, col=Tree)) + geom_line() +geom_hline(yintercept = 0)+ facet_wrap(~Tree)  +
   geom_line(data=RT.dendro, aes(y=Growth_sc)) +  # add dendrometer
   geom_vline(xintercept= as_datetime("2022-03-28 12:00:00")) # add in rain
 
@@ -308,7 +308,7 @@ ggplot(sap[which(sap$Loc=="RT" & sap$Date.Time> as_date("2022-03-24") & sap$Date
 
 #sensor 1 actually really came to the party, it must have been weird sapflow early on.
 #it's super noisy, so probably best to switch to install location2, but we can definitely inter-relate the two
-ggplot(TS.long[TS.long$Tree %in% c("2347","2346") & TS.long$Date.Time>(sensor.check1),], aes(x=Date.Time, y=Sapflow, col=Sensor)) + geom_line()
+ggplot(TS.long[TS.long$Tree %in% c("2347","2346") & TS.long$Date.Time>(sensor.switch.date),], aes(x=Date.Time, y=Sapflow, col=Sensor, line.type=Install)) + geom_line()
 
 plot(SAP.FLOW.TOTAL~SAP.FLOW.TOTAL.2,TS.wide[TS.wide$Date.Time>sensor.check1,])
 abline(h=0)
