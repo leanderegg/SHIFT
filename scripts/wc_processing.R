@@ -127,7 +127,7 @@ wc228_long_md <- wc228md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("02-28-2022")) 
 
@@ -188,7 +188,7 @@ wc303_long_md <- wc303md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("03-03-2022")) 
 
@@ -249,7 +249,7 @@ wc315_long_md <- wc315md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("03-15-2022")) 
 
@@ -310,7 +310,7 @@ wc325_long_md <- wc325md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("03-25-2022")) 
 
@@ -371,7 +371,7 @@ wc330_long_md <- wc330md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("03-30-2022")) 
 
@@ -432,7 +432,7 @@ wc411_long_md <- wc411md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("04-11-2022")) 
 
@@ -493,7 +493,7 @@ wc413_long_md <- wc413md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("04-13-2022")) 
 
@@ -556,7 +556,7 @@ wc425_long_md <- wc425md %>%
   mutate(md1 = as.numeric(md1)) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("04-25-2022")) 
 
@@ -617,7 +617,7 @@ wc504_long_md <- wc504md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("05-04-2022")) 
 
@@ -678,7 +678,7 @@ wc523_long_md <- wc523md %>%
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
-               , values_to="mpa"
+               , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
   mutate(date = mdy("05-23-2022")) 
 
@@ -765,9 +765,9 @@ wc228_long_pd <- wc228pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("02-28-2022")) 
+  mutate(date = mdy("02-28-2022")) 
 
 wc228_long_dry <- wc228pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -826,9 +826,9 @@ wc303_long_pd <- wc303pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("03-03-2022")) 
+  mutate(date = mdy("03-03-2022")) 
 
 wc303_long_dry <- wc303pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -887,9 +887,9 @@ wc315_long_pd <- wc315pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE) %>% 
-  mutate(date = pdy("03-15-2022")) 
+  mutate(date = mdy("03-15-2022")) 
 
 wc315_long_dry <- wc315pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -948,9 +948,9 @@ wc325_long_pd <- wc325pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("03-25-2022")) 
+  mutate(date = mdy("03-25-2022")) 
 
 wc325_long_dry <- wc325pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1009,9 +1009,9 @@ wc330_long_pd <- wc330pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("03-30-2022")) 
+  mutate(date = mdy("03-30-2022")) 
 
 wc330_long_dry <- wc330pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1070,9 +1070,9 @@ wc411_long_pd <- wc411pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("04-11-2022")) 
+  mutate(date = mdy("04-11-2022")) 
 
 wc411_long_dry <- wc411pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1131,9 +1131,9 @@ wc413_long_pd <- wc413pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("04-13-2022")) 
+  mutate(date = mdy("04-13-2022")) 
 
 wc413_long_dry <- wc413pd %>% 
   mutate(pd5_g_dry = as.numeric(pd5_g_dry)) %>% 
@@ -1194,9 +1194,9 @@ wc425_long_pd <- wc425pd %>%
   mutate(pd1 = as.numeric(pd1)) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("04-25-2022")) 
+  mutate(date = mdy("04-25-2022")) 
 
 wc425_long_dry <- wc425pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1249,15 +1249,17 @@ wc504pd <- wc0504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:3, matches("pd")) %>% 
+  dplyr::select(!matches("md[1-9]_bulk_[dry,wet]")) %>% 
+  dplyr::select(!matches("md[1-9]_bulk_[dry,wet]")) %>% 
   dplyr::select(!matches("md")) 
 
 wc504_long_pd <- wc504pd %>% 
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("05-04-2022")) 
+  mutate(date = mdy("05-04-2022")) 
 
 wc504_long_dry <- wc504pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1316,9 +1318,9 @@ wc523_long_pd <- wc523pd %>%
   dplyr::select(!matches("pd[1-9]_g_[dry,wet]")) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
-               , values_to="mpa"
+               , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = pdy("05-23-2022")) 
+  mutate(date = mdy("05-23-2022")) 
 
 wc523_long_dry <- wc523pd %>% 
   pivot_longer(cols=matches("pd[1-9]_g_dry") 
@@ -1382,10 +1384,16 @@ wc_alldates_pd <- rbind(wc_long_523,
   mutate(tree = as.numeric(tag)) %>% 
   mutate(dw_g_pd = dw_g, 
          ww_g_pd = ww_g) %>% 
-  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw)
+  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw) 
 
 #______________________________________________________________
-############### ALL #######################################
+############### ALL + write.csv #######################################
 #______________________________________________________________
 
-wc_alldates_all <- merge(wc_alldates_pd, wc_alldates_md)
+merge(wc_alldates_pd, wc_alldates_md, all = T) %>% 
+  mutate(lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
+         , lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
+         , lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
+         , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
+  write.csv(here("processed-data", "wc_alldates.csv"))
+
