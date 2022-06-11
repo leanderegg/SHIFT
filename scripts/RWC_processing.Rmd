@@ -1,0 +1,53 @@
+---
+title: "RWC_processing"
+author: "Indra Boving"
+date: "6/3/2022"
+output: html_document
+---
+
+##setup
+
+```{r setup, include=FALSE}
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(MetBrewer)
+```
+
+#Field data: 
+
+Read in water potential data:
+
+Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
+
+```{r}
+####### Water Potentials 
+#Date: 218 WP + LWC
+rwc_df <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
+  clean_names() %>% 
+  mutate(date = ymd(date), 
+         water_content_g = (wet_wt_g - dry_wt_g)/dry_wt_g, #grams water per gram dry weight
+         water_content_percent = water_content_g * 100, 
+         tree = tree_id)
+dlookr::diagnose(rwc_raw)
+```
+
+Take a look! 
+
+```{r}
+rwc_df %>% 
+  ggplot(aes(y = water_content_g, x = date, color = as.factor(type))) +
+  geom_col(position = "dodge") +
+  facet_wrap(~year) 
+```
+
+Add to water potentials: 
+
+```{r}
+wp_df <- read.csv(here("processed-data", "wp_alldates.csv"))
+wc_rwc_df <- merge(rwc_df, wp_df, by = c("date, tree"))
+```
+
