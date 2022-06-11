@@ -29,9 +29,16 @@ Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12
 rwc_df <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
   mutate(date = ymd(date), 
-         water_content_g = (wet_wt_g - dry_wt_g)/dry_wt_g, #grams water per gram dry weight
-         water_content_percent = water_content_g * 100, 
-         tree = tree_id)
+         water_content_g = wet_wt_g - dry_wt_g,
+         water_per_dry_g = (wet_wt_g - dry_wt_g)/dry_wt_g, #grams water per gram dry weight
+         water_content_percent = water_per_dry_g * 100, 
+         tree = tree_id, 
+         year = as.character(year), 
+         week = week(date)) 
+# %>% 
+#   case_when(is.na(year) ~ "all", 
+#            TRUE ~ as.character(year))
+
 dlookr::diagnose(rwc_raw)
 ```
 
@@ -47,7 +54,20 @@ rwc_df %>%
 Add to water potentials: 
 
 ```{r}
-wp_df <- read.csv(here("processed-data", "wp_alldates.csv"))
-wc_rwc_df <- merge(rwc_df, wp_df, by = c("date, tree"))
+wp_df <- read.csv(here("processed-data", "wp_alldates.csv")) %>% 
+  mutate(tree_id = tree, 
+         date = date(date))
+
+wc_rwc_df <- rwc_df %>% left_join(wp_df)
 ```
+
+Look at the data: 
+
+```{r}
+wc_rwc_df %>% 
+  ggplot(aes(x = mean_md, y = water_content_g)) +
+  geom_point() +
+  ylim(-1, 3)
+```
+
 

@@ -386,7 +386,7 @@ wp523pd <- wpwc523 %>%
 
 #####All WPs
 
- 
+
 wp_alldates_pd <- rbind(wp523pd, wp411pd, wp303pd, wp325pd, wp330pd, wp315pd, wp425pd, wp413pd, wp504pd, wp228pd) %>% 
   mutate(week = week(date)) %>% 
   mutate(tree = as.numeric(tag)) 
@@ -409,5 +409,5 @@ wp_alldates_pd_summary_premerge <- wp_alldates_pd %>%
 
 wp_alldates_summary <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, by = c("tree", "tag", "plot_number", "week", "date", "species"))
 
-write.csv(here("processed_data", "wp_alldates.csv"))
+write.csv(wp_alldates_summary, here("processed-data", "wp_alldates.csv"))
  ##########`

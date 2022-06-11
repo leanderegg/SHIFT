@@ -9,7 +9,6 @@
 
 # started 04.05.22 by LDLA
 # last updated: 
-#     05.31.22 by IB: wrote sapflow to .csv for accessing in other scripts
 #     06.02.22 by IB: read in new downloads and added to final sapflow.csv
 
 # version notes:
