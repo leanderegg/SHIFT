@@ -62,10 +62,14 @@ wc_df <- read.csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC a
 
 rwc_leaves_y0 <- rwc_df %>% 
   filter(type == "leaf", 
-         year %in% c(0, "NA"))
+         year %in% c(0, "NA")) %>% 
+  group_by(tree) %>% 
+  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
+         , mean_swc_g = mean(swc_g)) %>% 
+  select(mean_swc_per_dry_g, mean_swc_g, tree) %>% 
+  distinct()
 
-wc_rwc_df <- merge(wc_df, rwc_leaves_y0, by = c("tree", "date", "week"), all= T)
-
+wc_rwc_df <- merge(wc_df, rwc_leaves_y0, by = c("tree"), all = T)
 ```
 
 
