@@ -726,9 +726,10 @@ wc523_long_dry_premerge <- merge(wc523_long_md, wc523_long_dry)
 wc_long_523 <- merge(wc523_long_dry_premerge, wc523_long_wet)
 
 
-###
-###Combine all together: 
-###
+#______________________________________________________________
+############### All MDs #######################################
+#______________________________________________________________
+
 
 wc_alldates_md <- rbind(wc_long_523, 
                         wc_long_411, 
@@ -1390,10 +1391,17 @@ wc_alldates_pd <- rbind(wc_long_523,
 ############### ALL + write.csv #######################################
 #______________________________________________________________
 
-merge(wc_alldates_pd, wc_alldates_md, all = T) %>% 
+wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c("date", 
+                                                                     "tag", 
+                                                                     "plot_number", 
+                                                                     "tree", 
+                                                                     "species", 
+                                                                     "week"
+                                                                    )) %>% 
   mutate(lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
          , lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
          , lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
-         , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
-  write.csv(here("processed-data", "wc_alldates.csv"))
+         , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd))
+
+write.csv(wc_alldates, here("processed-data", "wc_alldates.csv"))
 

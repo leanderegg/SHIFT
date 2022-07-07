@@ -72,5 +72,9 @@ rwc_leaves_y0 <- rwc_df %>%
 
 wc_rwc_df <- merge(wc_df, rwc_leaves_y0, by = c("tree", "date"), all = T)
 ```
+```{r}
+wc_rwc_df %>% 
+  ggplot(aes(y = swc_per_dry_g, x = ))
+```
 
 
