@@ -1401,7 +1401,8 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c("date",
   mutate(lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
          , lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
          , lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
-         , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd))
+         , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
+  select(-pd_avg, -mpa_pd, -mpa_md, -tag, -plot_number)
 
 write.csv(wc_alldates, here("processed-data", "wc_alldates.csv"))
 
