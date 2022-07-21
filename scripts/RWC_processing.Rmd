@@ -96,18 +96,29 @@ rwc_leaves_y0 <- rwc_df %>%
  
  wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, by = c("tree", "week", "species", "pd", "md", "timing"), all = T) %>% 
    select(-mpa, -date) #not sure why thats there
+```
 
- 
- #setDT(wc_rwc_df)[, lapply(.SD, na.omit), by = c(tree, date)]
+
+```{r}
+#setDT(wc_rwc_df)[, lapply(.SD, na.omit), by = c(tree, date)]
 #%>% 
 #   mutate(mean_pd = mean(mpa_pd), 
 #          mean_md = mean(mpa_md), 
 #          mean_pd_lwc_leaf = mean(l))
+ 
+ wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
+   group_by(timing, tree) %>% 
+   summarise(mean_md = mean(mpa_md), 
+             mean_pd = mean(mpa_pd), 
+             mean_lwc_md_bulk = mean(lwc_md_bulk), 
+             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
+             mean_swc_g = mean(mean_swc_g), 
+             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
 ```
 
 ```{r}
-wp_wc_rwc_df %>% 
-  ggplot(aes(y = mean_swc_per_dry_g, x = mean(mpa_pd), color = tree)) +
+wp_wc_rwc_summary_df %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, x = mean_md, color = as.factor(tree))) +
   geom_point()
 ```
 
