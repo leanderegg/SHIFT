@@ -745,7 +745,10 @@ wc_alldates_md <- rbind(wc_long_523,
   mutate(tree = as.numeric(tag)) %>% 
   mutate(dw_g_md = dw_g, 
             ww_g_md = ww_g) %>% 
-  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw, -md_avg)
+  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw) %>% 
+  mutate(rep = str_sub(md, 3, -1), 
+         date_md = date)
+
 
 #______________________________________________________________
 ############### PREDAWNS #######################################
@@ -1385,7 +1388,9 @@ wc_alldates_pd <- rbind(wc_long_523,
   mutate(tree = as.numeric(tag)) %>% 
   mutate(dw_g_pd = dw_g, 
          ww_g_pd = ww_g) %>% 
-  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw) 
+  dplyr::select(-dw_g, -ww_g, -measure_ww, -measure_dw) %>% 
+  mutate(rep = str_sub(pd, 3, -1), 
+         date_pd = date)
 
 #______________________________________________________________
 ############### ALL + write.csv #######################################
@@ -1396,13 +1401,14 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c("date",
                                                                      "plot_number", 
                                                                      "tree", 
                                                                      "species", 
-                                                                     "week"
+                                                                     "week", 
+                                                                     "rep"
                                                                     )) %>% 
   mutate(lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
          , lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
          , lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
          , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
-  select(-pd_avg, -mpa_pd, -mpa_md, -tag, -plot_number)
+  select(-pd_avg, -mpa_pd, -mpa_md, -tag, -plot_number, -md, -pd)
 
 write.csv(wc_alldates, here("processed-data", "wc_alldates.csv"))
 

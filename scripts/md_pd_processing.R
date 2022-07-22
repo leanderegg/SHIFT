@@ -396,18 +396,25 @@ wp_alldates_pd <- rbind(wp523pd, wp411pd, wp303pd, wp325pd, wp330pd, wp315pd, wp
 wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
   group_by(date, tag) %>% 
   mutate(mean_md = mean(mpa), 
-         mpa_md = mpa) 
+         mpa_md = mpa) %>% 
 ungroup() %>% 
-  select(-mpa)
+  mutate(rep = str_sub(md, 3, -1), 
+         date_md = date) %>% 
+  select(-mpa, -md)
 
 wp_alldates_pd_summary_premerge <- wp_alldates_pd %>% 
   group_by(date, tag) %>% 
   mutate(mean_pd = mean(mpa), 
          mpa_pd = mpa) %>% 
   ungroup() %>% 
-  select(-mpa)
+  mutate(rep = str_sub(pd, 3, -1), 
+         date_pd = date) %>% 
+  select(-mpa, -pd) 
 
-wp_alldates_summary <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, by = c("tree", "tag", "plot_number", "week", "date", "species"))
+wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, 
+                             by = c("tree", "tag", "plot_number", "week", "species", "rep"), 
+                     all = T) %>% 
+  select(-tag, -plot_number)
 
-write.csv(wp_alldates_summary, here("processed-data", "wp_alldates.csv"))
+write.csv(wp_alldates, here("processed-data", "wp_alldates.csv"))
  ##########`

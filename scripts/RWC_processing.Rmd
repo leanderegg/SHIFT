@@ -39,7 +39,7 @@ rwc_df <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.x
          week = week(date), 
          swc_ww_g = wet_wt_g, 
          swc_dw_g = dry_wt_g) %>% 
-  select(date, tree, swc_g, swc_per_dry_g, swc_percent, year, week, swc_ww_g, swc_dw_g, type) %>% 
+  select(date, tree, swc_g, swc_per_dry_g, swc_percent, year, week, swc_ww_g, swc_dw_g, type, rep) %>% 
   mutate(timing = case_when(
     week %in% c(11, 13, 14) ~ "early", 
     week %in% c(15, 18, 19, 21) ~ "late"
@@ -72,8 +72,8 @@ wc_df <- read_csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC d
   select(-date)
 
 wp_df <- read_csv(here("processed-data", "wp_alldates.csv")) %>% #contains WP data
-  mutate(date = lubridate::ymd(date)) %>% 
-  select(-...1, -tag, -plot_number) %>% 
+  #mutate(date = lubridate::ymd(date)) %>% 
+  select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
     week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
@@ -81,21 +81,29 @@ wp_df <- read_csv(here("processed-data", "wp_alldates.csv")) %>% #contains WP da
   mutate(date_wp = date) %>% 
   select(-date)
 
-rwc_leaves_y0 <- rwc_df %>% 
+rwc_leaves_y0_df <- rwc_df %>% 
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
   group_by(tree, date) %>% 
   mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
          , mean_swc_g = mean(swc_g)) %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date) %>% 
-  mutate(date_rwc = date) %>% 
+  mutate(date_rwc = date, 
+         week = as.numeric(week)) %>% 
   select(-date) %>% 
-  distinct() 
+  distinct() %>% 
+  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc, rep) %>% 
+  as.data.frame()
 
- wc_rwc_df <- merge(wc_df, rwc_leaves_y0, by = c("tree", "week"), all.x = T) 
+ wc_rwc_df <- merge(wc_df, rwc_leaves_y0, 
+                    by = c("tree", "week", "rep"), 
+                    all = T) 
  
- wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, by = c("tree", "week", "species", "pd", "md", "timing"), all = T) %>% 
+ 
+ wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, 
+                       by = c("tree", "week", "rep", "timing"), 
+                       all = T) %>% 
    select(-mpa, -date) #not sure why thats there
+ 
 ```
 
 
@@ -107,7 +115,7 @@ rwc_leaves_y0 <- rwc_df %>%
 #          mean_pd_lwc_leaf = mean(l))
  
  wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
-   group_by(timing, tree) %>% 
+   group_by(week, tree) %>% 
    summarise(mean_md = mean(mpa_md), 
              mean_pd = mean(mpa_pd), 
              mean_lwc_md_bulk = mean(lwc_md_bulk), 
