@@ -15,6 +15,8 @@ library(lubridate)
 library(readxl)
 library(gridExtra)
 library(MetBrewer)
+ install.packages("data.table")
+ library(data.table)
 ```
 
 #Field data: 
@@ -37,10 +39,11 @@ rwc_df <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.x
          week = week(date), 
          swc_ww_g = wet_wt_g, 
          swc_dw_g = dry_wt_g) %>% 
-  select(date, tree, swc_g, swc_per_dry_g, swc_percent, year, week, swc_ww_g, swc_dw_g, type)
-# %>% 
-#   case_when(is.na(year) ~ "all", 
-#            TRUE ~ as.character(year))
+  select(date, tree, swc_g, swc_per_dry_g, swc_percent, year, week, swc_ww_g, swc_dw_g, type, rep) %>% 
+  mutate(timing = case_when(
+    week %in% c(11, 13, 14) ~ "early", 
+    week %in% c(15, 18, 19, 21) ~ "late"
+  ))
 
 dlookr::diagnose(rwc_df)
 ```
@@ -49,27 +52,82 @@ Take a look!
 
 ```{r}
 rwc_df %>% 
-  ggplot(aes(y = water_content_g, x = date, color = as.factor(type))) +
-  geom_col(position = "dodge") +
+  filter(year %in% c(0,1)) %>% 
+  ggplot(aes(y = swc_per_dry_g, x = date, color = as.factor(type))) +
+  geom_jitter()+
   facet_wrap(~year) 
 ```
 
 #Combine with water content + water potential data: 
 
 ```{r}
-wc_df <- read.csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC and WP data
-  mutate(date = date(date))
+wc_df <- read_csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC data
+  mutate(date = lubridate::ymd(date))%>% 
+  select(-...1) %>% 
+  mutate(timing = case_when(
+    week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
+    week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
+  ))%>% 
+  mutate(date_wc = date) %>% 
+  select(-date)
 
-rwc_leaves_y0 <- rwc_df %>% 
+wp_df <- read_csv(here("processed-data", "wp_alldates.csv")) %>% #contains WP data
+  #mutate(date = lubridate::ymd(date)) %>% 
+  select(-...1) %>% 
+  mutate(timing = case_when(
+    week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
+    week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
+  )) %>% 
+  mutate(date_wp = date) %>% 
+  select(-date)
+
+rwc_leaves_y0_df <- rwc_df %>% 
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
-  group_by(tree) %>% 
+  group_by(tree, date) %>% 
   mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
          , mean_swc_g = mean(swc_g)) %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree) %>% 
-  distinct()
+  mutate(date_rwc = date, 
+         week = as.numeric(week)) %>% 
+  select(-date) %>% 
+  distinct() %>% 
+  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc, rep) %>% 
+  as.data.frame()
 
-wc_rwc_df <- merge(wc_df, rwc_leaves_y0, by = c("tree"), all = T)
+ wc_rwc_df <- merge(wc_df, rwc_leaves_y0, 
+                    by = c("tree", "week", "rep"), 
+                    all = T) 
+ 
+ 
+ wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, 
+                       by = c("tree", "week", "rep", "timing"), 
+                       all = T) %>% 
+   select(-mpa, -date) #not sure why thats there
+ 
+```
+
+
+```{r}
+#setDT(wc_rwc_df)[, lapply(.SD, na.omit), by = c(tree, date)]
+#%>% 
+#   mutate(mean_pd = mean(mpa_pd), 
+#          mean_md = mean(mpa_md), 
+#          mean_pd_lwc_leaf = mean(l))
+ 
+ wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
+   group_by(week, tree) %>% 
+   summarise(mean_md = mean(mpa_md), 
+             mean_pd = mean(mpa_pd), 
+             mean_lwc_md_bulk = mean(lwc_md_bulk), 
+             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
+             mean_swc_g = mean(mean_swc_g), 
+             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
+```
+
+```{r}
+wp_wc_rwc_summary_df %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, x = mean_md, color = as.factor(tree))) +
+  geom_point()
 ```
 
 
