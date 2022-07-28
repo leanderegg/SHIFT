@@ -1,3 +1,5 @@
+# Script for reading raw water potential/water content data, pulling out wp and exporting it
+
 library(janitor)
 library(here)
 library(tidyverse)
@@ -12,85 +14,102 @@ library(MetBrewer)
 
 #-------
 
+## Data file version (so it's not hard coded in every read_excel() call)
+datver <- "07192022"
+dataversion <- paste0("Data_", datver)
 
 ####### Water Potentials 
 #Date: 218 WP + LWC
-wpwc218 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
+wpwc218 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
   mutate(date = mdy("02-18-2022")) 
 
 
 #Date: 228 WP + LWC
-wpwc228 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="228 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc228 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="228 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("02-28-2022")) 
 
 #Date: 33-34 WP + LWC
-wpwc03 <-  read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="33-34 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc303 <-  read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="33-34 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-03-2022")) 
 
 
 #Date: 38-311 WP + LWC
-wpwc38 <-  read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="38-311 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc38 <-  read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="38-311 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-11-2022")) 
 
-# remove mislabeled tree 2567 which was actually 2367 
-wpwc38 <- wpwc38[-which(wpwc38$tag=="2567"),]
 
 #Date: 315 WP + LWC
-wpwc315 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc315 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-15-2022")) 
 
 
 #Date: 325 WP + LWC
-wpwc325 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc325 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-25-2022")) 
 
 
 #Date: 330 WP + LWC (core)
-wpwc330 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="330 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc330 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="330 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-30-2022")) 
 
 
 #Date: 44WP + LWC (satellite)
-wpwc44 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="44 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc44 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="44 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-04-2022")) 
 
 
 #Date: 46 WP + LWC (satellite)
-wpwc46 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="46 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
+wpwc46 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="46 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
   mutate(date = mdy("04-06-2022")) 
 
 
 #Date: 411-412 WP + LWC
-wpwc411 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="411-412 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc411 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="411-412 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-11-2022")) 
 
 
 #Date: 413-414 WP + LWC
-wpwc413 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="413-414 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc413 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="413-414 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-13-2022")) 
-
+# remove 'n/a' and a bad value with a '?' from md3 and md6 and turn everything numeric in md3
+wpwc413$md3<- as.numeric(wpwc413$md3)
+wpwc413$md6[grep(' ', wpwc413$md6)] <- NA
+wpwc413$md6<- as.numeric(wpwc413$md6)
 
 #Date: 425 WP + LWC
-wpwc425 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="425 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc425 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="425 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-25-2022")) 
 
 
 #Date: 427 WP + LWC
-wpwc427 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="427 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc427 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="427 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-27-2022")) 
 
 #Date: 504WP + LWC
-wpwc0504 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc504 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-04-2022")) 
+
+#Date: 509WP + LWC
+wpwc509 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="59 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+  mutate(date = mdy("05-09-2022")) 
 
 
 #Date: 523-525 WP + LWC
-wpwc523 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="523 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc523 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="523 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-23-2022")) 
 
 
-wpwc525 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc525 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-25-2022")) 
+
+
+#Date: 719 WP + LWC
+wpwc719 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="719 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+  mutate(date = mdy("07-19-2022")) 
+
+
+
+
 
 ##########
 ##########
@@ -213,7 +232,7 @@ wp425md <- wpwc425 %>%
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("04-25-2022")) 
 
-wp0504md <- wpwc504 %>%
+wp504md <- wpwc504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
@@ -225,7 +244,32 @@ wp0504md <- wpwc504 %>%
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("05-04-2022"))
 
+wp509md <- wpwc509 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(-md_bulk_wet_y0, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_dry_y1, -md_avg) %>% 
+  pivot_longer(cols=matches("md[1-9]") 
+               , names_to="md"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("05-09-2022"))
+
+
 wp523md <- wpwc523 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(-md_bulk_wet_y0, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_dry_y1, -md_avg) %>% 
+  pivot_longer(cols=matches("md[1-9]") 
+               , names_to="md"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("05-23-2022"))
+
+wp719md <- wpwc719 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
@@ -235,14 +279,13 @@ wp523md <- wpwc523 %>%
                , names_to="md"
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
-  mutate(date = mdy("05-23-2022"))
-
+  mutate(date = mdy("07-19-2022"))
 
 ###
 ###Combine all together: 
 ###
 
-wp_alldates_md <- rbind(wp523md, wp411md, wp303md, wp325md, wp330md, wp315md, wp425md, wp413md, wp0504md, wp228md) %>% 
+wp_alldates_md <- rbind(wp719md,wp523md, wp509md, wp504md, wp425md, wp411md, wp413md, wp330md, wp325md, wp315md,  wp303md, wp228md) %>% 
   mutate(week = week(date)) %>% 
   mutate(tree = as.numeric(tag)) 
 
@@ -283,7 +326,7 @@ wp303pd <- wpwc303 %>%
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
   dplyr::select(1:3,matches("pd")) %>% 
-  dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
+  dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
                , values_to="mpa"
@@ -336,7 +379,7 @@ wp413pd <- wpwc413 %>%
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
   dplyr::select(1:3,matches("pd")) %>% 
-  # dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
+  dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
                , values_to="mpa"
@@ -370,7 +413,7 @@ wp504pd <- wpwc504 %>%
                , values_drop_na=TRUE) %>% 
   mutate(date = mdy("05-04-2022"))
 
-wp523pd <- wpwc523 %>%
+wp509pd <- wpwc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
@@ -380,14 +423,43 @@ wp523pd <- wpwc523 %>%
                , names_to="pd"
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("05-09-2022"))
+
+
+wp523pd <- wpwc523 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(-pd_bulk_wet_y0, -pd_bulk_wet_y1, -pd_bulk_dry_y0, -pd_bulk_dry_y1, -pd_avg) %>% 
+  pivot_longer(cols=matches("pd[1-9]") 
+               , names_to="pd"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
   mutate(date = mdy("05-23-2022"))
+
+
+
+wp719pd <- wpwc719 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>%
+  dplyr::select(!matches("_g_")) %>% 
+  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
+  pivot_longer(cols=matches("pd[1-9]") 
+               , names_to="pd"
+               , values_to="mpa"
+               , values_drop_na=TRUE) %>% 
+  mutate(date = mdy("07-19-2022"))
+
+
  ##########
 
 
 #####All WPs
 
 
-wp_alldates_pd <- rbind(wp523pd, wp411pd, wp303pd, wp325pd, wp330pd, wp315pd, wp425pd, wp413pd, wp504pd, wp228pd) %>% 
+wp_alldates_pd <- rbind(wp719pd,wp523pd, wp509pd, wp504pd, wp425pd, wp411pd, wp413pd, wp330pd, wp325pd, wp315pd,  wp303pd, wp228pd) %>% 
   mutate(week = week(date)) %>% 
   mutate(tree = as.numeric(tag)) 
 
@@ -416,5 +488,7 @@ wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_pre
                      all = T) %>% 
   select(-tag, -plot_number)
 
-write.csv(wp_alldates, here("processed-data", "wp_alldates.csv"))
+# I made this append a data version date to the file, since otherwise it overwrites past versions
+write.csv(wp_alldates, here("processed-data", paste0("wp_alldates_",datver,".csv")))
  ##########`
+ 
