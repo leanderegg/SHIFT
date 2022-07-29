@@ -464,7 +464,7 @@ wp_alldates_pd <- rbind(wp719pd,wp523pd, wp509pd, wp504pd, wp425pd, wp411pd, wp4
   mutate(week = week(date)) %>% 
   mutate(tree = str_remove(tag,"\\.0"))#as.numeric(tag)) 
 
-####
+#### Indra's Summarizing ######
 
 wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
   group_by(date, tree, site, plot) %>% 
@@ -485,7 +485,7 @@ wp_alldates_pd_summary_premerge <- wp_alldates_pd %>%
   select(-mpa, -pd, -tag, -date) 
 
 # merge the predawn and midday. 
-# LDLA: I'd be inclined to just stack them all on top of each other and keep them long, since 'rep' isn't a true shared unit
+
 wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, 
                              by = c("site","plot","tree","week", "species", "rep"), 
                      all = T) #%>% 
@@ -495,3 +495,20 @@ wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_pre
 write.csv(wp_alldates, here("processed-data", paste0("wp_alldates_",datver,".csv")))
  ##########`
  
+####### Lee's sumamrizing ######
+# LDLA: I'd be inclined to just stack them all on top of each other and keep them long, since 'rep' isn't a true shared unit
+#- also there seem to be an ungodly number of duplicate values when I averaged to indivdual. so trying fully long
+
+wp_ad_md <- wp_alldates_md
+wp_ad_md$time <- "md"
+wp_ad_md$rep <- as.numeric(str_remove(wp_ad_md$md, "md"))
+wp_ad_md <- wp_ad_md %>% select(-md)
+
+wp_ad_pd <- wp_alldates_pd
+wp_ad_pd$time <- "pd"
+wp_ad_pd$rep <- as.numeric(str_remove(wp_ad_pd$pd, "pd"))
+wp_ad_pd <- wp_ad_pd %>% select(-pd)
+
+wp_ad <- rbind(wp_ad_md, wp_ad_pd)
+
+write.csv(wp_ad, here("processed-data", paste0("wp_alldates_long_",datver,".csv")))

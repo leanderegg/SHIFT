@@ -44,8 +44,10 @@ dataversion <- paste0("Data_", datver)
 
 ### Processed water potentials (individual measurements)
 
+# Indra's version
 wp_alldates <- read.csv(here("processed-data", paste0("wp_alldates_",datver,".csv")))
-
+# lee's version
+wp_ad <- read.csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv")))[,-1]
 
 ###### Sedgwick DEM
 sdem <- raster::raster("Data_05042022/geospatial/DEM_sedgwick_3m.tif")
@@ -93,7 +95,7 @@ treesite$Tag <- str_replace(treesite$Tag, "\\.0","")
 # average to individual:
 wp_ind <- wp_alldates %>% group_by(tree, week, species) %>% summarise(date_pd=unique(date_pd),pd_mpa = unique(mean_pd),
                                                                       date_md=unique(date_md),md_mpa = unique(mean_md))
-
+# calculate delta Psi
 wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
 length(which(is.na(wp_ind$e_drop)))
   # well over half of our obs either don't have a pd or don't have a md
@@ -103,6 +105,43 @@ median(xtabs(~tree, wp_ind))
   # median of 5 weeks with any wp
 median(xtabs(~tree, wp_ind[wp_ind$e_drop>0,]))
   # median of only 2 weeks with both predawn and midday measurements...
+
+xtabs(~week, wp_ind)
+
+
+#### Lee's version which hopefully cuts down on replicate values
+
+wp_ind_long <- wp_ad %>% group_by(tree,site,plot,species,week,date,time) %>% summarise(sd.mpa= sd(mpa),mpa = mean(mpa))
+
+# rename midday and predawn columns so I can combine them
+wp_ind_md <- wp_ind_long[wp_ind_long$time=="md",]
+wp_ind_md <- wp_ind_md %>% rename(md_mpa = mpa, date_md=date, md_sd.mpa = sd.mpa)
+
+wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
+wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
+
+wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+
+# calculate delta Psi
+wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+length(which(is.na(wp_ind$e_drop)))
+# half of our obs either don't have a pd or don't have a md
+# only 191 of 385 obs have both
+
+xtabs(~week, wp_ind)
+# but at least I don't have more measurements than we have trees in any given week!
+xtabs(~week, wp_ind[wp_ind$pd_mpa>0,])
+  # Missing a lot of predawns from
+# Week 15 (have 30 of 59)
+# Week 18 (have 6 of 28)
+# Week 19 (have 40 of 61)
+# Week 21 (have 30 of 42)
+
+xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
+# Missing a lot of middays from
+# Week 11 (have 9 of 29)
+# Week 13 (have 0 of 27)
+# Week 21 (have 32 of 42)
 
 
 ######## OLD DATA LOADING/CLEANING #########################
