@@ -109,6 +109,7 @@ wpwc719 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
 
 
 
+wpwc719$Tag <- str_remove(wpwc719$tag,"\\.0")
 
 
 ##########
@@ -127,7 +128,7 @@ wp228md <- wpwc228 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -141,7 +142,7 @@ wp303md <- wpwc303 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -155,7 +156,7 @@ wp315md <- wpwc315 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -169,7 +170,7 @@ wp325md <- wpwc325 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -182,7 +183,7 @@ wp330md <- wpwc330 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -195,7 +196,7 @@ wp411md <- wpwc411 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -209,7 +210,7 @@ wp413md <- wpwc413 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -223,7 +224,7 @@ wp425md <- wpwc425 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   mutate(md1 = as.numeric(md1)) %>% 
   pivot_longer(cols=matches("md[1-9]") 
@@ -236,7 +237,7 @@ wp504md <- wpwc504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -248,7 +249,7 @@ wp509md <- wpwc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet_y0, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_dry_y1, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -261,7 +262,7 @@ wp523md <- wpwc523 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet_y0, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_dry_y1, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -273,7 +274,7 @@ wp719md <- wpwc719 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("md")) %>% 
+  dplyr::select(1:5,matches("md")) %>% 
   dplyr::select(-md_bulk_wet, -md_bulk_dry, -md_avg) %>% 
   pivot_longer(cols=matches("md[1-9]") 
                , names_to="md"
@@ -287,7 +288,7 @@ wp719md <- wpwc719 %>%
 
 wp_alldates_md <- rbind(wp719md,wp523md, wp509md, wp504md, wp425md, wp411md, wp413md, wp330md, wp325md, wp315md,  wp303md, wp228md) %>% 
   mutate(week = week(date)) %>% 
-  mutate(tree = as.numeric(tag)) 
+  mutate(tree = str_remove(tag,"\\.0")) #as.numeric(tag)) 
 
  ##########
 
@@ -298,7 +299,7 @@ wp228pd <- wpwc228 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -311,7 +312,7 @@ wp315pd <- wpwc315 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -325,7 +326,7 @@ wp303pd <- wpwc303 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -338,7 +339,7 @@ wp325pd <- wpwc325 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -351,7 +352,7 @@ wp330pd <- wpwc330 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -364,7 +365,7 @@ wp411pd <- wpwc411 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -378,7 +379,7 @@ wp413pd <- wpwc413 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -392,7 +393,7 @@ wp425pd <- wpwc425 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   mutate(pd1 = as.numeric(pd1)) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
@@ -405,7 +406,7 @@ wp504pd <- wpwc504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -417,7 +418,7 @@ wp509pd <- wpwc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -430,7 +431,7 @@ wp523pd <- wpwc523 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet_y0, -pd_bulk_wet_y1, -pd_bulk_dry_y0, -pd_bulk_dry_y1, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -444,7 +445,7 @@ wp719pd <- wpwc719 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 
-  dplyr::select(1:3,matches("pd")) %>% 
+  dplyr::select(1:5,matches("pd")) %>% 
   dplyr::select(-pd_bulk_wet, -pd_bulk_dry, -pd_avg) %>% 
   pivot_longer(cols=matches("pd[1-9]") 
                , names_to="pd"
@@ -461,18 +462,18 @@ wp719pd <- wpwc719 %>%
 
 wp_alldates_pd <- rbind(wp719pd,wp523pd, wp509pd, wp504pd, wp425pd, wp411pd, wp413pd, wp330pd, wp325pd, wp315pd,  wp303pd, wp228pd) %>% 
   mutate(week = week(date)) %>% 
-  mutate(tree = as.numeric(tag)) 
+  mutate(tree = str_remove(tag,"\\.0"))#as.numeric(tag)) 
 
 ####
 
 wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
-  group_by(date, tag) %>% 
+  group_by(date, tree, site, plot) %>% 
   mutate(mean_md = mean(mpa), 
          mpa_md = mpa) %>% 
 ungroup() %>% 
   mutate(rep = str_sub(md, 3, -1), 
          date_md = date) %>% 
-  select(-mpa, -md)
+  select(-mpa, -md, -tag, -date)
 
 wp_alldates_pd_summary_premerge <- wp_alldates_pd %>% 
   group_by(date, tag) %>% 
@@ -481,12 +482,14 @@ wp_alldates_pd_summary_premerge <- wp_alldates_pd %>%
   ungroup() %>% 
   mutate(rep = str_sub(pd, 3, -1), 
          date_pd = date) %>% 
-  select(-mpa, -pd) 
+  select(-mpa, -pd, -tag, -date) 
 
+# merge the predawn and midday. 
+# LDLA: I'd be inclined to just stack them all on top of each other and keep them long, since 'rep' isn't a true shared unit
 wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, 
-                             by = c("tree", "tag", "plot_number", "week", "species", "rep"), 
-                     all = T) %>% 
-  select(-tag, -plot_number)
+                             by = c("site","plot","tree","week", "species", "rep"), 
+                     all = T) #%>% 
+#  select(-tag, -plot_number)
 
 # I made this append a data version date to the file, since otherwise it overwrites past versions
 write.csv(wp_alldates, here("processed-data", paste0("wp_alldates_",datver,".csv")))
