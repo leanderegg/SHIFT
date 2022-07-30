@@ -121,6 +121,8 @@ wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
 wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
 
 wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+wp_ind <- left_join(wp_ind, latlon, by=c("tree"="Tree"))
+
 
 # calculate delta Psi
 wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
@@ -509,9 +511,14 @@ ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() +
   geom_abline(intercept=0, slope=1) +
   facet_wrap(~species)
 
+p1 <- ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~species)
+p1 + geom_line(data=wp_ind, aes(col=as.numeric(site), group=tree)) 
 
+ggplot(wp_ind[which(wp_ind$md_mpa>0),], aes(x=week, y=md_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species) + geom_hline(yintercept = 4.3)
 
-
+ggplot(wp_ind[which(wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species)+ geom_hline(yintercept = 4.3)
 
 
 ################# Combine Ind average WPs together ###########
