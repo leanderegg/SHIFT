@@ -10,17 +10,19 @@
 
 ####### Load Packages ###########
 #install.packages("tidyverse")
-
+library(here)
 library(sf)
 library(raster)
+library(paletteer) 
 
 # some namespace issue with raster and some of these packages.
 #library(dplyr)
-#library(tidyverse)
+library(tidyverse)
 #library(readxl)
 library(car)
 library(lubridate)
 library(ggmap)
+library(janitor)
 
 
 # get rid of horrible grid lines but don't have to set Theme each time
@@ -65,10 +67,17 @@ colnames(latlon)[1:2] <- c("Longitude","Latitude")
 latlon$Tree <- latlon$Name
 latlon$Tree <- str_remove(pattern="B", string=latlon$Tree)
 latlon$Tree <- str_remove(pattern="L", string=latlon$Tree)
-
+# make this a seperate species column
 latlon$Species <- NA
 latlon$Species[grep("B",latlon$Name )] <- "B"
 latlon$Species[grep("L",latlon$Name )] <- "L"
+# fix shrub names
+latlon$Species[grep("Art",latlon$Name)] <- "ARCA"
+latlon$Species[grep("LE",latlon$Name)] <- "LEU"
+latlon$Tree[which(latlon$Species=="ARCA")] <- c("Chamise-ARCA","Cucu-ARCA","LL-ARCA")
+latlon$Tree[which(latlon$Species=="LEU")] <- c("Cucu-LEU","LL-LEU")
+latlon$Tree[grep("Dont", latlon$Name)] <- "2373"
+
 
 # make a latlon and utm spatial data version
 latlon.ll <- SpatialPointsDataFrame(coords = data.frame(latlon$Longitude, latlon$Latitude), proj4string = CRS("+proj=longlat +datum=WGS84"), data=latlon)
@@ -81,6 +90,9 @@ treesite <- read_excel(here(dataversion,"WP_WC","SHIFT data collection 2022.xlsx
 treesite$Tag <- str_replace(treesite$Tag, "\\.0","")
 
 
+P50doug <- 4.43 # average of all of our wild curves from Skelton et al. 2019 NP
+P50ag <- 4.32 # from Skelton et al. 2018 Plant Phys
+
 ############## END: Load Data ##################3
 
 
@@ -92,21 +104,21 @@ treesite$Tag <- str_replace(treesite$Tag, "\\.0","")
 ############# Average and combine data ########################################
 
 
-# average to individual:
-wp_ind <- wp_alldates %>% group_by(tree, week, species) %>% summarise(date_pd=unique(date_pd),pd_mpa = unique(mean_pd),
-                                                                      date_md=unique(date_md),md_mpa = unique(mean_md))
-# calculate delta Psi
-wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
-length(which(is.na(wp_ind$e_drop)))
-  # well over half of our obs either don't have a pd or don't have a md
-  # only 191 of 506 obs have both
-# 64 trees with >1 entry (so 11 trees only measured once, probably data entry issues)
-median(xtabs(~tree, wp_ind))
-  # median of 5 weeks with any wp
-median(xtabs(~tree, wp_ind[wp_ind$e_drop>0,]))
-  # median of only 2 weeks with both predawn and midday measurements...
-
-xtabs(~week, wp_ind)
+# # average to individual:
+# wp_ind <- wp_alldates %>% group_by(tree, week, species) %>% summarise(date_pd=unique(date_pd),pd_mpa = unique(mean_pd),
+#                                                                       date_md=unique(date_md),md_mpa = unique(mean_md))
+# # calculate delta Psi
+# wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+# length(which(is.na(wp_ind$e_drop)))
+#   # well over half of our obs either don't have a pd or don't have a md
+#   # only 191 of 506 obs have both
+# # 64 trees with >1 entry (so 11 trees only measured once, probably data entry issues)
+# median(xtabs(~tree, wp_ind))
+#   # median of 5 weeks with any wp
+# median(xtabs(~tree, wp_ind[wp_ind$e_drop>0,]))
+#   # median of only 2 weeks with both predawn and midday measurements...
+# 
+# xtabs(~week, wp_ind)
 
 
 #### Lee's version which hopefully cuts down on replicate values
@@ -121,11 +133,20 @@ wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
 wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
 
 wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
-wp_ind <- left_join(wp_ind, latlon, by=c("tree"="Tree"))
+wp_ind <- left_join(wp_ind, latlon, by=c("tree"="Tree")) %>% clean_names()
 
 
 # calculate delta Psi
 wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+
+# add in lat lon and utm
+wp_ind$lat_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$Tree),2]
+wp_ind$lon_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$Tree),1]
+
+# make a spatialdata version, dropping trees without coords
+wp_ind_utm <- SpatialPointsDataFrame(coords = data.frame(wp_ind$lon_utm[-which(is.na(wp_ind$lon_utm))], wp_ind$lat_utm[-which(is.na(wp_ind$lon_utm))]), proj4string = crs(sdem), data=wp_ind[-which(is.na(wp_ind$lon_utm)),])
+
+##### Data Characterization:
 length(which(is.na(wp_ind$e_drop)))
 # half of our obs either don't have a pd or don't have a md
 # only 191 of 385 obs have both
@@ -144,6 +165,289 @@ xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
 # Week 11 (have 9 of 29)
 # Week 13 (have 0 of 27)
 # Week 21 (have 32 of 42)
+
+
+
+################### Plot 'hydroscapes' ################
+
+ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() + 
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~species)
+
+p1 <- ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() +
+  geom_abline(intercept=0, slope=1) +
+  facet_wrap(~species)
+p1 + geom_line(data=wp_ind, aes(col=as.numeric(site), group=tree)) 
+
+ggplot(wp_ind[which(wp_ind$md_mpa>0),], aes(x=week, y=md_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species) + geom_hline(yintercept = 4.3)
+
+ggplot(wp_ind[which(wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species)+ geom_hline(yintercept = 4.3)
+
+
+################# Combine Ind average WPs together ###########
+
+# wp.ind <- rbind(wp228all,wp38all, wp315all, wp330pdind, wp44all, wp411pdind)
+# wp.ind$Tag <- as.character(as.numeric(wp.ind$Tag))
+# wp.ind <- left_join(wp.ind, latlon, by=c("Tag"="Tree"))
+# wp.ind <- wp.ind[!is.na(wp.ind$Latitude),] 
+# wp.ind$Site <- treesite$Site[match(wp.ind$Tag, treesite$Tag)]
+# wp.ind$Plot <- treesite$Plot[match(wp.ind$Tag, treesite$Tag)]
+
+
+latlonproj <- CRS("+proj=longlat +datum=WGS84")
+wp_ind.ll <- SpatialPoints(coords = data.frame(wp_ind$longitude, wp_ind$latitude), proj4string = latlonproj)
+# aeaproj <- projection(sdem)
+# aeaproj <- CRS("+proj=aea +lat_1=34.0 +lat_2=40.5 +lat_0=0.0 +lon_0=-120 +x_0=0 +y_0=-4000000")
+wp.ind.aea <- sp::spTransform(wp.ind.ll,CRSobj =  crs(sdem))
+wp.indsp <- SpatialPointsDataFrame(wp.ind.aea, wp.ind)
+
+########### DATA VIZ ##############
+
+
+# quick look at how the sites compare.
+
+#predawn
+ggplot(wp_ind[which(wp_ind$pd_mpa>0 & wp_ind$species=="blue oak" ),], aes(x=longitude, y=latitude, col=pd_mpa, size=pd_mpa)) +
+                geom_point() + 
+                geom_point(data=wp_ind[which(wp_ind$pd_mpa>0 & wp_ind$species=="live oak" ),],shape=15) +
+                facet_wrap(facets = ~week)
+#midday
+ggplot(wp_ind[which(wp_ind$md_mpa>0 & wp_ind$species=="blue oak" ),], aes(x=longitude, y=latitude, col=md_mpa, size=md_mpa)) +
+  geom_point() + 
+  geom_point(data=wp_ind[which(wp_ind$pd_mpa>0 & wp_ind$species=="live oak" ),],shape=15) +
+  facet_wrap(facets = ~week)
+
+
+
+ggplot(wp_ind[grep("oak", wp_ind$species),], aes(x=species, y=pd_mpa, col=species)) + geom_boxplot() + facet_wrap(~week)
+
+
+# ### quick LL maps with terrain as background
+# ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$PD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa))+
+#   geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
+#   facet_wrap(facets = ~WOY)
+# 
+# ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$MD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa))+
+#   geom_point(data=wp.ind[which(wp.ind$MD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa)) +
+#   facet_wrap(facets = ~WOY)
+
+
+##### look at site differences
+ggplot(wp_ind, aes(x=site, y=pd_mpa, fill=site)) + geom_boxplot() + facet_wrap(facets = ~week)
+
+ggplot(wp_ind, aes(x=site, y=md_mpa, fill=site)) + geom_boxplot() + facet_wrap(facets = ~week)
+
+
+### look at trees through time
+ggplot(wp_ind, aes(x=week, y=pd_mpa, col=species, shape=tree)) + geom_line() + facet_wrap(facets=~site)
+
+
+### Only LL trees through time
+ggplot(wp_ind[wp_ind$site=="LL",], aes(x=week, y=pd_mpa, col=Plot, Shape=Tag)) + geom_line(aes(linetype=Species))
+
+ggplot(wp_ind[which(wp_ind$site=="LL" & wp_ind$species=="blue oak" & wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa, col=plot, group=tree)) + geom_line(aes(linetype=plot))
+
+
+
+ggplot(wp_ind[which(wp_ind$week==29 & wp_ind$species=="blue oak"),],aes(x=site, y=pd_mpa)) + geom_boxplot()
+
+######### Failed mapping
+# c(left = -97.1268, bottom = 31.536245, right = -97.099334, top = 31.559652))
+
+summary(wp_ind_ll)
+myMap <- get_map(location=c(left=-120.051, bottom=34.6853,right= - 120.0401, top=34.7187), source="google", maptype="terrain", zoom=12)
+
+LLMap <-get_map(location=c(left=-120.0487, bottom=34.689,right= - 120.0455, top=34.6925), source="google", maptype="terrain", zoom=14)
+
+### all sedgewick, plotted in UTM
+plot(sdem,ylim=bbox(latlon.utm)[2,1:2], xlim=bbox(latlon.utm)[1,1:2]) 
+points(latlon.utm)
+#ylim=c(34.689,34.6925), xlim=c(-120.049, -120.045)
+
+# just LL
+LLbb <- bbox(wp_ind_utm[which(wp_ind_utm$site=="LL"),])
+LLBB <- cbind(LLbb[,1]-50, LLbb[,2]+50)
+# crop dem to just lower lisque
+demLL <- crop(sdem, LLBB)
+
+
+
+#plot(demLL, col=viridis::viridis(100)) 
+
+
+
+#-------------------------------------------------
+#### Predawn LL Map Comparison #######
+quartz(width=8, height=5)
+par(mfrow=c(1,2))
+
+###### predawn from April
+#bluecol <- paste0(brewer.pal(n=3,"Set1")[2],"AA")
+#livecol <- paste0(brewer.pal(n=3,"Set1")[1],"88")
+bluecol <-paletteer_d("awtools::mpalette")[3]# brewer.pal(n=3,"Set1")[2]
+livecol <- brewer.pal(n=3,"Set1")[1] # "#FFC107"
+p50col <- "#FFC107" # paletteer_d("awtools::spalette")[6] 
+
+plot(demLL, col= grey(1:150/150)[51:150], legend=F
+     , main="April\n"
+     , xaxt="n",yaxt="n"
+     , ylab="")
+mtext(side=2, "Soil Dryness", font=2, line=1.5, cex=1.2)
+
+contour(demLL, add=T)
+points(wp_ind_utm[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==15),]
+       , pch=21
+       , cex=wp_ind_utm$pd_mpa[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==15)]*.8
+       , bg=bluecol)
+points(wp_ind_utm[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==15),]
+       , pch=21
+       , cex=wp_ind_utm$pd_mpa[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==15)]*.8
+       , bg=livecol)
+par(xpd=NA)
+arrows(x0=-4100, y0=-369450, y1=-369380, xpd=NA, lwd=2,length=.2 )
+text("N", font=2, x=-4100, y=-369360, cex=1.8)
+par(xpd=T)
+
+legend(x=-4150, y=-369600, xpd=NA
+       , legend=c("-1","-3","-5")
+       , pch=1, pt.cex=c(.8,3*.8,5*.8)
+       , cex=1.1
+       , col="black"
+       , bty="n", title="Water\nPotential\n(MPa)")
+
+legend(x=-4150, y=-369470, xpd=NA
+       , legend=c("blue","live")
+       , pch=16, pt.cex=1.5
+       , cex=1.1
+       , col=c(bluecol, livecol)
+       , bty="n")
+
+
+# predawn from July
+# bluecol <- paste0(brewer.pal(n=3,"Set1")[2],"AA")
+# livecol <- paste0(brewer.pal(n=3,"Set1")[1],"88")
+plot(demLL, col= grey(1:150/150)[51:150], legend=F
+     , main="July"
+     , yaxt="n", xaxt="n")
+contour(demLL, add=T)
+points(wp_ind_utm[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29),]
+       , pch=21
+       , cex=wp_ind_utm$pd_mpa[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29)]*.8
+       , bg=bluecol)
+points(wp_ind_utm[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29),]
+       , pch=21
+       , cex=wp_ind_utm$pd_mpa[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29)]*.8
+       , bg=livecol)
+# legend(x=-4150, y=-369600, xpd=NA
+#        , legend=c("-1","-3","-5")
+#        , pch=1, pt.cex=c(.8,3*.8,5*.8)
+#        , cex=1.1
+#        , col="black"
+#        , bty="n", title="Water\nPotential\n(MPa)")
+# 
+# legend(x=-4150, y=-369400, xpd=NA
+#        , legend=c("blue","live")
+#        , pch=16, pt.cex=1.5
+#        , cex=1.1
+#        , col=c(bluecol, livecol)
+#        , bty="n")
+
+
+
+
+##### Midday Map through Time #####
+quartz(width=8, height=5)
+par(mfrow=c(1,2))
+# midday from April
+# bluecol <- paste0(brewer.pal(n=3,"Set1")[2],"AA")
+# livecol <- paste0(brewer.pal(n=3,"Set1")[1],"88")
+plot(demLL, col= grey(1:150/150)[51:150], legend=F
+     , main="April"
+     , xaxt="n",yaxt="n"
+     , ylab="")
+mtext(side=2, "Tree Stress", font=2, line=1.5, cex=1.2)
+contour(demLL, add=T)
+points(wp_ind_utm[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==15),]
+       , pch=21
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==15)]*.8
+       , bg=bluecol)
+points(wp_ind_utm[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==15),]
+       , pch=21
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==15)]*.8
+       , bg=livecol)
+par(xpd=NA)
+arrows(x0=-4100, y0=-369450, y1=-369380, xpd=NA, lwd=2,length=.2 )
+text("N", font=2, x=-4100, y=-369360, cex=1.8)
+par(xpd=T)
+legend(x=-4150, y=-369600, xpd=NA
+       , legend=c("-1","-3","-5")
+       , pch=1, pt.cex=c(.8,3*.8,5*.8)
+       , cex=1.1
+       , col="black"
+       , bty="n", title="Water\nPotential\n(MPa)")
+
+legend(x=-4150, y=-369470, xpd=NA
+       , legend=c("blue","live")
+       , pch=16, pt.cex=1.5
+       , cex=1.1
+       , col=c(bluecol, livecol)
+       , bty="n")
+
+
+# midday from July
+# bluecol <- paste0(brewer.pal(n=3,"Set1")[2],"AA")
+# livecol <- paste0(brewer.pal(n=3,"Set1")[1],"88")
+plot(demLL, col= grey(1:150/150)[51:150], legend=F
+     , main="July"
+     , xaxt="n",yaxt="n")
+contour(demLL, add=T)
+points(wp_ind_utm[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29),]
+       , pch=21
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29)]*.8
+       , bg=bluecol)
+points(wp_ind_utm[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29),]
+       , pch=21
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29)]*.8
+       , bg=livecol)
+
+# Highlight trees past P50
+points(wp_ind_utm[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29 & wp_ind_utm$md_mpa> P50ag),]
+       , pch=21, lwd=3
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="live oak" & wp_ind_utm$week==29& wp_ind_utm$md_mpa> P50ag)]*.8
+       , bg=livecol, col=p50col)#brewer.pal(n=3,"Set1")[1]) #"#FFC107")
+points(wp_ind_utm[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29 & wp_ind_utm$md_mpa> P50doug),]
+       , pch=21, lwd=3
+       , cex=wp_ind_utm$md_mpa[which(wp_ind_utm$species=="blue oak" & wp_ind_utm$week==29& wp_ind_utm$md_mpa> P50doug)]*.8
+       , bg=bluecol , col= p50col)#brewer.pal(n=3,"Set1")[1])
+
+# legend(x=-4150, y=-369600, xpd=NA
+#        , legend=c("-1","-3","-5")
+#        , pch=1, pt.cex=c(.8,3*.8,5*.8)
+#        , cex=1.1
+#        , col="black"
+#        , bty="n", title="Water\nPotential\n(MPa)")
+# 
+# legend(x=-4150, y=-369400, xpd=NA
+#        , legend=c("blue","live")
+#        , pch=16, pt.cex=1.5
+#        , cex=1.1
+#        , col=c(bluecol, livecol)
+#        , bty="n")
+
+
+
+
+### trying with ggplot
+ggplot() + geom_raster(data=sdem_gg, aes(x=x, y=y, fill=DEM_sedgwick_3m)) + xlim(LLBB[1,1:2]) + ylim(LLBB[2,1:2])
+
+
+
+
+
+
+
+
+
 
 
 ######## OLD DATA LOADING/CLEANING #########################
@@ -503,89 +807,3 @@ xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
 # #wp411all <- full_join(wp411pdind, wp411mdind)
 # #wp411 <- full_join(wp411all, latlon, by= c("Tag"="Tree"))
 # #wp411$Edrop <- wp411$MD_MPa - wp411$PD_MPa
-
-
-################### Plot 'hydroscapes' ################
-
-ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() + 
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~species)
-
-p1 <- ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() +
-  geom_abline(intercept=0, slope=1) +
-  facet_wrap(~species)
-p1 + geom_line(data=wp_ind, aes(col=as.numeric(site), group=tree)) 
-
-ggplot(wp_ind[which(wp_ind$md_mpa>0),], aes(x=week, y=md_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species) + geom_hline(yintercept = 4.3)
-
-ggplot(wp_ind[which(wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species)+ geom_hline(yintercept = 4.3)
-
-
-################# Combine Ind average WPs together ###########
-
-wp.ind <- rbind(wp228all,wp38all, wp315all, wp330pdind, wp44all, wp411pdind)
-wp.ind$Tag <- as.character(as.numeric(wp.ind$Tag))
-wp.ind <- left_join(wp.ind, latlon, by=c("Tag"="Tree"))
-wp.ind <- wp.ind[!is.na(wp.ind$Latitude),] 
-wp.ind$Site <- treesite$Site[match(wp.ind$Tag, treesite$Tag)]
-wp.ind$Plot <- treesite$Plot[match(wp.ind$Tag, treesite$Tag)]
-
-
-latlonproj <- CRS("+proj=longlat +datum=WGS84")
-wp.ind.ll <- SpatialPoints(coords = data.frame(wp.ind$Longitude, wp.ind$Latitude), proj4string = latlonproj)
-# aeaproj <- projection(sdem)
-# aeaproj <- CRS("+proj=aea +lat_1=34.0 +lat_2=40.5 +lat_0=0.0 +lon_0=-120 +x_0=0 +y_0=-4000000")
-wp.ind.aea <- sp::spTransform(wp.ind.ll,CRSobj =  crs(sdem))
-wp.indsp <- SpatialPointsDataFrame(wp.ind.aea, wp.ind)
-
-########### DATA VIZ ##############
-
-
-# quick look at how the sites compare.
-ggplot(wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="B"  & wp.ind$WOY %in% c(11,14)),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
-  geom_point() + 
-  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L" & wp.ind$WOY %in% c(11,14)),],shape=15) +
-  facet_wrap(facets = ~WOY)
-
-
-### quick LL maps with terrain as background
-ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$PD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa))+
-  geom_point(data=wp.ind[which(wp.ind$PD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=PD_MPa, size=PD_MPa)) +
-  facet_wrap(facets = ~WOY)
-
-ggmap(LLMap) + geom_point(data=wp.ind[wp.ind$MD_MPa>0 & wp.ind$Species=="B" & wp.ind$Latitude<34.692 & !is.na(wp.ind$WOY),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa))+
-  geom_point(data=wp.ind[which(wp.ind$MD_MPa>0 & wp.ind$Species=="L"),], aes(x=Longitude, y=Latitude, col=MD_MPa, size=MD_MPa)) +
-  facet_wrap(facets = ~WOY)
-
-
-##### look at site differences
-ggplot(wp.ind, aes(x=Site, y=PD_MPa, fill=Site)) + geom_boxplot() + facet_wrap(facets = ~WOY)
-
-ggplot(wp.ind, aes(x=Site, y=MD_MPa, fill=Site)) + geom_boxplot() + facet_wrap(facets = ~WOY)
-
-
-### look at trees through time
-ggplot(wp.ind, aes(x=WOY, y=PD_MPa, col=Species, Shape=Tag)) + geom_line() + facet_wrap(facets=~Site)
-
-
-### Only LL trees through time
-ggplot(wp.ind[wp.ind$Site=="LL",], aes(x=WOY, y=PD_MPa, col=Plot, Shape=Tag)) + geom_line(aes(linetype=Species))
-
-
-
-
-#@########3 Failed mapping
-# c(left = -97.1268, bottom = 31.536245, right = -97.099334, top = 31.559652))
-
-summary(wp.ind.ll)
-myMap <- get_map(location=c(left=-120.051, bottom=34.6853,right= - 120.0401, top=34.7187), source="google", maptype="terrain", zoom=12)
-
-LLMap <-get_map(location=c(left=-120.0487, bottom=34.689,right= - 120.0455, top=34.6925), source="google", maptype="terrain", zoom=14)
-
-
-plot(sdem,ylim=bbox(wp.ind.aea)[2,1:2], xlim=bbox(wp.ind.aea)[1,1:2]) 
-points(wp.ind.aea)
-#ylim=c(34.689,34.6925), xlim=c(-120.049, -120.045)
-
-#ggplot() + geom_raster(data=sdem, aes(x=x, y=y, fill=DEM_sedgwick_3m))
-
