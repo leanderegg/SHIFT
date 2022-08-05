@@ -19,6 +19,13 @@ library(MetBrewer)
  library(data.table)
 ```
 
+
+```{r}
+## Data file version (so it's not hard coded in every read_excel() call)
+datver <- "07192022"
+dataversion <- paste0("Data_", datver)
+```
+
 #Field data: 
 
 Read in water potential data:
@@ -28,7 +35,7 @@ Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12
 ```{r}
 ####### Water Potentials 
 #Date: 218 WP + LWC
-rwc_df <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
+rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
   mutate(date = ymd(date), 
          swc_g = wet_wt_g - dry_wt_g,
@@ -61,7 +68,7 @@ rwc_df %>%
 #Combine with water content + water potential data: 
 
 ```{r}
-wc_df <- read_csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC data
+wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) %>% #contains LWC data
   mutate(date = lubridate::ymd(date))%>% 
   select(-...1) %>% 
   mutate(timing = case_when(
@@ -71,15 +78,13 @@ wc_df <- read_csv(here("processed-data", "wc_alldates.csv")) %>% #contains LWC d
   mutate(date_wc = date) %>% 
   select(-date)
 
-wp_df <- read_csv(here("processed-data", "wp_alldates.csv")) %>% #contains WP data
+wp_df <- read_csv(here("processed-data", paste0("wp_alldates_",datver,".csv"))) %>% #contains WP data
   #mutate(date = lubridate::ymd(date)) %>% 
   select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
     week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
-  )) %>% 
-  mutate(date_wp = date) %>% 
-  select(-date)
+  )) 
 
 rwc_leaves_y0_df <- rwc_df %>% 
   filter(type == "leaf", 

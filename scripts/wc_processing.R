@@ -21,86 +21,92 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
 
+
+
+## Data file version (so it's not hard coded in every read_excel() call)
+datver <- "07192022"
+dataversion <- paste0("Data_", datver)
+
 #______________________________________________________________
 ############### Begin: WATER CONTENT - Load and Clean #######################################
 #______________________________________________________________
 
 #Date: 218 WP + LWC
-wc218 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
+wc218 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
   mutate(date = mdy("02-18-2022")) 
 
 
 #Date: 228 WP + LWC
-wc228 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="228 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc228 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="228 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("02-28-2022")) 
 
 #Date: 33-34 WP + LWC
-wc303 <-  read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="33-34 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc303 <-  read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="33-34 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-03-2022")) 
 
 
 #Date: 38-311 WP + LWC
-wc38 <-  read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="38-311 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc38 <-  read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="38-311 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-11-2022")) 
 
 # remove mislabeled tree 2567 which was actually 2367 
 wc38 <- wc38[-which(wc38$tag=="2567"),]
 
 #Date: 315 WP + LWC
-wc315 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc315 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-15-2022")) 
 
 
 #Date: 325 WP + LWC
-wc325 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc325 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-25-2022")) 
 
 
 #Date: 330 WP + LWC (core)
-wc330 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="330 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc330 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="330 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-30-2022")) 
 
 
 #Date: 44WP + LWC (satellite)
-wc44 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="44 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc44 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="44 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-04-2022")) 
 
 
 #Date: 46 WP + LWC (satellite)
-wc46 <- read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="46 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
+wc46 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="46 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
   mutate(date = mdy("04-06-2022")) 
 
 
 #Date: 411-412 WP + LWC
-wc411 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="411-412 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc411 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="411-412 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-11-2022")) 
 
 
 #Date: 413-414 WP + LWC
-wc413 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="413-414 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc413 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="413-414 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-13-2022")) 
 
 
 #Date: 425 WP + LWC
-wc425 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="425 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc425 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="425 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-25-2022")) 
 
 
 #Date: 427 WP + LWC
-wc427 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="427 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc427 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="427 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("04-27-2022")) 
 
 #Date: 504WP + LWC
-wc0504 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc0504 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-04-2022")) 
 
 
 #Date: 523-525 WP + LWC
-wc523 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="523 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc523 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="523 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-23-2022")) 
 
 
-wc525 <-read_excel(here("Data_05302022","WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc525 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-25-2022")) 
 
 
@@ -1410,5 +1416,7 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c("date",
          , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
   select(-pd_avg, -mpa_pd, -mpa_md, -tag, -plot_number, -md, -pd)
 
-write.csv(wc_alldates, here("processed-data", "wc_alldates.csv"))
+#write.csv(wc_alldates, here("processed-data", "wc_alldates.csv"))
+
+write.csv(wc_alldates, here("processed-data", paste0("wc_alldates_",datver,".csv")))
 
