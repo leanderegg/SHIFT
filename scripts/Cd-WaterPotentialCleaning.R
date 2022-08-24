@@ -175,6 +175,15 @@ xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
 
 
 
+
+################ END: Data loading, combining, cleaning ##############3
+
+
+
+
+
+
+
 ################### Plot 'hydroscapes' ################
 
 ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() + 
