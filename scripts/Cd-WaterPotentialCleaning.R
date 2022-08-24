@@ -18,7 +18,7 @@ library(paletteer)
 # some namespace issue with raster and some of these packages.
 #library(dplyr)
 library(tidyverse)
-#library(readxl)
+library(readxl)
 library(car)
 library(lubridate)
 library(ggmap)
@@ -50,6 +50,13 @@ dataversion <- paste0("Data_", datver)
 wp_alldates <- read.csv(here("processed-data", paste0("wp_alldates_",datver,".csv")))
 # lee's version
 wp_ad <- read.csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv")))[,-1]
+
+
+### Problems to fix:
+# 2084 doesn't exist. appears to be 2004 mislabeled (from week 19)
+# all 2086 values are doubled because tree 2085 is mislabeled in the latlon spreadsheet
+# 
+
 
 ###### Sedgwick DEM
 sdem <- raster::raster("Data_05042022/geospatial/DEM_sedgwick_3m.tif")
@@ -443,7 +450,54 @@ ggplot() + geom_raster(data=sdem_gg, aes(x=x, y=y, fill=DEM_sedgwick_3m)) + xlim
 
 
 
+#__________________________________________
+#+++++++++ Boxplot for Holly's fungi ++++++++####
 
+# subset to week 15 to just plot data from around when roots were sampled
+tmp <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge")
+tmp$plot
+
+# create a color palette
+library(RColorBrewer)
+c <- brewer.pal(n=3, name="Set2")
+col <- paste(c, "55", sep="") #make it opaque
+#cols <- rep(col, each=3)
+coldark <- paste(c, "AA", sep="") #make the middays less opaque
+#colsdark <- rep(coldark, each=3)
+
+quartz(width=4.5, height=3)
+par(mar=c(4,5,1,1), mgp=c(2.7,1,0))
+boxplot(-1*pd_mpa~plot, tmp, col=col
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+        , whisklty=1, whisklwd=3, whiskcol=col, medlwd=3, outcol=col, outcex=.5, outlwd=1, bty="")
+
+palette(coldark)
+points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp, pch=16, col=factor(plot))
+legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n", title = "Elevation")
+
+
+
+
+
+
+
+
+
+#__________________________________________
+#+++++++++ Boxplots for Piper (Shedd vs Chamise soil) ++++++++####
+
+# subset the full data to just the 'Chamise' site, only the oaks, and only week 19 and 29
+tmp <- wp_ind[which(wp_ind$site=="Chamise" & wp_ind$species!= "ARCA" & wp_ind$week != 11),]
+boxplot(pd_mpa~species+plot+week, tmp, las=2, col=c("blue","red","darkblue","darkred"))
+
+
+# quick and dirty anova to see whether 'plot' matters
+summary(aov(pd_mpa~species+plot+week, tmp))
+
+### blue oaks, pd vs midday on SvC through time
+boxplot(mpa~ time+plot + week, wp_ind_long[which(wp_ind_long$species=="blue oak" & wp_ind_long$site=="Chamise" & wp_ind_long$week>15),], col=c("red","blue"), las=2)
 
 
 
