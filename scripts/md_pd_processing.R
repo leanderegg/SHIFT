@@ -512,3 +512,10 @@ wp_ad_pd <- wp_ad_pd %>% select(-pd)
 wp_ad <- rbind(wp_ad_md, wp_ad_pd)
 
 write.csv(wp_ad, here("processed-data", paste0("wp_alldates_long_",datver,".csv")))
+
+dlookr::diagnose(wp_ad)
+
+
+
+
+

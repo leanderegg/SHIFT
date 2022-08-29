@@ -8,6 +8,7 @@ output: html_document
 ##setup
 
 ```{r setup, include=FALSE}
+library(data.table)
 library(janitor)
 library(here)
 library(tidyverse)
@@ -16,7 +17,6 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
  install.packages("data.table")
- library(data.table)
 ```
 
 
@@ -78,7 +78,8 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
   mutate(date_wc = date) %>% 
   select(-date)
 
-wp_df <- read_csv(here("processed-data", paste0("wp_alldates_",datver,".csv"))) %>% #contains WP data
+#wp_df <- read_csv(here("processed-data", paste0("wp_alldates_",datver,".csv"))) %>% #contains WP data
+  wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv"))) %>%
   #mutate(date = lubridate::ymd(date)) %>% 
   select(-...1) %>% 
   mutate(timing = case_when(
@@ -105,9 +106,8 @@ rwc_leaves_y0_df <- rwc_df %>%
  
  
  wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, 
-                       by = c("tree", "week", "rep", "timing"), 
-                       all = T) %>% 
-   select(-mpa, -date) #not sure why thats there
+                       by = c("tree", "week", "rep", "timing", "date", "species"), 
+                       all = T) #not sure why thats there
  
 ```
 
