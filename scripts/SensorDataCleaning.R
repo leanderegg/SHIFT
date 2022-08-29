@@ -317,7 +317,7 @@ abline(lm(SAP.FLOW.TOTAL~SAP.FLOW.TOTAL.2,TS.wide[TS.wide$Date.Time>sensor.check
 
 # sensor 2 - it actually doesn't look that bad, in the last few days of the record
 # but something happened in the off time, and it got real low again...
-ggplot(TS.long[TS.long$Tree %in% c("2347","2346") & TS.long$Date.Time>as_date("2022-04-13"),], aes(x=Date.Time, y=Sapflow, col=Sensor)) + geom_line()
+ggplot(TS.long[TS.long$Tree %in% c("2347","2346") & TS.long$Date.Time>as_date("2022-04-15") & TS.long$Date.Time<"2022-04-25",], aes(x=Date.Time, y=Sapflow, col=Sensor)) + geom_line()
 ggplot(TS.long[TS.long$Tree %in% c("2347","2346") & TS.long$Date.Time>as_date("2022-03-13"),], aes(x=Date.Time, y=Sapflow, col=Sensor)) + geom_line()
 
 

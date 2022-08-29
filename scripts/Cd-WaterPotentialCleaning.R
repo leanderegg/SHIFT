@@ -14,6 +14,7 @@ library(here)
 library(sf)
 library(raster)
 library(paletteer) 
+library(RColorBrewer)
 
 # some namespace issue with raster and some of these packages.
 #library(dplyr)
@@ -50,12 +51,19 @@ dataversion <- paste0("Data_", datver)
 wp_alldates <- read.csv(here("processed-data", paste0("wp_alldates_",datver,".csv")))
 # lee's version
 wp_ad <- read.csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv")))[,-1]
+wp_ad$tag <- str_replace(wp_ad$tag, "\\.0","") # get rid of annoying .0 at end of numeric tags (thanks excel)
 
+## table for linking tree numbers with sites, correct some mislabeling
+treesite <- read_excel(here(dataversion,"WP_WC","SHIFT data collection 2022.xlsx"),sheet="Tree_Sites", skip=0, na = "NA", col_types = "text")
+treesite$Tag <- str_replace(treesite$Tag, "\\.0","")
+
+
+wp_ad$plot <- treesite$Plot[match(wp_ad$tag, treesite$Tag)]
 
 ### Problems to fix:
 # 2084 doesn't exist. appears to be 2004 mislabeled (from week 19)
 # all 2086 values are doubled because tree 2085 is mislabeled in the latlon spreadsheet
-# 
+# 2370-25 are mislabeld weathertop in the original datasheet
 
 
 ###### Sedgwick DEM
@@ -90,11 +98,6 @@ latlon$Tree[grep("Dont", latlon$Name)] <- "2373"
 latlon.ll <- SpatialPointsDataFrame(coords = data.frame(latlon$Longitude, latlon$Latitude), proj4string = CRS("+proj=longlat +datum=WGS84"), data=latlon)
 latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sdem))
 
-
-
-## table for linking tree numbers with sites
-treesite <- read_excel(here(dataversion,"WP_WC","SHIFT data collection 2022.xlsx"),sheet="Tree_Sites", skip=0, na = "NA", col_types = "text")
-treesite$Tag <- str_replace(treesite$Tag, "\\.0","")
 
 
 P50doug <- 4.43 # average of all of our wild curves from Skelton et al. 2019 NP
@@ -153,6 +156,18 @@ wp_ind$lon_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$Tree),1]
 # make a spatialdata version, dropping trees without coords
 wp_ind_utm <- SpatialPointsDataFrame(coords = data.frame(wp_ind$lon_utm[-which(is.na(wp_ind$lon_utm))], wp_ind$lat_utm[-which(is.na(wp_ind$lon_utm))]), proj4string = crs(sdem), data=wp_ind[-which(is.na(wp_ind$lon_utm)),])
 
+
+### making a spatial dataframe
+latlonproj <- CRS("+proj=longlat +datum=WGS84")
+wp_ind.ll <- SpatialPoints(coords = data.frame(wp_ind$longitude, wp_ind$latitude), proj4string = latlonproj)
+# aeaproj <- projection(sdem)
+# aeaproj <- CRS("+proj=aea +lat_1=34.0 +lat_2=40.5 +lat_0=0.0 +lon_0=-120 +x_0=0 +y_0=-4000000")
+wp.ind.aea <- sp::spTransform(wp.ind.ll,CRSobj =  crs(sdem))
+wp.indsp <- SpatialPointsDataFrame(wp.ind.aea, wp.ind)
+
+
+
+
 ##### Data Characterization:
 length(which(is.na(wp_ind$e_drop)))
 # half of our obs either don't have a pd or don't have a md
@@ -184,6 +199,11 @@ xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
 
 
 
+########### DATA VIZ ##############
+
+
+
+
 ################### Plot 'hydroscapes' ################
 
 ggplot(wp_ind, aes(x=-1*pd_mpa, y=-1*md_mpa, col=log(week))) + geom_point() + 
@@ -200,24 +220,6 @@ ggplot(wp_ind[which(wp_ind$md_mpa>0),], aes(x=week, y=md_mpa)) + geom_line(aes( 
 ggplot(wp_ind[which(wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa)) + geom_line(aes( col=site, group=tree) )+ facet_wrap(~species)+ geom_hline(yintercept = 4.3)
 
 
-################# Combine Ind average WPs together ###########
-
-# wp.ind <- rbind(wp228all,wp38all, wp315all, wp330pdind, wp44all, wp411pdind)
-# wp.ind$Tag <- as.character(as.numeric(wp.ind$Tag))
-# wp.ind <- left_join(wp.ind, latlon, by=c("Tag"="Tree"))
-# wp.ind <- wp.ind[!is.na(wp.ind$Latitude),] 
-# wp.ind$Site <- treesite$Site[match(wp.ind$Tag, treesite$Tag)]
-# wp.ind$Plot <- treesite$Plot[match(wp.ind$Tag, treesite$Tag)]
-
-
-latlonproj <- CRS("+proj=longlat +datum=WGS84")
-wp_ind.ll <- SpatialPoints(coords = data.frame(wp_ind$longitude, wp_ind$latitude), proj4string = latlonproj)
-# aeaproj <- projection(sdem)
-# aeaproj <- CRS("+proj=aea +lat_1=34.0 +lat_2=40.5 +lat_0=0.0 +lon_0=-120 +x_0=0 +y_0=-4000000")
-wp.ind.aea <- sp::spTransform(wp.ind.ll,CRSobj =  crs(sdem))
-wp.indsp <- SpatialPointsDataFrame(wp.ind.aea, wp.ind)
-
-########### DATA VIZ ##############
 
 
 # quick look at how the sites compare.
@@ -259,13 +261,15 @@ ggplot(wp_ind, aes(x=week, y=pd_mpa, col=species, shape=tree)) + geom_line() + f
 
 
 ### Only LL trees through time
-ggplot(wp_ind[wp_ind$site=="LL",], aes(x=week, y=pd_mpa, col=Plot, Shape=Tag)) + geom_line(aes(linetype=Species))
+ggplot(wp_ind[wp_ind$site=="LL",], aes(x=week, y=pd_mpa, col=plot, Shape=tree)) + geom_line(aes(linetype=species))
 
+#only blue oak through time
 ggplot(wp_ind[which(wp_ind$site=="LL" & wp_ind$species=="blue oak" & wp_ind$pd_mpa>0),], aes(x=week, y=pd_mpa, col=plot, group=tree)) + geom_line(aes(linetype=plot))
 
 
-
+# blue oaks at different sites in July
 ggplot(wp_ind[which(wp_ind$week==29 & wp_ind$species=="blue oak"),],aes(x=site, y=pd_mpa)) + geom_boxplot()
+
 
 ######### Failed mapping
 # c(left = -97.1268, bottom = 31.536245, right = -97.099334, top = 31.559652))
@@ -459,16 +463,23 @@ ggplot() + geom_raster(data=sdem_gg, aes(x=x, y=y, fill=DEM_sedgwick_3m)) + xlim
 
 
 
+
+
+
+
+
+
 #__________________________________________
 #+++++++++ Boxplot for Holly's fungi ++++++++####
 
 # subset to week 15 to just plot data from around when roots were sampled
-tmp <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge")
-tmp$plot
+tmp <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
+tmp <- wp_ind %>% filter(week==29, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
+
 
 # create a color palette
 library(RColorBrewer)
-c <- brewer.pal(n=3, name="Set2")
+c <- brewer.pal(n=4, name="Set2")
 col <- paste(c, "55", sep="") #make it opaque
 #cols <- rep(col, each=3)
 coldark <- paste(c, "AA", sep="") #make the middays less opaque
@@ -499,15 +510,16 @@ legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n
 
 # subset the full data to just the 'Chamise' site, only the oaks, and only week 19 and 29
 tmp <- wp_ind[which(wp_ind$site=="Chamise" & wp_ind$species!= "ARCA" & wp_ind$week != 11),]
-boxplot(pd_mpa~species+plot+week, tmp, las=2, col=c("blue","red","darkblue","darkred"))
-
+par(mar=c(9,4,1,1))
+boxplot(pd_mpa~plot+species+week, tmp, las=2, col=c("lightblue","darkblue","red2","darkred"), xlab="")
+abline(v=4.5)
 
 # quick and dirty anova to see whether 'plot' matters
 summary(aov(pd_mpa~species+plot+week, tmp))
 
 ### blue oaks, pd vs midday on SvC through time
-boxplot(mpa~ time+plot + week, wp_ind_long[which(wp_ind_long$species=="blue oak" & wp_ind_long$site=="Chamise" & wp_ind_long$week>15),], col=c("red","blue"), las=2)
-
+boxplot(mpa~ time+plot + week, wp_ind_long[which(wp_ind_long$species=="blue oak" & wp_ind_long$site=="Chamise" & wp_ind_long$week>15),], col=c("red","blue"), las=2, xlab="")
+abline(v=c(4.5,8.5))
 
 
 
@@ -870,3 +882,14 @@ boxplot(mpa~ time+plot + week, wp_ind_long[which(wp_ind_long$species=="blue oak"
 # #wp411all <- full_join(wp411pdind, wp411mdind)
 # #wp411 <- full_join(wp411all, latlon, by= c("Tag"="Tree"))
 # #wp411$Edrop <- wp411$MD_MPa - wp411$PD_MPa
+
+
+
+################# Combine Ind average WPs together ###########
+
+# wp.ind <- rbind(wp228all,wp38all, wp315all, wp330pdind, wp44all, wp411pdind)
+# wp.ind$Tag <- as.character(as.numeric(wp.ind$Tag))
+# wp.ind <- left_join(wp.ind, latlon, by=c("Tag"="Tree"))
+# wp.ind <- wp.ind[!is.na(wp.ind$Latitude),] 
+# wp.ind$Site <- treesite$Site[match(wp.ind$Tag, treesite$Tag)]
+# wp.ind$Plot <- treesite$Plot[match(wp.ind$Tag, treesite$Tag)]
