@@ -22,7 +22,7 @@ library(MetBrewer)
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "07192022"
+datver <- "08182022"
 dataversion <- paste0("Data_", datver)
 ```
 
@@ -52,7 +52,10 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
     week %in% c(15, 18, 19, 21) ~ "late"
   ))
 
+write.csv(rwc_df, here("processed-data", paste0("rwc_alldates_",datver,".csv")))
+
 dlookr::diagnose(rwc_df)
+
 ```
 
 Take a look! 

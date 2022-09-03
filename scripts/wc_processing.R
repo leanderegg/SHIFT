@@ -1755,6 +1755,8 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
 
 ####That is currently very wide, so make longer: 
 
+###(There is probably a much smoother way to do all this!!)
+
 
 wc_alldates_longer_mpa <- wc_alldates %>% 
   select("tree", "plot", "week", "site", "rep", "date", "species", 
@@ -1839,6 +1841,5 @@ wc_alldates_longer_lwc_mpa_dates <- merge(wc_alldates_longer_lwc_mpa,
 wc_ad_lwc_mpa <- wc_alldates_longer_lwc_mpa_dates
 
 write.csv(wc_ad_lwc_mpa, here("processed-data", paste0("wc_alldates_",datver,".csv")))
-
 
 

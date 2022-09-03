@@ -1,0 +1,57 @@
+---
+title: "Leaf Water Content"
+author: "Indra Boving"
+date: "8/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(MetBrewer)
+```
+
+```{r}
+## Data file version (so it's not hard coded in every read_excel() call)
+datver <- "08182022"
+dataversion <- paste0("Data_", datver)
+```
+
+
+```{r}
+lwc_mpa_df <- read.csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
+
+rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) %>% 
+  pivot_wider(#cols = c("","date_md"), 
+               names_from = type, 
+               values_from = c(swc_per_dry_g, year)) %>% 
+  pivot_wider(#cols = c("","date_md"), 
+               names_from = type, 
+               values_from = c(swc_ww_g, year)) %>% 
+  pivot_wider(#cols = c("","date_md"), 
+               names_from = type, 
+               values_from = c(swc_dw_g, year)) %>% 
+  pivot_wider(#cols = c("","date_md"), 
+               names_from = type, 
+               values_from = c(swc_percent, year)) %>% 
+  pivot_wider(#cols = c("","date_md"), 
+               names_from = type, 
+               values_from = c(swc_g, year))
+  #filter(type == "leaf") %>% 
+ # select(-X)
+
+what_is_rwc_df <- merge(lwc_mpa_df, rwc_df, by= c("week", "tree", "rep"), all.x = T)
+```
+
+
+```{r}
+
+```
+
