@@ -189,6 +189,9 @@ xtabs(~week, wp_ind[wp_ind$md_mpa>0,])
 # Week 21 (have 32 of 42)
 
 
+### Make a master list of trees:
+alltrees <- wp_ind %>% group_by(tree, site, plot, species) %>% summarise(n_pds = length(which(pd_mpa >0)), n_mds = length(which(md_mpa>0)))
+write.csv(alltrees, here("processed-data", paste0("FullTreeList_fromwps",datver,".csv")))
 
 
 ################ END: Data loading, combining, cleaning ##############3
