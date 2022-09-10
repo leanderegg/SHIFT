@@ -476,9 +476,9 @@ ggplot() + geom_raster(data=sdem_gg, aes(x=x, y=y, fill=DEM_sedgwick_3m)) + xlim
 #+++++++++ Boxplot for Holly's fungi ++++++++####
 
 # subset to week 15 to just plot data from around when roots were sampled
-tmp <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
-tmp <- wp_ind %>% filter(week==29, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
-
+tmp1 <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
+tmp2 <- wp_ind %>% filter(week==29, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
+tmp3 <- wp_ind %>% filter(week %in% c(29,15), site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
 
 # create a color palette
 library(RColorBrewer)
@@ -487,21 +487,82 @@ col <- paste(c, "55", sep="") #make it opaque
 #cols <- rep(col, each=3)
 coldark <- paste(c, "AA", sep="") #make the middays less opaque
 #colsdark <- rep(coldark, each=3)
+# intersperse them for plotting both time points
+allcols <- c(col[1], coldark[1], col[2], coldark[2], col[3], coldark[3])
 
+
+# week 15
 quartz(width=4.5, height=3)
 par(mar=c(4,5,1,1), mgp=c(2.7,1,0))
-boxplot(-1*pd_mpa~plot, tmp, col=col
+boxplot(-1*pd_mpa~plot, tmp1, col=col
         , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
         , boxwex=.6, at=c(1,2,3)
         , staplewex=0, notch=F, border="white"
-        , whisklty=1, whisklwd=3, whiskcol=col, medlwd=3, outcol=col, outcex=.5, outlwd=1, bty="")
+        , whisklty=1, whisklwd=3, whiskcol=col
+        , medlwd=3, outcol=col, outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Mid Slope","Ridge Top"))
 
 palette(coldark)
-points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp, pch=16, col=factor(plot))
-legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n", title = "Elevation")
+points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp1, pch=16, col=factor(plot))
+#legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n", title = "Elevation")
+
+
+# week 29
+quartz(width=4.5, height=3)
+par(mar=c(4,5,1,1), mgp=c(2.7,1,0))
+boxplot(-1*pd_mpa~plot, tmp2, col=col
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+        , whisklty=1, whisklwd=3, whiskcol=col
+        , medlwd=3, outcol=col, outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Mid Slope","Ridge Top"))
+
+palette(coldark)
+points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp2, pch=16, col=factor(plot))
+#legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n", title = "Elevation")
 
 
 
+
+### Combined into one plot
+quartz(width=6.5, height=3)
+par(mar=c(4,2,2,1), mgp=c(2.7,1,0), oma=c(0,3,0,0), mfrow=c(1,2))
+
+boxplot(-1*pd_mpa~plot, tmp1, col=col, main="April"
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+        , whisklty=1, whisklwd=3, whiskcol=col
+        , medlwd=3, outcol=col, outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Slope","Ridge"))
+
+palette(coldark)
+points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp1, pch=16, col=factor(plot))
+mtext(expression(paste(Psi[soil]," (MPa)")), side=2, line=3)
+
+
+boxplot(-1*pd_mpa~plot, tmp2, col=col, main="July"
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+        , whisklty=1, whisklwd=3, whiskcol=col
+        , medlwd=3, outcol=col, outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Slope","Ridge"))
+
+palette(coldark)
+points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp2, pch=16, col=factor(plot))
+
+
+
+
+
+boxplot(-1*pd_mpa~week+plot, tmp3, col=allcols
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3,4,5,6)
+        , staplewex=0, notch=F, border="white"
+        , whisklty=1, whisklwd=3, whiskcol=allcols
+        , medlwd=3, outcol=allcols, outcex=.5, outlwd=1, bty="")
 
 
 
