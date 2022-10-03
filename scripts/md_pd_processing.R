@@ -15,7 +15,7 @@ library(MetBrewer)
 #-------
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "07192022"
+datver <- "08182022"
 dataversion <- paste0("Data_", datver)
 
 ####### Water Potentials 
