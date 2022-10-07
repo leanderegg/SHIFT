@@ -1,0 +1,62 @@
+---
+title: "Spectra"
+author: "Indra Boving"
+date: "10/7/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+here()
+th <- theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+          panel.grid.major = element_blank(),  # Hide major gridlines
+          panel.grid.minor = element_blank())
+```
+
+```{r}
+spectra_sad <- read_csv(here("data", "spectra_data", "allSpectra_sadleaves.csv"))
+spectra_nice <- read_csv(here("data", "spectra_data", "allSpectra_niceleaves.csv"))
+```
+
+```{r}
+spectra_sad_long <- spectra_sad %>% 
+  pivot_longer(cols = c(2:11), 
+               names_to = "spectra_id", 
+               values_to = "spectra_value")
+
+spectra_nice_long <- spectra_nice %>% 
+  pivot_longer(cols = c(2:11), 
+               names_to = "spectra_id", 
+               values_to = "spectra_value")
+  
+```
+
+```{r}
+spectra_nice_long %>% 
+ # filter(spectra_id %in% c("20220308_00005")) %>% 
+  ggplot(aes(y = spectra_value, 
+             x = wavelength, 
+             color = spectra_id
+             )) +
+  geom_point() +
+  labs(x = "Wavelength", 
+       y = "Reflectance") +
+  th
+```
+```{r}
+spectra_sad_long %>% 
+ # filter(spectra_id %in% c("20220912_00009")) %>% 
+  ggplot(aes(y = spectra_value, 
+             x = wavelength, 
+             color = spectra_id
+             )) +
+  geom_point() +
+  labs(x = "Wavelength", 
+       y = "Reflectance") +
+  th
+```
