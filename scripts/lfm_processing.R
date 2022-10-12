@@ -6,9 +6,17 @@
 # script for quickly ingesting
 # LWC
 
+<<<<<<< HEAD
 # started 10.12.2022 by IB
 
 # last updated: 10.12.2022
+=======
+# started 06.11.2022 by IB
+
+# last updated: 
+#    
+
+>>>>>>> 5748ab00394bef098ade4bc9dcea20e61e27e2ce
 
 library(tidyverse) # all the tidyverse data handling functions
 library(lubridate) #Dealing with dates. 
@@ -19,6 +27,11 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 5748ab00394bef098ade4bc9dcea20e61e27e2ce
 ## Data file version (so it's not hard coded in every read_excel() call)
 datver <- "08182022"
 dataversion <- paste0("Data_", datver)
