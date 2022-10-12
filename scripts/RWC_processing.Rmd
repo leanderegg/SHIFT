@@ -33,8 +33,6 @@ Read in water potential data:
 Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
 ```{r}
-####### Water Potentials 
-#Date: 218 WP + LWC
 rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
   mutate(date = ymd(date), 
@@ -49,13 +47,16 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
   select(date, tree, swc_g, swc_per_dry_g, swc_percent, year, week, swc_ww_g, swc_dw_g, type, rep) %>% 
   mutate(timing = case_when(
     week %in% c(11, 13, 14) ~ "early", 
-    week %in% c(15, 18, 19, 21) ~ "late"
+    week %in% c(15, 18, 19, 21) ~ "late", 
+  ), 
+  tree = case_when(
+    tree == 1475 ~ 1478, 
+    TRUE ~ tree
   ))
 
 write.csv(rwc_df, here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
 dlookr::diagnose(rwc_df)
-
 ```
 
 Take a look! 
@@ -66,76 +67,6 @@ rwc_df %>%
   ggplot(aes(y = swc_per_dry_g, x = date, color = as.factor(type))) +
   geom_jitter()+
   facet_wrap(~year) 
-```
-
-#Combine with water content + water potential data: 
-
-```{r}
-wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) %>% #contains LWC data
-  mutate(date = lubridate::ymd(date))%>% 
-  select(-...1) %>% 
-  mutate(timing = case_when(
-    week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
-    week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
-  ))%>% 
-  mutate(date_wc = date) %>% 
-  select(-date)
-
-#wp_df <- read_csv(here("processed-data", paste0("wp_alldates_",datver,".csv"))) %>% #contains WP data
-  wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv"))) %>%
-  #mutate(date = lubridate::ymd(date)) %>% 
-  select(-...1) %>% 
-  mutate(timing = case_when(
-    week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
-    week %in% c(15, 16, 17, 18, 19, 20, 21) ~ "late"
-  )) 
-
-rwc_leaves_y0_df <- rwc_df %>% 
-  filter(type == "leaf", 
-         year %in% c(0, "NA")) %>% 
-  group_by(tree, date) %>% 
-  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
-         , mean_swc_g = mean(swc_g)) %>% 
-  mutate(date_rwc = date, 
-         week = as.numeric(week)) %>% 
-  select(-date) %>% 
-  distinct() %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc, rep) %>% 
-  as.data.frame()
-
- wc_rwc_df <- merge(wc_df, rwc_leaves_y0, 
-                    by = c("tree", "week", "rep"), 
-                    all = T) 
- 
- 
- wp_wc_rwc_df <- merge(wp_df, wc_rwc_df, 
-                       by = c("tree", "week", "rep", "timing", "date", "species"), 
-                       all = T) #not sure why thats there
- 
-```
-
-
-```{r}
-#setDT(wc_rwc_df)[, lapply(.SD, na.omit), by = c(tree, date)]
-#%>% 
-#   mutate(mean_pd = mean(mpa_pd), 
-#          mean_md = mean(mpa_md), 
-#          mean_pd_lwc_leaf = mean(l))
- 
- wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
-   group_by(week, tree) %>% 
-   summarise(mean_md = mean(mpa_md), 
-             mean_pd = mean(mpa_pd), 
-             mean_lwc_md_bulk = mean(lwc_md_bulk), 
-             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
-             mean_swc_g = mean(mean_swc_g), 
-             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
-```
-
-```{r}
-wp_wc_rwc_summary_df %>% 
-  ggplot(aes(y = mean_swc_per_dry_g, x = mean_md, color = as.factor(tree))) +
-  geom_point()
 ```
 
 
