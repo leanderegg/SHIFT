@@ -16,12 +16,16 @@ library(lubridate)
 library(readxl)
 library(gridExtra)
  install.packages("data.table")
+ 
 ```
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
 datver <- "08182022"
 dataversion <- paste0("Data_", datver)
+
+tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
+tlp_quag <- -3
 ```
 
 #WC:
