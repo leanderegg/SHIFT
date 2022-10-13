@@ -94,6 +94,13 @@ wp_wc_df <- merge(wp_df, wc_df,
     mutate(lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T))
 ```
 
+#tree info
+```{r}
+trees_sites_df <- wp_wc_df %>% 
+  select(tree, plot, site, species) %>% 
+  distinct()
+```
+
 - some lwcs are missing! look into this (see google doc)
 
 Need to find lwcs:
@@ -169,14 +176,14 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
                     all.x = T
                     )
 
- wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
-   group_by(week, tree) %>% 
-   summarise(mean_md = mean(mpa_md), 
-             mean_pd = mean(mpa_pd), 
-             mean_lwc_md_bulk = mean(lwc_md_bulk), 
-             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
-             mean_swc_g = mean(mean_swc_g), 
-             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
+ # wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
+ #   group_by(week, tree) %>% 
+ #   summarise(mean_md = mean(mpa_md), 
+ #             mean_pd = mean(mpa_pd), 
+ #             mean_lwc_md_bulk = mean(lwc_md_bulk), 
+ #             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
+ #             mean_swc_g = mean(mean_swc_g), 
+ #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
 ```
 
 #LFM:
@@ -219,27 +226,106 @@ lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
 
 lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
-                       by = c("tree", "time", "date_lfm", "week", "type", "notes"), all = T) %>% 
+                       by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
   distinct() %>% 
   select(-X)
 
 lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
-                            by = c("tree", "time", "date_lfm", "week", "type", "notes"), all = T) %>% 
+                            by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
   distinct() 
 ```
 
-#LFM + RWC + WC + WP:
+#LFM + RWC + WC + WP (wide):
 
 ```{r}
 wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
-  distinct()
+  distinct() %>% 
+  select(-site, -species, -plot)
 
-missings_df <- wp_wc_rwc_lfm_df_wide %>% 
-  select(tree, week, time, species, date_wp, date_wc, date_rwc, date_lfm) %>% 
-  distinct
+wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide, 
+                                     by = c("tree"))
+
+ #make a shorter name because the long one will be a pain to write out!
+all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
+  mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100))
+  
+```
+
+What are we missing??? 
+
+A: A lot....but where??
+
+```{r}
+missings_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
+  select(tree, week, species, site, plot, time, date_wp, date_wc, date_lfm, date_rwc) %>% 
+  distinct()
 
 write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",datver,".csv")))
 ```
 
+####Visualize!
+
+LFM x MPa, year 0
+
+```{r}
+all_water_df %>% 
+  filter(lfm_percent > 20, 
+         lfm_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, x = lfm_percent, color = species)) +
+  geom_point()
+```
+
+LFM x MPa, year 1
+
+```{r}
+all_water_df %>% 
+  filter(lfm_y1_percent > 20, 
+         lfm_y1_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, x = lfm_y1_percent, color = species)) +
+  geom_point()
+```
+
+LFM year 1 vs. year 0
+
+```{r}
+all_water_df %>% 
+  filter(lfm_y1_percent > 20, 
+         lfm_y1_percent < 300,
+         lfm_percent > 20, 
+         lfm_percent < 300)  %>% 
+  ggplot(aes(y = lfm_percent, 
+             x = lfm_y1_percent, 
+             color = species, 
+             size = week)) +
+  geom_point() + geom_abline()
+```
+Mpa x LWC: 
+
+```{r}
+all_water_df %>% 
+  # filter(lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, 
+             x = lwc_mean, 
+             color = species, 
+             #size = week
+             )) +
+  geom_point() +
+  facet_wrap(~species)
+```
+RWC vs. LWC
+
+```{r}
+all_water_df %>% 
+   filter(rwc_percent > 0, 
+          rwc_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, 
+             x = rwc_percent, 
+             color = species, 
+             #size = week
+             )) +
+  geom_point() +
+  facet_wrap(~species)
+```

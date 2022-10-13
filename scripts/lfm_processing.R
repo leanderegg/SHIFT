@@ -3,7 +3,7 @@
 ######## LFM DATA PROCESSIONG ###################
 #____________________________________________________________
 
-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
+#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
 
 # script for quickly ingesting
 # LFM
