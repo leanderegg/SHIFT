@@ -15,7 +15,6 @@ library(tidyverse)
 library(lubridate)
 library(readxl)
 library(gridExtra)
-library(MetBrewer)
  install.packages("data.table")
 ```
 
@@ -185,27 +184,57 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
 ```{r}
 lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "leaf", 
-         year == 0)
-
-lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-  filter(type == "leaf", 
-         year == 0)
+         year == 0) %>% 
+  mutate(tree = as.numeric(tree))  %>% 
+  select(-year)
 
 lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "leaf", 
-         year == 1)
+         year == 1) %>% 
+  mutate(lfm_wet_wt_y1_g = lfm_wet_wt_g, 
+         lfm_wet_per_dry_y1_g = lfm_wet_per_dry_g, 
+         lfm_dry_wt_y1_g = lfm_dry_wt_g, 
+         lfm_y1_percent = lfm_percent, 
+         tree = as.numeric(tree)) %>% 
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
+
+lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  filter(type == "stem", 
+         year == 0)
 
 lfm_stem_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "leaf",
          year == 1)
+
+
+lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  filter(type == "both",
+         year == 3)  %>% 
+  mutate(lfm_wet_wt_both_g = lfm_wet_wt_g, 
+         lfm_wet_per_dry_both_g = lfm_wet_per_dry_g, 
+         lfm_dry_wt_both_g = lfm_dry_wt_g, 
+         lfm_both_percent = lfm_percent, 
+         tree = as.numeric(tree), 
+         date_lfm_both = date_lfm) %>% 
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
+
+lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
+                       by = c("tree", "time", "date_lfm", "week", "type", "notes"), all = T) %>% 
+  distinct() %>% 
+  select(-X)
+
+lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
+                            by = c("tree", "time", "date_lfm", "week", "type", "notes"), all = T) %>% 
+  distinct() 
 ```
 
 #LFM + RWC + WC + WP:
 
 ```{r}
-wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_y0_df, 
+wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
                                by = c("tree", "week", "time"), 
-                               all = T) 
+                               all = T) %>% 
+  distinct()
 
 missings_df <- wp_wc_rwc_lfm_df_wide %>% 
   select(tree, week, time, species, date_wp, date_wc, date_rwc, date_lfm) %>% 
