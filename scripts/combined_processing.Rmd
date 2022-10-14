@@ -327,7 +327,7 @@ all_water_df %>%
           rwc_percent < 300) %>% 
   ggplot(aes(y = -1*mpa, 
              x = rwc_percent, 
-             color = species, 
+             color = week 
              #size = week
              )) +
   geom_point() +
