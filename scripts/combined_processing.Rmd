@@ -16,7 +16,20 @@ library(lubridate)
 library(readxl)
 library(gridExtra)
  install.packages("data.table")
- 
+ devtools::install_github("an-bui/calecopal")
+ library(calecopal)
+ names(cal_palettes)
+```
+
+Change ggplot to be prettier: 
+
+```{r setup, include=FALSE}
+ggplot <- function(...) { ggplot2::ggplot(...) + 
+    theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+          panel.grid.major = element_blank(),  # Hide major gridlines
+          panel.grid.minor = element_blank()) +  # Hide minor gridlines
+    scale_color_manual(values = cal_palette("superbloom3"))
+}
 ```
 
 ```{r}
@@ -241,6 +254,8 @@ lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
 
 #LFM + RWC + WC + WP (wide):
 
+- calculate RWC (percent lwc is of saturated wc)
+
 ```{r}
 wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
                                by = c("tree", "week", "time"), 
@@ -257,7 +272,7 @@ all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>%
   
 ```
 
-What are we missing??? 
+Q: What are we missing??? 
 
 A: A lot....but where??
 
