@@ -15,8 +15,8 @@ library(tidyverse)
 library(lubridate)
 library(readxl)
 library(gridExtra)
- install.packages("data.table")
- devtools::install_github("an-bui/calecopal")
+ #install.packages("data.table")
+#devtools::install_github("an-bui/calecopal")
  library(calecopal)
  names(cal_palettes)
 ```
@@ -39,6 +39,15 @@ dataversion <- paste0("Data_", datver)
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
 tlp_quag <- -3
+```
+
+#Rerun processing:
+Run all scripts for processing to make sure those are updated: 
+
+(NOTE: if changing datver, will have to change in each of these scripts)
+
+```{r, warning=FALSE}
+list.files("processing-scripts", full.names = TRUE) %>% walk(source)
 ```
 
 #WC:
@@ -77,11 +86,9 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
      TRUE ~ lwc_leaf
    )) %>% 
   select(-date)
-```
 
 #WP:
 
-```{r}
 wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv"))) %>%
   #mutate(date = lubridate::ymd(date)) %>% 
   select(-...1, -rep) %>% 
@@ -95,13 +102,9 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
      TRUE ~ tree), 
   date_wp = date) %>% 
   select(-tag, -plot_number, -date )
-```
 
 #WC + WP:
 
-Combine:
-
-```{r}
 wp_wc_df <- merge(wp_df, wc_df, 
                   by = c("tree","plot", "site", "species", "time", "timing", "week", "mpa"), 
                   all = T) %>% 
@@ -109,10 +112,9 @@ wp_wc_df <- merge(wp_df, wc_df,
          species != "LEU") %>% 
   rowwise() %>% 
     mutate(lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T))
-```
 
 #tree info
-```{r}
+
 trees_sites_df <- wp_wc_df %>% 
   select(tree, plot, site, species) %>% 
   distinct()
@@ -142,16 +144,17 @@ wp_wc_df %>%
              y = lwc_bulk, 
              color = species, 
              size = week)) +
-  geom_jitter()
+  geom_jitter() +
+  geom_abline() +
+  ylim(-1, 3) +
+  xlim(0, 3)
 ```
 
 #RWC:
 
 ```{r}
 rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
-```
 
-```{r}
 rwc_df_leaves_y0 <- rwc_df %>% 
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
@@ -179,11 +182,10 @@ mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
   distinct() %>% 
   select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc) %>% 
   as.data.frame()
-```
+
 
 #RWC + WC + WP:
 
-```{r}
 wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
                     by = c("tree",
                            "week"
@@ -203,7 +205,10 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
  #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
 ```
 
+
 #LFM:
+
+Here we are splitting the LFM into different categories: stem vs. leaves, and y1 vs. y0. 
 
 ```{r}
 lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
@@ -269,12 +274,16 @@ wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide,
  #make a shorter name because the long one will be a pain to write out!
 all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
   mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100))
+
+write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
   
 ```
 
 Q: What are we missing??? 
 
 A: A lot....but where??
+
+(This is each date we collected the associated metric, so if NA in that cell then we don't have it)
 
 ```{r}
 missings_df <- wp_wc_rwc_lfm_df_wide_trees %>% 

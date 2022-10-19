@@ -1,13 +1,3 @@
----
-title: "SWC_processing"
-author: "Indra Boving"
-date: "6/3/2022"
-output: html_document
----
-
-##setup
-
-```{r setup, include=FALSE}
 library(data.table)
 library(janitor)
 library(here)
@@ -16,23 +6,20 @@ library(lubridate)
 library(readxl)
 library(gridExtra)
 library(MetBrewer)
- install.packages("data.table")
-```
+#install.packages("data.table")
 
-
-```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
 datver <- "10182022"
 dataversion <- paste0("Data_", datver)
-```
+
 
 #Field data: 
 
-Read in water potential data:
+#Read in water potential data:
+  
+#Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
-Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
-```{r}
 rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
   mutate(date = ymd(date), 
@@ -57,16 +44,15 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
 write.csv(rwc_df, here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
 dlookr::diagnose(rwc_df)
-```
 
-Take a look! 
 
-```{r}
+#Take a look! 
+  
 rwc_df %>% 
   filter(year %in% c(0,1)) %>% 
   ggplot(aes(y = swc_per_dry_g, x = date, color = as.factor(type))) +
   geom_jitter()+
   facet_wrap(~year) 
-```
+
 
 
