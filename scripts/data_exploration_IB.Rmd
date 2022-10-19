@@ -1,0 +1,111 @@
+---
+title: "Combining WC, WP, LFM, and RWC data into one datasheet"
+author: "Indra Boving"
+date: "6/3/2022"
+output: html_document
+---
+
+##setup
+
+```{r setup, include=FALSE}
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+ #install.packages("data.table")
+#devtools::install_github("an-bui/calecopal")
+ library(calecopal)
+ names(cal_palettes)
+```
+
+Change ggplot to be prettier: 
+
+```{r setup, include=FALSE}
+ggplot <- function(...) { ggplot2::ggplot(...) + 
+    theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+          panel.grid.major = element_blank(),  # Hide major gridlines
+          panel.grid.minor = element_blank()) +  # Hide minor gridlines
+    scale_color_manual(values = cal_palette("superbloom3"))
+}
+```
+
+```{r}
+## Data file version (so it's not hard coded in every read_excel() call)
+datver <- "08182022"
+dataversion <- paste0("Data_", datver)
+
+tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
+tlp_quag <- -3
+
+
+all_water_df <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
+```
+
+
+####Visualize!
+
+LFM x MPa, year 0
+
+```{r}
+all_water_df %>% 
+  filter(lfm_percent > 20, 
+         lfm_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, x = lfm_percent, color = species)) +
+  geom_point()
+```
+
+LFM x MPa, year 1
+
+```{r}
+all_water_df %>% 
+  filter(lfm_y1_percent > 20, 
+         lfm_y1_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, x = lfm_y1_percent, color = species)) +
+  geom_point()
+```
+
+LFM year 1 vs. year 0
+
+```{r}
+all_water_df %>% 
+  filter(lfm_y1_percent > 20, 
+         lfm_y1_percent < 300,
+         lfm_percent > 20, 
+         lfm_percent < 300)  %>% 
+  ggplot(aes(y = lfm_percent, 
+             x = lfm_y1_percent, 
+             color = species, 
+             size = week)) +
+  geom_point() + geom_abline()
+```
+Mpa x LWC: 
+
+```{r}
+all_water_df %>% 
+  # filter(lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, 
+             x = lwc_mean, 
+             color = species, 
+             #size = week
+             )) +
+  geom_point() +
+  facet_wrap(~species)
+```
+RWC vs. LWC
+
+```{r}
+all_water_df %>% 
+   filter(rwc_percent > 0, 
+          rwc_percent < 300) %>% 
+  ggplot(aes(y = -1*mpa, 
+             x = rwc_percent, 
+             color = week 
+             #size = week
+             )) +
+  geom_point() +
+  facet_wrap(~species)
+```

@@ -50,7 +50,7 @@ wc308 <-  read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
   mutate(date = mdy("03-08-2022")) 
 
 # remove mislabeled tree 2567 which was actually 2367 
-wc308 <- wc38[-which(wc38$tag=="2567"),]
+#wc308 <- wc38[-which(wc38$tag=="2567"),]
 
 #Date: 315 WP + LWC
 wc315 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="315 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
@@ -198,7 +198,7 @@ wc228_long_wet <- wc228md %>%
 
 wc228_long_dry_premerge <- merge(wc228_long_md, wc228_long_dry, all.x = T) #combine MPa data with dry data
 
-wc_long_228 <- merge(wc228_long_dry_premerge, wc228_long_wet, all.x = T) #combine MPa, dry, and wet data
+wc_long_md_228 <- merge(wc228_long_dry_premerge, wc228_long_wet, all.x = T) #combine MPa, dry, and wet data
 
 #______________________________________________________________
 ############### 03-03-2022 #######################################
@@ -259,7 +259,7 @@ wc303_long_wet <- wc303md %>%
 
 wc303_long_dry_premerge <- merge(wc303_long_md, wc303_long_dry, all.x = T)
 
-wc_long_303 <- merge(wc303_long_dry_premerge, wc303_long_wet)
+wc_long_md_303 <- merge(wc303_long_dry_premerge, wc303_long_wet)
 
 #______________________________________________________________
 ############### 03-08-2022 #######################################
@@ -320,7 +320,7 @@ wc308_long_wet <- wc308md %>%
 
 wc308_long_dry_premerge <- merge(wc308_long_md, wc308_long_dry, all.x = T)
 
-wc_long_308 <- merge(wc308_long_dry_premerge, wc308_long_wet)
+wc_long_md_308 <- merge(wc308_long_dry_premerge, wc308_long_wet)
 
 #______________________________________________________________
 ############### 03-15-2022 #######################################
@@ -381,7 +381,7 @@ wc315_long_wet <- wc315md %>%
 
 wc315_long_dry_premerge <- merge(wc315_long_md, wc315_long_dry, all.x = T)
 
-wc_long_315 <- merge(wc315_long_dry_premerge, wc315_long_wet, all.x = T)
+wc_long_md_315 <- merge(wc315_long_dry_premerge, wc315_long_wet, all.x = T)
 
 #______________________________________________________________
 ############### 03-23-2022 #######################################
@@ -443,7 +443,7 @@ dplyr::select(!matches("md[1-9]"), -md_avg)
 
 wc323_long_dry_premerge <- merge(wc323_long_md, wc323_long_dry, all = T)
 
-wc_long_323 <- merge(wc323_long_dry_premerge, wc323_long_wet, all= T)
+wc_long_md_323 <- merge(wc323_long_dry_premerge, wc323_long_wet, all= T)
 
 ##No specific LWC
 
@@ -508,7 +508,7 @@ wc325_long_wet <- wc325md %>%
 
 wc325_long_dry_premerge <- merge(wc325_long_md, wc325_long_dry, all = T)
 
-wc_long_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, all= T)
+wc_long_md_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, all= T)
 
 ##No specific LWC
 
@@ -571,7 +571,7 @@ wc330_long_wet <- wc330md %>%
 
 wc330_long_dry_premerge <- merge(wc330_long_md, wc330_long_dry, all.x = T)
 
-wc_long_330 <- merge(wc330_long_dry_premerge, wc330_long_wet, all.x = T)
+wc_long_md_330 <- merge(wc330_long_dry_premerge, wc330_long_wet, all.x = T)
 
 ##no MIDDAY 
 
@@ -591,7 +591,7 @@ wc404_long_md <- wc404md %>%
                , names_to="md"
                , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
-  mutate(date = mdy("04-11-2022")) 
+  mutate(date = mdy("04-04-2022")) 
 
 wc404_long_dry <- wc404md %>% 
   pivot_longer(cols=matches(c("md[1-9]_g_dry","md_bulk_dry"))
@@ -634,7 +634,7 @@ wc404_long_wet <- wc404md %>%
 
 wc404_long_dry_premerge <- merge(wc404_long_md, wc404_long_dry, all = T)
 
-wc_long_404 <- merge(wc404_long_dry_premerge, wc404_long_wet, all = T)
+wc_long_md_404 <- merge(wc404_long_dry_premerge, wc404_long_wet, all = T)
 
 #Just Piney
 
@@ -654,7 +654,7 @@ wc406_long_md <- wc406md %>%
                , names_to="md"
                , values_to="mpa_md"
                , values_drop_na=TRUE)%>% 
-  mutate(date = mdy("04-11-2022")) 
+  mutate(date = mdy("04-06-2022")) 
 
 wc406_long_dry <- wc406md %>% 
   pivot_longer(cols=matches(c("md[1-9]_g_dry","md_bulk_dry"))
@@ -697,7 +697,7 @@ wc406_long_wet <- wc406md %>%
 
 wc406_long_dry_premerge <- merge(wc406_long_md, wc406_long_dry, all = T)
 
-wc_long_406 <- merge(wc406_long_dry_premerge, wc406_long_wet, all = T)
+wc_long_md_406 <- merge(wc406_long_dry_premerge, wc406_long_wet, all = T)
 
 #Just Piney
 
@@ -760,7 +760,7 @@ wc411_long_wet <- wc411md %>%
 
 wc411_long_dry_premerge <- merge(wc411_long_md, wc411_long_dry, all = T)
 
-wc_long_411 <- merge(wc411_long_dry_premerge, wc411_long_wet, all = T)
+wc_long_md_411 <- merge(wc411_long_dry_premerge, wc411_long_wet, all = T)
 
 #Just Piney
 
@@ -826,7 +826,7 @@ wc413_long_wet <- wc413md %>%
 
 wc413_long_dry_premerge <- merge(wc413_long_md, wc413_long_dry)
 
-wc_long_413 <- merge(wc413_long_dry_premerge, wc413_long_wet)
+wc_long_md_413 <- merge(wc413_long_dry_premerge, wc413_long_wet)
 
 
 ##Have bulk and individual leaves
@@ -891,7 +891,7 @@ wc425_long_wet <- wc425md %>%
 
 wc425_long_dry_premerge <- merge(wc425_long_md, wc425_long_dry, all.x = T)
 
-wc_long_425 <- merge(wc425_long_dry_premerge, wc425_long_wet, all.x = T)
+wc_long_md_425 <- merge(wc425_long_dry_premerge, wc425_long_wet, all.x = T)
 
 #only bulk
 
@@ -955,7 +955,7 @@ wc427_long_wet <- wc427md %>%
 
 wc427_long_dry_premerge <- merge(wc427_long_md, wc427_long_dry, all.x = T)
 
-wc_long_427 <- merge(wc427_long_dry_premerge, wc427_long_wet, all.x = T)
+wc_long_md_427 <- merge(wc427_long_dry_premerge, wc427_long_wet, all.x = T)
 
 #only bulk
 
@@ -1018,7 +1018,7 @@ wc504_long_wet <- wc504md %>%
 
 wc504_long_dry_premerge <- merge(wc504_long_md, wc504_long_dry, all.x = T)
 
-wc_long_504 <- merge(wc504_long_dry_premerge, wc504_long_wet, all.x = T)
+wc_long_md_504 <- merge(wc504_long_dry_premerge, wc504_long_wet, all.x = T)
 
 #only bulk
 
@@ -1081,7 +1081,7 @@ wc509_long_wet <- wc509md %>%
 
 wc509_long_dry_premerge <- merge(wc509_long_md, wc509_long_dry, all.x = T)
 
-wc_long_509 <- merge(wc509_long_dry_premerge, wc509_long_wet, all.x = T)
+wc_long_md_509 <- merge(wc509_long_dry_premerge, wc509_long_wet, all.x = T)
 
 #only bulk
 
@@ -1144,7 +1144,7 @@ wc523_long_wet <- wc523md %>%
 
 wc523_long_dry_premerge <- merge(wc523_long_md, wc523_long_dry, all.x = T)
 
-wc_long_523 <- merge(wc523_long_dry_premerge, wc523_long_wet, all.x = T) %>% 
+wc_long_md_523 <- merge(wc523_long_dry_premerge, wc523_long_wet, all.x = T) %>% 
   #mutate(md_bulk_dry = mean("md_bulk_dry_y0"), "md_bulk_dry_y1"), 
       #   md_bulk_wet = mean("md_bulk_wet_y0", "md_bulk_wet_y1")) %>% ##y1 is only shrubs
   mutate(md_bulk_dry = md_bulk_dry_y0, 
@@ -1211,7 +1211,7 @@ wc525_long_wet <- wc525md %>%
 
 wc525_long_dry_premerge <- merge(wc525_long_md, wc525_long_dry, all.x = T)
 
-wc_long_525 <- merge(wc525_long_dry_premerge, wc525_long_wet, all.x = T) 
+wc_long_md_525 <- merge(wc525_long_dry_premerge, wc525_long_wet, all.x = T) 
 #%>% 
   #mutate(md_bulk_dry = mean("md_bulk_dry_y0"), "md_bulk_dry_y1"), 
   #   md_bulk_wet = mean("md_bulk_wet_y0", "md_bulk_wet_y1")) %>% ##y1 is only shrubs
@@ -1279,7 +1279,7 @@ wc719_long_wet <- wc719md %>%
 
 wc719_long_dry_premerge <- merge(wc719_long_md, wc719_long_dry, all.x = T) #combine MPa data with dry data
 
-wc_long_719 <- merge(wc719_long_dry_premerge, wc719_long_wet, all.x =T) #combine MPa, dry, and wet data
+wc_long_md_719 <- merge(wc719_long_dry_premerge, wc719_long_wet, all.x =T) #combine MPa, dry, and wet data
 
 #______________________________________________________________
 ############### 08-18-2022 #######################################
@@ -1340,7 +1340,7 @@ wc818_long_wet <- wc818md %>%
 
 wc818_long_dry_premerge <- merge(wc818_long_md, wc818_long_dry, all.x = T) #combine MPa data with dry data
 
-wc_long_818 <- merge(wc818_long_dry_premerge, wc818_long_wet, all.x = T) #combine MPa, dry, and wet data
+wc_long_md_818 <- merge(wc818_long_dry_premerge, wc818_long_wet, all.x = T) #combine MPa, dry, and wet data
 
 ##Not entered yet, as of 8-28-2022
 #______________________________________________________________
@@ -1349,25 +1349,25 @@ wc_long_818 <- merge(wc818_long_dry_premerge, wc818_long_wet, all.x = T) #combin
 
 
 wc_alldates_md <- rbind( 
-                        wc_long_411, 
-                        wc_long_303, 
-                        wc_long_308,
-                        wc_long_323,
-                        wc_long_325, 
-                        wc_long_330, 
-                        wc_long_315, 
-                        wc_long_425, 
-                        wc_long_427,
-                        wc_long_413, 
-                        wc_long_406,
-                        wc_long_404,
-                        wc_long_504, 
-                        wc_long_509,
-                        wc_long_523,
-                        wc_long_525,
-                        wc_long_228, 
-                        wc_long_719, 
-                        wc_long_818) %>% 
+                        wc_long_md_411, 
+                        wc_long_md_303, 
+                        wc_long_md_308,
+                        wc_long_md_323,
+                        wc_long_md_325, 
+                        wc_long_md_330, 
+                        wc_long_md_315, 
+                        wc_long_md_425, 
+                        wc_long_md_427,
+                        wc_long_md_413, 
+                        wc_long_md_406,
+                        wc_long_md_404,
+                        wc_long_md_504, 
+                        wc_long_md_509,
+                        wc_long_md_523,
+                        wc_long_md_525,
+                        wc_long_md_228, 
+                        wc_long_md_719, 
+                        wc_long_md_818) %>% 
   mutate(tree = tag) %>% 
   mutate(tree = case_when(tree %in% c(#"ARCA_ch",
     #"ARCA_CH", 
@@ -1854,7 +1854,7 @@ wc404_long_pd <- wc404pd %>%
                , names_to="pd"
                , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = mdy("04-11-2022")) 
+  mutate(date = mdy("04-04-2022")) 
 
 wc404_long_dry <- wc404pd %>% 
   pivot_longer(cols=matches(c("pd[1-9]_g_dry","pd_bulk_dry"))
@@ -1917,7 +1917,7 @@ wc406_long_pd <- wc406pd %>%
                , names_to="pd"
                , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = mdy("04-11-2022")) 
+  mutate(date = mdy("04-06-2022")) 
 
 wc406_long_dry <- wc406pd %>% 
   pivot_longer(cols=matches(c("pd[1-9]_g_dry","pd_bulk_dry"))

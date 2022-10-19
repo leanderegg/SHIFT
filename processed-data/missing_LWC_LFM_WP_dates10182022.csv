@@ -1,1317 +1,1151 @@
 "","tree","week","species","site","plot","time","date_wp","date_wc","date_lfm","date_rwc"
-"1",1478,13,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-03-30",NA
-"2",1478,13,"blue oak","Cucu Mesa","Low","pd",NA,NA,"2022-03-30",NA
-"3",1478,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,NA,NA,NA
-"4",1478,15,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-11,NA,"2022-04-14"
-"5",1478,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"6",1478,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,NA,NA
-"7",1478,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"8",1478,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"1",1478,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"2",1478,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"3",1478,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,NA,NA
+"4",1478,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"5",1478,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"6",1478,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
+"7",1478,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
+"8",1478,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
 "9",1478,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"10",1478,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
-"11",1478,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
-"12",1478,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
-"13",2004,10,"blue oak","Cucu Mesa","High","md",2022-03-08,NA,"2022-03-11",NA
-"14",2004,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,NA,NA,NA
-"15",2004,14,"blue oak","Cucu Mesa","High","md",2022-04-04,NA,NA,NA
-"16",2004,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-11,"2022-04-12","2022-04-14"
-"17",2004,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-11,"2022-04-12","2022-04-14"
-"18",2004,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,NA,"2022-03-11",NA
-"19",2004,13,"blue oak","Cucu Mesa","High","pd",NA,NA,"2022-03-30",NA
-"20",2004,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-13,"2022-04-12","2022-04-14"
-"21",2004,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,"2022-04-12","2022-04-14"
-"22",2004,15,"blue oak","Cucu Mesa","High","pd",NA,2022-04-11,NA,"2022-04-14"
-"23",2004,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
-"24",2004,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
-"25",2004,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"26",2004,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
-"27",2004,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
-"28",2004,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"29",2005,10,"blue oak","Cucu Mesa","High","md",2022-03-08,NA,NA,NA
-"30",2005,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,NA,NA,NA
-"31",2005,14,"blue oak","Cucu Mesa","High","md",2022-04-04,NA,NA,NA
-"32",2005,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-13,NA,"2022-04-14"
-"33",2005,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"34",2005,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,NA,"2022-03-11",NA
-"35",2005,13,"blue oak","Cucu Mesa","High","md",NA,NA,"2022-03-30",NA
-"36",2005,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"37",2005,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-11,NA,"2022-04-14"
-"38",2005,13,"blue oak","Cucu Mesa","High","pd",NA,NA,"2022-03-30",NA
-"39",2005,15,"blue oak","Cucu Mesa","High","pd",NA,2022-04-11,NA,"2022-04-14"
-"40",2005,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
-"41",2005,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
-"42",2005,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"43",2005,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-27"
-"44",2005,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"45",2005,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
-"46",2005,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
-"47",2005,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
-"48",2006,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,NA,NA,NA
-"49",2006,10,"blue oak","Cucu Mesa","High","md",2022-03-08,NA,"2022-03-11",NA
-"50",2006,14,"blue oak","Cucu Mesa","High","md",2022-04-04,NA,NA,NA
-"51",2006,13,"blue oak","Cucu Mesa","High","pd",NA,NA,"2022-03-30",NA
-"52",2006,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-11,"2022-04-12",NA
-"53",2006,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,"2022-04-12",NA
-"54",2006,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,NA,NA,NA
-"55",2006,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-11,"2022-04-12",NA
-"56",2006,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-13,"2022-04-12",NA
-"57",2006,15,"blue oak","Cucu Mesa","High","pd",NA,2022-04-11,NA,NA
-"58",2006,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
-"59",2006,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
-"60",2006,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
-"61",2006,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"62",2006,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"63",2006,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
-"64",2006,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
-"65",2006,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
-"66",2006,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
-"67",2007,10,"blue oak","Cucu Mesa","High","md",2022-03-08,NA,"2022-03-08",NA
-"68",2007,10,"blue oak","Cucu Mesa","High","md",2022-03-08,NA,"2022-03-11",NA
-"69",2007,13,"blue oak","Cucu Mesa","High","pd",NA,NA,"2022-03-30",NA
-"70",2007,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,NA,"2022-03-11",NA
-"71",2007,13,"blue oak","Cucu Mesa","High","md",NA,NA,"2022-03-30",NA
-"72",2007,14,"blue oak","Cucu Mesa","High","md",2022-04-04,NA,NA,NA
-"73",2007,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-13,NA,"2022-04-14"
-"74",2007,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-11,NA,"2022-04-14"
-"75",2007,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"76",2007,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"77",2007,15,"blue oak","Cucu Mesa","High","pd",NA,2022-04-11,NA,"2022-04-14"
-"78",2007,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,NA,NA,NA
-"79",2007,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
-"80",2007,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
-"81",2007,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"82",2007,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"83",2007,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
-"84",2007,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
-"85",2007,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
-"86",2007,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
-"87",2007,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
-"88",2008,14,"blue oak","Cucu Mesa","High","md",2022-04-04,NA,NA,NA
-"89",2008,15,"blue oak","Cucu Mesa","High","md",NA,2022-04-11,NA,NA
-"90",2008,15,"blue oak","Cucu Mesa","High","pd",NA,2022-04-11,NA,NA
-"91",2008,13,"blue oak","Cucu Mesa","High","pd",NA,NA,"2022-03-30",NA
-"92",2008,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"93",2008,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,NA,NA,NA
-"94",2008,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"95",2008,13,"blue oak","Cucu Mesa","High","md",NA,NA,"2022-03-30",NA
-"96",2009,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"97",2009,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"98",2009,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"99",2009,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"100",2009,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"101",2009,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-14"
-"102",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"103",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"104",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"105",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"106",2009,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-12"
-"107",2009,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-14"
-"108",2009,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-12"
-"109",2009,14,"blue oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"110",2009,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"111",2009,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"112",2009,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"113",2009,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"114",2009,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"115",2009,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
-"116",2009,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"117",2009,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"118",2009,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"119",2009,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"120",2009,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"121",2009,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"122",2009,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"123",2009,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"124",2010,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
-"125",2010,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"126",2010,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"127",2010,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
-"128",2010,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"129",2010,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"130",2010,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"131",2010,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"132",2010,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"133",2010,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"134",2010,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"135",2010,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"136",2010,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"137",2010,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
-"138",2010,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"139",2010,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"140",2010,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"141",2010,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"142",2010,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"143",2010,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"144",2010,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"145",2011,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"146",2011,13,"blue oak","LL","Weathertop","pd",NA,NA,"2022-03-30",NA
-"147",2011,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-14"
-"148",2011,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"149",2011,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-14"
-"150",2011,14,"blue oak","LL","Weathertop","pd",2022-04-04,NA,NA,NA
-"151",2011,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"152",2011,15,"blue oak","LL","Weathertop","pd",NA,2022-04-11,NA,"2022-04-14"
-"153",2011,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"154",2011,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"155",2011,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"156",2011,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"157",2011,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"158",2011,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"159",2011,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"160",2011,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
-"161",2011,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"162",2011,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"163",2011,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"164",2011,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"165",2011,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"166",2011,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"167",2011,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"168",2012,13,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-03-30",NA
-"169",2012,13,"blue oak","Cucu Mesa","Low","pd",NA,NA,"2022-03-30",NA
-"170",2012,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,NA,NA,NA
-"171",2012,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"172",2012,15,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-11,NA,"2022-04-14"
-"173",2012,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
-"174",2012,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"175",2012,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"176",2012,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"177",2012,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
-"178",2012,29,"blue oak","Cucu Mesa","Low","pd",2022-07-19,2022-07-19,NA,NA
-"179",2012,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
-"180",2012,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA,NA
-"181",2012,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"182",2013,14,"blue oak","Cucu Mesa","Low","md",2022-04-04,NA,NA,NA
-"183",2013,13,"blue oak","Cucu Mesa","Low","pd",NA,NA,"2022-03-30",NA
-"184",2013,15,"blue oak","Cucu Mesa","Low","md",NA,2022-04-13,NA,"2022-04-14"
-"185",2013,13,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-03-30",NA
-"186",2013,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"187",2013,15,"blue oak","Cucu Mesa","Low","md",NA,2022-04-11,NA,"2022-04-14"
-"188",2013,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,NA,NA,NA
-"189",2013,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"190",2013,15,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-11,NA,"2022-04-14"
-"191",2013,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
-"192",2013,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"193",2013,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"194",2013,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"195",2013,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
-"196",2013,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
-"197",2014,13,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-03-30",NA
-"198",2014,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,NA,NA,NA
-"199",2014,13,"blue oak","Cucu Mesa","Low","pd",NA,NA,"2022-03-30",NA
-"200",2014,15,"blue oak","Cucu Mesa","Low","md",NA,2022-04-11,NA,NA
-"201",2014,15,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-11,NA,NA
-"202",2014,21,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-05-23",NA
-"203",2014,14,"blue oak","Cucu Mesa","Low","md",2022-04-04,NA,NA,NA
-"204",2015,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,NA,NA,NA
-"205",2015,13,"blue oak","Cucu Mesa","Low","pd",NA,NA,"2022-03-30",NA
-"206",2015,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,NA
-"207",2015,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
-"208",2015,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"209",2015,13,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-03-30",NA
-"210",2015,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"211",2015,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"212",2015,15,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-11,NA,NA
-"213",2015,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
-"214",2015,29,"blue oak","Cucu Mesa","Low","pd",2022-07-19,2022-07-19,NA,NA
-"215",2015,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
-"216",2015,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA,NA
-"217",2015,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"218",2020,10,"blue oak","Chamise","Chamise","md",2022-03-08,NA,"2022-03-11",NA
-"219",2020,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"220",2020,13,"blue oak","Chamise","Chamise","md",NA,NA,"2022-03-30",NA
-"221",2020,13,"blue oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"222",2020,14,"blue oak","Chamise","Chamise","md",2022-04-04,NA,NA,NA
-"223",2020,14,"blue oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"224",2020,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"225",2020,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"226",2020,15,"blue oak","Chamise","Chamise","md",NA,2022-04-13,NA,"2022-04-14"
-"227",2020,15,"blue oak","Chamise","Chamise","md",NA,2022-04-11,NA,"2022-04-14"
-"228",2020,15,"blue oak","Chamise","Chamise","pd",NA,2022-04-11,NA,"2022-04-14"
-"229",2020,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"230",2020,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,NA,NA
-"231",2020,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"232",2020,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"233",2020,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"234",2020,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
-"235",2020,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"236",2020,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"237",2020,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"238",2020,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"239",2021,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"240",2021,14,"blue oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"241",2021,14,"blue oak","Chamise","Chamise","md",2022-04-04,NA,NA,NA
-"242",2021,10,"blue oak","Chamise","Chamise","md",2022-03-08,NA,"2022-03-11",NA
-"243",2021,15,"blue oak","Chamise","Chamise","md",NA,2022-04-13,NA,"2022-04-14"
-"244",2021,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"245",2021,15,"blue oak","Chamise","Chamise","md",NA,2022-04-11,NA,"2022-04-14"
-"246",2021,13,"blue oak","Chamise","Chamise","md",NA,NA,"2022-03-30",NA
-"247",2021,13,"blue oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"248",2021,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"249",2021,15,"blue oak","Chamise","Chamise","pd",NA,2022-04-11,NA,"2022-04-14"
-"250",2021,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
-"251",2021,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"252",2021,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"253",2021,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"254",2021,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"255",2021,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"256",2021,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
-"257",2021,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"258",2021,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"259",2021,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"260",2021,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"261",2021,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"262",2022,10,"live oak","Chamise","Chamise","md",2022-03-08,NA,NA,NA
-"263",2022,11,"live oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"264",2022,14,"live oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"265",2022,13,"live oak","Chamise","Chamise","md",NA,NA,"2022-03-30",NA
-"266",2022,15,"live oak","Chamise","Chamise","pd",NA,2022-04-11,NA,NA
-"267",2022,17,"live oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"268",2022,17,"live oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
-"269",2022,13,"live oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"270",2022,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"271",2022,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"272",2022,21,"live oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"273",2022,21,"live oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"274",2022,29,"live oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"275",2022,29,"live oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"276",2022,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"277",2022,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"278",2023,11,"live oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"279",2023,14,"live oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"280",2023,13,"live oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"281",2023,10,"live oak","Chamise","Chamise","md",2022-03-08,NA,"2022-03-11",NA
-"282",2023,15,"live oak","Chamise","Chamise","pd",NA,2022-04-11,NA,NA
-"283",2023,17,"live oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"284",2023,17,"live oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
-"285",2023,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"286",2023,21,"live oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-25","2022-05-25"
-"287",2023,21,"live oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
-"288",2023,29,"live oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"289",2023,29,"live oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"290",2023,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"291",2023,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"292",2023,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"293",2024,10,"blue oak","Chamise","Chamise","md",2022-03-08,NA,"2022-03-11",NA
-"294",2024,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"295",2024,13,"blue oak","Chamise","Chamise","md",NA,NA,"2022-03-30",NA
-"296",2024,14,"blue oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"297",2024,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,NA
-"298",2024,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-11,NA,NA
-"299",2024,13,"blue oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"300",2024,15,"blue oak","Chamise","Chamise","md",NA,2022-04-13,NA,NA
-"301",2024,15,"blue oak","Chamise","Chamise","md",NA,2022-04-11,NA,NA
-"302",2024,15,"blue oak","Chamise","Chamise","pd",NA,2022-04-11,NA,NA
-"303",2024,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"304",2024,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
-"305",2024,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"306",2024,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"307",2024,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"308",2024,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
-"309",2024,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"310",2024,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"311",2024,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"312",2024,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"313",2024,14,"blue oak","Chamise","Chamise","md",2022-04-04,NA,NA,NA
-"314",2025,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"315",2025,10,"blue oak","Chamise","Chamise","md",2022-03-08,NA,"2022-03-11",NA
-"316",2025,13,"blue oak","Chamise","Chamise","md",NA,NA,"2022-03-30",NA
-"317",2025,14,"blue oak","Chamise","Chamise","pd",2022-04-04,NA,NA,NA
-"318",2025,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"319",2025,15,"blue oak","Chamise","Chamise","pd",NA,2022-04-11,NA,"2022-04-14"
-"320",2025,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
-"321",2025,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
-"322",2025,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
-"323",2025,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
-"324",2025,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
-"325",2025,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
-"326",2025,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
-"327",2025,13,"blue oak","Chamise","Chamise","pd",NA,NA,"2022-03-30",NA
-"328",2025,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
-"329",2025,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"330",2025,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
-"331",2026,10,"blue oak","Chamise","Shedd","md",2022-03-08,NA,NA,NA
-"332",2026,11,"blue oak","Chamise","Shedd","pd",2022-03-15,2022-03-15,NA,NA
-"333",2026,13,"blue oak","Chamise","Shedd","md",NA,NA,"2022-03-30",NA
-"334",2026,13,"blue oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"335",2026,14,"blue oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"336",2026,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"337",2026,15,"blue oak","Chamise","Shedd","md",NA,2022-04-11,NA,"2022-04-14"
-"338",2026,14,"blue oak","Chamise","Shedd","md",2022-04-04,NA,NA,NA
-"339",2026,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"340",2026,15,"blue oak","Chamise","Shedd","md",NA,2022-04-13,NA,"2022-04-14"
-"341",2026,15,"blue oak","Chamise","Shedd","pd",NA,2022-04-11,NA,"2022-04-14"
-"342",2026,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
-"343",2026,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"344",2026,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-25","2022-05-23"
-"345",2026,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"346",2026,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
-"347",2026,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"348",2026,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
-"349",2026,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"350",2026,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
-"351",2027,11,"blue oak","Chamise","Shedd","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"352",2027,10,"blue oak","Chamise","Shedd","md",NA,NA,"2022-03-11",NA
-"353",2027,14,"blue oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"354",2027,13,"blue oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"355",2027,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"356",2027,13,"blue oak","Chamise","Shedd","md",NA,NA,"2022-03-30",NA
-"357",2027,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
-"358",2027,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
-"359",2027,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"360",2027,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
-"361",2027,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"362",2027,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"363",2027,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"364",2027,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"365",2027,15,"blue oak","Chamise","Shedd","pd",NA,2022-04-11,NA,"2022-04-14"
-"366",2028,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"367",2028,13,"blue oak","Chamise","Shedd","md",NA,NA,"2022-03-30",NA
-"368",2028,15,"blue oak","Chamise","Shedd","pd",NA,2022-04-11,NA,"2022-04-14"
-"369",2028,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
-"370",2028,13,"blue oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"371",2028,14,"blue oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"372",2028,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
-"373",2028,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"374",2028,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
-"375",2028,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"376",2028,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"377",2028,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
-"378",2028,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"379",2028,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
-"380",2028,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"381",2029,14,"live oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"382",2029,13,"live oak","Chamise","Shedd","md",NA,NA,"2022-03-30",NA
-"383",2029,15,"live oak","Chamise","Shedd","pd",NA,2022-04-11,NA,NA
-"384",2029,17,"live oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
-"385",2029,13,"live oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"386",2029,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"387",2029,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
-"388",2029,21,"live oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"389",2029,21,"live oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"390",2029,29,"live oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
-"391",2029,29,"live oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"392",2029,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
-"393",2029,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"394",2029,17,"live oak","Chamise","Shedd","pd",NA,NA,"2022-04-27",NA
-"395",2030,13,"live oak","Chamise","Shedd","md",NA,NA,"2022-03-30",NA
-"396",2030,15,"live oak","Chamise","Shedd","pd",NA,2022-04-11,NA,NA
-"397",2030,14,"live oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"398",2030,17,"live oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
-"399",2030,17,"live oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
-"400",2030,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"401",2030,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
-"402",2030,21,"live oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"403",2030,21,"live oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"404",2030,29,"live oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
-"405",2030,29,"live oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"406",2030,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
-"407",2030,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"408",2030,13,"live oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"409",2031,13,"blue oak","Chamise","Shedd",NA,NA,NA,"2022-03-30",NA
-"410",2031,13,"blue oak","Chamise","Shedd","pd",NA,NA,"2022-03-30",NA
-"411",2031,14,"blue oak","Chamise","Shedd","pd",2022-04-04,NA,NA,NA
-"412",2031,15,"blue oak","Chamise","Shedd","pd",NA,2022-04-11,NA,"2022-04-14"
-"413",2031,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,NA,NA
-"414",2031,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,NA,NA
-"415",2031,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"416",2031,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
-"417",2031,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"418",2031,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
-"419",2031,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
-"420",2031,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
-"421",2031,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
-"422",2031,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
-"423",2031,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
-"424",2032,17,"blue oak",NA,NA,"md",NA,2022-04-27,"2022-04-27",NA
-"425",2032,17,"blue oak",NA,NA,"pd",NA,2022-04-27,"2022-04-27",NA
-"426",2084,19,"blue oak",NA,NA,"md",2022-05-09,NA,NA,NA
-"427",2085,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
-"428",2085,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"429",2085,13,"blue oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"430",2085,15,"blue oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"431",2085,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"432",2085,14,"blue oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"433",2085,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"434",2085,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"435",2085,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"436",2085,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"437",2085,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"438",2085,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"439",2085,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"440",2085,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,NA,NA
-"441",2086,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
-"442",2086,14,"blue oak","PineNeedle","Low","md",2022-04-04,NA,NA,NA
-"443",2086,13,"blue oak","PineNeedle","Low","md",NA,NA,"2022-03-30",NA
-"444",2086,13,"blue oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"445",2086,14,"blue oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"446",2086,15,"blue oak","PineNeedle","Low","md",NA,2022-04-11,NA,"2022-04-11"
-"447",2086,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"448",2086,15,"blue oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"449",2086,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"450",2086,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"451",2086,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"452",2086,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"453",2086,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"454",2086,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"455",2086,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"456",2086,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"457",2086,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"458",2087,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
-"459",2087,13,"blue oak","PineNeedle","Low","md",NA,NA,"2022-03-30",NA
-"460",2087,14,"blue oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"461",2087,13,"blue oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"462",2087,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"463",2087,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"464",2087,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"465",2087,21,"blue oak","PineNeedle","Low","md",NA,NA,"2022-05-25",NA
-"466",2087,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"467",2087,15,"blue oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"468",2087,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"469",2087,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"470",2087,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"471",2087,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"472",2088,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
-"473",2088,14,"blue oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"474",2088,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"475",2088,15,"blue oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"476",2088,13,"blue oak","PineNeedle","Low","md",NA,NA,"2022-03-30",NA
-"477",2088,13,"blue oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"478",2088,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"479",2088,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"480",2088,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"481",2088,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"482",2088,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"483",2088,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"484",2088,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"485",2088,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"486",2088,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"487",2089,10,"live oak","PineNeedle","Low","md",2022-03-08,NA,NA,NA
-"488",2089,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"489",2089,13,"live oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"490",2089,14,"live oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"491",2089,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"492",2089,15,"live oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"493",2089,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"494",2089,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"495",2089,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"496",2089,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"497",2089,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"498",2089,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"499",2089,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"500",2090,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
-"501",2090,13,"blue oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"502",2090,14,"blue oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"503",2090,15,"blue oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"504",2090,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"505",2090,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"506",2090,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"507",2090,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"508",2090,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"509",2090,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"510",2090,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"511",2090,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"512",2090,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"513",2090,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"514",2091,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"515",2091,10,"live oak","PineNeedle","Low","md",2022-03-08,NA,NA,NA
-"516",2091,14,"live oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"517",2091,13,"live oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"518",2091,13,"live oak","PineNeedle","Low",NA,NA,NA,"2022-03-30",NA
-"519",2091,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,NA
-"520",2091,15,"live oak","PineNeedle","Low","pd",NA,2022-04-11,NA,NA
-"521",2091,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"522",2091,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"523",2091,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"524",2091,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"525",2091,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"526",2091,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"527",2091,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"528",2091,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"529",2091,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"530",2092,10,"live oak","PineNeedle","Low","md",2022-03-08,NA,NA,NA
-"531",2092,13,"live oak","PineNeedle","Low","md",NA,NA,"2022-03-30",NA
-"532",2092,13,"live oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"533",2092,14,"live oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"534",2092,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,NA
-"535",2092,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"536",2092,15,"live oak","PineNeedle","Low","pd",NA,2022-04-11,NA,NA
-"537",2092,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"538",2092,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"539",2092,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"540",2092,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"541",2092,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"542",2092,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
-"543",2092,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"544",2092,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
-"545",2092,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"546",2093,10,"live oak","PineNeedle","Low","md",2022-03-08,NA,"2022-03-11",NA
-"547",2093,13,"live oak","PineNeedle","Low","pd",NA,NA,"2022-03-30",NA
-"548",2093,14,"live oak","PineNeedle","Low","pd",2022-04-04,NA,NA,NA
-"549",2093,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
-"550",2093,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
-"551",2093,13,"live oak","PineNeedle","Low","md",NA,NA,"2022-03-30",NA
-"552",2093,15,"live oak","PineNeedle","Low","pd",NA,2022-04-11,NA,"2022-04-11"
-"553",2093,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
-"554",2093,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
-"555",2093,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
-"556",2093,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"557",2093,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
-"558",2093,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
-"559",2093,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
-"560",2301,9,"live oak","LL","Hobbiton","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"561",2301,10,"live oak","LL","Hobbiton","md",2022-03-08,NA,NA,NA
-"562",2301,10,"live oak","LL","Hobbiton","pd",2022-03-08,NA,"2022-03-08",NA
-"563",2301,12,"live oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"564",2301,12,"live oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"565",2301,12,"live oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"566",2301,12,"live oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"567",2301,13,"live oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"568",2301,14,"live oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"569",2301,14,"live oak","LL","Hobbiton","pd",2022-04-04,NA,NA,NA
-"570",2301,15,"live oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-14"
-"571",2301,15,"live oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-14"
-"572",2301,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"573",2301,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"574",2301,15,"live oak","LL","Hobbiton","pd",NA,2022-04-11,NA,"2022-04-14"
-"575",2301,15,"live oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"576",2301,9,"live oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"577",2301,17,"live oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"578",2301,18,"live oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,NA
-"579",2301,19,"live oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
-"580",2301,19,"live oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"581",2301,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"582",2301,21,"live oak","LL","Hobbiton","md",2022-05-25,2022-05-23,"2022-05-23",NA
-"583",2301,21,"live oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"584",2301,29,"live oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"585",2301,29,"live oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"586",2301,33,"live oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"587",2301,33,"live oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"588",2301,33,"live oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"589",2301,33,"live oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"590",2309,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"591",2313,9,"blue oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
-"592",2322,9,"live oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
-"593",2322,9,"live oak","LL","Ridge","md",NA,NA,"2022-02-28",NA
-"594",2327,17,"blue oak",NA,NA,"pd",2022-04-25,2022-04-25,NA,NA
-"595",2330,33,"blue oak","LL","Ridge","pd",NA,2022-08-18,NA,NA
-"596",2331,9,"live oak","LL","Ridge","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"597",2331,9,"live oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
-"598",2331,10,"live oak","LL","Ridge","md",2022-03-08,NA,"2022-03-08",NA
-"599",2331,10,"live oak","LL","Ridge","pd",2022-03-08,NA,"2022-03-08",NA
-"600",2331,10,"live oak","LL","Ridge","pd",2022-03-08,NA,"2022-03-11",NA
-"601",2331,12,"live oak","LL","Ridge","md",2022-03-23,2022-03-25,NA,NA
-"602",2331,12,"live oak","LL","Ridge","md",2022-03-25,2022-03-25,NA,NA
-"603",2331,12,"live oak","LL","Ridge","pd",2022-03-23,2022-03-25,NA,NA
-"604",2331,12,"live oak","LL","Ridge","pd",2022-03-25,2022-03-25,NA,NA
-"605",2331,13,"live oak","LL","Ridge","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"606",2331,14,"live oak","LL","Ridge","md",2022-04-06,NA,NA,NA
-"607",2331,15,"live oak","LL","Ridge","md",2022-04-13,2022-04-13,NA,NA
-"608",2331,15,"live oak","LL","Ridge","md",2022-04-13,2022-04-11,NA,NA
-"609",2331,15,"live oak","LL","Ridge","md",NA,2022-04-13,NA,NA
-"610",2331,15,"live oak","LL","Ridge","md",NA,2022-04-11,NA,NA
-"611",2331,15,"live oak","LL","Ridge","md",2022-04-13,NA,NA,NA
-"612",2331,15,"live oak","LL","Ridge","pd",2022-04-11,2022-04-11,NA,NA
-"613",2331,17,"live oak","LL","Ridge","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"614",2331,18,"live oak","LL","Ridge","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"615",2331,19,"live oak","LL","Ridge","md",NA,2022-05-09,NA,NA
-"616",2331,19,"live oak","LL","Ridge","md",2022-05-09,NA,NA,NA
-"617",2331,19,"live oak","LL","Ridge","pd",2022-05-09,NA,NA,NA
-"618",2331,21,"live oak","LL","Ridge","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"619",2331,21,"live oak","LL","Ridge","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"620",2331,29,"live oak","LL","Ridge","md",2022-07-19,2022-07-19,NA,NA
-"621",2331,29,"live oak","LL","Ridge","pd",2022-07-19,2022-07-19,NA,NA
-"622",2331,33,"live oak","LL","Ridge","md",NA,2022-08-18,NA,NA
-"623",2331,33,"live oak","LL","Ridge","md",2022-08-18,NA,NA,NA
-"624",2331,33,"live oak","LL","Ridge","pd",2022-08-18,NA,NA,NA
-"625",2343,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"626",2343,10,"blue oak","LL","Hobbiton","pd",2022-03-08,NA,NA,NA
-"627",2343,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"628",2343,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"629",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
-"630",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"631",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
-"632",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"633",2343,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
-"634",2343,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
-"635",2343,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"636",2343,14,"blue oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"637",2343,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"638",2343,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-12"
-"639",2343,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"640",2343,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-12"
-"641",2343,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"642",2343,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"643",2343,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"644",2343,17,"blue oak","LL","Hobbiton","md",NA,2022-04-27,"2022-04-25",NA
-"645",2343,17,"blue oak","LL","Hobbiton","md",NA,2022-04-25,"2022-04-25",NA
-"646",2343,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"647",2343,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"648",2343,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"649",2343,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"650",2343,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
-"651",2343,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"652",2343,19,"blue oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
-"653",2343,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"654",2343,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"655",2343,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,NA,"2022-05-23"
-"656",2343,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
-"657",2343,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"658",2343,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"659",2343,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"660",2343,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"661",2343,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"662",2343,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"663",2343,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"664",2344,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"665",2345,9,"live oak","LL","Hobbiton","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"666",2345,9,"live oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"667",2345,10,"live oak","LL","Hobbiton","md",2022-03-08,NA,"2022-03-08",NA
-"668",2345,10,"live oak","LL","Hobbiton","pd",2022-03-08,NA,"2022-03-08",NA
-"669",2345,12,"live oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"670",2345,12,"live oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"671",2345,12,"live oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"672",2345,12,"live oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"673",2345,13,"live oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"674",2345,14,"live oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"675",2345,14,"live oak","LL","Hobbiton","pd",2022-04-04,NA,NA,NA
-"676",2345,15,"live oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-14"
-"677",2345,15,"live oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-14"
-"678",2345,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"679",2345,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"680",2345,15,"live oak","LL","Hobbiton","pd",NA,2022-04-11,NA,"2022-04-14"
-"681",2345,15,"live oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"682",2345,17,"live oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"683",2345,17,"live oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"684",2345,18,"live oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,NA
-"685",2345,19,"live oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"686",2345,19,"live oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
-"687",2345,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"688",2345,21,"live oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23",NA
-"689",2345,21,"live oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"690",2345,29,"live oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"691",2345,29,"live oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"692",2345,33,"live oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"693",2345,33,"live oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"694",2345,33,"live oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"695",2345,33,"live oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"696",2346,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"697",2346,10,"blue oak","LL","Hobbiton","md",2022-03-08,NA,NA,NA
-"698",2346,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
-"699",2346,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
-"700",2346,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"701",2346,10,"blue oak","LL","Hobbiton","pd",2022-03-08,NA,NA,NA
-"702",2346,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"703",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
-"704",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"705",2346,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
-"706",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"707",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
-"708",2346,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
-"709",2346,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"710",2346,14,"blue oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"711",2346,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-12"
-"712",2346,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-12"
-"713",2346,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"714",2346,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"715",2346,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"716",2346,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"717",2346,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"718",2346,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"719",2346,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"720",2346,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"721",2346,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"722",2346,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"723",2346,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
-"724",2346,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"725",2346,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
-"726",2346,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"727",2346,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"728",2346,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"729",2346,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"730",2346,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"731",2346,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"732",2346,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"733",2346,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"734",2346,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"735",2347,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"736",2347,10,"blue oak","LL","Hobbiton","md",2022-03-08,NA,NA,NA
-"737",2347,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
-"738",2347,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
-"739",2347,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
-"740",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
-"741",2347,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
-"742",2347,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
-"743",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"744",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
-"745",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"746",2347,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"747",2347,14,"blue oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"748",2347,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"749",2347,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"750",2347,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-12"
-"751",2347,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-12"
-"752",2347,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"753",2347,17,"blue oak","LL","Hobbiton","md",NA,2022-04-27,"2022-04-25",NA
-"754",2347,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"755",2347,17,"blue oak","LL","Hobbiton","md",NA,2022-04-25,"2022-04-25",NA
-"756",2347,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"757",2347,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"758",2347,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"759",2347,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"760",2347,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"761",2347,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"762",2347,19,"blue oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
-"763",2347,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"764",2347,21,"blue oak","LL","Hobbiton","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"765",2347,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"766",2347,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"767",2347,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"768",2347,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"769",2347,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"770",2347,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"771",2347,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"772",2347,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"773",2347,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"774",2348,10,"blue oak","LL","Hobbiton","pd",2022-03-08,NA,NA,NA
-"775",2348,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
-"776",2349,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
-"777",2349,10,"blue oak","LL","Hobbiton","pd",2022-03-08,NA,NA,NA
-"778",2349,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
-"779",2349,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
-"780",2352,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"781",2352,10,"live oak","LL","MiddleEarth","md",2022-03-08,NA,"2022-03-08",NA
-"782",2352,10,"live oak","LL","MiddleEarth","pd",2022-03-08,NA,NA,NA
-"783",2352,11,"live oak","LL","MiddleEarth","pd",NA,NA,"2022-03-15",NA
-"784",2352,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"785",2352,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"786",2352,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"787",2352,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,NA
-"788",2352,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,NA
-"789",2352,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"790",2352,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"791",2352,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
-"792",2352,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"793",2352,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"794",2352,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"795",2352,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
-"796",2352,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"797",2352,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"798",2352,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"799",2352,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"800",2352,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"801",2352,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"802",2352,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"803",2353,14,"live oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"804",2353,15,"live oak","LL","MiddleEarth","md",NA,2022-04-11,NA,NA
-"805",2353,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"806",2353,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"807",2354,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"808",2354,10,"live oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"809",2354,10,"live oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-11",NA
-"810",2354,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"811",2354,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"812",2354,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"813",2354,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"814",2354,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"815",2354,14,"live oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"816",2354,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"817",2354,15,"live oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-12"
-"818",2354,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"819",2354,15,"live oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-12"
-"820",2354,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"821",2354,17,"live oak","LL","MiddleEarth","md",NA,NA,"2022-04-25",NA
-"822",2354,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"823",2354,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"824",2354,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"825",2354,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"826",2354,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"827",2354,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
-"828",2354,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"829",2354,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"830",2354,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"831",2354,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"832",2354,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"833",2354,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"834",2354,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"835",2360,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"836",2360,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"837",2360,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"838",2360,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"839",2360,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"840",2360,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"841",2360,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"842",2360,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"843",2360,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"844",2360,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"845",2360,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"846",2360,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"847",2360,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,NA,"2022-05-23"
-"848",2360,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"849",2360,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"850",2360,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"851",2360,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"852",2360,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"853",2360,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"854",2361,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
-"855",2364,19,"blue oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"856",2364,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"857",2365,10,"blue oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"858",2365,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,NA,NA
-"859",2365,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
-"860",2365,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
-"861",2365,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"862",2365,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"863",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"864",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-23,NA,NA
-"865",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"866",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-23,NA,NA
-"867",2365,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-25,NA,NA
-"868",2365,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
-"869",2365,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"870",2365,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"871",2365,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"872",2365,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"873",2365,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"874",2365,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"875",2365,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"876",2365,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"877",2365,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"878",2365,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"879",2365,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"880",2365,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"881",2365,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"882",2365,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
-"883",2365,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"884",2365,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
-"885",2365,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"886",2365,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"887",2365,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"888",2365,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
-"889",2365,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"890",2365,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"891",2365,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"892",2365,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"893",2365,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"894",2365,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"895",2365,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"896",2366,9,"blue oak","LL","MiddleEarth","md",NA,NA,"2022-02-28",NA
-"897",2366,10,"blue oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"898",2366,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-08",NA
-"899",2367,10,"blue oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"900",2367,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
-"901",2367,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,NA,NA
-"902",2367,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"903",2367,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"904",2367,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
-"905",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-23,NA,NA
-"906",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"907",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-23,NA,NA
-"908",2367,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-25,NA,NA
-"909",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"910",2367,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"911",2367,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"912",2367,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"913",2367,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"914",2367,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"915",2367,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"916",2367,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"917",2367,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"918",2367,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"919",2367,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"920",2367,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"921",2367,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"922",2367,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"923",2367,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
-"924",2367,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"925",2367,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"926",2367,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"927",2367,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"928",2367,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
-"929",2367,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"930",2367,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"931",2367,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"932",2367,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"933",2367,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"934",2367,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"935",2369,10,"blue oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"936",2369,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,NA,NA
-"937",2369,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
-"938",2369,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
-"939",2369,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"940",2369,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"941",2369,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
-"942",2369,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"943",2369,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"944",2369,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"945",2369,15,"blue oak","LL","MiddleEarth","md",2022-04-13,NA,NA,"2022-04-14"
-"946",2369,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"947",2369,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"948",2369,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
-"949",2369,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"950",2369,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
-"951",2369,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"952",2369,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
-"953",2369,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"954",2369,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
-"955",2369,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"956",2369,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,NA,"2022-05-25"
-"957",2369,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"958",2369,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"959",2369,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"960",2369,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"961",2369,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"962",2369,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"963",2370,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,NA,NA
-"964",2370,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"965",2370,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"966",2370,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"967",2370,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"968",2370,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"969",2370,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-12"
-"970",2370,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-12"
-"971",2370,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"972",2370,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"973",2370,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"974",2370,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"975",2370,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"976",2370,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"977",2370,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"978",2370,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"979",2370,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"980",2370,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"981",2370,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"982",2370,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"983",2370,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"984",2370,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"985",2370,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"986",2371,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
-"987",2371,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"988",2371,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"989",2371,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"990",2371,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,NA,NA
-"991",2371,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"992",2371,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-12"
-"993",2371,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-12"
-"994",2371,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-12"
-"995",2371,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-12"
-"996",2371,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"997",2371,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"998",2371,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"999",2371,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"1000",2371,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1001",2371,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1002",2371,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"1003",2371,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1004",2371,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1005",2371,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1006",2371,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1007",2371,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1008",2371,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"1009",2371,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1010",2371,33,"blue oak","LL","Weathertop","pd",2022-08-18,2022-08-18,NA,NA
-"1011",2371,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"1012",2372,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
-"1013",2372,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,NA,NA
-"1014",2372,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
-"1015",2372,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
-"1016",2372,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1017",2372,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1018",2372,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1019",2372,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"1020",2372,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-12"
-"1021",2372,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
-"1022",2372,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1023",2372,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"1024",2372,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"1025",2372,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1026",2372,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1027",2372,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"1028",2372,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1029",2372,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1030",2372,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1031",2372,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1032",2372,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1033",2372,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1034",2372,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"1035",2372,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1036",2373,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
-"1037",2373,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,NA,NA
-"1038",2373,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1039",2373,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1040",2374,10,"blue oak","LL","Ridge","pd",2022-03-08,NA,NA,NA
-"1041",2374,15,"blue oak","LL","Ridge","md",2022-04-13,2022-04-13,NA,NA
-"1042",2375,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
-"1043",2375,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
-"1044",2375,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1045",2375,14,"blue oak","LL","Hobbiton","md",2022-04-06,NA,NA,NA
-"1046",2375,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1047",2375,15,"blue oak","LL","Hobbiton","md",NA,2022-04-11,NA,"2022-04-14"
-"1048",2375,15,"blue oak","LL","Hobbiton","md",NA,2022-04-13,NA,"2022-04-14"
-"1049",2375,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1050",2375,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1051",2375,17,"blue oak","LL","Hobbiton","md",NA,NA,"2022-04-25",NA
-"1052",2375,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1053",2375,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"1054",2375,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
-"1055",2375,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
-"1056",2375,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
-"1057",2375,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1058",2375,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1059",2375,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
-"1060",2375,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
-"1061",2375,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
-"1062",2375,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
-"1063",2375,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
-"1064",2375,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
-"1065",2376,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"1066",2376,10,"live oak","LL","MiddleEarth","md",2022-03-08,NA,"2022-03-08",NA
-"1067",2376,10,"live oak","LL","MiddleEarth","pd",2022-03-08,NA,NA,NA
-"1068",2376,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"1069",2376,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"1070",2376,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"1071",2376,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"1072",2376,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1073",2376,14,"live oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"1074",2376,15,"live oak","LL","MiddleEarth","md",NA,2022-04-11,NA,NA
-"1075",2376,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,NA
-"1076",2376,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,NA
-"1077",2376,15,"live oak","LL","MiddleEarth","md",NA,2022-04-13,NA,NA
-"1078",2376,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,NA
-"1079",2376,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1080",2376,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1081",2376,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
-"1082",2376,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"1083",2376,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"1084",2376,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"1085",2376,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
-"1086",2376,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"1087",2376,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"1088",2376,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"1089",2376,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"1090",2376,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"1091",2376,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"1092",2376,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"1093",2377,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
-"1094",2377,10,"live oak","LL","MiddleEarth","md",2022-03-08,NA,"2022-03-08",NA
-"1095",2377,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"1096",2377,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"1097",2377,10,"live oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-08",NA
-"1098",2377,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1099",2377,14,"live oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"1100",2377,15,"live oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"1101",2377,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1102",2377,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1103",2377,15,"live oak","LL","MiddleEarth","md",2022-04-13,NA,NA,"2022-04-14"
-"1104",2377,15,"live oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"1105",2377,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1106",2377,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1107",2377,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1108",2377,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
-"1109",2377,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"1110",2377,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"1111",2377,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"1112",2377,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1113",2377,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1114",2377,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"1115",2377,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"1116",2377,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"1117",2377,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"1118",2378,10,"blue oak","LL","MiddleEarth","md",2022-03-08,NA,"2022-03-08",NA
-"1119",2378,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-11",NA
-"1120",2378,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"1121",2378,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"1122",2378,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"1123",2378,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"1124",2378,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1125",2378,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"1126",2378,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"1127",2378,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1128",2378,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"1129",2378,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1130",2378,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1131",2378,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1132",2378,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1133",2378,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"1134",2378,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"1135",2378,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"1136",2378,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1137",2378,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1138",2378,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"1139",2378,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"1140",2378,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"1141",2378,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"1142",2378,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"1143",2378,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"1144",2379,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-11",NA
-"1145",2379,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"1146",2379,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"1147",2379,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"1148",2379,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"1149",2379,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1150",2379,14,"blue oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"1151",2379,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1152",2379,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1153",2379,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"1154",2379,15,"blue oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"1155",2379,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1156",2379,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1157",2379,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1158",2379,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"1159",2379,19,"blue oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"1160",2379,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"1161",2379,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1162",2379,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1163",2379,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"1164",2379,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"1165",2379,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"1166",2379,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"1167",2379,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"1168",2379,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"1169",2379,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"1170",2380,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,NA,NA
-"1171",2380,10,"live oak","LL","MiddleEarth","md",2022-03-08,NA,NA,NA
-"1172",2380,10,"live oak","LL","MiddleEarth","pd",2022-03-08,NA,"2022-03-08",NA
-"1173",2380,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
-"1174",2380,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
-"1175",2380,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
-"1176",2380,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
-"1177",2380,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1178",2380,14,"live oak","LL","MiddleEarth","md",2022-04-06,NA,NA,NA
-"1179",2380,15,"live oak","LL","MiddleEarth","md",NA,2022-04-11,NA,"2022-04-14"
-"1180",2380,15,"live oak","LL","MiddleEarth","md",NA,2022-04-13,NA,"2022-04-14"
-"1181",2380,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1182",2380,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1183",2380,13,"live oak","LL","MiddleEarth","md",NA,NA,"2022-03-30",NA
-"1184",2380,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1185",2380,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1186",2380,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1187",2380,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
-"1188",2380,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
-"1189",2380,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
-"1190",2380,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
-"1191",2380,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1192",2380,21,"live oak","LL","MiddleEarth","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
-"1193",2380,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1194",2380,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
-"1195",2380,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
-"1196",2380,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
-"1197",2380,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
-"1198",2380,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
-"1199",2380,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
-"1200",2381,9,"blue oak","LL","Weathertop","md",2022-03-03,2022-03-03,"2022-02-28",NA
-"1201",2381,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,"2022-03-08",NA
-"1202",2381,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
-"1203",2381,11,"blue oak","LL","Weathertop","pd",2022-03-15,2022-03-15,NA,"2022-03-15"
-"1204",2381,10,"blue oak","LL","Weathertop","md",2022-03-08,NA,"2022-03-08",NA
-"1205",2381,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
-"1206",2381,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
-"1207",2381,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1208",2381,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1209",2381,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1210",2381,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"1211",2381,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1212",2381,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-14"
-"1213",2381,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1214",2381,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-14"
-"1215",2381,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1216",2381,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1217",2381,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1218",2381,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,NA
-"1219",2381,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1220",2381,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1221",2381,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1222",2381,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
-"1223",2381,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1224",2381,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1225",2381,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1226",2381,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1227",2381,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1228",2381,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"1229",2382,9,"blue oak","LL","Weathertop","md",2022-03-03,NA,NA,NA
-"1230",2382,9,"blue oak","LL","Weathertop","md",2022-03-03,2022-03-03,NA,NA
-"1231",2382,10,"blue oak","LL","Weathertop","md",2022-03-08,NA,NA,NA
-"1232",2382,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,"2022-03-08",NA
-"1233",2382,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
-"1234",2382,11,"blue oak","LL","Weathertop","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
-"1235",2382,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
-"1236",2382,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
-"1237",2382,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1238",2382,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1239",2382,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1240",2382,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"1241",2382,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,NA
-"1242",2382,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,NA
-"1243",2382,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,NA
-"1244",2382,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,NA
-"1245",2382,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,NA
-"1246",2382,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1247",2382,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1248",2382,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"1249",2382,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1250",2382,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"1251",2382,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1252",2382,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1253",2382,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
-"1254",2382,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1255",2382,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1256",2382,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1257",2382,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1258",2382,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1259",2383,10,"blue oak","LL","Weathertop","md",2022-03-08,NA,NA,NA
-"1260",2383,11,"blue oak","LL","Weathertop","pd",NA,NA,"2022-03-15",NA
-"1261",2383,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1262",2383,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1263",2383,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1264",2383,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,"2022-04-04"
-"1265",2383,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,"2022-03-11",NA
-"1266",2383,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-14"
-"1267",2383,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1268",2383,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1269",2383,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-14"
-"1270",2383,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1271",2383,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1272",2383,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1273",2383,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
-"1274",2383,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"1275",2383,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1276",2383,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1277",2383,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23",NA
-"1278",2383,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23",NA
-"1279",2383,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1280",2383,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1281",2383,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1282",2383,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1283",2383,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1284",2383,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"1285",2384,9,"blue oak","LL","Weathertop","md",2022-03-03,NA,NA,NA
-"1286",2384,10,"blue oak","LL","Weathertop","pd",2022-03-08,NA,"2022-03-08",NA
-"1287",2384,10,"blue oak","LL","Weathertop","md",2022-03-08,NA,NA,NA
-"1288",2384,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
-"1289",2384,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
-"1290",2384,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
-"1291",2384,11,"blue oak","LL","Weathertop","pd",NA,NA,"2022-03-15",NA
-"1292",2384,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
-"1293",2384,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
-"1294",2384,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
-"1295",2384,14,"blue oak","LL","Weathertop","md",2022-04-06,NA,NA,NA
-"1296",2384,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-11,NA,"2022-04-14"
-"1297",2384,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
-"1298",2384,15,"blue oak","LL","Weathertop","md",NA,2022-04-11,NA,"2022-04-14"
-"1299",2384,15,"blue oak","LL","Weathertop","md",NA,2022-04-13,NA,"2022-04-14"
-"1300",2384,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
-"1301",2384,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
-"1302",2384,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
-"1303",2384,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
-"1304",2384,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
-"1305",2384,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
-"1306",2384,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
-"1307",2384,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
-"1308",2384,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
-"1309",2384,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
-"1310",2384,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
-"1311",2384,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
-"1312",2384,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
-"1313",2384,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
-"1314",2384,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
-"1315",2385,13,"blue oak",NA,NA,"md",NA,NA,"2022-03-30",NA
-"1316",2385,17,"blue oak",NA,NA,"pd",NA,2022-04-27,"2022-04-27",NA
+"10",1478,14,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-04-04",NA
+"11",2004,10,"blue oak","Cucu Mesa","High","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"12",2004,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"13",2004,14,"blue oak","Cucu Mesa","High","md",2022-04-04,2022-04-04,NA,NA
+"14",2004,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"15",2004,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
+"16",2004,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"17",2004,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,"2022-04-12","2022-04-14"
+"18",2004,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
+"19",2004,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
+"20",2004,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
+"21",2004,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"22",2005,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"23",2005,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"24",2005,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"25",2005,10,"blue oak","Cucu Mesa","High","md",2022-03-08,2022-03-08,NA,NA
+"26",2005,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
+"27",2005,14,"blue oak","Cucu Mesa","High","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"28",2005,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
+"29",2005,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
+"30",2005,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"31",2005,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-27"
+"32",2005,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"33",2005,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
+"34",2005,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
+"35",2006,10,"blue oak","Cucu Mesa","High","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"36",2006,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"37",2006,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,"2022-04-12",NA
+"38",2006,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
+"39",2006,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,2022-03-08,NA,NA
+"40",2006,14,"blue oak","Cucu Mesa","High","md",2022-04-04,2022-04-04,NA,NA
+"41",2006,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
+"42",2006,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"43",2006,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"44",2006,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
+"45",2006,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
+"46",2006,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
+"47",2006,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
+"48",2006,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
+"49",2007,10,"blue oak","Cucu Mesa","High","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"50",2007,14,"blue oak","Cucu Mesa","High","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"51",2007,10,"blue oak","Cucu Mesa","High","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"52",2007,10,"blue oak","Cucu Mesa","High","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"53",2007,15,"blue oak","Cucu Mesa","High","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"54",2007,17,"blue oak","Cucu Mesa","High","md",NA,2022-04-27,"2022-04-27",NA
+"55",2007,17,"blue oak","Cucu Mesa","High","pd",NA,2022-04-27,"2022-04-27",NA
+"56",2007,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"57",2007,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"58",2007,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"59",2007,29,"blue oak","Cucu Mesa","High","md",2022-07-19,2022-07-19,NA,NA
+"60",2007,29,"blue oak","Cucu Mesa","High","pd",2022-07-19,2022-07-19,NA,NA
+"61",2007,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA,NA
+"62",2007,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA,NA
+"63",2007,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,NA,"2022-05-09"
+"64",2008,14,"blue oak","Cucu Mesa","High","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"65",2008,21,"blue oak","Cucu Mesa","High","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"66",2008,14,"blue oak","Cucu Mesa","High","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"67",2008,21,"blue oak","Cucu Mesa","High","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"68",2009,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"69",2009,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"70",2009,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"71",2009,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"72",2009,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"73",2009,14,"blue oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"74",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"75",2009,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"76",2009,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"77",2009,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"78",2009,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"79",2009,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"80",2009,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"81",2009,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
+"82",2009,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"83",2009,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"84",2009,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"85",2009,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"86",2009,14,"blue oak","LL","Hobbiton","pd",NA,NA,"2022-04-04",NA
+"87",2009,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"88",2009,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"89",2009,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"90",2009,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"91",2010,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
+"92",2010,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"93",2010,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
+"94",2010,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"95",2010,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"96",2010,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"97",2010,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"98",2010,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"99",2010,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"100",2010,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"101",2010,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"102",2010,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"103",2010,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"104",2010,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"105",2010,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
+"106",2010,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"107",2010,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"108",2010,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"109",2010,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"110",2010,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"111",2010,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"112",2011,14,"blue oak","LL","Weathertop","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"113",2011,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"114",2011,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"115",2011,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"116",2011,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"117",2011,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"118",2011,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"119",2011,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"120",2011,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"121",2011,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"122",2011,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
+"123",2011,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"124",2011,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"125",2011,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"126",2011,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"127",2011,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"128",2011,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"129",2011,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"130",2012,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"131",2012,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"132",2012,14,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-04-04",NA
+"133",2012,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"134",2012,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"135",2012,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
+"136",2012,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"137",2012,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"138",2012,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
+"139",2012,29,"blue oak","Cucu Mesa","Low","pd",2022-07-19,2022-07-19,NA,NA
+"140",2012,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
+"141",2012,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA,NA
+"142",2013,14,"blue oak","Cucu Mesa","Low","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"143",2013,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"144",2013,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
+"145",2013,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"146",2013,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"147",2013,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"148",2013,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"149",2013,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
+"150",2013,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
+"151",2014,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"152",2014,14,"blue oak","Cucu Mesa","Low","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"153",2014,21,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-05-23",NA
+"154",2015,14,"blue oak","Cucu Mesa","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"155",2015,14,"blue oak","Cucu Mesa","Low","md",NA,NA,"2022-04-04",NA
+"156",2015,17,"blue oak","Cucu Mesa","Low","md",NA,2022-04-27,"2022-04-27",NA
+"157",2015,17,"blue oak","Cucu Mesa","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"158",2015,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"159",2015,15,"blue oak","Cucu Mesa","Low","md",2022-04-13,2022-04-13,NA,NA
+"160",2015,21,"blue oak","Cucu Mesa","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"161",2015,29,"blue oak","Cucu Mesa","Low","md",2022-07-19,2022-07-19,NA,NA
+"162",2015,29,"blue oak","Cucu Mesa","Low","pd",2022-07-19,2022-07-19,NA,NA
+"163",2015,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA,NA
+"164",2015,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA,NA
+"165",2015,21,"blue oak","Cucu Mesa","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"166",2020,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"167",2020,10,"blue oak","Chamise","Chamise","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"168",2020,14,"blue oak","Chamise","Chamise","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"169",2020,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"170",2020,14,"blue oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"171",2020,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"172",2020,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,NA,NA
+"173",2020,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"174",2020,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"175",2020,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"176",2020,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
+"177",2020,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"178",2020,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"179",2020,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"180",2020,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"181",2021,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"182",2021,10,"blue oak","Chamise","Chamise","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"183",2021,14,"blue oak","Chamise","Chamise","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"184",2021,14,"blue oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"185",2021,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"186",2021,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"187",2021,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
+"188",2021,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"189",2021,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"190",2021,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"191",2021,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"192",2021,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
+"193",2021,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"194",2021,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"195",2021,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"196",2021,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"197",2021,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"198",2022,10,"live oak","Chamise","Chamise","md",2022-03-08,2022-03-08,NA,NA
+"199",2022,11,"live oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"200",2022,14,"live oak","Chamise","Chamise","md",NA,NA,"2022-04-04",NA
+"201",2022,17,"live oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"202",2022,17,"live oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
+"203",2022,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"204",2022,14,"live oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"205",2022,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"206",2022,21,"live oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"207",2022,21,"live oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"208",2022,29,"live oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"209",2022,29,"live oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"210",2022,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"211",2022,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"212",2023,10,"live oak","Chamise","Chamise","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"213",2023,14,"live oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"214",2023,11,"live oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"215",2023,17,"live oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"216",2023,17,"live oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
+"217",2023,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"218",2023,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"219",2023,21,"live oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-25","2022-05-25"
+"220",2023,21,"live oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
+"221",2023,29,"live oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"222",2023,29,"live oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"223",2023,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"224",2023,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"225",2024,10,"blue oak","Chamise","Chamise","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"226",2024,14,"blue oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"227",2024,14,"blue oak","Chamise","Chamise","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"228",2024,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,NA
+"229",2024,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"230",2024,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
+"231",2024,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"232",2024,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"233",2024,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"234",2024,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"235",2024,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
+"236",2024,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"237",2024,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"238",2024,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"239",2024,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"240",2025,10,"blue oak","Chamise","Chamise","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"241",2025,11,"blue oak","Chamise","Chamise","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"242",2025,14,"blue oak","Chamise","Chamise","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"243",2025,15,"blue oak","Chamise","Chamise","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"244",2025,17,"blue oak","Chamise","Chamise","md",NA,2022-04-27,"2022-04-27",NA
+"245",2025,14,"blue oak","Chamise","Chamise","md",NA,NA,"2022-04-04",NA
+"246",2025,17,"blue oak","Chamise","Chamise","pd",NA,2022-04-27,"2022-04-27",NA
+"247",2025,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,NA,"2022-05-09"
+"248",2025,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,NA,"2022-05-09"
+"249",2025,21,"blue oak","Chamise","Chamise","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"250",2025,21,"blue oak","Chamise","Chamise","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-25"
+"251",2025,29,"blue oak","Chamise","Chamise","md",2022-07-19,2022-07-19,NA,NA
+"252",2025,29,"blue oak","Chamise","Chamise","pd",2022-07-19,2022-07-19,NA,NA
+"253",2025,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA,NA
+"254",2025,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA,NA
+"255",2026,11,"blue oak","Chamise","Shedd","pd",2022-03-15,2022-03-15,NA,NA
+"256",2026,14,"blue oak","Chamise","Shedd","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"257",2026,14,"blue oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"258",2026,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"259",2026,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
+"260",2026,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
+"261",2026,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"262",2026,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-25","2022-05-23"
+"263",2026,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"264",2026,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
+"265",2026,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"266",2026,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
+"267",2026,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"268",2026,10,"blue oak","Chamise","Shedd","md",2022-03-08,2022-03-08,NA,NA
+"269",2027,11,"blue oak","Chamise","Shedd","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"270",2027,14,"blue oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"271",2027,10,"blue oak","Chamise","Shedd","md",NA,NA,"2022-03-11",NA
+"272",2027,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"273",2027,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
+"274",2027,14,"blue oak","Chamise","Shedd","md",NA,NA,"2022-04-04",NA
+"275",2027,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"276",2027,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
+"277",2027,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"278",2027,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
+"279",2027,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"280",2027,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"281",2027,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"282",2028,14,"blue oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"283",2028,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
+"284",2028,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"285",2028,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
+"286",2028,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"287",2028,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
+"288",2028,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
+"289",2028,14,"blue oak","Chamise","Shedd","md",NA,NA,"2022-04-04",NA
+"290",2028,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"291",2028,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
+"292",2028,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"293",2028,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"294",2028,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"295",2029,14,"live oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"296",2029,17,"live oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
+"297",2029,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"298",2029,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
+"299",2029,17,"live oak","Chamise","Shedd","pd",NA,NA,"2022-04-27",NA
+"300",2029,21,"live oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"301",2029,21,"live oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"302",2029,29,"live oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
+"303",2029,29,"live oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"304",2029,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
+"305",2029,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"306",2029,14,"live oak","Chamise","Shedd","md",NA,NA,"2022-04-04",NA
+"307",2030,14,"live oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"308",2030,17,"live oak","Chamise","Shedd","pd",NA,2022-04-27,"2022-04-27",NA
+"309",2030,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"310",2030,14,"live oak","Chamise","Shedd","md",NA,NA,"2022-04-04",NA
+"311",2030,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
+"312",2030,17,"live oak","Chamise","Shedd","md",NA,2022-04-27,"2022-04-27",NA
+"313",2030,21,"live oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"314",2030,21,"live oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"315",2030,29,"live oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
+"316",2030,29,"live oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"317",2030,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
+"318",2030,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"319",2031,14,"blue oak","Chamise","Shedd",NA,NA,NA,"2022-04-04",NA
+"320",2031,17,"blue oak","Chamise","Shedd","md",NA,2022-04-27,NA,NA
+"321",2031,15,"blue oak","Chamise","Shedd","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"322",2031,14,"blue oak","Chamise","Shedd","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"323",2031,17,"blue oak","Chamise","Shedd","pd",NA,2022-04-27,NA,NA
+"324",2031,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,NA,"2022-05-09"
+"325",2031,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,NA,"2022-05-09"
+"326",2031,21,"blue oak","Chamise","Shedd","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"327",2031,21,"blue oak","Chamise","Shedd","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-23"
+"328",2031,29,"blue oak","Chamise","Shedd","md",2022-07-19,2022-07-19,NA,NA
+"329",2031,29,"blue oak","Chamise","Shedd","pd",2022-07-19,2022-07-19,NA,NA
+"330",2031,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA,NA
+"331",2031,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA,NA
+"332",2032,17,"blue oak",NA,NA,"md",NA,2022-04-27,"2022-04-27",NA
+"333",2032,17,"blue oak",NA,NA,"pd",NA,2022-04-27,"2022-04-27",NA
+"334",2084,19,"blue oak",NA,NA,"md",2022-05-09,NA,NA,NA
+"335",2085,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
+"336",2085,14,"blue oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"337",2085,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"338",2085,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,NA,NA
+"339",2085,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"340",2085,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"341",2085,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"342",2085,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"343",2085,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"344",2085,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"345",2085,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"346",2085,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"347",2086,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
+"348",2086,14,"blue oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"349",2086,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"350",2086,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"351",2086,14,"blue oak","PineNeedle","Low","md",2022-04-04,2022-04-04,"2022-04-04",NA
+"352",2086,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"353",2086,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"354",2086,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"355",2086,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"356",2086,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"357",2086,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"358",2086,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"359",2086,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"360",2087,14,"blue oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"361",2087,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"362",2087,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"363",2087,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"364",2087,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
+"365",2087,14,"blue oak","PineNeedle","Low","md",NA,NA,"2022-04-04",NA
+"366",2087,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"367",2087,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"368",2087,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"369",2087,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"370",2087,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"371",2087,21,"blue oak","PineNeedle","Low","md",NA,NA,"2022-05-25",NA
+"372",2088,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
+"373",2088,14,"blue oak","PineNeedle","Low","md",NA,NA,"2022-04-04",NA
+"374",2088,14,"blue oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"375",2088,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"376",2088,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"377",2088,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"378",2088,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"379",2088,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"380",2088,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"381",2088,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"382",2088,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"383",2088,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"384",2088,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"385",2089,10,"live oak","PineNeedle","Low","md",2022-03-08,2022-03-08,NA,NA
+"386",2089,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"387",2089,10,"live oak","PineNeedle","Low","md",2022-03-08,NA,NA,NA
+"388",2089,14,"live oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"389",2089,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"390",2089,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"391",2089,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"392",2089,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"393",2089,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"394",2089,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"395",2089,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"396",2089,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"397",2090,11,"blue oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,NA,NA
+"398",2090,14,"blue oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"399",2090,15,"blue oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"400",2090,17,"blue oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"401",2090,17,"blue oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"402",2090,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"403",2090,21,"blue oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"404",2090,21,"blue oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"405",2090,29,"blue oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"406",2090,29,"blue oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"407",2090,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"408",2090,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"409",2091,10,"live oak","PineNeedle","Low","md",2022-03-08,2022-03-08,NA,NA
+"410",2091,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"411",2091,14,"live oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"412",2091,14,"live oak","PineNeedle","Low",NA,NA,NA,"2022-04-04",NA
+"413",2091,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,NA
+"414",2091,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"415",2091,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"416",2091,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"417",2091,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"418",2091,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"419",2091,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"420",2091,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"421",2091,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"422",2091,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"423",2092,10,"live oak","PineNeedle","Low","md",2022-03-08,2022-03-08,NA,NA
+"424",2092,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"425",2092,14,"live oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"426",2092,14,"live oak","PineNeedle","Low","md",NA,NA,"2022-04-04",NA
+"427",2092,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,NA
+"428",2092,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"429",2092,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"430",2092,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"431",2092,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"432",2092,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"433",2092,29,"live oak","PineNeedle","Low","md",2022-07-19,2022-07-19,NA,NA
+"434",2092,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"435",2092,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA,NA
+"436",2092,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"437",2093,10,"live oak","PineNeedle","Low","md",2022-03-08,2022-03-08,"2022-03-11",NA
+"438",2093,14,"live oak","PineNeedle","Low","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"439",2093,15,"live oak","PineNeedle","Low","md",2022-04-11,2022-04-11,NA,"2022-04-11"
+"440",2093,17,"live oak","PineNeedle","Low","md",NA,2022-04-27,"2022-04-27",NA
+"441",2093,17,"live oak","PineNeedle","Low","pd",NA,2022-04-27,"2022-04-27",NA
+"442",2093,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,NA,"2022-05-09"
+"443",2093,21,"live oak","PineNeedle","Low","md",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"444",2093,21,"live oak","PineNeedle","Low","pd",2022-05-25,2022-05-23,"2022-05-25","2022-05-27"
+"445",2093,11,"live oak","PineNeedle","Low","pd",2022-03-15,2022-03-15,"2022-03-15",NA
+"446",2093,14,"live oak","PineNeedle","Low","md",NA,NA,"2022-04-04",NA
+"447",2093,29,"live oak","PineNeedle","Low","pd",2022-07-19,2022-07-19,NA,NA
+"448",2093,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA,NA
+"449",2301,9,"live oak","LL","Hobbiton","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"450",2301,9,"live oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"451",2301,10,"live oak","LL","Hobbiton","md",2022-03-08,2022-03-08,NA,NA
+"452",2301,10,"live oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"453",2301,12,"live oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"454",2301,12,"live oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"455",2301,12,"live oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"456",2301,12,"live oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"457",2301,13,"live oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"458",2301,14,"live oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"459",2301,14,"live oak","LL","Hobbiton","pd",2022-04-04,2022-04-04,"2022-04-04",NA
+"460",2301,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"461",2301,15,"live oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"462",2301,17,"live oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"463",2301,18,"live oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,NA
+"464",2301,19,"live oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"465",2301,19,"live oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
+"466",2301,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"467",2301,21,"live oak","LL","Hobbiton","md",2022-05-25,2022-05-23,"2022-05-23",NA
+"468",2301,21,"live oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"469",2301,29,"live oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"470",2301,29,"live oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"471",2301,33,"live oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"472",2301,33,"live oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"473",2301,33,"live oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"474",2301,33,"live oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"475",2309,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"476",2313,9,"blue oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
+"477",2322,9,"live oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
+"478",2322,9,"live oak","LL","Ridge","md",NA,NA,"2022-02-28",NA
+"479",2327,17,"blue oak",NA,NA,"pd",2022-04-25,2022-04-25,NA,NA
+"480",2330,33,"blue oak","LL","Ridge","pd",NA,2022-08-18,NA,NA
+"481",2331,9,"live oak","LL","Ridge","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"482",2331,10,"live oak","LL","Ridge","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"483",2331,9,"live oak","LL","Ridge","pd",2022-02-28,2022-02-28,NA,NA
+"484",2331,10,"live oak","LL","Ridge","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"485",2331,10,"live oak","LL","Ridge","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"486",2331,12,"live oak","LL","Ridge","md",2022-03-25,2022-03-25,NA,NA
+"487",2331,12,"live oak","LL","Ridge","md",2022-03-23,2022-03-25,NA,NA
+"488",2331,12,"live oak","LL","Ridge","pd",2022-03-23,2022-03-25,NA,NA
+"489",2331,12,"live oak","LL","Ridge","pd",2022-03-25,2022-03-25,NA,NA
+"490",2331,13,"live oak","LL","Ridge","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"491",2331,14,"live oak","LL","Ridge","md",2022-04-06,2022-04-06,NA,NA
+"492",2331,14,"live oak","LL","Ridge","pd",NA,NA,"2022-04-04",NA
+"493",2331,15,"live oak","LL","Ridge","md",2022-04-13,2022-04-13,NA,NA
+"494",2331,15,"live oak","LL","Ridge","md",2022-04-13,NA,NA,NA
+"495",2331,15,"live oak","LL","Ridge","pd",2022-04-11,2022-04-11,NA,NA
+"496",2331,17,"live oak","LL","Ridge","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"497",2331,18,"live oak","LL","Ridge","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"498",2331,19,"live oak","LL","Ridge","md",2022-05-09,NA,NA,NA
+"499",2331,19,"live oak","LL","Ridge","md",NA,2022-05-09,NA,NA
+"500",2331,19,"live oak","LL","Ridge","pd",2022-05-09,NA,NA,NA
+"501",2331,21,"live oak","LL","Ridge","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"502",2331,21,"live oak","LL","Ridge","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"503",2331,29,"live oak","LL","Ridge","md",2022-07-19,2022-07-19,NA,NA
+"504",2331,29,"live oak","LL","Ridge","pd",2022-07-19,2022-07-19,NA,NA
+"505",2331,33,"live oak","LL","Ridge","md",2022-08-18,NA,NA,NA
+"506",2331,33,"live oak","LL","Ridge","md",NA,2022-08-18,NA,NA
+"507",2331,33,"live oak","LL","Ridge","pd",2022-08-18,NA,NA,NA
+"508",2343,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"509",2343,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"510",2343,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"511",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"512",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
+"513",2343,10,"blue oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,NA,NA
+"514",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"515",2343,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
+"516",2343,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
+"517",2343,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
+"518",2343,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"519",2343,14,"blue oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"520",2343,14,"blue oak","LL","Hobbiton","pd",NA,NA,"2022-04-04",NA
+"521",2343,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"522",2343,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"523",2343,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"524",2343,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"525",2343,17,"blue oak","LL","Hobbiton","md",NA,2022-04-27,"2022-04-25",NA
+"526",2343,17,"blue oak","LL","Hobbiton","md",NA,2022-04-25,"2022-04-25",NA
+"527",2343,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"528",2343,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"529",2343,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"530",2343,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"531",2343,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
+"532",2343,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"533",2343,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"534",2343,19,"blue oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
+"535",2343,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"536",2343,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,NA,"2022-05-23"
+"537",2343,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
+"538",2343,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"539",2343,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"540",2343,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"541",2343,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"542",2343,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"543",2343,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"544",2343,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"545",2344,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"546",2345,9,"live oak","LL","Hobbiton","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"547",2345,9,"live oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"548",2345,10,"live oak","LL","Hobbiton","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"549",2345,10,"live oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"550",2345,12,"live oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"551",2345,12,"live oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"552",2345,12,"live oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"553",2345,12,"live oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"554",2345,13,"live oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"555",2345,14,"live oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"556",2345,14,"live oak","LL","Hobbiton","pd",2022-04-04,2022-04-04,NA,NA
+"557",2345,15,"live oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"558",2345,15,"live oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"559",2345,17,"live oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"560",2345,17,"live oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"561",2345,18,"live oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,NA
+"562",2345,19,"live oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"563",2345,19,"live oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
+"564",2345,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"565",2345,21,"live oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23",NA
+"566",2345,21,"live oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"567",2345,29,"live oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"568",2345,29,"live oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"569",2345,33,"live oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"570",2345,33,"live oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"571",2345,33,"live oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"572",2345,33,"live oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"573",2346,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"574",2346,10,"blue oak","LL","Hobbiton","md",2022-03-08,2022-03-08,NA,NA
+"575",2346,10,"blue oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,NA,NA
+"576",2346,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
+"577",2346,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
+"578",2346,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"579",2346,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"580",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
+"581",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"582",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
+"583",2346,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"584",2346,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
+"585",2346,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
+"586",2346,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"587",2346,14,"blue oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"588",2346,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"589",2346,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"590",2346,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"591",2346,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"592",2346,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"593",2346,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"594",2346,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"595",2346,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"596",2346,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
+"597",2346,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"598",2346,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"599",2346,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
+"600",2346,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"601",2346,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"602",2346,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"603",2346,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"604",2346,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"605",2346,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"606",2346,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"607",2346,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"608",2346,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"609",2347,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"610",2347,10,"blue oak","LL","Hobbiton","md",2022-03-08,2022-03-08,NA,NA
+"611",2347,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
+"612",2347,12,"blue oak","LL","Hobbiton","md",2022-03-25,2022-03-25,NA,NA
+"613",2347,12,"blue oak","LL","Hobbiton","md",2022-03-23,2022-03-25,NA,NA
+"614",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"615",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-23,NA,NA
+"616",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"617",2347,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-23,NA,NA
+"618",2347,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-25,NA,NA
+"619",2347,12,"blue oak","LL","Hobbiton","pd",NA,2022-03-23,NA,NA
+"620",2347,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"621",2347,14,"blue oak","LL","Hobbiton","pd",NA,NA,"2022-04-04",NA
+"622",2347,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"623",2347,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"624",2347,17,"blue oak","LL","Hobbiton","md",NA,2022-04-27,"2022-04-25",NA
+"625",2347,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"626",2347,17,"blue oak","LL","Hobbiton","md",NA,2022-04-25,"2022-04-25",NA
+"627",2347,17,"blue oak","LL","Hobbiton","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"628",2347,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"629",2347,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"630",2347,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"631",2347,18,"blue oak","LL","Hobbiton","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"632",2347,19,"blue oak","LL","Hobbiton","md",2022-05-09,2022-05-09,NA,NA
+"633",2347,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"634",2347,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"635",2347,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"636",2347,21,"blue oak","LL","Hobbiton","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"637",2347,21,"blue oak","LL","Hobbiton","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"638",2347,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"639",2347,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"640",2347,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"641",2347,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"642",2347,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"643",2347,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"644",2347,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"645",2347,14,"blue oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"646",2348,10,"blue oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,NA,NA
+"647",2348,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
+"648",2349,9,"blue oak","LL","Hobbiton","pd",2022-02-28,2022-02-28,NA,NA
+"649",2349,10,"blue oak","LL","Hobbiton","pd",2022-03-08,2022-03-08,NA,NA
+"650",2349,11,"blue oak","LL","Hobbiton","pd",2022-03-15,2022-03-15,NA,NA
+"651",2349,11,"blue oak","LL","Hobbiton","md",2022-03-15,2022-03-15,NA,NA
+"652",2352,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"653",2352,10,"live oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"654",2352,11,"live oak","LL","MiddleEarth","pd",NA,NA,"2022-03-15",NA
+"655",2352,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"656",2352,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"657",2352,10,"live oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,NA,NA
+"658",2352,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"659",2352,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,NA
+"660",2352,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,NA
+"661",2352,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"662",2352,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"663",2352,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
+"664",2352,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"665",2352,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"666",2352,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"667",2352,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
+"668",2352,14,"live oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"669",2352,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"670",2352,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"671",2352,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"672",2352,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"673",2352,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"674",2352,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"675",2352,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"676",2353,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"677",2353,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"678",2353,14,"live oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"679",2354,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"680",2354,10,"live oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"681",2354,10,"live oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"682",2354,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"683",2354,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"684",2354,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"685",2354,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"686",2354,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"687",2354,14,"live oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"688",2354,14,"live oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"689",2354,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"690",2354,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"691",2354,17,"live oak","LL","MiddleEarth","md",NA,NA,"2022-04-25",NA
+"692",2354,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"693",2354,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"694",2354,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"695",2354,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"696",2354,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"697",2354,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
+"698",2354,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"699",2354,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"700",2354,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"701",2354,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"702",2354,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"703",2354,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"704",2354,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"705",2360,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"706",2360,14,"blue oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"707",2360,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"708",2360,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"709",2360,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"710",2360,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"711",2360,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"712",2360,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"713",2360,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"714",2360,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"715",2360,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,NA,"2022-05-23"
+"716",2360,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"717",2360,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"718",2360,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"719",2360,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"720",2360,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"721",2360,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"722",2361,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
+"723",2364,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"724",2364,19,"blue oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"725",2365,10,"blue oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"726",2365,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,NA,NA
+"727",2365,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
+"728",2365,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
+"729",2365,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"730",2365,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"731",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"732",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"733",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-23,NA,NA
+"734",2365,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-25,NA,NA
+"735",2365,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
+"736",2365,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-23,NA,NA
+"737",2365,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"738",2365,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"739",2365,14,"blue oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"740",2365,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"741",2365,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"742",2365,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"743",2365,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"744",2365,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"745",2365,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"746",2365,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"747",2365,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"748",2365,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"749",2365,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-04"
+"750",2365,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
+"751",2365,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"752",2365,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"753",2365,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"754",2365,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"755",2365,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
+"756",2365,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"757",2365,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"758",2365,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"759",2365,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"760",2365,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"761",2365,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"762",2366,9,"blue oak","LL","MiddleEarth","md",NA,NA,"2022-02-28",NA
+"763",2366,10,"blue oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"764",2366,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"765",2367,10,"blue oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"766",2367,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
+"767",2367,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,NA,NA
+"768",2367,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"769",2367,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"770",2367,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-25,NA,NA
+"771",2367,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
+"772",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-23,NA,NA
+"773",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"774",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"775",2367,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-23,NA,NA
+"776",2367,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"777",2367,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"778",2367,14,"blue oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"779",2367,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"780",2367,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"781",2367,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"782",2367,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"783",2367,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"784",2367,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"785",2367,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"786",2367,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"787",2367,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"788",2367,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
+"789",2367,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"790",2367,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"791",2367,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"792",2367,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
+"793",2367,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"794",2367,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"795",2367,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"796",2367,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"797",2367,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"798",2367,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"799",2369,10,"blue oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"800",2369,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,NA,NA
+"801",2369,11,"blue oak","LL","MiddleEarth","md",2022-03-15,2022-03-15,NA,NA
+"802",2369,11,"blue oak","LL","MiddleEarth","pd",2022-03-15,2022-03-15,NA,NA
+"803",2369,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"804",2369,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA,NA
+"805",2369,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"806",2369,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"807",2369,15,"blue oak","LL","MiddleEarth","md",2022-04-13,NA,NA,"2022-04-14"
+"808",2369,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"809",2369,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"810",2369,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-27,"2022-04-25",NA
+"811",2369,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"812",2369,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-27,"2022-04-25",NA
+"813",2369,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"814",2369,18,"blue oak","LL","MiddleEarth","pd",2022-05-04,2022-05-04,NA,"2022-05-03"
+"815",2369,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"816",2369,19,"blue oak","LL","MiddleEarth","md",2022-05-09,2022-05-09,NA,NA
+"817",2369,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"818",2369,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,NA,"2022-05-25"
+"819",2369,21,"blue oak","LL","MiddleEarth","pd",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"820",2369,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"821",2369,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"822",2369,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"823",2369,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"824",2369,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"825",2369,14,"blue oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"826",2369,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"827",2370,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,NA,NA
+"828",2370,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"829",2370,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"830",2370,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"831",2370,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"832",2370,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"833",2370,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"834",2370,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"835",2370,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"836",2370,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"837",2370,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"838",2370,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"839",2370,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"840",2370,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"841",2370,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"842",2370,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"843",2370,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"844",2370,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"845",2370,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"846",2370,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"847",2370,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"848",2371,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
+"849",2371,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,NA,NA
+"850",2371,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"851",2371,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"852",2371,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"853",2371,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"854",2371,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"855",2371,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"856",2371,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"857",2371,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"858",2371,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"859",2371,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"860",2371,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"861",2371,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"862",2371,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"863",2371,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"864",2371,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"865",2371,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"866",2371,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"867",2371,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"868",2371,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"869",2371,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-12"
+"870",2371,33,"blue oak","LL","Weathertop","pd",2022-08-18,2022-08-18,NA,NA
+"871",2371,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"872",2372,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
+"873",2372,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,NA,NA
+"874",2372,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
+"875",2372,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
+"876",2372,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"877",2372,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"878",2372,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"879",2372,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"880",2372,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-12"
+"881",2372,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"882",2372,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"883",2372,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"884",2372,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"885",2372,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"886",2372,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"887",2372,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"888",2372,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"889",2372,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"890",2372,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"891",2372,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"892",2372,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"893",2372,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"894",2372,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"895",2372,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"896",2373,9,"blue oak","LL","Weathertop","pd",2022-02-28,2022-02-28,NA,NA
+"897",2373,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,NA,NA
+"898",2373,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"899",2373,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"900",2374,10,"blue oak","LL","Ridge","pd",2022-03-08,2022-03-08,NA,NA
+"901",2374,15,"blue oak","LL","Ridge","md",2022-04-13,2022-04-13,NA,NA
+"902",2375,12,"blue oak","LL","Hobbiton","pd",2022-03-25,2022-03-25,NA,NA
+"903",2375,12,"blue oak","LL","Hobbiton","pd",2022-03-23,2022-03-25,NA,NA
+"904",2375,13,"blue oak","LL","Hobbiton","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"905",2375,14,"blue oak","LL","Hobbiton","md",2022-04-06,2022-04-06,NA,NA
+"906",2375,15,"blue oak","LL","Hobbiton","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"907",2375,15,"blue oak","LL","Hobbiton","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"908",2375,18,"blue oak","LL","Hobbiton","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"909",2375,19,"blue oak","LL","Hobbiton","md",2022-05-09,NA,NA,NA
+"910",2375,19,"blue oak","LL","Hobbiton","md",NA,2022-05-09,NA,NA
+"911",2375,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA,NA
+"912",2375,21,"blue oak","LL","Hobbiton","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"913",2375,21,"blue oak","LL","Hobbiton","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"914",2375,29,"blue oak","LL","Hobbiton","md",2022-07-19,2022-07-19,NA,NA
+"915",2375,29,"blue oak","LL","Hobbiton","pd",2022-07-19,2022-07-19,NA,NA
+"916",2375,33,"blue oak","LL","Hobbiton","md",NA,2022-08-18,NA,NA
+"917",2375,33,"blue oak","LL","Hobbiton","md",2022-08-18,NA,NA,NA
+"918",2375,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA,NA
+"919",2375,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA,NA
+"920",2375,17,"blue oak","LL","Hobbiton","md",NA,NA,"2022-04-25",NA
+"921",2375,17,"blue oak","LL","Hobbiton","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"922",2376,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"923",2376,10,"live oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"924",2376,10,"live oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,NA,NA
+"925",2376,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"926",2376,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"927",2376,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"928",2376,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"929",2376,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"930",2376,14,"live oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"931",2376,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,NA
+"932",2376,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,NA
+"933",2376,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"934",2376,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"935",2376,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
+"936",2376,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"937",2376,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"938",2376,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"939",2376,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23",NA
+"940",2376,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"941",2376,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"942",2376,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"943",2376,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"944",2376,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"945",2376,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"946",2376,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"947",2377,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,"2022-02-28",NA
+"948",2377,10,"live oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"949",2377,10,"live oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"950",2377,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"951",2377,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"952",2377,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"953",2377,14,"live oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"954",2377,14,"live oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"955",2377,15,"live oak","LL","MiddleEarth","md",2022-04-13,NA,NA,"2022-04-14"
+"956",2377,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"957",2377,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"958",2377,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"959",2377,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"960",2377,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
+"961",2377,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"962",2377,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"963",2377,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"964",2377,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"965",2377,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"966",2377,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"967",2377,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"968",2377,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"969",2377,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"970",2378,10,"blue oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"971",2378,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"972",2378,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"973",2378,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"974",2378,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"975",2378,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"976",2378,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"977",2378,14,"blue oak","LL","MiddleEarth","pd",NA,NA,"2022-04-04",NA
+"978",2378,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"979",2378,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"980",2378,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"981",2378,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"982",2378,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"983",2378,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"984",2378,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"985",2378,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"986",2378,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"987",2378,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"988",2378,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"989",2378,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"990",2378,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"991",2378,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"992",2378,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"993",2378,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"994",2379,10,"blue oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"995",2379,12,"blue oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"996",2379,12,"blue oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"997",2379,12,"blue oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"998",2379,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"999",2379,13,"blue oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1000",2379,14,"blue oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,NA,NA
+"1001",2379,15,"blue oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"1002",2379,15,"blue oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"1003",2379,17,"blue oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1004",2379,17,"blue oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1005",2379,18,"blue oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"1006",2379,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"1007",2379,19,"blue oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"1008",2379,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"1009",2379,21,"blue oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1010",2379,21,"blue oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1011",2379,29,"blue oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"1012",2379,29,"blue oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"1013",2379,33,"blue oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"1014",2379,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"1015",2379,33,"blue oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"1016",2379,33,"blue oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"1017",2380,9,"live oak","LL","MiddleEarth","md",2022-02-28,2022-02-28,NA,NA
+"1018",2380,10,"live oak","LL","MiddleEarth","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"1019",2380,12,"live oak","LL","MiddleEarth","md",2022-03-25,2022-03-25,NA,NA
+"1020",2380,12,"live oak","LL","MiddleEarth","md",2022-03-23,2022-03-25,NA,NA
+"1021",2380,10,"live oak","LL","MiddleEarth","md",2022-03-08,2022-03-08,NA,NA
+"1022",2380,12,"live oak","LL","MiddleEarth","pd",2022-03-23,2022-03-25,NA,NA
+"1023",2380,12,"live oak","LL","MiddleEarth","pd",2022-03-25,2022-03-25,NA,NA
+"1024",2380,13,"live oak","LL","MiddleEarth","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1025",2380,15,"live oak","LL","MiddleEarth","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"1026",2380,15,"live oak","LL","MiddleEarth","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"1027",2380,17,"live oak","LL","MiddleEarth","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1028",2380,17,"live oak","LL","MiddleEarth","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1029",2380,18,"live oak","LL","MiddleEarth","md",2022-05-04,2022-05-04,NA,NA
+"1030",2380,19,"live oak","LL","MiddleEarth","md",2022-05-09,NA,NA,NA
+"1031",2380,19,"live oak","LL","MiddleEarth","md",NA,2022-05-09,NA,NA
+"1032",2380,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA,NA
+"1033",2380,21,"live oak","LL","MiddleEarth","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-25"
+"1034",2380,14,"live oak","LL","MiddleEarth","md",2022-04-06,2022-04-06,"2022-04-04",NA
+"1035",2380,21,"live oak","LL","MiddleEarth","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1036",2380,21,"live oak","LL","MiddleEarth","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1037",2380,29,"live oak","LL","MiddleEarth","md",2022-07-19,2022-07-19,NA,NA
+"1038",2380,29,"live oak","LL","MiddleEarth","pd",2022-07-19,2022-07-19,NA,NA
+"1039",2380,33,"live oak","LL","MiddleEarth","md",2022-08-18,NA,NA,NA
+"1040",2380,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA,NA
+"1041",2380,33,"live oak","LL","MiddleEarth","pd",2022-08-18,NA,NA,NA
+"1042",2380,33,"live oak","LL","MiddleEarth","pd",NA,2022-08-18,NA,NA
+"1043",2381,9,"blue oak","LL","Weathertop","md",2022-03-03,2022-03-03,"2022-02-28",NA
+"1044",2381,10,"blue oak","LL","Weathertop","md",2022-03-08,2022-03-08,"2022-03-08",NA
+"1045",2381,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"1046",2381,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
+"1047",2381,11,"blue oak","LL","Weathertop","pd",2022-03-15,2022-03-15,NA,"2022-03-15"
+"1048",2381,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
+"1049",2381,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
+"1050",2381,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"1051",2381,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"1052",2381,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1053",2381,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"1054",2381,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"1055",2381,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"1056",2381,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"1057",2381,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1058",2381,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1059",2381,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,NA
+"1060",2381,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"1061",2381,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1062",2381,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,NA,"2022-05-25"
+"1063",2381,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"1064",2381,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"1065",2381,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"1066",2381,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"1067",2381,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"1068",2381,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"1069",2381,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"1070",2382,9,"blue oak","LL","Weathertop","md",2022-03-03,NA,NA,NA
+"1071",2382,9,"blue oak","LL","Weathertop","md",2022-03-03,2022-03-03,NA,NA
+"1072",2382,10,"blue oak","LL","Weathertop","md",2022-03-08,2022-03-08,NA,NA
+"1073",2382,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"1074",2382,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
+"1075",2382,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
+"1076",2382,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
+"1077",2382,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"1078",2382,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"1079",2382,11,"blue oak","LL","Weathertop","pd",2022-03-15,2022-03-15,"2022-03-15","2022-03-15"
+"1080",2382,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"1081",2382,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,NA
+"1082",2382,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,NA
+"1083",2382,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1084",2382,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1085",2382,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"1086",2382,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"1087",2382,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"1088",2382,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"1089",2382,21,"blue oak","LL","Weathertop","md",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1090",2382,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1091",2382,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"1092",2382,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"1093",2382,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"1094",2382,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"1095",2382,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"1096",2382,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-25"
+"1097",2383,10,"blue oak","LL","Weathertop","md",2022-03-08,2022-03-08,NA,NA
+"1098",2383,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,"2022-03-11",NA
+"1099",2383,11,"blue oak","LL","Weathertop","pd",NA,NA,"2022-03-15",NA
+"1100",2383,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"1101",2383,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"1102",2383,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1103",2383,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,"2022-04-04"
+"1104",2383,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"1105",2383,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"1106",2383,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"1107",2383,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1108",2383,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1109",2383,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-04"
+"1110",2383,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"1111",2383,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"1112",2383,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"1113",2383,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23",NA
+"1114",2383,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"1115",2383,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"1116",2383,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"1117",2383,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"1118",2383,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"1119",2383,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"1120",2383,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23",NA
+"1121",2384,10,"blue oak","LL","Weathertop","md",2022-03-08,2022-03-08,NA,NA
+"1122",2384,10,"blue oak","LL","Weathertop","pd",2022-03-08,2022-03-08,"2022-03-08",NA
+"1123",2384,11,"blue oak","LL","Weathertop","md",2022-03-15,2022-03-15,NA,"2022-03-15"
+"1124",2384,9,"blue oak","LL","Weathertop","md",2022-03-03,NA,NA,NA
+"1125",2384,12,"blue oak","LL","Weathertop","md",2022-03-23,2022-03-25,NA,NA
+"1126",2384,12,"blue oak","LL","Weathertop","md",2022-03-25,2022-03-25,NA,NA
+"1127",2384,12,"blue oak","LL","Weathertop","pd",2022-03-23,2022-03-25,NA,NA
+"1128",2384,12,"blue oak","LL","Weathertop","pd",2022-03-25,2022-03-25,NA,NA
+"1129",2384,13,"blue oak","LL","Weathertop","pd",2022-03-30,2022-03-30,"2022-03-30",NA
+"1130",2384,14,"blue oak","LL","Weathertop","md",2022-04-06,2022-04-06,NA,NA
+"1131",2384,14,"blue oak","LL","Weathertop","pd",NA,NA,"2022-04-04",NA
+"1132",2384,15,"blue oak","LL","Weathertop","md",2022-04-13,2022-04-13,NA,"2022-04-14"
+"1133",2384,15,"blue oak","LL","Weathertop","pd",2022-04-11,2022-04-11,NA,"2022-04-14"
+"1134",2384,17,"blue oak","LL","Weathertop","md",2022-04-25,2022-04-25,"2022-04-25",NA
+"1135",2384,17,"blue oak","LL","Weathertop","pd",2022-04-25,2022-04-25,"2022-04-25",NA
+"1136",2384,18,"blue oak","LL","Weathertop","md",2022-05-04,2022-05-04,NA,"2022-05-03"
+"1137",2384,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA,NA
+"1138",2384,19,"blue oak","LL","Weathertop","md",2022-05-09,NA,NA,NA
+"1139",2384,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA,NA
+"1140",2384,21,"blue oak","LL","Weathertop","md",2022-05-25,2022-05-23,"2022-05-23","2022-05-23"
+"1141",2384,21,"blue oak","LL","Weathertop","pd",2022-05-23,2022-05-23,"2022-05-23","2022-05-23"
+"1142",2384,29,"blue oak","LL","Weathertop","md",2022-07-19,2022-07-19,NA,NA
+"1143",2384,29,"blue oak","LL","Weathertop","pd",2022-07-19,2022-07-19,NA,NA
+"1144",2384,33,"blue oak","LL","Weathertop","md",2022-08-18,NA,NA,NA
+"1145",2384,33,"blue oak","LL","Weathertop","md",NA,2022-08-18,NA,NA
+"1146",2384,33,"blue oak","LL","Weathertop","pd",NA,2022-08-18,NA,NA
+"1147",2384,33,"blue oak","LL","Weathertop","pd",2022-08-18,NA,NA,NA
+"1148",2384,11,"blue oak","LL","Weathertop","pd",NA,NA,"2022-03-15",NA
+"1149",2385,14,"blue oak",NA,NA,"md",NA,NA,"2022-04-04",NA
+"1150",2385,17,"blue oak",NA,NA,"pd",NA,2022-04-27,"2022-04-27",NA
