@@ -574,10 +574,49 @@ boxplot(-1*pd_mpa~week+plot, tmp3, col=allcols
 
 # subset the full data to just the 'Chamise' site, only the oaks, and only week 19 and 29
 tmp <- wp_ind[which(wp_ind$site=="Chamise" & wp_ind$species!= "ARCA" & wp_ind$week != 11),]
-par(mar=c(9,4,1,1))
-boxplot(pd_mpa~plot+species+week, tmp, las=2, col=c("lightblue","darkblue","red2","darkred"), xlab="")
-abline(v=4.5)
+quartz(width=4, height=4)
+par(mar=c(7,4,1,1), mgp=c(2.5,1,0))
+pairedcols <- brewer.pal(n=4, "Paired")
+boxplot(pd_mpa~plot+species+week, tmp
+        , xlab="", ylab=expression(paste(Psi[PD]," (soil dryness, MPa)"))
+        , boxwex=.6, at=c(1,2,3,4,6,7,8,9)
+        , staplewex=0, notch=F, border=pairedcols
+        , col=pairedcols
+        , whisklty=1, whisklwd=3, whiskcol=pairedcols
+        , medlwd=3, medcol="white"
+        , outcol=pairedcols, outcex=.5, outlwd=1, bty=""
+        , names=rep(c("Chamise", "Shedd"), times=4)
+        , las=2)
 
+## V1 for labeling
+mtext(text = "April", side = 1,line = 5.3, adj = .2, font=2)
+mtext(text = "May", side = 1,line = 5.3, adj = .8, font=2)
+mtext(text = "Blue", side = 1,line = 4.2, adj = .1, font=2, col=pairedcols[2])
+mtext(text = "Live", side = 1,line = 4.2, adj = .3, font=2, col=pairedcols[4])
+
+mtext(text = "Blue", side = 1,line = 4.2, adj = .6, font=2, col=pairedcols[2])
+mtext(text = "Live", side = 1,line = 4.2, adj = .9, font=2, col=pairedcols[4])
+abline(v=5, col="grey")
+
+## V2
+mtext(text = "April", side = 1,line = 5, adj = .2, font=2)
+mtext(text = "May", side = 1,line = 5, adj = .8, font=2)
+
+legend(x=0, y=3.8
+       , legend = c("blue oak", "live oak")
+       , title = ""
+       , fill=pairedcols[c(1,3)]
+       , cex=.8
+       , bty="n"
+       , border = pairedcols[c(1,3)])
+text("Chamise",x=1, y=3.65, cex=.8)
+legend(x=2.5, y=3.8
+       , legend = c("", "")
+       , title = "Shedd"
+       , fill=pairedcols[c(2,4)]
+       , cex=.8
+       , bty="n"
+       , border = pairedcols[c(2,4)])
 # quick and dirty anova to see whether 'plot' matters
 summary(aov(pd_mpa~species+plot+week, tmp))
 
