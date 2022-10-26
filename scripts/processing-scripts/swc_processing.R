@@ -43,16 +43,10 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
 
 write.csv(rwc_df, here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
-dlookr::diagnose(rwc_df)
 
 
-#Take a look! 
-  
-rwc_df %>% 
-  filter(year %in% c(0,1)) %>% 
-  ggplot(aes(y = swc_per_dry_g, x = date, color = as.factor(type))) +
-  geom_jitter()+
-  facet_wrap(~year) 
+
+
 
 
 
