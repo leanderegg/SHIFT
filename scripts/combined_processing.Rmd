@@ -144,6 +144,21 @@ Need to find lwcs:
 ```{r}
 rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
+rwc_df %>% 
+  #filter(week == 21) %>% 
+  outlierKD(swc_per_dry_g)
+
+rwc_df %>% 
+  #filter(week == 21) %>% 
+  outlierKD(swc_ww_g)
+
+rwc_df %>% 
+  #filter(week == 21) %>% 
+  outlierKD(swc_dw_g)
+```
+
+
+```{r}
 rwc_df_leaves_y0 <- rwc_df %>% 
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
@@ -194,18 +209,20 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
  #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
 ```
 
-Something is up with weeks 11 and 21
+Something is up with week 21 (05/25/2022)
+
 ```{r}
 rwc_df %>% 
   filter(year %in% c(0,1), 
-         swc_per_dry_g < 5) %>% 
+         swc_per_dry_g < 5, 
+         swc_percent < 300) %>% 
   ggplot(aes(y = swc_per_dry_g, 
              x = as.factor(week), 
              color = as.factor(type))) +
   geom_boxplot() +
   facet_wrap(~year) +
-  labs(y = "Week", 
-       x = "SWC (g water/g dry)", 
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
        color = "Type") +
   color
 ```
@@ -267,7 +284,9 @@ lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
 
 #####LFM + RWC + WC + WP (wide):
 
-- calculate RWC (percent lwc of saturated wc):
+######RWC calc.
+
+(percent lwc of saturated wc):
 
 ```{r}
 wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
@@ -277,7 +296,9 @@ wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df,
   select(-site, -species, -plot)
 
 wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide, 
-                                     by = c("tree"))
+                                     by = c("tree")) %>% 
+  select(-rep) %>% 
+  distinct()
 
  #make a shorter name because the long one will be a pain to write out!
 all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
@@ -374,6 +395,70 @@ all_water_df %>%
   color_grad
 ```
 
+```{r}
+all_water_df %>% 
+    filter(lwc_mean < 4, 
+         lwc_mean > 0,
+         #lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ) %>% 
+  ggplot(aes(x = -1*mpa, 
+             y = lwc_mean, 
+             color = week 
+             #size = week
+             )) +
+  geom_jitter(alpha = .5) +
+  facet_wrap(~species)+
+  labs(y = "LWC (g water/gram dry)", 
+       x = "MPa", 
+       color = "Week") +
+  color_grad
+```
+```{r}
+all_water_df %>% 
+    filter(lwc_mean < 4, 
+         lwc_mean > 0,
+         species == "blue oak"
+         #lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ) %>% 
+  drop_na(site) %>% 
+  ggplot(aes(x = -1*mpa, 
+             y = lwc_mean, 
+             color = week 
+             #size = week
+             )) +
+  geom_jitter(alpha = .5) +
+  facet_wrap(~site)+
+  labs(y = "LWC (g water/gram dry)", 
+       x = "MPa", 
+       color = "Week", 
+       title = "blue oak") +
+  color_grad
+```
+```{r}
+all_water_df %>% 
+    filter(lwc_mean < 4, 
+         lwc_mean > 0,
+         species == "live oak"
+         #lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ) %>% 
+  drop_na(site) %>% 
+  ggplot(aes(x = -1*mpa, 
+             y = lwc_mean, 
+             color = week 
+             #size = week
+             )) +
+  geom_jitter(alpha = .5) +
+  facet_wrap(~site)+
+  labs(y = "LWC (g water/gram dry)", 
+       x = "MPa", 
+       color = "Week", 
+       title = "live oak") +
+  color_grad
+```
+
 #####Relative water content: 
 
 Reminder: RWC is combination of LWC and SWC, where:
@@ -381,7 +466,42 @@ Reminder: RWC is combination of LWC and SWC, where:
 SWC = g water/g dry after 2 hour rehydration (mean per tree/time of day/week)
 LWC = g water/g dry (mean per tree/time of day/week)
 
+RWC x LWC: 
 
+```{r}
+all_water_df %>% 
+   filter(lwc_mean < 5,
+          mean_swc_per_dry_g < 5) %>% 
+  ggplot(aes(y = lwc_mean, 
+             x = mean_swc_per_dry_g, 
+             color = week 
+             #size = week
+             )) +
+  geom_point(alpha = .6) +
+  facet_wrap(~species)+
+  labs(x = "Saturated Leaf Water Content", 
+       y = "Field Leaf Water Content", 
+       caption = "black line is 1:1") +
+  color_grad +
+  geom_abline()
+```
+```{r}
+all_water_df %>% 
+   filter(lwc_mean < 5,
+          mean_swc_per_dry_g < 5) %>% 
+  ggplot(aes(y = lwc_mean, 
+             x = mean_swc_per_dry_g, 
+             color = week 
+             #size = week
+             )) +
+  geom_point(alpha = .6) +
+  facet_wrap(~species)+
+  labs(x = "Saturated Leaf Water Content", 
+       y = "Field Leaf Water Content", 
+       caption = "black line is 1:1") +
+  color_grad +
+  geom_abline()
+```
 
 RWC vs. MPa
 
@@ -391,14 +511,14 @@ all_water_df %>%
           rwc_percent < 300) %>% 
   ggplot(aes(y = -1*mpa, 
              x = rwc_percent, 
-             color = week 
+             color = as.factor(week)
              #size = week
              )) +
-  geom_point(alpha = .6) +
+  geom_jitter() +
   facet_wrap(~species)+
   labs(x = "Relative Water Content", 
        y = "MPa") +
-  color_grad
+  color
 ```
 
 ```{r}
@@ -428,10 +548,10 @@ all_water_df %>%
          lfm_y0_percent < 300) %>% 
   ggplot(aes(y = -1*mpa, 
              x = lfm_y0_percent, 
-             color = species)) +
+             color = week)) +
   geom_jitter(alpha = .6) +
   facet_wrap(~species) +
-  color +
+  color_grad +
   labs(y = "MPa", 
        x = "LFM, Y0")
 ```
@@ -468,27 +588,7 @@ all_water_df %>%
   geom_abline() +
   color
 ```
-Mpa x LWC: 
 
-```{r}
-all_water_df %>% 
-  filter(lwc_mean < 4, 
-         lwc_mean > 0,
-         #lfm_percent > 20, 
-  #        lfm_percent < 300) %>% 
-  ) %>% 
-  ggplot(aes(y = -1*mpa, 
-             x = lwc_mean, 
-             color = species, 
-             #size = week
-             )) +
-  geom_jitter() +
-  facet_wrap(~species) +
-  labs(x = "LWC (g water/g dry)", 
-       y = "MPa") +
-  theme(legend.position = "none") +
-  color
-```
 
 
 #---------------

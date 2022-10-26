@@ -9,7 +9,7 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
 }
 
 
-color <- scale_color_manual(values = met.brewer("Tiepolo", 4, direction = -1)) 
+color <- scale_color_manual(values = met.brewer("Tiepolo", 6, direction = -1)) 
   
 color_fill <- scale_fill_manual(values = met.brewer("Tiepolo")) 
 
