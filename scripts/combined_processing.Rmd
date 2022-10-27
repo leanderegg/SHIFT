@@ -25,6 +25,8 @@ library(rstatix)
 select = dplyr::select
  
 #source("http://goo.gl/UUyEzD") #outlier KD (original function)
+
+source(here::here("scripts", "figure_info.R"))
 ```
 
 ```{r}
@@ -240,7 +242,7 @@ lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_dry_wt_y0_g = lfm_dry_wt_g, 
          lfm_y0_percent = lfm_percent, 
          tree = as.numeric(tree)) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
 
 
 lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
@@ -251,7 +253,7 @@ lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_dry_wt_y1_g = lfm_dry_wt_g, 
          lfm_y1_percent = lfm_percent, 
          tree = as.numeric(tree)) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
 
 lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "stem", 
@@ -271,7 +273,7 @@ lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_both_percent = lfm_percent, 
          tree = as.numeric(tree), 
          date_lfm_both = date_lfm) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -X)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
 
 lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
                        by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
