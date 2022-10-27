@@ -390,6 +390,7 @@ all_water_df %>%
              #size = week
              )) +
   geom_jitter(alpha = .6) +
+  geom_smooth(color = week) +
   facet_wrap(~species)+
   labs(x = "LWC (g water/gram dry)", 
        y = "MPa", 
