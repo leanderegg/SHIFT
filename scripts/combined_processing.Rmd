@@ -146,17 +146,17 @@ Need to find lwcs:
 ```{r}
 rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
-rwc_df %>% 
-  #filter(week == 21) %>% 
-  outlierKD(swc_per_dry_g)
-
-rwc_df %>% 
-  #filter(week == 21) %>% 
-  outlierKD(swc_ww_g)
-
-rwc_df %>% 
-  #filter(week == 21) %>% 
-  outlierKD(swc_dw_g)
+# rwc_df %>% 
+#   #filter(week == 21) %>% 
+#   outlierKD(swc_per_dry_g)
+# 
+# rwc_df %>% 
+#   #filter(week == 21) %>% 
+#   outlierKD(swc_ww_g)
+# 
+# rwc_df %>% 
+#   #filter(week == 21) %>% 
+#   outlierKD(swc_dw_g)
 ```
 
 
@@ -226,7 +226,7 @@ rwc_df %>%
   labs(x = "Week", 
        y = "SWC (g water/g dry)", 
        color = "Type") +
-  color
+  color_two
 ```
 
 #####LFM:
@@ -242,7 +242,7 @@ lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_dry_wt_y0_g = lfm_dry_wt_g, 
          lfm_y0_percent = lfm_percent, 
          tree = as.numeric(tree)) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
 
 
 lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
@@ -253,7 +253,7 @@ lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_dry_wt_y1_g = lfm_dry_wt_g, 
          lfm_y1_percent = lfm_percent, 
          tree = as.numeric(tree)) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
 
 lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "stem", 
@@ -273,7 +273,7 @@ lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          lfm_both_percent = lfm_percent, 
          tree = as.numeric(tree), 
          date_lfm_both = date_lfm) %>% 
-  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g, -x)
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
 
 lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
                        by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
@@ -334,17 +334,17 @@ write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",
 10/26 - started this but need to confirm how we actually want to deal with outliers before moving ahead.
 
 ```{r}
-outs_lwc <- all_water_df %>% 
-  group_by(species, week) %>% 
-  identify_outliers(lwc_leaf)
-
-outs_lwc_mpa <- all_water_df %>% 
-  group_by(species, week, time) %>% 
-  identify_outliers(mpa)
-
-outs_lfm <- all_water_df %>% 
-  group_by(species, week, time) %>% 
-  identify_outliers(lfm_y0_percent)
+# outs_lwc <- all_water_df %>% 
+#   group_by(species, week) %>% 
+#   identify_outliers(lwc_leaf)
+# 
+# outs_lwc_mpa <- all_water_df %>% 
+#   group_by(species, week, time) %>% 
+#   identify_outliers(mpa)
+# 
+# outs_lfm <- all_water_df %>% 
+#   group_by(species, week, time) %>% 
+#   identify_outliers(lfm_y0_percent)
 
 # without outliers: (something like this...)
 # df %>% 
@@ -367,11 +367,11 @@ all_water_df %>%
              y = lwc_bulk, 
              color = species, 
              size = week)) +
-  geom_jitter(alpha = .6) +
+  geom_jitter(alpha = .5) +
   geom_abline() +
   ylim(-1, 3) +
   xlim(0, 3) +
-  color +
+  color_two +
   facet_wrap(~species) +
   labs(caption = "black line is 1:1")
 ```
@@ -416,6 +416,8 @@ all_water_df %>%
        color = "Week") +
   color_grad
 ```
+
+
 ```{r}
 all_water_df %>% 
     filter(lwc_mean < 4, 
@@ -438,6 +440,8 @@ all_water_df %>%
        title = "blue oak") +
   color_grad
 ```
+
+
 ```{r}
 all_water_df %>% 
     filter(lwc_mean < 4, 
@@ -487,11 +491,12 @@ all_water_df %>%
   color_grad +
   geom_abline()
 ```
+
 ```{r}
 all_water_df %>% 
    filter(lwc_mean < 5,
           mean_swc_per_dry_g < 5) %>% 
-  ggplot(aes(y = lwc_mean, 
+  ggplot(aes(y = mpa, 
              x = mean_swc_per_dry_g, 
              color = week 
              #size = week
@@ -499,7 +504,25 @@ all_water_df %>%
   geom_point(alpha = .6) +
   facet_wrap(~species)+
   labs(x = "Saturated Leaf Water Content", 
-       y = "Field Leaf Water Content", 
+       y = "MPa", 
+       #caption = "black line is 1:1"
+       ) +
+  color_grad 
+```
+
+```{r}
+all_water_df %>% 
+  filter(rwc_percent > 0, 
+         rwc_percent < 300) %>% 
+  ggplot(aes(y = lwc_mean * 100, 
+             x =rwc_percent, 
+             color = week 
+             #size = week
+             )) +
+  geom_point(alpha = .6) +
+  facet_wrap(~species)+
+  labs(x = "RWC (% of saturated)", 
+       y = "LWC (% of dry)", 
        caption = "black line is 1:1") +
   color_grad +
   geom_abline()
@@ -520,7 +543,7 @@ all_water_df %>%
   facet_wrap(~species)+
   labs(x = "Relative Water Content", 
        y = "MPa") +
-  color
+  color_many
 ```
 
 ```{r}
@@ -536,7 +559,7 @@ all_water_df %>%
   facet_wrap(~interaction(species, time))+
   labs(x = "Relative Water Content", 
        y = "MPa") +
-  color
+  color_many
 ```
 Q: What are the RWCs important for phsyiological thresholds? 
 
@@ -568,7 +591,7 @@ all_water_df %>%
              x = lfm_y1_percent, 
              color = species)) +
   geom_point() +
-  color +
+  color_two +
   labs(y = "MPa", 
        x = "LFM, Y1")
 ```
@@ -588,7 +611,7 @@ all_water_df %>%
   facet_wrap(~species) +
   geom_jitter(alpha = .6) + 
   geom_abline() +
-  color
+  color_two
 ```
 
 

@@ -9,8 +9,11 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
 }
 
 
-color <- scale_color_manual(values = met.brewer("Tiepolo", 6, direction = -1)) 
+color_many <- scale_color_manual(values = met.brewer("Tiepolo", 6, direction = -1, type = "discrete")) 
   
-color_fill <- scale_fill_manual(values = met.brewer("Tiepolo")) 
+color_two <- scale_color_manual(values = met.brewer("Tiepolo", 4 ,direction = -1)) 
+
+
+color_fill <- scale_fill_manual(values = met.brewer("Tiepolo"))
 
 color_grad <- scale_color_gradientn(colors=met.brewer("Tiepolo", direction = -1))
