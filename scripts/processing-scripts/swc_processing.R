@@ -9,8 +9,8 @@ library(MetBrewer)
 #install.packages("data.table")
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10182022"
-dataversion <- paste0("Data_", datver)
+#datver <- "10282022"
+#dataversion <- paste0("Data_", datver)
 
 
 #Field data: 

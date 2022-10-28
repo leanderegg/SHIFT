@@ -31,7 +31,7 @@ source(here::here("scripts", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "08182022"
+datver <- "10282022"
 dataversion <- paste0("Data_", datver)
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
@@ -109,15 +109,21 @@ wp_wc_df <- merge(wp_df, wc_df,
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
-  rowwise() %>% 
-    mutate(lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
-           timing = timing.x) %>% 
-  dplyr::select(-timing.x, -timing.y)
+  group_by(tree, week, time) %>% 
+  mutate(mpa_mean = mean(mpa, na.rm = T), 
+         lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
+         timing = timing.x) %>% 
+  ungroup() %>% 
+  #rowwise() %>% 
+  #  mutate(lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
+          # timing = timing.x) %>% 
+  dplyr::select(-timing.x, -timing.y) %>% 
+  distinct()
   
 
-wp_tmp <- wp_wc_df %>% 
-  dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
-
+#wp_tmp <- wp_wc_df %>% 
+ # dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
+#
 #tree info
 
 trees_sites_df <- wp_wc_df %>% 
@@ -380,22 +386,24 @@ all_water_df %>%
 ```{r}
 all_water_df %>% 
     filter(lwc_mean < 4, 
-         lwc_mean > 0,
+         lwc_mean > 0
          #lfm_percent > 20, 
   #        lfm_percent < 300) %>% 
   ) %>% 
   ggplot(aes(y = -1*mpa, 
              x = lwc_mean, 
-             color = week 
+             #color = week 
              #size = week
              )) +
-  geom_jitter(alpha = .6) +
-  geom_smooth(color = week) +
+  geom_jitter(alpha = .6, 
+              aes(color = week)) +
+  geom_smooth(method = "lm", 
+              aes(group = week, 
+                  color = week)) +
   facet_wrap(~species)+
   labs(x = "LWC (g water/gram dry)", 
        y = "MPa", 
-       color = "Week") +
-  color_grad
+       color = "Week") 
 ```
 
 ```{r}
