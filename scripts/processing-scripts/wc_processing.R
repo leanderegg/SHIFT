@@ -24,8 +24,8 @@ library(MetBrewer)
 
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10182022"
-dataversion <- paste0("Data_", datver)
+#datver <- "10182022"
+#dataversion <- paste0("Data_", datver)
 
 #______________________________________________________________
 ############### Begin: WATER CONTENT - Load and Clean #######################################

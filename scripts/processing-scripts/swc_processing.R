@@ -9,8 +9,8 @@ library(MetBrewer)
 #install.packages("data.table")
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10182022"
-dataversion <- paste0("Data_", datver)
+#datver <- "10282022"
+#dataversion <- paste0("Data_", datver)
 
 
 #Field data: 
@@ -43,16 +43,10 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
 
 write.csv(rwc_df, here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
-dlookr::diagnose(rwc_df)
 
 
-#Take a look! 
-  
-rwc_df %>% 
-  filter(year %in% c(0,1)) %>% 
-  ggplot(aes(y = swc_per_dry_g, x = date, color = as.factor(type))) +
-  geom_jitter()+
-  facet_wrap(~year) 
+
+
 
 
 

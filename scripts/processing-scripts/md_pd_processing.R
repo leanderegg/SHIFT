@@ -14,8 +14,8 @@ library(MetBrewer)
 
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10182022"
-dataversion <- paste0("Data_", datver)
+#datver <- "10182022"
+#dataversion <- paste0("Data_", datver)
 
 ####### Water Potentials 
 #Date: 218 WP + LWC
@@ -398,6 +398,7 @@ wp_alldates_md <- rbind( wp818md,
                         wp523md, 
                         wp509md, 
                         wp504md, 
+                        wp427md, 
                         wp425md, 
                         wp411md, 
                         wp413md,
@@ -688,6 +689,7 @@ wp_alldates_pd <- rbind(wp818pd,
                         wp509pd, 
                         wp504pd, 
                         wp425pd, 
+                        wp427pd, 
                         wp411pd, 
                         wp413pd,
                         wp46pd,

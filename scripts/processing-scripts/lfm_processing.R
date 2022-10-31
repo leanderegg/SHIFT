@@ -19,8 +19,8 @@ library(gridExtra)
 library(MetBrewer)
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10182022"
-dataversion <- paste0("Data_", datver)
+#datver <- "10182022"
+#dataversion <- paste0("Data_", datver)
 
 lfm_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), 
                      sheet="LFM DATA", skip=0, na = "NA") %>%
@@ -54,8 +54,7 @@ lfm_df <- lfm_raw %>%
     tree_id %in% c("ARCA") ~ 40, 
     TRUE ~ as.numeric(tree_id))) %>% 
   drop_na(date_updated) %>% 
-  mutate(
-         lfm_wet_per_dry_g = ((wet_wt_g - dry_wt_g)/dry_wt_g), #do calculations
+  mutate( lfm_wet_per_dry_g = ((wet_wt_g - dry_wt_g)/dry_wt_g), #do calculations
          lfm_percent = 100 * ((wet_wt_g - dry_wt_g)/dry_wt_g),
          lfm_wet_wt_g = wet_wt_g, 
          lfm_dry_wt_g = dry_wt_g,
