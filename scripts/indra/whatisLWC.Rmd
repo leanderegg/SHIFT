@@ -22,6 +22,10 @@ library(MetBrewer)
 ## Data file version (so it's not hard coded in every read_excel() call)
 datver <- "08182022"
 dataversion <- paste0("Data_", datver)
+
+th <- theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+          panel.grid.major = element_blank(),  # Hide major gridlines
+          panel.grid.minor = element_blank())
 ```
 
 
@@ -50,8 +54,34 @@ rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))
 what_is_rwc_df <- merge(lwc_mpa_df, rwc_df, by= c("week", "tree", "rep"), all.x = T)
 ```
 
+View WP over time: (For IB's GRFP)
+```{r}
+wp_temp <- read_csv(here("processed-data", "wp_alldates_08182022.csv"))
+```
+
 
 ```{r}
-
+wp_temp %>% 
+  filter(species == "blue oak", 
+         site == "LL") %>% 
+  ggplot() +
+  geom_boxplot(aes(y = -1*mpa_pd, 
+             x = date_pd, 
+             group = date_pd)) +
+ # geom_point() +
+ # geom_col(position = "dodge",
+ # #          #fill = "NA"
+ # #          ) +
+# geom_bar(stat = "identity", position ="dodge") +
+#   geom_errorbar(aes(x = date_pd, 
+#                       ymin=mean(mpa_pd)-sd(mpa_pd), 
+#                       ymax=mean(mpa_pd)+sd(mpa_pd), 
+#                   #position=position_dodge(0.9), 
+#                   width=.5, 
+#                   color = "black",
+#                   size = .5)) +
+  th +
+  labs(y = "Predawn Water Potential (MPa)", 
+       x = "Date")
 ```
 
