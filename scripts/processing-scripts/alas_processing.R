@@ -1,5 +1,14 @@
 ####Al:As processing####
 
-#Date: 218 WP + LWC
-wpwc218 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
-  mutate(date = mdy("02-18-2022")) 
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(MetBrewer)
+
+alas_df_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="ALAS DATA", skip=0, na = "NA") %>% 
+  clean_names() %>% 
+  mutate(date = ymd(date)) 
+

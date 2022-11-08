@@ -1,0 +1,198 @@
+---
+title: "Establishing relationships between LWC and MPa"
+author: "Indra Boving"
+date: "11/8/2022"
+output: html_document
+---
+
+##setup
+```{r setup, include=FALSE}
+install.packages("MuMIn")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+
+select = dplyr::select
+ 
+#source("http://goo.gl/UUyEzD") #outlier KD (original function)
+
+source(here::here("scripts", "figure_info.R"))
+
+datver <- "11082022"
+dataversion <- paste0("Data_", datver)
+```
+
+
+```{r}
+wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv"))) %>% 
+
+```
+
+Once leafout finishes, then things get linear: 
+
+- currently just using week approximation, but will use LMA plateau once we have that together:
+
+```{r}
+qudo_wc_linear <- wc_all_raw %>% 
+  filter(week > 15, 
+         species == "blue oak", 
+         lwc_mean < 10) %>% 
+  group_by(tree, week, time, lwc_mean) %>% 
+  mutate(water_potential = mean(mpa_mean), 
+         lwc = lwc_mean) 
+```
+
+
+
+```{r}
+qudo_wc_linear %>% 
+  ggplot(aes(x = water_potential, 
+             y = lwc, 
+             color = week)) +
+  geom_point() +
+  geom_smooth(method = "lm", 
+              se = F, 
+              color = "black") +
+  color_grad
+```
+
+Making models of each variable of interest: 
+
+Use al:as or lma to pick inflection point
+
+Variance decomposition, build 3-4 models:
+LWC ~ null
+~time
+~mpa
+~mpa + time
+
+Look at marginal R^2, decompose add them together, overlap should be greater than sum (since they explain some same)
+
+```{r}
+m0 <- lm(lwc ~ 1 + (1|tree), data = qudo_wc_linear)
+m1 <- lm(lwc ~ week + (1|tree), data = qudo_wc_linear)
+m2 <- lm(lwc ~ water_potential + (1|tree), data = qudo_wc_linear)
+m3 <- lm(lwc ~ week + water_potential + (1|tree), data = qudo_wc_linear)
+
+#try using broom::
+m0_df <- broom::glance(m0) %>% mutate(mod = "m0")
+m1_df <- broom::glance(m1) %>% mutate(mod = "m1")
+m2_df <- broom::glance(m2) %>% mutate(mod = "m2")
+m3_df <- broom::glance(m3) %>% mutate(mod = "m3")
+
+mod_all_df <- bind_rows(m0_df, m1_df, m2_df, m3_df) 
+
+#pull r^2s:
+m0_r2 <- broom::glance(m0) %>% select(r.squared) %>% pull()
+m1_r2 <- broom::glance(m1) %>% select(r.squared) %>% pull()
+m2_r2 <- broom::glance(m2) %>% select(r.squared) %>% pull()
+m3_r2 <- broom::glance(m3) %>% select(r.squared) %>% pull()
+
+mod_all_df1 <- mod_all_df %>% 
+  mutate(sum_r2 = sum(mod_all_df$r.squared), 
+         m1 = m1_r2, 
+         m2 = m2_r2, 
+         m3 = m3_r2, 
+         m0 = m0_r2) %>% 
+  select(r.squared, sum_r2, mod, m1, m2, m3, m0) %>% 
+  mutate(week_effect = m3 - m2, #week + mpa mod - mpa mod
+         mpa_effect = m3 - m1, #week + mpa mod - week mod
+         week_mpa_effect = m3 - m0, #week + mpa mod - null mod
+         all_effect = m2 + m1) #sum of week and mpa effects alone
+mod_all_df1
+
+#for plotting (maybe?)
+mod_all_long <- mod_all_df1 %>% 
+  select(week_effect, mpa_effect, week_mpa_effect, all_effect) %>% 
+  pivot_longer(cols = c(week_effect, mpa_effect, week_mpa_effect, all_effect), 
+    names_to = "effect") %>% 
+  distinct() %>% 
+  mutate(analysis = case_when(
+    effect %in% c("week_effect", "mpa_effect", "week_mpa_effect") ~ "Var. Decomp", 
+    effect %in% c("all_effect") ~ "Full Mod.", 
+    TRUE ~ as.character(effect)
+  ))
+mod_all_long
+
+mod_all_long %>% 
+  ggplot(aes(x = analysis, 
+             y = value, 
+         fill = effect)) +
+  geom_col(stat = "identity") +
+ # geom_text(aes(label = value)) +
+  color_many +
+  labs(y = "R squared", 
+       x = "Predictor") +
+  color_fill
+```
+
+how about the inverse?
+
+```{r}
+m0 <- lm(water_potential ~ 1 + (1|tree), data = qudo_wc_linear)
+m1 <- lm(water_potential ~ week + (1|tree), data = qudo_wc_linear)
+m2 <- lm(water_potential ~ lwc + (1|tree), data = qudo_wc_linear)
+m3 <- lm(water_potential ~ week + lwc + (1|tree), data = qudo_wc_linear)
+
+#try using broom::
+m0_df <- broom::glance(m0) %>% mutate(mod = "m0")
+m1_df <- broom::glance(m1) %>% mutate(mod = "m1")
+m2_df <- broom::glance(m2) %>% mutate(mod = "m2")
+m3_df <- broom::glance(m3) %>% mutate(mod = "m3")
+
+mod_all_df <- bind_rows(m0_df, m1_df, m2_df, m3_df) 
+
+#pull r^2s:
+m0_r2 <- broom::glance(m0) %>% select(r.squared) %>% pull()
+m1_r2 <- broom::glance(m1) %>% select(r.squared) %>% pull()
+m2_r2 <- broom::glance(m2) %>% select(r.squared) %>% pull()
+m3_r2 <- broom::glance(m3) %>% select(r.squared) %>% pull()
+
+mod_all_df1 <- mod_all_df %>% 
+  mutate(sum_r2 = sum(mod_all_df$r.squared), 
+         m1 = m1_r2, 
+         m2 = m2_r2, 
+         m3 = m3_r2, 
+         m0 = m0_r2) %>% 
+  select(r.squared, sum_r2, mod, m1, m2, m3, m0) %>% 
+  mutate(week_effect = m3 - m2, #week + mpa mod - mpa mod
+         lwc_effect = m3 - m1, #week + mpa mod - week mod
+         week_lwc_effect = m3 - m0, #week + mpa mod - null mod
+         all_effect = m2 + m1) #sum of week and mpa effects alone
+mod_all_df1
+
+#for plotting (maybe?)
+mod_all_long <- mod_all_df1 %>% 
+  select(week_effect, lwc_effect, week_lwc_effect, all_effect) %>% 
+  pivot_longer(cols = c(week_effect, lwc_effect, week_lwc_effect, all_effect), 
+    names_to = "effect") %>% 
+  distinct() %>% 
+  mutate(analysis = case_when(
+    effect %in% c("week_effect", "lwc_effect", "week_lwc_effect") ~ "Var. Decomp", 
+    effect %in% c("all_effect") ~ "Full Mod.", 
+    TRUE ~ as.character(effect)
+  ))
+mod_all_long
+
+mod_all_long %>% 
+  ggplot(aes(x = analysis, 
+             y = value, 
+         fill = effect)) +
+  geom_col(stat = "identity") +
+ # geom_text(aes(label = value)) +
+  color_many +
+  labs(y = "R squared", 
+       x = "Predictor") +
+  color_fill
+```

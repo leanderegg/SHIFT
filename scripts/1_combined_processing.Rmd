@@ -31,7 +31,7 @@ source(here::here("scripts", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "10282022"
+datver <- "11082022"
 dataversion <- paste0("Data_", datver)
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
@@ -425,7 +425,26 @@ all_water_df %>%
        color = "Week") +
   color_grad
 ```
-
+```{r}
+all_water_df %>% 
+    filter(lwc_mean < 4, 
+         lwc_mean > 0,
+         week > 15
+         #lfm_percent > 20, 
+  #        lfm_percent < 300) %>% 
+  ) %>% 
+  ggplot(aes(x = -1*mpa, 
+             y = lwc_mean, 
+             color = week 
+             #size = week
+             )) +
+  geom_jitter(alpha = .5) +
+  facet_wrap(~species)+
+  labs(y = "LWC (g water/gram dry)", 
+       x = "MPa", 
+       color = "Week") +
+  color_grad
+```
 
 ```{r}
 all_water_df %>% 

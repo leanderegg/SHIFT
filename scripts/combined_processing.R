@@ -226,11 +226,6 @@ all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>%
 write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
 
 
-
-
-
-
-
 #What are we missing?####
 
 
