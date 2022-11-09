@@ -80,24 +80,30 @@ LWC ~ null
 Look at marginal R^2, decompose add them together, overlap should be greater than sum (since they explain some same)
 
 ```{r}
-m0 <- lm(lwc ~ 1 + (1|tree), data = qudo_wc_linear)
-m1 <- lm(lwc ~ week + (1|tree), data = qudo_wc_linear)
-m2 <- lm(lwc ~ water_potential + (1|tree), data = qudo_wc_linear)
-m3 <- lm(lwc ~ week + water_potential + (1|tree), data = qudo_wc_linear)
+m0 <- lmer(lwc ~ 1 + (1|tree), data = qudo_wc_linear)
+m1 <- lmer(lwc ~ week + (1|tree), data = qudo_wc_linear)
+m2 <- lmer(lwc ~ water_potential + (1|tree), data = qudo_wc_linear)
+m3 <- lmer(lwc ~ week + water_potential + (1|tree), data = qudo_wc_linear)
 
 #try using broom::
-m0_df <- broom::glance(m0) %>% mutate(mod = "m0")
-m1_df <- broom::glance(m1) %>% mutate(mod = "m1")
-m2_df <- broom::glance(m2) %>% mutate(mod = "m2")
-m3_df <- broom::glance(m3) %>% mutate(mod = "m3")
+m0_df <- broom.mixed::glance(m0) %>% mutate(mod = "m0")
+m0_df <- broom.mixed::tidy(m0) %>% mutate(mod = "m0")
+m1_df <- broom.mixed::glance(m1) %>% mutate(mod = "m1")
+m2_df <- broom.mixed::glance(m2) %>% mutate(mod = "m2")
+m3_df <- broom.mixed::glance(m3) %>% mutate(mod = "m3")
 
-mod_all_df <- bind_rows(m0_df, m1_df, m2_df, m3_df) 
+m0_df
+mod_all_df <- bind_rows(m0_df, m1_df, m2_df, m3_df)
+mod_all_df
+```
 
+
+```{r}
 #pull r^2s:
-m0_r2 <- broom::glance(m0) %>% select(r.squared) %>% pull()
-m1_r2 <- broom::glance(m1) %>% select(r.squared) %>% pull()
-m2_r2 <- broom::glance(m2) %>% select(r.squared) %>% pull()
-m3_r2 <- broom::glance(m3) %>% select(r.squared) %>% pull()
+m0_r2 <- broom.mixed::glance(m0) %>% select(r.squared) %>% pull()
+m1_r2 <- broom.mixed::glance(m1) %>% select(r.squared) %>% pull()
+m2_r2 <- broom.mixed::glance(m2) %>% select(r.squared) %>% pull()
+m3_r2 <- broom.mixed::glance(m3) %>% select(r.squared) %>% pull()
 
 mod_all_df1 <- mod_all_df %>% 
   mutate(sum_r2 = sum(mod_all_df$r.squared), 
@@ -108,19 +114,19 @@ mod_all_df1 <- mod_all_df %>%
   select(r.squared, sum_r2, mod, m1, m2, m3, m0) %>% 
   mutate(week_effect = m3 - m2, #week + mpa mod - mpa mod
          mpa_effect = m3 - m1, #week + mpa mod - week mod
-         week_mpa_effect = m3 - m0, #week + mpa mod - null mod
-         all_effect = m2 + m1) #sum of week and mpa effects alone
+         week_mpa_effect = m3, #week + mpa mod 
+         other_effects =  m3 - (m3 - m1) - (m3 - m2)) #full minus the effects of mpa and week alone
 mod_all_df1
 
 #for plotting (maybe?)
 mod_all_long <- mod_all_df1 %>% 
-  select(week_effect, mpa_effect, week_mpa_effect, all_effect) %>% 
-  pivot_longer(cols = c(week_effect, mpa_effect, week_mpa_effect, all_effect), 
+  select(week_effect, mpa_effect, week_mpa_effect, other_effects) %>% 
+  pivot_longer(cols = c(week_effect, mpa_effect, week_mpa_effect, other_effects), 
     names_to = "effect") %>% 
   distinct() %>% 
   mutate(analysis = case_when(
-    effect %in% c("week_effect", "mpa_effect", "week_mpa_effect") ~ "Var. Decomp", 
-    effect %in% c("all_effect") ~ "Full Mod.", 
+    effect %in% c("week_effect", "mpa_effect", "other_effects") ~ "Var. Decomp", 
+    effect %in% c("sum_r2") ~ "Full Mod.", 
     TRUE ~ as.character(effect)
   ))
 mod_all_long
