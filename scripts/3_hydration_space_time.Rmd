@@ -1,0 +1,61 @@
+---
+title: "Establishing relationships between LWC and MPa, Part 2"
+author: "Indra Boving"
+date: "11/9/2022"
+output: html_document
+---
+
+##setup
+```{r setup, include=FALSE}
+#install.packages("")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+
+select = dplyr::select
+
+source(here::here("scripts", "figure_info.R"))
+
+datver <- "11082022"
+dataversion <- paste0("Data_", datver)
+```
+
+```{r, echo=F}
+wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) 
+
+wc_lm_df <- wc_all_raw %>% 
+  filter(week > 15, 
+         species == "blue oak", 
+         lwc_mean < 10) %>% 
+  group_by(tree, week, time, lwc_mean) %>% 
+  mutate(water_potential = mean(mpa_mean), 
+         lwc = lwc_mean) 
+```
+
+#Hydration: 
+
+MPa ~ lwc + (lwc|tree) + (1|wk)
+
+```{r}
+wc_lm_df %>% 
+  filter(week == 17) %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc, 
+             color = as.factor(tree), 
+             shape = time)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = F) +
+  theme(legend.position = "none")
+```
+
