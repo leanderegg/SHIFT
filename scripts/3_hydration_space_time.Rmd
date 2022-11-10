@@ -34,28 +34,125 @@ dataversion <- paste0("Data_", datver)
 ```{r, echo=F}
 wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) 
 
-wc_lm_df <- wc_all_raw %>% 
-  filter(week > 15, 
+wc_qudo_df <- wc_all_raw %>% 
+   filter(#week > 15, 
          species == "blue oak", 
-         lwc_mean < 10) %>% 
+          lwc_mean < 10)%>% 
   group_by(tree, week, time, lwc_mean) %>% 
   mutate(water_potential = mean(mpa_mean), 
-         lwc = lwc_mean) 
+         lwc = lwc_mean, 
+         tree_factor = as.factor(tree))
+
+wc_lm_df <- wc_qudo_df %>% 
+  filter(week > 15)
 ```
 
-#Hydration: 
+From what weeks do we have the most trees?
+
+```{r, echo=F}
+wc_qudo_df %>% 
+  select(week, time, tree, water_potential, lwc) %>% 
+  unique() %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  ggplot(aes(x = week, y = n, fill = time)) +
+  geom_col(stat = "identity") + 
+  scale_x_continuous(breaks = seq(9, 30, by = 1))
+```
+A: week 17, 21, 29, 10
+
+#Hydration per week: 
 
 MPa ~ lwc + (lwc|tree) + (1|wk)
 
 ```{r}
-wc_lm_df %>% 
-  filter(week == 17) %>% 
-  ggplot(aes(y = water_potential, 
+wc_lm_hyd_df <- wc_qudo_df 
+
+for (i in unique(wc_lm_hyd_df$week)) {
+  
+  df <- wc_lm_hyd_df %>% 
+    filter(week == i)
+  
+  p <- df %>% 
+  ggplot(aes(y = -1*water_potential, 
              x = lwc, 
-             color = as.factor(tree), 
-             shape = time)) +
-  geom_point() + 
-  geom_smooth(method = "lm", se = F) +
-  theme(legend.position = "none")
+             color = as.factor(tree)
+             )) +
+  geom_point(aes(shape = time)) + 
+  geom_smooth(method = "lm",
+              se = F) +
+  #theme(legend.position = "none") +
+  labs(title = i)
+  
+  if (!is.null(p)) plot(p)
+  
+}
+```
+Okay, now try running the model: 
+
+MPa ~ lwc + (lwc|tree) + (1|wk)
+
+```{r}
+for (i in unique(wc_qudo_df$week)) {
+
+   df <- wc_qudo_df %>%
+    filter(week == i)
+
+   m_wk <- lmer(mpa ~ lwc + (lwc|tree), data = df)
+   m_wk
+
+   df2 <- broom.mixed::tidy(m_wk) %>%
+     mutate(week = i) %>%
+     #select(estimate, week, term) %>% 
+     data.frame()
+
+   assign(paste0("m_df_", i), data.frame(df2)) 
+   #print(paste0("m_df_", i))
+}
+
+all_hyd_mods <- bind_rows(m_df_9, m_df_10, m_df_11, m_df_12, m_df_13, m_df_14, m_df_15, m_df_17, m_df_18, m_df_19, m_df_21, m_df_29)
+```
+
+```{r}
+all_hyd_mods %>% 
+  filter(term == "lwc") %>% 
+  mutate(upr = estimate + (std.error/2), 
+         lwr = estimate - (std.error/2)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = estimate,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "week", 
+       y = "Grand Slope") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = seq(9, 30, by = 1))
+```
+#Space
+
+1. Center by week
+2. plot all midday grand slopes
+
+mpa ~ LWCweek + (LWCweek|week) + (1|tree)
+
+```{r}
+
 ```
 
