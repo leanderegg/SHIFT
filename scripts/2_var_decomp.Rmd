@@ -7,7 +7,7 @@ output: html_document
 
 ##setup
 ```{r setup, include=FALSE}
-install.packages("MuMIn")
+#install.packages("MuMIn")
 #devtools::install_github("an-bui/calecopal")
 
 library(data.table)

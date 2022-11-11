@@ -252,7 +252,7 @@ wp46md <- wpwc46 %>%
                , names_to="md"
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
-  mutate(date = mdy("04-06-2022"))
+  mutate(date = mdy("04-04-2022")) #trying this so that the weeks match up in the end
 
 
 ####For 4.11
@@ -280,7 +280,7 @@ wp413md <- wpwc413 %>%
                , names_to="md"
                , values_to="mpa"
                , values_drop_na=TRUE) %>% 
-  mutate(date = mdy("04-13-2022"))
+  mutate(date = mdy("04-11-2022")) #switching date here too
 
 ####For 4.25
 ###Note: 2367 MD are from tree 2365, as we are missing it from 2367
