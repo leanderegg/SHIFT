@@ -177,9 +177,10 @@ mod_all_df <- mod_all_df1 %>%
     #other_effects =  m3 - week_effect - mpa_effect,
     week_effect = m3 - m2, #week + mpa mod - mpa mod
          mpa_effect = m3 - m1, #week + mpa mod - week mod
-         week_mpa_effect = m3, #week + mpa mod 
-    other_effects =  m3 - week_effect - mpa_effect,
+         week_mpa_effect = m3, #week + mpa mod
+    other_effects =  m3 - week_effect - mpa_effect
          ) #full minus the effects of mpa and week alone
+
 mod_all_df
 
 #for plotting (maybe?)

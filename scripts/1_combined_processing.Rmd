@@ -307,19 +307,49 @@ wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide,
                                      by = c("tree")) %>% 
   select(-rep) %>% 
   distinct()
+```
 
- #make a shorter name because the long one will be a pain to write out!
+#Write .csv
+
+```{r}
+#make a shorter name because the long one will be a pain to write out!
 all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
   mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100))  #calculating RWC
 
 write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
-  
 ```
 
 NOTE: This just includes leaves, need to make another df or add stems eventually.
 
 
 ######Missings: 
+
+```{r, echo=F}
+wp_wc_rwc_lfm_df_wide_trees %>% 
+  select(week, time, tree, lwc_bulk, species) %>% 
+  unique() %>% 
+  group_by(week, time, species) %>% 
+  count() %>% 
+  ggplot(aes(x = week, y = n, fill = time)) +
+  facet_wrap(~ species) +
+  geom_col(stat = "identity") + 
+  scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  labs(title = "LWC")
+```
+
+```{r, echo=F}
+wp_wc_rwc_lfm_df_wide_trees %>% 
+  select(week, time, tree, mpa_mean, species) %>% 
+  unique() %>% 
+  group_by(week, time, species) %>% 
+  count() %>% 
+  ggplot(aes(x = week, y = n, fill = time)) +
+  facet_wrap(~ species) +
+  geom_col(#stat = "identity"
+    ) + 
+  scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  labs(title = "MPa")
+```
 
 Q: What are we missing??? 
 
@@ -648,10 +678,32 @@ all_water_df %>%
 
 #Ongoing issues: 
 
+```{r, echo=F}
+all_water_df %>% 
+  #select(week, time, tree, water_potential, lwc, date) %>% 
+ # unique() %>% 
+  group_by(date_wp, time, species) %>% 
+  count() %>% 
+  ggplot(aes(x = date_wp, y = n, fill = time)) +
+  facet_wrap(~species)+
+  geom_col(stat = "identity") 
+```
 
+```{r, echo=F}
+all_water_df %>% 
+  #select(week, time, tree, water_potential, lwc, date) %>% 
+ # unique() %>% 
+  group_by(date_wc, time, species) %>% 
+  count() %>% 
+  ggplot(aes(x = date_wc, y = n, fill = time)) +
+  facet_wrap(~species)+
+  geom_col(stat = "identity") 
+```
 - water potentials for week 17 piney, cucu, and chamise are missing? (04.25.2022 and 04.27.2022) We have LFM and LWC for this week from those sites however.  
 
 - missing LFM from week 18 (05.04.2022)
+
+- Predawns from early may, middays from end of March are missing (?)
 
 
 

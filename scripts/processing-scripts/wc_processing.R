@@ -101,11 +101,11 @@ wc427 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"),
   mutate(date = mdy("04-27-2022")) 
 
 #Date: 504WP + LWC
-wc0504 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc504 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-04-2022")) 
 
 #Date: 509WP + LWC
-wc0509 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc509 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-09-2022")) 
 
 
@@ -963,7 +963,7 @@ wc_long_md_427 <- merge(wc427_long_dry_premerge, wc427_long_wet, all.x = T)
 ############### 05-04-2022 #######################################
 #______________________________________________________________
 
-wc504md <- wc0504 %>%
+wc504md <- wc504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("md")) %>% 
@@ -1026,7 +1026,7 @@ wc_long_md_504 <- merge(wc504_long_dry_premerge, wc504_long_wet, all.x = T)
 ############### 05-09-2022 #######################################
 #______________________________________________________________
 
-wc509md <- wc0509 %>%
+wc509md <- wc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("md")) %>% 
@@ -2226,7 +2226,7 @@ wc_long_427 <- merge(wc427_long_dry_premerge, wc427_long_wet, all.x = T)
 ############### 05-04-2022 #######################################
 #______________________________________________________________
 
-wc504pd <- wc0504 %>%
+wc504pd <- wc504 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("pd")) %>% 
@@ -2289,7 +2289,7 @@ wc_long_504 <- merge(wc504_long_dry_premerge, wc504_long_wet, all.x = T)
 ############### 05-09-2022 #######################################
 #______________________________________________________________
 
-wc509pd <- wc0509 %>%
+wc509pd <- wc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("pd")) %>% 
@@ -2301,7 +2301,7 @@ wc509_long_pd <- wc509pd %>%
                , names_to="pd"
                , values_to="mpa_pd"
                , values_drop_na=TRUE)%>% 
-  mutate(date = mdy("05-04-2022")) 
+  mutate(date = mdy("05-09-2022")) 
 
 wc509_long_dry <- wc509pd %>% 
   pivot_longer(cols=matches(c("pd[1-9]_g_dry","pd_bulk_dry"))
