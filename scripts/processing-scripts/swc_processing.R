@@ -20,7 +20,8 @@ library(MetBrewer)
 #Note: we measured Ks on stems collected on "2022-04-25" "2022-03-27" "2022-04-12" and "2022-05-23"
 
 
-rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="RWC DATA", skip=0, na = "NA") %>% 
+rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), 
+                     sheet="RWC DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
   mutate(date = ymd(date), 
          swc_g = wet_wt_g - dry_wt_g,
@@ -35,6 +36,7 @@ rwc_df <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"
   mutate(timing = case_when(
     week %in% c(11, 13, 14) ~ "early", 
     week %in% c(15, 18, 19, 21) ~ "late", 
+    TRUE ~ NA_real_
   ), 
   tree = case_when(
     tree == 1475 ~ 1478, 

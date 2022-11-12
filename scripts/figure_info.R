@@ -13,7 +13,6 @@ color_many <- scale_color_manual(values = met.brewer("Tiepolo", direction = -1, 
   
 color_two <- scale_color_manual(values = met.brewer("Tiepolo", 4 ,direction = -1)) 
 
-
 color_fill <- scale_fill_manual(values = met.brewer("Tiepolo"))
 
 color_grad <- scale_color_gradientn(colors=met.brewer("Tiepolo", direction = -1))

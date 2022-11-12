@@ -1,0 +1,80 @@
+---
+title: "Establishing relationships between LWC and MPa, Part 3"
+author: "Indra Boving"
+date: "11/9/2022"
+output: html_document
+---
+
+##setup
+```{r setup, include=FALSE}
+#install.packages("")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+library(arm)
+
+select = dplyr::select
+
+source(here::here("scripts", "figure_info.R"))
+
+datver <- "11082022"
+dataversion <- paste0("Data_", datver)
+```
+
+```{r, echo=F}
+wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
+  filter(species == "blue oak", 
+         lwc_bulk < 5)
+
+wc_qudo_df <- wc_all_raw %>% 
+   filter(#week > 15, 
+         species == "blue oak", 
+          lwc_mean < 5, 
+         lwc_mean > 0
+         ) %>% 
+  mutate(lwc = lwc_mean) %>% 
+  group_by(tree, week, time) %>% 
+  mutate(water_potential = mean(mpa_mean), 
+         tree_factor = as.factor(tree)) %>% 
+  ungroup() %>% 
+  mutate(week = case_when(
+    week %in% c(13) ~ 14, 
+    TRUE ~ week
+  )) %>% 
+  select(week, time, lwc, water_potential, rwc_percent,
+         tree, tree_factor, plot, site, species, date_wc, date_wp) %>% 
+  unique()
+```
+
+#RWC vs. LWC
+```{r, echo=F}
+wc_qudo_df %>% 
+  ggplot(aes(y = rwc_percent, 
+             x= lwc, 
+             color = week)) +
+  geom_point()
+
+wc_qudo_df%>% 
+  ggplot(aes(y = rwc_percent, 
+             x= water_potential, 
+             color = as.factor(week))) +
+  geom_point()
+
+wc_qudo_df %>% 
+  ggplot(aes(y = lwc, 
+             x= water_potential, 
+             color = week)) +
+  geom_point()
+
+```
