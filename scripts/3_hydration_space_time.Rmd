@@ -3,8 +3,8 @@ title: "Establishing relationships between LWC and MPa, Part 2"
 author: "Indra Boving"
 date: "11/9/2022"
 output:
-  word_document: default
   html_document: default
+  word_document: default
 ---
 
 #setup
@@ -131,11 +131,9 @@ for (i in unique(wc_lm_hyd_df$week)) {
   
 }
 ```
-Okay, now try running the model: 
 
-MPa ~ lwc + (lwc|tree) + (1|wk)
 
-```{r, warning=F, echo=FALSE}
+```{r, warning=F, echo=FALSE, include = F}
 wc_qudo_df %>% 
   ggplot(aes(y= water_potential, 
              x = lwc, 
@@ -146,13 +144,11 @@ wc_qudo_df %>%
   theme(legend.position = "none")
 ```
 
-1. 
 
-This give us a random slope and intercept per tree and per week
 
 ```{r, warning=F}
 m_wk_rand <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week), data = wc_qudo_df)
-
+summary(m_wk_rand)
 #unique(wc_qudo_df$week)
 ```
 
@@ -408,7 +404,7 @@ ran_df_week %>%
          lwr = slope - (std.error.slope/2)) %>% 
   ggplot(aes(color= week)
     ) + 
-  geom_point(aes(y = slope ,x = week), size =3) +
+  geom_point(aes(y = slope ,x = week), size =2) +
     geom_point(aes(y = upr, x = week), size = 1) +
   geom_point(aes(y = lwr, x = week), size = 1) +
   #geom_line(aes(group = week, y = week, x = upr)) +
@@ -430,7 +426,7 @@ theme(
   axis.title = element_text(size = 20), 
   legend.title = element_text(size = 18)
   ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
+#  geom_hline(yintercept = 0, linetype="dotted") + 
   scale_x_continuous(breaks = seq(9, 30, by = 1)) +
   theme(legend.position = "none")
 
@@ -468,6 +464,20 @@ theme(
 ```
 
 #Time
+```{r, echo=FALSE}
+wc_qudo_df %>% 
+  filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc, 
+             color = as.factor(week), 
+             show.legend = FALSE)) +
+  geom_point(aes(size = week), 
+             alpha = .3)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "LWC", 
+       y = "Midday MPa")
+```
 
 ```{r, echo=FALSE}
 wc_qudo_df %>% 
@@ -509,13 +519,14 @@ summary(time_mod)
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, include = F}
 #ran_list <- ranef(time_mod)
 ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-         slope = `lwc`) %>%
+        # slope = `lwc`
+         ) %>%
   select(-`(Intercept)`, 
           -lwc)
 tree_eff
@@ -540,11 +551,11 @@ ran_df_tree %>%
   mutate(tree = as.factor(tree)) %>% 
  # filter(tree %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
-  mutate(upr = slope + (std.error.slope/2), 
-         lwr = slope - (std.error.slope/2)) %>% 
+  mutate(upr = estimate + (std.error/2), 
+         lwr = estimate - (std.error/2)) %>% 
   ggplot(aes(color= tree)
     ) + 
-  geom_point(aes(y = slope ,x = tree), size =3) +
+  geom_point(aes(y = estimate ,x = tree), size =3) +
     geom_point(aes(y = upr, x = tree), size = 1) +
   geom_point(aes(y = lwr, x = tree), size = 1) +
   #geom_line(aes(group = tree, y = tree, x = upr)) +
@@ -571,73 +582,75 @@ theme(
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
-Predawnd slopes for each individual: 
-```{r}
-wc_qudo_pd_df <- wc_qudo_df %>% 
-  filter(time == "pd")
-```
 
+Predawn slopes for each individual: 
 
 ```{r, echo=FALSE}
-time_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = wc_qudo_pd_df)
+wc_qudo_pd_df <- wc_qudo_df %>% 
+  filter(time == "pd")
+
+time_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree), data = wc_qudo_pd_df)
 summary(time_mod)
+```
 
+
+```{r, echo=FALSE, include = F}
 #ran_list <- ranef(time_mod)
-ran_list <- coef(time_mod)
-
-tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
-  mutate(estimate = `(Intercept)`, 
-         slope = `lwc`) %>%
-  select(-`(Intercept)`, 
-          -lwc)
-tree_eff
-
-ran_err_tree <- arm::se.ranef(time_mod)
-ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
-  mutate(std.error = `(Intercept)`, 
-         std.error.slope = `lwc`)%>% 
-  select(-`(Intercept)`, 
-         -lwc)
-
-inds<- data_frame(1:48)
-inds$tree <- c(unique(wc_qudo_pd_df$tree))
-
-ran_df_tree <- bind_cols(inds, tree_eff, ran_err_tree) %>% 
-  select(-`1:48`) %>% 
-  data_frame()
-
-ran_df_tree %>% 
-  mutate(tree = as.factor(tree)) %>% 
- # filter(tree %in% c(14, 17, 21, 29)) %>% 
- # filter(term == "lwc") %>% 
-  mutate(upr = slope + (std.error.slope/2), 
-         lwr = slope - (std.error.slope/2)) %>% 
-  ggplot(aes(color= tree)
-    ) + 
-  geom_point(aes(y = slope ,x = tree), size =3) +
-    geom_point(aes(y = upr, x = tree), size = 1) +
-  geom_point(aes(y = lwr, x = tree), size = 1) +
-  #geom_line(aes(group = tree, y = tree, x = upr)) +
-  geom_segment(aes(y= lwr, 
-                   yend = upr, 
-                   x = tree, 
-                   xend = tree, 
-                   color = tree))+
-  labs(x = "tree", 
-       color = "tree", 
-       y = "Slope") +
-   # facet_wrap(~y_var_name, scales = "free") + 
-theme(
-  strip.background = element_blank(),
-  strip.text.y = element_blank(), 
-  strip.text.x = element_text(size = 18), 
- # axis.text.y = element_blank(), 
-  #axis.ticks.y = element_blank(), 
-  axis.title = element_text(size = 20), 
-  legend.title = element_text(size = 18)
-  ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
- # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
-  theme(legend.position = "none")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+# ran_list <- coef(time_mod)
+# 
+# tree_eff <- as.data.frame(ran_list[['week']]) %>% 
+#   mutate(estimate = `(Intercept)`, 
+#          slope = `lwc`) %>%
+#   select(-`(Intercept)`, 
+#           -lwc)
+# tree_eff
+# 
+# ran_err_tree <- arm::se.ranef(time_mod)
+# ran_err_tree <- as.data.frame(ran_err_tree[['week']]) %>% 
+#   mutate(std.error = `(Intercept)`, 
+#          std.error.slope = `lwc`)%>% 
+#   select(-`(Intercept)`, 
+#          -lwc)
+# 
+# inds<- data_frame(1:8)
+# inds$tree <- c(unique(wc_qudo_pd_df$week))
+# 
+# ran_df_tree <- bind_cols(inds, tree_eff, ran_err_tree) %>% 
+#   select(-`1:8`) %>% 
+#   data_frame()
+# 
+# ran_df_tree %>% 
+#   mutate(tree = as.factor(week)) %>% 
+#  # filter(tree %in% c(14, 17, 21, 29)) %>% 
+#  # filter(term == "lwc") %>% 
+#   mutate(upr = slope + (std.error.slope/2), 
+#          lwr = slope - (std.error.slope/2)) %>% 
+#   ggplot(aes(color= tree)
+#     ) + 
+#   geom_point(aes(y = slope ,x = tree), size =3) +
+#     geom_point(aes(y = upr, x = tree), size = 1) +
+#   geom_point(aes(y = lwr, x = tree), size = 1) +
+#   #geom_line(aes(group = tree, y = tree, x = upr)) +
+#   geom_segment(aes(y= lwr, 
+#                    yend = upr, 
+#                    x = tree, 
+#                    xend = tree, 
+#                    color = tree))+
+#   labs(x = "Week", 
+#        color = "Week", 
+#        y = "Slope") +
+#    # facet_wrap(~y_var_name, scales = "free") + 
+# theme(
+#   strip.background = element_blank(),
+#   strip.text.y = element_blank(), 
+#   strip.text.x = element_text(size = 18), 
+#  # axis.text.y = element_blank(), 
+#   #axis.ticks.y = element_blank(), 
+#   axis.title = element_text(size = 20), 
+#   legend.title = element_text(size = 18)
+#   ) +
+#   geom_hline(yintercept = 0, linetype="dotted") + 
+#  # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+#   theme(legend.position = "none")+
+#   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
