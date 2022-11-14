@@ -152,6 +152,8 @@ Need to find lwcs:
 ```{r}
 rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
+rwc_df_spp <- merge(rwc_df, trees_sites_df)
+
 # rwc_df %>% 
 #   #filter(week == 21) %>% 
 #   outlierKD(swc_per_dry_g)
@@ -171,41 +173,60 @@ rwc_df_leaves_y0 <- rwc_df %>%
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
   group_by(tree, date) %>% 
-  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
-         , mean_swc_g = mean(swc_g)) %>% 
+  mutate(mean_swc_per_dry_g_y0 = mean(swc_per_dry_g)
+         , mean_swc_g_y0 = mean(swc_g), 
+         swc_ww_g_y0 = swc_ww_g, 
+       swc_dw_g_y0 = swc_ww_g) %>% 
   ungroup() %>% 
   mutate(date_rwc = date, 
          week = as.numeric(week)) %>% 
   select(-date) %>% 
   distinct() %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc) %>% 
+  select(mean_swc_per_dry_g_y0, mean_swc_g_y0, tree, week, date_rwc, 
+         swc_dw_g_y0, swc_ww_g_y0) %>% 
   as.data.frame()
 
-rwc_df_leaves_y1 <- rwc_df %>% 
-  filter(type == "leaf", 
-         year %in% c(1, "NA")) %>% 
-  group_by(tree, date) %>% 
-mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
-         , mean_swc_g = mean(swc_g)) %>% 
-  ungroup() %>% 
-  mutate(date_rwc = date, 
-         week = as.numeric(week)) %>% 
-  select(-date) %>% 
-  distinct() %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree, week, date_rwc) %>% 
-  as.data.frame()
 
+# rwc_df_leaves_y1 <- rwc_df %>% 
+#   filter(type == "leaf", 
+#          year %in% c(1, "NA")) %>% 
+#   group_by(tree, date) %>% 
+# mutate(mean_swc_per_dry_g_y1 = mean(swc_per_dry_g)
+#          , mean_swc_g_y1 = mean(swc_g), 
+#        swc_ww_g_y1= swc_ww_g, 
+#        swc_dw_g_y1= swc_ww_g) %>% 
+#   ungroup() %>% 
+#   mutate(date_rwc = date, 
+#          week = as.numeric(week)) %>% 
+#   select(-date) %>% 
+#   distinct() %>% 
+#   select(mean_swc_per_dry_g_y1, mean_swc_g_y1, tree, week, date_rwc, 
+#          swc_dw_g_y1, swc_ww_g_y1) %>% 
+#   as.data.frame()
+
+#RWC all weeks: 
+# rwc_df_leaves_all <- merge(rwc_df_leaves_y1 , rwc_df_leaves_y0 ,
+#                     by = c("tree",
+#                            "week",
+#                            "date_rwc"
+#                           # "rep"
+#                            ),
+#                     #all.x = T,
+#                     all = T
+#                     ) 
+# #646 rows
 
 #RWC + WC + WP:
 
-wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
+wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
                     by = c("tree",
                            "week"
                           # "rep"
                            ),
                     #all.x = T,
                     all.x = T
-                    )
+                    ) %>% 
+  distinct()
 
  # wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
  #   group_by(week, tree) %>% 
@@ -215,26 +236,49 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0 ,
  #             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
  #             mean_swc_g = mean(mean_swc_g), 
  #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
+
 ```
 
 Something is up with week 21 (05/25/2022)
 
 ```{r}
-rwc_df %>% 
+rwc_df_spp %>% 
+  filter(species == "blue oak", 
+         year == 0) %>% 
   filter(year %in% c(0,1), 
          swc_per_dry_g < 5, 
          swc_percent < 300) %>% 
   ggplot(aes(y = swc_per_dry_g, 
              x = as.factor(week), 
-             color = as.factor(type))) +
+             color = as.factor(type), 
+             #fill = species
+             )) +
   geom_boxplot() +
-  facet_wrap(~year) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_two
+
+rwc_df_spp %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         type == "leaf") %>% 
+  filter(year %in% c(0,1), 
+         swc_per_dry_g < 5, 
+         swc_percent < 300) %>% 
+  ggplot(aes(y = swc_per_dry_g, 
+             x = as.factor(week), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_boxplot() +
+  #facet_wrap(~year, scales = "free") +
   labs(x = "Week", 
        y = "SWC (g water/g dry)", 
        color = "Type") +
   color_two
 ```
-
 #####LFM:
 
 Here we are splitting the LFM into different categories: stem vs. leaves, and y1 vs. y0. 
@@ -314,7 +358,9 @@ wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide,
 ```{r}
 #make a shorter name because the long one will be a pain to write out!
 all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
-  mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100)) %>%  #calculating RWC
+  mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
+        # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
+         ) %>%  #calculating RWC
   filter(lwc_bulk < 5, 
          lwc_bulk > 0)
 
@@ -323,6 +369,41 @@ write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,
 
 NOTE: This just includes leaves, need to make another df or add stems eventually.
 
+```{r}
+all_water_df %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g_y0 < 5, 
+         #swc_percent < 300, 
+         species == "blue oak") %>% 
+  ggplot(aes(y = mean_swc_per_dry_g_y0, 
+             x = as.factor(week), 
+            # color = as.factor(type)
+             )) +
+  geom_boxplot() +
+  #facet_wrap(~year) +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_two
+
+all_water_df %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g_y0 < 5, 
+         #swc_percent < 300, 
+        # species == "blue oak"
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g_y0, 
+             x = as.factor(week), 
+            color = as.factor(species)
+             )) +
+  geom_boxplot() +
+  #facet_wrap(~year) +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Species", 
+       title = "Leaves, Y0") +
+  color_two 
+```
 
 ######Missings: 
 

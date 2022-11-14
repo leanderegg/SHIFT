@@ -53,7 +53,9 @@ wc_qudo_df <- wc_all_raw %>%
     TRUE ~ week
   )) %>% 
   select(week, time, lwc, water_potential, rwc_percent,
-         tree, tree_factor, plot, site, species, date_wc, date_wp) %>% 
+         tree, tree_factor, plot, site, species, date_wc, date_wp, mean_swc_per_dry_g
+        # swc_per_dry_g
+         ) %>% 
   unique()
 ```
 
@@ -78,3 +80,35 @@ wc_qudo_df %>%
   geom_point()
 
 ```
+```{r}
+wc_qudo_df %>% 
+  filter(year %in% c(0,1), 
+        mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = as.factor(week), 
+             color = as.factor(type))) +
+  geom_boxplot() +
+  facet_wrap(~year) +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_two
+```
+
+```{r, fig.height=3, fig.width=3}
+wc_qudo_df %>% 
+  ggplot(aes(y = lwc, 
+             x = lwc)) +
+  geom_point(aes(color = tree)) +
+  geom_abline()+
+  xlim(0,4) +
+  ylim(0,4)+
+  theme(legend.position = "none")+
+  labs(y = "CWC", 
+       x = "LWA")
+
+
+```
+
