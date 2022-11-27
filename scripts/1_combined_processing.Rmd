@@ -31,7 +31,7 @@ source(here::here("scripts", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "11082022"
+datver <- "11272022"
 dataversion <- paste0("Data_", datver)
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
@@ -165,10 +165,7 @@ rwc_df_spp <- merge(rwc_df, trees_sites_df)
 # rwc_df %>% 
 #   #filter(week == 21) %>% 
 #   outlierKD(swc_dw_g)
-```
 
-
-```{r}
 rwc_df_leaves_y0 <- rwc_df %>% 
   filter(type == "leaf", 
          year %in% c(0, "NA")) %>% 
@@ -360,9 +357,7 @@ wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide,
 all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
   mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
-         ) %>%  #calculating RWC
-  filter(lwc_bulk < 5, 
-         lwc_bulk > 0)
+         ) 
 
 write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
 ```
@@ -409,6 +404,7 @@ all_water_df %>%
 
 ```{r, echo=F}
 wp_wc_rwc_lfm_df_wide_trees %>% 
+  filter(species == "blue oak") %>% 
   select(week, time, tree, lwc_bulk, species) %>% 
   unique() %>% 
   group_by(week, time, species) %>% 
@@ -416,7 +412,7 @@ wp_wc_rwc_lfm_df_wide_trees %>%
   ggplot(aes(x = week, y = n, fill = time)) +
   facet_wrap(~ species) +
   geom_col(stat = "identity") + 
-  scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  scale_x_continuous(breaks = seq(9, 40, by = 1)) +
   labs(title = "LWC")
 ```
 
@@ -618,9 +614,9 @@ RWC x LWC:
 ```{r}
 all_water_df %>% 
    filter(lwc_mean < 5,
-          mean_swc_per_dry_g < 5) %>% 
+          mean_swc_per_dry_g_y0 < 5) %>% 
   ggplot(aes(y = lwc_mean, 
-             x = mean_swc_per_dry_g, 
+             x = mean_swc_per_dry_g_y0, 
              color = week 
              #size = week
              )) +
@@ -636,9 +632,9 @@ all_water_df %>%
 ```{r}
 all_water_df %>% 
    filter(lwc_mean < 5,
-          mean_swc_per_dry_g < 5) %>% 
+          mean_swc_per_dry_g_y0 < 5) %>% 
   ggplot(aes(y = mpa, 
-             x = mean_swc_per_dry_g, 
+             x = mean_swc_per_dry_g_y0, 
              color = week 
              #size = week
              )) +
@@ -653,10 +649,10 @@ all_water_df %>%
 
 ```{r}
 all_water_df %>% 
-  filter(rwc_percent > 0, 
-         rwc_percent < 300) %>% 
+  filter(rwc_percent_y0 > 0, 
+         rwc_percent_y0 < 300) %>% 
   ggplot(aes(y = lwc_mean * 100, 
-             x =rwc_percent, 
+             x =rwc_percent_y0, 
              color = week 
              #size = week
              )) +
@@ -673,10 +669,10 @@ RWC vs. MPa
 
 ```{r}
 all_water_df %>% 
-   filter(rwc_percent > 0, 
-          rwc_percent < 300) %>% 
+   filter(rwc_percent_y0 > 0, 
+          rwc_percent_y0 < 300) %>% 
   ggplot(aes(y = -1*mpa, 
-             x = rwc_percent, 
+             x = rwc_percent_y0, 
              color = as.factor(week)
              #size = week
              )) +
@@ -689,10 +685,10 @@ all_water_df %>%
 
 ```{r}
 all_water_df %>% 
-   filter(rwc_percent > 0, 
-          rwc_percent < 300) %>% 
+   filter(rwc_percent_y0 > 0, 
+          rwc_percent_y0 < 300) %>% 
   ggplot(aes(y = -1*mpa, 
-             x = rwc_percent, 
+             x = rwc_percent_y0, 
              color = interaction(species,time) 
              #size = week
              )) +

@@ -8,14 +8,23 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
           panel.grid.minor = element_blank())  # Hide minor gridlines
 }
 
+nb.cols <- 58
+pal <- met.brewer("Cross")
+mycolors <- colorRampPalette(pal)(nb.cols)
 
-color_many <- scale_color_manual(values = met.brewer("Tiepolo", direction = -1, type = "discrete")) 
+color_very_many <- scale_color_manual(values = mycolors) 
+
+nb.cols.10 <- 10
+pal.10 <- met.brewer("Cross")
+mycolors.10 <- colorRampPalette(pal)(nb.cols.10)
+
+color_many <- scale_color_manual(values = mycolors.10) 
   
-color_two <- scale_color_manual(values = met.brewer("Tiepolo", 4 ,direction = -1)) 
+color_two <- scale_color_manual(values = met.brewer("Cross", 4 ,direction = -1)) 
 
-color_fill <- scale_fill_manual(values = met.brewer("Tiepolo"))
+color_fill <- scale_fill_manual(values = met.brewer("Cross"))
 
-color_grad <- scale_color_gradientn(colors=met.brewer("Tiepolo", direction = -1))
+color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1))
 
 #Other color options: 
 

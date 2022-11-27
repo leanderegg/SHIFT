@@ -447,7 +447,7 @@ wp303pd <- wpwc303 %>%
 
 ####For 3.08
 
-wp308pd <- wpwc38 %>%
+wp308pd <- wpwc308 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(!matches("_g_")) %>% 

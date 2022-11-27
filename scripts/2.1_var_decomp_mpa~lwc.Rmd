@@ -22,6 +22,7 @@ library(rstatix)
 library(vars)
 library(MuMIn)
 library(lme4) #for mixed effects models
+library(cowplot)
 
 select = dplyr::select
  
@@ -35,7 +36,9 @@ dataversion <- paste0("Data_", datver)
 
 
 ```{r}
-wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv"))) 
+wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv"))) %>% 
+  filter(lwc_mean > 0, 
+         lwc_mean < 3)
 ```
 
 Before leafout: 
@@ -51,7 +54,7 @@ qudo_wc_all <- wc_all_raw %>%
 ```
 
 ```{r}
-qudo_wc_all %>% 
+full_nice <- qudo_wc_all %>% 
   ggplot(aes(y = water_potential, 
              x = lwc, 
              color = week)) +
@@ -59,7 +62,13 @@ qudo_wc_all %>%
  # geom_smooth(method = "lm", 
             #  se = F, 
             #  color = "black") +
-  color_grad
+  color_grad +
+  #color_many +
+  labs(y = "", 
+       x = "", 
+       color = "Week") +
+  theme(legend.position = c(0.9, 0.78)) 
+full_nice
 ```
 
 Making models of each variable of interest: 
@@ -134,15 +143,47 @@ Once leafout finishes, then things get linear:
 - currently just using week approximation, but will use LMA plateau once we have that together:
 
 ```{r}
-qudo_wc_linear <- wc_all_raw %>% 
-  filter(week > 15, 
+qudo_wc_full <- wc_all_raw %>% 
+   filter(#week > 15, 
          species == "blue oak", 
          lwc_mean < 10) %>% 
   group_by(tree, week, time, lwc_mean) %>% 
   mutate(water_potential = mean(mpa_mean), 
-         lwc = lwc_mean) 
+         lwc = lwc_mean) %>% 
+  mutate(section = "full") %>% 
+  select(section, species, week, water_potential, lwc)
 
-qudo_wc_linear %>% 
+
+qudo_wc_linear <- wc_all_raw %>% 
+  filter(week > 16, 
+         species == "blue oak", 
+         lwc_mean < 10) %>% 
+  group_by(tree, week, time, lwc_mean) %>% 
+  mutate(water_potential = mean(mpa_mean), 
+         lwc = lwc_mean) %>% 
+  mutate(section = "linear")%>% 
+  select(section, species, week, water_potential, lwc)
+
+qudo_wc_all <- bind_rows(qudo_wc_linear, qudo_wc_full)
+
+nice_all <- qudo_wc_all %>% 
+   ggplot(aes(y = water_potential, 
+             x = lwc, 
+             color = week)) +
+  geom_point() +
+#  geom_smooth(method = "lm", se = F, color = "black") +
+  facet_wrap(~section, scales = "free") +
+  color_grad +
+  labs(y = "Water Potential", 
+       x = "LWC", 
+       color = "Week") +
+  theme(legend.position = "none") 
+nice_all
+```
+
+
+```{r}
+lin_nice <- qudo_wc_linear %>% 
   ggplot(aes(y = water_potential, 
              x = lwc, 
              color = week)) +
@@ -150,8 +191,23 @@ qudo_wc_linear %>%
   geom_smooth(method = "lm", 
               se = F, 
               color = "black") +
-  color_grad
+  color_grad +
+  labs(y = "", 
+       x = "", 
+       color = "Week") +
+  theme(legend.position = "none") 
+lin_nice
 ```
+#put together:
+
+```{r}
+together <- cowplot::plot_grid( full_nice, 
+                                lin_nice,
+                               ncol = 1, 
+                               rel_heights = c(1, 1))
+together
+```
+
 
 ```{r}
 m0 <- lmer(water_potential ~ 1 + (1|tree), data = qudo_wc_linear)
@@ -222,7 +278,8 @@ mod_both_df_long %>%
   labs(y = "R squared", 
        x = "Data", 
        fill = "Effect") +
-  color_fill
+  scale_fill_manual(labels = c("LWC", "LWC & Week", "Week"), 
+                    values = met.brewer("Tiepolo"))
 ```
 
 
