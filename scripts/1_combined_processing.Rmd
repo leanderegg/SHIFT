@@ -65,7 +65,7 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
   select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
-    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33) ~ "late"
+    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33, 37) ~ "late"
   ))%>% 
   mutate(date_wc = date) %>% 
   #select(-date) %>% 
@@ -146,6 +146,7 @@ Need to find lwcs:
 - week 21 (20022-05-23) tree 2025 md, tree 2027 md, 2354 md
 - week 29 (2022-07-19) tree 2020 pd, 2030 pd, 2376 pd, 2379 pd, 
 - week 33 (2022 - 08-18) all (still need to be entered?)
+- week 37 (2022-09-12 and later) many (still need to be entered?)
 
 #####RWC:
 
@@ -153,18 +154,6 @@ Need to find lwcs:
 rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
 
 rwc_df_spp <- merge(rwc_df, trees_sites_df)
-
-# rwc_df %>% 
-#   #filter(week == 21) %>% 
-#   outlierKD(swc_per_dry_g)
-# 
-# rwc_df %>% 
-#   #filter(week == 21) %>% 
-#   outlierKD(swc_ww_g)
-# 
-# rwc_df %>% 
-#   #filter(week == 21) %>% 
-#   outlierKD(swc_dw_g)
 
 rwc_df_leaves_y0 <- rwc_df %>% 
   filter(type == "leaf", 
@@ -182,36 +171,6 @@ rwc_df_leaves_y0 <- rwc_df %>%
   select(mean_swc_per_dry_g_y0, mean_swc_g_y0, tree, week, date_rwc, 
          swc_dw_g_y0, swc_ww_g_y0) %>% 
   as.data.frame()
-
-
-# rwc_df_leaves_y1 <- rwc_df %>% 
-#   filter(type == "leaf", 
-#          year %in% c(1, "NA")) %>% 
-#   group_by(tree, date) %>% 
-# mutate(mean_swc_per_dry_g_y1 = mean(swc_per_dry_g)
-#          , mean_swc_g_y1 = mean(swc_g), 
-#        swc_ww_g_y1= swc_ww_g, 
-#        swc_dw_g_y1= swc_ww_g) %>% 
-#   ungroup() %>% 
-#   mutate(date_rwc = date, 
-#          week = as.numeric(week)) %>% 
-#   select(-date) %>% 
-#   distinct() %>% 
-#   select(mean_swc_per_dry_g_y1, mean_swc_g_y1, tree, week, date_rwc, 
-#          swc_dw_g_y1, swc_ww_g_y1) %>% 
-#   as.data.frame()
-
-#RWC all weeks: 
-# rwc_df_leaves_all <- merge(rwc_df_leaves_y1 , rwc_df_leaves_y0 ,
-#                     by = c("tree",
-#                            "week",
-#                            "date_rwc"
-#                           # "rep"
-#                            ),
-#                     #all.x = T,
-#                     all = T
-#                     ) 
-# #646 rows
 
 #RWC + WC + WP:
 
@@ -234,11 +193,7 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
  #             mean_swc_g = mean(mean_swc_g), 
  #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
 
-```
 
-Something is up with week 21 (05/25/2022)
-
-```{r}
 rwc_df_spp %>% 
   filter(species == "blue oak", 
          year == 0) %>% 

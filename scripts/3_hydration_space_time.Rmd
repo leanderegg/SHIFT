@@ -145,7 +145,8 @@ nice_hyd <- wc_qudo_df %>%
   color_very_many +
   labs(y = "Water Potential (MPa)", 
        x = "LWC", 
-       caption = "triangles = predawn, circles = midday")
+       caption = "triangles = predawn, circles = midday") +
+  xlim(.5,2)
 nice_hyd
 
 ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpeg", width = 3, height = 6, dpi = 300)
@@ -377,6 +378,8 @@ space_mod <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tre
 anova(space_mod, space_mod_site)
 ```
 
+Get slopes from random effects: 
+
 ```{r, echo=FALSE}
 space_mod_df <- broom.mixed::tidy(space_mod)
 #space_mod_df
@@ -398,7 +401,7 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
   select(-`(Intercept)`, 
          -lwc_centered)
 
-weeks <- unique(space_df$week) %>% as_data_frame() 
+weeks_check <- unique(space_df$week) %>% as_data_frame() 
 
 weeks <- data_frame(1:10)
 weeks$week <- c(10, 11, 12, 14, 15, 17, 18, 19, 21, 29) 
@@ -406,7 +409,11 @@ weeks$week <- c(10, 11, 12, 14, 15, 17, 18, 19, 21, 29)
 ran_df_week <- bind_cols(weeks, ran_df, ran_err_df) %>% 
   select(-`1:10`) %>% 
   data_frame()
+```
 
+Visualize: 
+
+```{r, echo=FALSE}
 ran_df_week %>% 
   mutate(week = as.factor(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
@@ -441,8 +448,10 @@ theme(
   #scale_x_continuous(breaks = seq(9, 30, by = 1)) +
   theme(legend.position = "none") +
     color_many
+```
 
 
+```{r, echo=FALSE}
 ran_df_week %>% 
    mutate(week = as.factor(week)) %>% 
  # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
@@ -491,7 +500,8 @@ wc_qudo_df %>%
   geom_smooth(method = "lm", se = F) +
  # theme(legend.position = "none") +
   labs(x = "LWC", 
-       y = "Midday MPa")
+       y = "Midday MPa") +
+  color_many
 ```
 
 ```{r, echo=FALSE}

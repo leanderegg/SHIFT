@@ -127,8 +127,6 @@ wc719 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"),
 wc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="818 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("08-18-2022")) 
 
-
-
 #Fix that data to be long:
   
 
@@ -2656,7 +2654,7 @@ wc_alldates_pd <- rbind(
   mutate(time = "PD")
 
 #______________________________________________________________
-############### ALL + write.csv #######################################
+############### ALL up to 8-18 (combine) #######################
 #______________________________________________________________
 
 wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
@@ -2805,8 +2803,51 @@ wc_alldates_longer_dates <- wc_alldates %>%
 wc_alldates_longer_lwc_mpa_dates <- merge(wc_alldates_longer_lwc_mpa,
                                           wc_alldates_longer_dates) %>% 
   distinct()
-                                    
+
+#______________________________________________________________
+############### 9-12-2022 PLUS #######################
+#______________________________________________________________
+
+#Date: 912, 
+wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="LWC", skip=0, na = "NA") %>% 
+  clean_names() %>% 
+ # filter(!tree_id %in% c("cucu-ARCU", "cucu-LEU", "chamise-ARCA", "LL-ARCA", "cucu-ARCA")) %>% 
+  mutate(tree = case_when(
+    tree_id %in% c(#"ARCA_ch",
+    #"ARCA_CH", 
+    "chamise-ARCA") ~ 10, 
+    tree_id %in% c(#"ARCA",
+      #"ARCA near 2380", 
+      "LL-ARCA") ~ 11, 
+    tree_id %in% c(#"ARCA_cucu", 
+      "cucu-ARCA", "cucu-ARCU") ~ 12, 
+    tree_id %in% c(#"LEU_cucu",
+      #"LEU_CUCU", 
+      "cucu-LEU") ~ 20, 
+    tree_id %in% c("LL-LEU") ~ 21, 
+    # tree %in% c("ATLE") ~ 30, 
+    # tree %in% c("BAPI") ~ 40, 
+    # tree %in% c("ARCA") ~ 40, 
+    TRUE ~ as.numeric(tree_id))) %>% 
+  mutate(date = lubridate::ymd(date),
+        # tree = as.numeric(tree_id), 
+         week = week(date), 
+         lwc_bulk = wm/dm
+         ) %>% 
+  select(-tree_id, -wm, -dm, -notes)
+
+trees_sites_df <- wc_alldates_longer_lwc_mpa_dates %>% 
+  select(tree, plot, site, species) %>% 
+  distinct()
+
+wc912_trees <- merge(trees_sites_df, wc912, all.y = T) 
+
+wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees,wc_alldates_longer_lwc_mpa_dates )
+
+
 ##super annoying name, so rename: 
-wc_ad_lwc_mpa <- wc_alldates_longer_lwc_mpa_dates
+wc_ad_lwc_mpa <- merge(wc_alldates_longer_lwc_mpa_dates_fall2022, trees_sites_df)
+
+##write csv: ####
 
 write.csv(wc_ad_lwc_mpa, here("processed-data", paste0("wc_alldates_",datver,".csv")))

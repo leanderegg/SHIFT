@@ -1,5 +1,6 @@
-```{r, echo=F, echo=FALSE}
-###Old attempt using separate model per week:
+
+###Old attempt using separate model per week:###
+
 # df_subset_wks <- wc_qudo_df %>% 
 #  filter(week %in% c(14, 15, 17, 21, 29))
 # 
@@ -64,4 +65,36 @@
 #   ) +
 #   geom_hline(yintercept = 0, linetype="dotted") + 
 #   scale_x_continuous(breaks = seq(9, 30, by = 1))
-```
+
+
+##RWC####
+
+
+# rwc_df_leaves_y1 <- rwc_df %>% 
+#   filter(type == "leaf", 
+#          year %in% c(1, "NA")) %>% 
+#   group_by(tree, date) %>% 
+# mutate(mean_swc_per_dry_g_y1 = mean(swc_per_dry_g)
+#          , mean_swc_g_y1 = mean(swc_g), 
+#        swc_ww_g_y1= swc_ww_g, 
+#        swc_dw_g_y1= swc_ww_g) %>% 
+#   ungroup() %>% 
+#   mutate(date_rwc = date, 
+#          week = as.numeric(week)) %>% 
+#   select(-date) %>% 
+#   distinct() %>% 
+#   select(mean_swc_per_dry_g_y1, mean_swc_g_y1, tree, week, date_rwc, 
+#          swc_dw_g_y1, swc_ww_g_y1) %>% 
+#   as.data.frame()
+
+#RWC all weeks: 
+# rwc_df_leaves_all <- merge(rwc_df_leaves_y1 , rwc_df_leaves_y0 ,
+#                     by = c("tree",
+#                            "week",
+#                            "date_rwc"
+#                           # "rep"
+#                            ),
+#                     #all.x = T,
+#                     all = T
+#                     ) 
+# #646 rows
