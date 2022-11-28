@@ -488,6 +488,24 @@ theme(
 ```
 
 #Time
+
+```{r}
+wc_qudo_df %>% 
+  filter(!week %in% c(9, 18, 19)) %>% 
+  ggplot(aes(y = lwc, 
+             x = as.factor(week), 
+             #x = date,
+            # color = as.factor(week), 
+             fill = time)) +
+  geom_boxplot() +
+ # facet_wrap(~time) +
+  color_many +
+  color_fill +
+  labs(y = "LWC", 
+       x = "Week", 
+       fill = "Time")
+```
+
 ```{r, echo=FALSE}
 wc_qudo_df %>% 
   filter(time == "md") %>% 
@@ -517,8 +535,27 @@ wc_qudo_df %>%
  # theme(legend.position = "none") +
   labs(x = "LWC", 
        y = "Midday MPa") +
-  color_very_many
+  color_very_many +
+  theme(legend.position = "none")
 ```
+```{r, echo=FALSE}
+wc_qudo_df %>% 
+ # filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc, 
+             color = as.factor(tree), 
+             show.legend = FALSE)) +
+  geom_point(aes(size = week), 
+             alpha = .3)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "LWC", 
+       y = "Water Potential") +
+  facet_wrap(~time, ncol=1) +
+  color_very_many +
+  theme(legend.position = "none")
+```
+
 ```{r, echo=FALSE}
 wc_qudo_df %>% 
   filter(time == "pd") %>% 
@@ -532,11 +569,11 @@ wc_qudo_df %>%
  # theme(legend.position = "none") +
   labs(x = "LWC", 
        y = "Predawn MPa") +
-  color_very_many
+  color_very_many +
+  theme(legend.position = "none")
 ```
-
-
 Midday slopes for each individual: 
+
 ```{r}
 wc_qudo_md_df <- wc_qudo_df %>% 
   filter(time == "md")
@@ -567,11 +604,11 @@ ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>%
         # -lwc
          )
 
-inds<- data_frame(1:45)
+inds<- data_frame(1:47)
 inds$tree <- c(unique(wc_qudo_md_df$tree))
 
 ran_df_tree <- bind_cols(inds, tree_eff, ran_err_tree) %>% 
-  select(-`1:45`) %>% 
+  select(-`1:47`) %>% 
   data_frame()
 
 ran_df_tree %>% 
@@ -591,9 +628,9 @@ ran_df_tree %>%
                    x = tree, 
                    xend = tree, 
                    color = tree))+
-  labs(x = "tree", 
-       color = "tree", 
-       y = "Slope") +
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope (Midday MPa ~ LWC)") +
    # facet_wrap(~y_var_name, scales = "free") + 
 theme(
   strip.background = element_blank(),
@@ -604,10 +641,11 @@ theme(
   axis.title = element_text(size = 20), 
   legend.title = element_text(size = 18)
   ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
+ # geom_hline(yintercept = 0, linetype="dotted") + 
  # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
   theme(legend.position = "none")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
 ```
 
 Predawn slopes for each individual: 
