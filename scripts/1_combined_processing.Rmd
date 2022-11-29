@@ -257,15 +257,6 @@ lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          tree = as.numeric(tree)) %>% 
   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
 
-lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-  filter(type == "stem", 
-         year == 0)
-
-lfm_stem_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-  filter(type == "leaf",
-         year == 1)
-
-
 lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
   filter(type == "both",
          year == 3)  %>% 
@@ -277,6 +268,41 @@ lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datv
          date_lfm_both = date_lfm) %>% 
   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
 
+#Stems: 
+
+lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  filter(type == "stem", 
+         year == 0) %>% 
+ mutate(lfm_wet_wt_y0_g = lfm_wet_wt_g, 
+         lfm_wet_per_dry_y0_g = lfm_wet_per_dry_g, 
+         lfm_dry_wt_y0_g = lfm_dry_wt_g, 
+         lfm_y0_percent = lfm_percent, 
+         tree = as.numeric(tree)) %>% 
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
+
+lfm_stem_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  filter(type == "stem",
+         year == 1)%>% 
+  mutate(lfm_wet_wt_y1_g = lfm_wet_wt_g, 
+         lfm_wet_per_dry_y1_g = lfm_wet_per_dry_g, 
+         lfm_dry_wt_y1_g = lfm_dry_wt_g, 
+         lfm_y1_percent = lfm_percent, 
+         tree = as.numeric(tree)) %>% 
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
+
+lfm_stem_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  filter(type == "both",
+         year == 1)  %>% 
+  mutate(lfm_wet_wt_both_g = lfm_wet_wt_g, 
+         lfm_wet_per_dry_both_g = lfm_wet_per_dry_g, 
+         lfm_dry_wt_both_g = lfm_dry_wt_g, 
+         lfm_both_percent = lfm_percent, 
+         tree = as.numeric(tree), 
+         date_lfm_both = date_lfm) %>% 
+  select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
+
+
+#combine: 
 lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
                        by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
   distinct() 
@@ -284,7 +310,20 @@ lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df,
 lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
                             by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
   distinct() 
+
+
+#stems
+lfm_stem_df <- merge(lfm_stem_y0_df, lfm_stem_y1_df, 
+                       by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
+  distinct() 
+
+lfm_stem_both_df <- merge(lfm_stem_df, lfm_stem_both_df,
+                            by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
+  distinct()
+
 ```
+
+
 
 #####LFM + RWC + WC + WP (wide):
 
@@ -293,28 +332,52 @@ lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
 (percent lwc of saturated wc):
 
 ```{r}
-wp_wc_rwc_lfm_df_wide <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
+wp_wc_rwc_lfm_df_wide_leaves <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
   distinct() %>% 
   select(-site, -species, -plot)
 
-wp_wc_rwc_lfm_df_wide_trees <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide, 
+wp_wc_rwc_lfm_df_wide_trees_leaves <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_leaves, 
                                      by = c("tree")) %>% 
   select(-rep) %>% 
   distinct()
+
+#stem:
+wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df, 
+                               by = c("tree", "week", "time"), 
+                               all = T) %>% 
+  distinct() %>% 
+  select(-site, -species, -plot)
+
+wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_stem, 
+                                     by = c("tree")) %>% 
+  select(-rep) %>% 
+  distinct()
+
+
 ```
 
 #Write .csv
 
 ```{r}
 #make a shorter name because the long one will be a pain to write out!
-all_water_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
+all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_trees_leaves, wp_wc_rwc_lfm_df_wide_trees_stem) %>% 
   mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
          ) 
 
 write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
+```
+
+#for Anna's student: 
+```{r}
+lfm_mpa_only <- all_water_df %>% 
+  select(tree, plot, site, species, date_lfm, date_wp, week, time, mpa, type, lfm_y0_percent, lfm_y1_percent, lfm_wet_wt_y0_g, lfm_wet_wt_y1_g, lfm_dry_wt_y0_g, lfm_dry_wt_y1_g, lfm_both_percent, lfm_wet_wt_both_g, lfm_dry_wt_both_g) %>% 
+  drop_na(date_lfm) %>% 
+  distinct()
+
+write.csv(lfm_mpa_only, here("processed-data", paste0("lfm_mpa_shift_",datver,".csv")))
 ```
 
 NOTE: This just includes leaves, need to make another df or add stems eventually.

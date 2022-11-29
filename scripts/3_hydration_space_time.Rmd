@@ -85,7 +85,7 @@ wc_qudo_df %>%
   count() %>% 
   ggplot(aes(x = week, y = n, fill = time)) +
   geom_col(stat = "identity") +
-  scale_x_continuous(breaks = seq(9, 30, by = 1))+
+  scale_x_continuous(breaks = seq(9, 40, by = 1))+
   labs(y = "MPa counts") +
   color_fill
 ```
@@ -206,10 +206,11 @@ wc_qudo_df %>%
 
 
 
-```{r, warning=F}
+```{r, warning=T}
+library(nlme)
 m_wk_rand <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week), data = wc_qudo_df)
+m_wk_rand
 summary(m_wk_rand)
-#unique(wc_qudo_df$week)
 ```
 
 ```{r, echo=FALSE}
@@ -233,11 +234,13 @@ ran_err_df <- as.data.frame(ran_err[['week']]) %>%
   select(-`(Intercept)`, 
          -lwc)
 
-weeks <- tibble(1:10)
-weeks$week <- c(10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
+week_ranerr <- nrow(ran_err_df)
+
+weeks <- tibble(1:11)
+weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
 
 ran_df_week <- bind_cols(weeks, ran_df, ran_err_df) %>% 
-  select(-`1:10`) %>% 
+  select(-`1:11`) %>% 
   data_frame()
 ```
 
@@ -320,6 +323,8 @@ theme(
 
 1. Center and scale by week
 2. Plot all midday grand slopes
+
+#####Midday: 
 
 ```{r, warning = F}
 wc_wk_centered_df <- wc_qudo_df %>% 
@@ -453,6 +458,171 @@ theme(
 
 ```{r, echo=FALSE}
 ran_df_week %>% 
+   mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
+ # filter(term == "lwc") %>% 
+  mutate(upr = estimate + (std.error/2), 
+         lwr = estimate - (std.error/2)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = estimate,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "week", 
+       y = "Intercept") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  color_many
+```
+
+
+###Predawn
+```{r, warning = F}
+wc_wk_centered_pd_df <- wc_qudo_df %>% 
+  filter(time == "pd") %>% 
+  group_by(week) %>% 
+  mutate(mean_lwc = mean(lwc)) %>% 
+  ungroup() %>% 
+  mutate(lwc_centered = lwc - mean_lwc)
+  # mutate(lwc_centered = scale(lwc,  scale=FALSE)) %>% 
+  # filter(lwc_centered < 4)
+
+#not scaled
+wc_wk_centered_pd_df %>% 
+  drop_na(site) %>% 
+  #filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc, 
+             #color = tree_factor
+             color = as.factor(week)
+             )) +
+  geom_point(alpha = .3, 
+             aes (shape = site)) +
+  geom_smooth(method = "lm", se = F) 
+#scaled
+wc_wk_centered_pd_df %>% 
+  drop_na(site) %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc_centered, 
+             #color = tree_factor
+             color = as.factor(week)
+             )) +
+  geom_point(alpha = .3, 
+             aes (shape = site)) +
+  geom_smooth(method = "lm", se = F) + 
+  geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(y= "Predawn MPa", 
+       x = "LWC (centered by week)", 
+       color = "Week", 
+       shape = "Site") +
+  color_many
+```
+
+```{r}
+space_pd_df <- wc_wk_centered_pd_df %>% 
+  drop_na(site)
+
+space_mod_site <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data = space_pd_df, REML = F)
+#summary(space_mod)
+
+space_mod <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tree) + (1|site), data = space_pd_df,  REML = F)
+#summary(space_mod_site)
+
+anova(space_mod, space_mod_site)
+```
+
+Get slopes from random effects: 
+
+```{r, echo=FALSE}
+space_mod_pd_df <- broom.mixed::tidy(space_mod)
+#space_mod_pd_df
+
+ran_list3 <- coef(space_mod)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_pd_df <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwc_centered`, 
+         -lwc_centered) %>%
+  select(-`(Intercept)`)
+
+ran_err3 <- arm::se.ranef(space_mod)
+ran_err_pd_df <- as.data.frame(ran_err3[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwc_centered`)%>% 
+  select(-`(Intercept)`, 
+         -lwc_centered)
+
+weeks_check <- unique(space_pd_df$week) %>% as_data_frame() 
+
+weeks <- data_frame(1:9)
+weeks$week <- c(9, 10, 11, 12, 14, 15, 17, 21, 29) 
+
+ran_pd_df_week <- bind_cols(weeks, ran_pd_df, ran_err_pd_df) %>% 
+  select(-`1:9`) %>% 
+  data_frame()
+```
+
+Visualize: 
+
+```{r, echo=FALSE}
+ran_pd_df_week %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc") %>% 
+  mutate(upr = slope + (std.error.slope/2), 
+         lwr = slope - (std.error.slope/2)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "week", 
+       y = "Slope") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+#  geom_hline(yintercept = 0, linetype="dotted") + 
+  #scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none") +
+    color_many
+```
+
+
+```{r, echo=FALSE}
+ran_pd_df_week %>% 
    mutate(week = as.factor(week)) %>% 
  # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 

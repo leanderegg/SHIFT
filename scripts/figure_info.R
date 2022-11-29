@@ -20,11 +20,13 @@ mycolors.10 <- colorRampPalette(pal)(nb.cols.10)
 
 color_many <- scale_color_manual(values = mycolors.10) 
   
-color_two <- scale_color_manual(values = met.brewer("Cross", 4 ,direction = -1)) 
+color_two <- scale_color_manual(values = met.brewer("Cross", 4)) 
 
-color_fill <- scale_fill_manual(values = met.brewer("Cross"), 4, direction = -1)
+color_fill <- scale_fill_manual(values = met.brewer("Cross"), 4, #direction = -1
+                                )
 
-color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1))
+color_grad <- scale_color_gradientn(colors=met.brewer("Cross" #direction = -1)
+                                                      )
 
 #Other color options: 
 
