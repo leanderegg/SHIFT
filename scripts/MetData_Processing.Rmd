@@ -1,0 +1,63 @@
+---
+title: "MicrometProcessing"
+author: "LDL Anderegg"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Code for playing around with met data from Met Stations and Hobos
+
+Met stations are at 
+- 'TS' (aka ToeSlope aka Hobbiton) in Lower Lisque
+- 'RT' (aka RidgeTop aka Weathertop)
+These have (as of Apr 2022) a tipping rain gauge, a PAR sensor, and a Temp/RH sensor.
+Apr 2022 - Dec 2022 they were run on old Decagon EM50 data loggers
+- These were downloaded into seperate files 3-4 times and stored under various names in OneDrive
+- Jean Allen combined them through Oct 5, 2022 into 
+"RidgeTop_complete_2022-10-05.xlsx" = every 5 mins, PAR didn't work
+"TS_Shire_complete_2022-10-05.xlsx" = every 15 mins, PAR works
+
+
+
+
+
+
+```{r load packages, echo=FALSE,results='hide'}
+require(readxl)
+require(tidyverse)
+```
+
+
+
+```{r loading data, echo=FALSE}
+TS <- read_xlsx("./data/MetStationData/TS_Shire_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
+names(TS) <- c("datetime","rh","temp","pressure_atmos_kPa","PAR","precip_mm")
+
+RT <- read_xlsx("./data/MetStationData/RidgeTop_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
+names(RT) <- c("datetime","PAR","rh","temp","pressure_atmos_kPa","precip_mm")
+
+
+comb <- left_join(TS, RT, "datetime")
+names(comb) <- str_replace(names(comb),".x",".ts")
+names(comb) <- str_replace(names(comb),".y",".rt")
+```
+
+``` {r quick plots}
+plot(PAR~datetime, TS, type="l")
+lines(PAR~datetime, RT, col="blue")
+
+plot(temp.ts~temp.rt, comb); abline(a=0,b=1, col="red")
+abline(lm(temp.ts~temp.rt, comb), col="blue")
+
+plot(PAR.ts~PAR.rt, comb, ylim=c(0,1000), xlim=c(0,1000)); abline(a=0,b=1, col="red")
+
+ggplot(comb, aes(x=PAR.rt, y=PAR.ts, col=datetime)) + geom_point() +geom_abline(slope=1, intercept=-150) + geom_abline(slope=1, intercept=150)
+plot(rh.ts~rh.rt, comb); abline(a=0,b=1, col="red")
+abline(lm(rh.ts~rh.rt, comb), col="blue")
+```
+just by eyeball, it looks like there are more measurements when RT has low PAR and TS has high PAR than visa versa. AND it stays cloudy until later/brighter (800 rather than 450)
+
