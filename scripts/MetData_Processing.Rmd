@@ -29,6 +29,7 @@ Apr 2022 - Dec 2022 they were run on old Decagon EM50 data loggers
 ```{r load packages, echo=FALSE,results='hide'}
 require(readxl)
 require(tidyverse)
+require(lubridate)
 ```
 
 
@@ -44,6 +45,8 @@ names(RT) <- c("datetime","PAR","rh","temp","pressure_atmos_kPa","precip_mm")
 comb <- left_join(TS, RT, "datetime")
 names(comb) <- str_replace(names(comb),".x",".ts")
 names(comb) <- str_replace(names(comb),".y",".rt")
+comb$hour <- hour(comb$datetime)
+comb$time <- format(comb$datetime, format = "%H:%M:%S")
 ```
 
 ``` {r quick plots}
@@ -53,11 +56,15 @@ lines(PAR~datetime, RT, col="blue")
 plot(temp.ts~temp.rt, comb); abline(a=0,b=1, col="red")
 abline(lm(temp.ts~temp.rt, comb), col="blue")
 
-plot(PAR.ts~PAR.rt, comb, ylim=c(0,1000), xlim=c(0,1000)); abline(a=0,b=1, col="red")
+plot(PAR.ts~PAR.rt, comb, ylim=c(0,1000), xlim=c(0,1000)); abline(a=0,b=1, col="red", ylab=" Toe Slope PAR", xlab="Ridge Top PAR")
 
-ggplot(comb, aes(x=PAR.rt, y=PAR.ts, col=datetime)) + geom_point() +geom_abline(slope=1, intercept=-150) + geom_abline(slope=1, intercept=150)
+ggplot(comb, aes(x=PAR.rt, y=PAR.ts, col=hour)) + geom_point() +geom_abline(slope=1, intercept=-150) + geom_abline(slope=1, intercept=150) + geom_abline(slope=1, intercept=0, col="red") + xlim(c(0,1100)) + ylim(c(0,1100))
 plot(rh.ts~rh.rt, comb); abline(a=0,b=1, col="red")
 abline(lm(rh.ts~rh.rt, comb), col="blue")
 ```
 just by eyeball, it looks like there are more measurements when RT has low PAR and TS has high PAR than visa versa. AND it stays cloudy until later/brighter (800 rather than 450)
 
+``` {r PAR exploration}
+
+ggplot(comb[which(month(comb$datetime)==5),], aes(x=time, y=PAR.ts)) + geom_point() + geom_point(aes(y=PAR.rt, col="blue"))
+```
