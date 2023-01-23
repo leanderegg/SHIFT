@@ -26,12 +26,12 @@ select = dplyr::select
  
 #source("http://goo.gl/UUyEzD") #outlier KD (original function)
 
-source(here::here("scripts", "figure_info.R"))
+source(here::here("scripts","scripts_functions", "figure_info.R"))
 ```
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "11272022"
+datver <- "01052023"
 dataversion <- paste0("Data_", datver)
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
@@ -365,19 +365,20 @@ wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_
 all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_trees_leaves, wp_wc_rwc_lfm_df_wide_trees_stem) %>% 
   mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
-         ) 
+         ) %>% 
+  filter(!species %in% c("leaf"))
 
 write.csv(all_water_df, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
 ```
 
-#for Anna's student: 
+for Anna's student: 
 ```{r}
-lfm_mpa_only <- all_water_df %>% 
-  select(tree, plot, site, species, date_lfm, date_wp, week, time, mpa, type, lfm_y0_percent, lfm_y1_percent, lfm_wet_wt_y0_g, lfm_wet_wt_y1_g, lfm_dry_wt_y0_g, lfm_dry_wt_y1_g, lfm_both_percent, lfm_wet_wt_both_g, lfm_dry_wt_both_g) %>% 
-  drop_na(date_lfm) %>% 
-  distinct()
-
-write.csv(lfm_mpa_only, here("processed-data", paste0("lfm_mpa_shift_",datver,".csv")))
+# lfm_mpa_only <- all_water_df %>% 
+#   select(tree, plot, site, species, date_lfm, date_wp, week, time, mpa, type, lfm_y0_percent, lfm_y1_percent, lfm_wet_wt_y0_g, lfm_wet_wt_y1_g, lfm_dry_wt_y0_g, lfm_dry_wt_y1_g, lfm_both_percent, lfm_wet_wt_both_g, lfm_dry_wt_both_g) %>% 
+#   drop_na(date_lfm) %>% 
+#   distinct()
+# 
+# write.csv(lfm_mpa_only, here("processed-data", paste0("lfm_mpa_shift_",datver,".csv")))
 ```
 
 NOTE: This just includes leaves, need to make another df or add stems eventually.
@@ -540,7 +541,7 @@ all_water_df %>%
          #lfm_percent > 20, 
   #        lfm_percent < 300) %>% 
   ) %>% 
-  ggplot(aes(x = -1*mpa, 
+  ggplot(aes(x = -1*mpa_mean, 
              y = lwc_mean, 
              color = week 
              #size = week
@@ -560,7 +561,7 @@ all_water_df %>%
          #lfm_percent > 20, 
   #        lfm_percent < 300) %>% 
   ) %>% 
-  ggplot(aes(x = -1*mpa, 
+  ggplot(aes(x = -1*mpa_mean, 
              y = lwc_mean, 
              color = week 
              #size = week
@@ -582,7 +583,7 @@ all_water_df %>%
   #        lfm_percent < 300) %>% 
   ) %>% 
   drop_na(site) %>% 
-  ggplot(aes(x = -1*mpa, 
+  ggplot(aes(x = -1*mpa_mean, 
              y = lwc_mean, 
              color = week 
              #size = week
@@ -606,7 +607,7 @@ all_water_df %>%
   #        lfm_percent < 300) %>% 
   ) %>% 
   drop_na(site) %>% 
-  ggplot(aes(x = -1*mpa, 
+  ggplot(aes(x = -1*mpa_mean, 
              y = lwc_mean, 
              color = week 
              #size = week
@@ -651,7 +652,7 @@ all_water_df %>%
 all_water_df %>% 
    filter(lwc_mean < 5,
           mean_swc_per_dry_g_y0 < 5) %>% 
-  ggplot(aes(y = mpa, 
+  ggplot(aes(y = mpa_mean, 
              x = mean_swc_per_dry_g_y0, 
              color = week 
              #size = week
@@ -705,7 +706,7 @@ all_water_df %>%
 all_water_df %>% 
    filter(rwc_percent_y0 > 0, 
           rwc_percent_y0 < 300) %>% 
-  ggplot(aes(y = -1*mpa, 
+  ggplot(aes(y = -1*mpa_mean, 
              x = rwc_percent_y0, 
              color = interaction(species,time) 
              #size = week
@@ -726,7 +727,7 @@ LFM x MPa, year 0
 all_water_df %>% 
   filter(lfm_y0_percent > 20, 
          lfm_y0_percent < 300) %>% 
-  ggplot(aes(y = -1*mpa, 
+  ggplot(aes(y = -1*mpa_mean, 
              x = lfm_y0_percent, 
              color = week)) +
   geom_jitter(alpha = .6) +

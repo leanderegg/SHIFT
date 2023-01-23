@@ -29,9 +29,9 @@ library(arm)
 
 select = dplyr::select
 
-source(here::here("scripts", "figure_info.R"))
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "11272022"
+datver <- "01052023"
 dataversion <- paste0("Data_", datver)
 ```
 
