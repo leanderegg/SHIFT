@@ -25,10 +25,15 @@ library(lme4) #for mixed effects models
 library(cowplot)
 
 select = dplyr::select
- 
-#source("http://goo.gl/UUyEzD") #outlier KD (original function)
 
-source(here::here("scripts", "figure_info.R"))
+library('variancePartition')
+
+
+source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
+
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
+
 
 datver <- "11082022"
 dataversion <- paste0("Data_", datver)

@@ -1,0 +1,2 @@
+ 	Area	X	Y	XM	YM	Perim.	BX	BY	Width	Height	Major	Minor	Angle	Circ.	Feret	FeretX	FeretY	FeretAngle	MinFeret	AR	Round	Solidity
+1	4.407	3.204	4.717	3.204	4.717	12.452	2.109	2.748	2.185	3.521	3.019	1.859	92.042	0.357	3.578	336	327	100.281	2.089	1.624	0.616	0.819
