@@ -36,35 +36,51 @@ alas_df <- alas_df_raw %>%
   #        alas = (area_mm/area_stem_cm), 
   #        sla = area_mm/(dm_mg), 
          tree_id = as.factor(tree_id), 
+         #branch_stem_info = as.factor(branch), 
          branch = as.factor(branch), 
          date_alas = date, 
-         year_alas = year, 
+        # year_alas = year, 
          week = week(date)
          ) %>% 
 #drop_na(alas) %>% 
   select(-date, 
-         -year
+        # -year,
+         -area_if_leaf_from_scan, 
+         -area_scanned_cm, 
+        # -branch
          )
 
 unique(alas_df$date_alas)
 
 #read in leaf areas: 
-leaf_area_df <- read_csv(here("processed-data", paste0("leaf_area_alldates_",datver,".csv")), show_col_types = FALSE) 
+alas_leaf_area_df <- read_csv(here("processed-data", paste0("leaf_area_alldates_",datver,".csv")), show_col_types = FALSE) %>% 
+  mutate(#branch_leaf_area = as.factor(branch), 
+         week = as.integer(week)) #%>% 
+ # select(-branch)
 ##Combine: 
 
-alas_leaf_area_df_week <- merge(leaf_area_df, alas_df, by = c("tree_id", "branch", "species", "week")) %>% 
-  mutate(area_cm2_total = ((area_cm2/sdm_g)*ldm_g), 
-         area_mm2 = area_cm2_total*10,
-         dm_g = sdm_g + ldm_g,
-         dm_mg = dm_g*1000,
-         lma = (sdm_g + ldm_g)/area_cm2, 
+alas_leaf_area_df_week <- merge(alas_leaf_area_df, alas_df, by = c("tree_id", 
+                                                                   "branch", 
+                                                                   "species",
+                                                                   "year",
+                                                                   "week")) 
+alas_df_final <-alas_leaf_area_df_week %>% 
+ # select() %>% 
+  mutate(#area_cm2_total = ((area_cm2/sdm_g)*ldm_g), 
+         #area_cm2_total = area_cm2,
+         area_mm2 = area_cm2*10,
+        # dm_g = sdm_g + ldm_g,
+        # dm_mg = dm_g*1000,
+        # lma = (sdm_g + ldm_g)/area_cm2, 
+         lma_g_cm2 = ldm_g/area_cm2,
          d_cm = d_mm/10,
          r_cm = d_cm/2,
-         area_stem_cm2 = (pi*(r_cm)^2), 
-         alas = (area_mm2/area_stem_cm2), 
-         sla_mm_mg = area_mm2/(dm_mg))
+         area_stem_cm2 = (pi*((r_cm)^2)), 
+         alas = (area_cm2/area_stem_cm2), 
+        # sla_mm_mg = area_mm2/(dm_mg),
+        sla_cm_g = area_cm2/ldm_g)
 
-write.csv(alas_leaf_area_df_week, here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
+write.csv(alas_df_final, here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
 
 
   

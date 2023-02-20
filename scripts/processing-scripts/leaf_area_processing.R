@@ -114,6 +114,7 @@ leaf_area_df0 <- rbind(leaf_area_data_txt2, leaf_area_data_txt33, leaf_area_data
            into = c("spp", "tree", "date", "branch", "year", "extra_info", "more_info")) 
 
 leaf_area_df1 <- leaf_area_df0 %>% 
+ # filter(!id == "2354337") %>% 
   mutate(date_new = mdy(date), 
          week = week(date_new), 
          day = day(date_new), 
@@ -123,7 +124,7 @@ leaf_area_df1 <- leaf_area_df0 %>%
          branch = str_remove(branch, "B"),
          year = str_remove(year, "Y"),
          year = str_remove(year, "y"),
-         branch = str_remove(year, "y"),
+        # branch = str_remove(year, "y"),
          tree_id = as.factor(tree), 
          notes_leaf_area = extra_info, 
          more_notes_leaf_area = more_info, 
@@ -146,7 +147,8 @@ leaf_area_df1 <- leaf_area_df0 %>%
          week = week(date)
          ) %>% 
   select(-date_new, -extra_info, -more_info, -tree, -area, -spp, -date, 
-         -year, -date_old
+        # -year, 
+         -date_old
          )
 
 unique(leaf_area_df1$branch)
@@ -163,7 +165,7 @@ leaf_area_df1 %>%
 ggplot(aes(y = area_cm2, 
            x= week, 
            color = species)) +
-  geom_point()
+  geom_jitter()
 
 
 #####

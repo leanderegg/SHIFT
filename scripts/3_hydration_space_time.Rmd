@@ -62,18 +62,25 @@ wc_qudo_df <- wc_all_raw %>%
 
 What is the linear portion? 
 ```{r}
-alas_df <- read_csv(alas_leaf_area_df_week, here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
+alas_df_analysis <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
 
-
-plot <- alas %>% 
-  filter(spp == B) %>% 
+alas_df_analysis %>% 
+  filter(species == "B") %>% 
   ggplot(aes(y = alas, 
              x = date_alas, 
-             color = tree_id)) +
-  geom_point() +
-  facet_wrap(~file)
-plot
+             color = as.factor(week)
+             )) +
+  geom_jitter() +
+  labs(title = "Alas")
 
+alas_df_analysis %>% 
+  filter(species == "B") %>% 
+  ggplot(aes(y = lma_g_cm2, 
+             x = date_alas, 
+             color = as.factor(week)
+             )) +
+  geom_jitter() +
+  labs(title = "LMA")
 ```
 
 
