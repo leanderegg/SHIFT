@@ -31,8 +31,9 @@ source(here::here("scripts","scripts_functions", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "01052023"
+datver <- "02202023"
 dataversion <- paste0("Data_", datver)
+
 
 tlp_qudo <- -2 #these are totally based on eyeballing Kelly's figure
 tlp_quag <- -3
@@ -45,7 +46,15 @@ Run all scripts for processing to make sure those are updated:
 (NOTE: if changing datver, will have to change in each of these scripts)
 
 ```{r, warning=FALSE, eval=FALSE}
-list.files("processing-scripts", full.names = TRUE) %>% walk(source)
+# source(here::here("scripts", "processing-scripts", "leaf_area_processing.R"))
+# source(here("scripts","processing-scripts", "alas_processing.R"))
+# source(here::here("scripts","processing-scripts", "lfm_processing.R"))
+# source(here::here("scripts","processing-scripts", "md_pd_processing.R"))
+# source(here::here("scripts","processing-scripts", "wc_processing.R"))
+# source(here::here("scripts","processing-scripts", "swc_processing.R"))
+
+#use below if you want to do them all at once.
+#list.files("processing-scripts", full.names = TRUE) %>% walk(source)
 ```
 #Combine DFs: 
 
@@ -360,7 +369,7 @@ wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_
 
 ```
 
-#Write .csv
+#FINAL: write.csv
 
 ```{r}
 #make a shorter name because the long one will be a pain to write out!
@@ -388,7 +397,7 @@ NOTE: This just includes leaves, need to make another df or add stems eventually
 ```{r}
 all_water_df %>% 
   filter(#year %in% c(0,1), 
-         mean_swc_per_dry_g_y0 < 5, 
+        # mean_swc_per_dry_g_y0 < 5, 
          #swc_percent < 300, 
          species == "blue oak") %>% 
   ggplot(aes(y = mean_swc_per_dry_g_y0, 
@@ -424,7 +433,7 @@ all_water_df %>%
 ######Missings: 
 
 ```{r, echo=F}
-wp_wc_rwc_lfm_df_wide_trees %>% 
+wp_wc_rwc_lfm_df_wide_trees_leaves %>% 
   filter(species == "blue oak") %>% 
   select(week, time, tree, lwc_bulk, species) %>% 
   unique() %>% 
@@ -438,7 +447,7 @@ wp_wc_rwc_lfm_df_wide_trees %>%
 ```
 
 ```{r, echo=F}
-wp_wc_rwc_lfm_df_wide_trees %>% 
+wp_wc_rwc_lfm_df_wide_trees_leaves %>% 
   select(week, time, tree, mpa_mean, species) %>% 
   unique() %>% 
   group_by(week, time, species) %>% 
@@ -458,8 +467,15 @@ A: A lot....but where??
 (This is each date we collected the associated metric, so if NA in that cell then we don't have it)
 
 ```{r}
-missings_df <- wp_wc_rwc_lfm_df_wide_trees %>% 
-  select(tree, week, species, site, plot, time, date_wp, date_wc, date_lfm, date_rwc) %>% 
+missings_df <- all_water_df %>% 
+  select(tree, week, species, site, plot, time, date_wp, date_wc, 
+        # date_lfm, 
+         date_rwc
+         ) %>% 
+  filter(if_any(c(date_wp, 
+                  date_wc, 
+                 # date_lfm
+                  ), ~ is.na(.))) %>% 
   distinct()
 
 write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",datver,".csv")))

@@ -1,2 +1,0 @@
-Slice	Count	Total Area	Average Size	%Area	Perim.	Major	Minor	Angle	Circ.	Solidity	Feret	FeretX	FeretY	FeretAngle	MinFeret
-L-2345-9.12.22-B3-Y0.jpg	13	29.041	2.234	4.887	8.816	3.255	0.808	102.946	0.332	0.849	3.682	1229.846	1386.385	102.846	0.890

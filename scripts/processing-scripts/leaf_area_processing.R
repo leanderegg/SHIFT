@@ -28,20 +28,25 @@ leaf_area_data_csv2 <- leaf_area_data_csv %>%                                   
          id = gsub(pattern=".b", replacement="-b", id, fixed = TRUE)) %>% 
   select(id, area, file) 
 
-
-# all txt files
-  
+####
+# all txt files with just AREA
+####
 leaf_area_data_files_txt <- list.files(path = here("data", "leaf_area_scans"),  # Identify all txt files
                          pattern = "*.txt", full.names = TRUE, include.dirs = T)
 
-leaf_area_data_files_txt_tables <- leaf_area_data_files_txt %>% #read in all .txt files as a table
-                        #  lapply(read_delim)
-                         lapply(read_table)  
+leaf_area_data_files_txt_tables <- lapply(leaf_area_data_files_txt, read.table, sep = "\t") #get into a table
 
-leaf_area_with_names <- mapply(cbind, leaf_area_data_files_txt_tables, "source"= leaf_area_data_files_txt, SIMPLIFY = FALSE) #get the names of the files
+leaf_area_with_names <- mapply(cbind, leaf_area_data_files_txt_tables, 
+                               "source"= leaf_area_data_files_txt,
+                               SIMPLIFY = FALSE)  #get the names of the files
 
-leaf_area_data_txt  <- data.table::rbindlist(leaf_area_with_names, fill= T) #this will bind columns of different class
+leaf_area_data_txt0  <- data.table::rbindlist(leaf_area_with_names, fill= T) 
 
+leaf_area_data_txt <- leaf_area_data_txt0 %>% #this will bind columns of different class 
+  select(V2, V3, source) %>% 
+  filter(!V2 == "Area") %>% 
+  mutate(area = V2) %>% 
+  select(-V2)
 
 leaf_area_data_txt2 <- leaf_area_data_txt %>% 
   clean_names() %>% 
@@ -57,11 +62,54 @@ leaf_area_data_txt2 <- leaf_area_data_txt %>%
          id = gsub(pattern="bo", replacement="b0", id, fixed = TRUE),
          file = "txt"
          ) %>% 
-  select(id, area, file)
+  select(id, area, file) %>% 
+  filter(!area == "Count") %>% 
+  mutate(area = as.numeric(area)) %>% 
+  group_by(id, file) %>% 
+  summarise(area = sum(area))
+
+####
+# all txt files with just TOTAL AREA
+####
+leaf_area_data_files_txt3 <- list.files(path = here("data", "leaf_area_scans", "scans_with_total_area"),  # Identify all txt files
+                                       pattern = "*.txt", full.names = TRUE, include.dirs = T)
+
+leaf_area_data_files_txt_tables3 <- lapply(leaf_area_data_files_txt3, read.table, sep = "\t") #get into a table
+
+leaf_area_with_names3 <- mapply(cbind, leaf_area_data_files_txt_tables3, 
+                               "source"= leaf_area_data_files_txt3,
+                               SIMPLIFY = FALSE)  #get the names of the files
+
+leaf_area_data_txt03  <- data.table::rbindlist(leaf_area_with_names3, fill= T) 
+
+leaf_area_data_txt3 <- leaf_area_data_txt03 %>% #this will bind columns of different class 
+  select(V2, V3, source) %>% 
+  filter(!V3 == "Total Area") %>% 
+  mutate(area = V3) %>% 
+  select(-V2, -V3)
+
+leaf_area_data_txt33 <- leaf_area_data_txt3 %>% 
+  clean_names() %>% 
+  mutate(id = str_remove(source,"/Users/user/Desktop/github/SHIFT/data/leaf_area_scans/scans_with_total_area/"),
+         id = str_remove(id, ".txt"),
+         id = gsub(pattern="_", replacement="-", id, fixed = TRUE),
+         id = gsub(pattern=".b", replacement="-b", id, fixed = TRUE),
+         id = gsub(pattern=".Y", replacement="-Y", id, fixed = TRUE),
+         id = gsub(pattern="a-", replacement="-a-", id, fixed = TRUE),
+         id = gsub(pattern="b-", replacement="-b-", id, fixed = TRUE),
+         id = gsub(pattern="c-", replacement="-c-", id, fixed = TRUE),
+         id = gsub(pattern=".y", replacement="-y", id, fixed = TRUE),
+         id = gsub(pattern="bo", replacement="b0", id, fixed = TRUE),
+         file = "txt"
+  ) %>% 
+  select(id, area, file) %>% 
+  mutate(area = as.double(area))
+
+
 
 #Combine: 
 
-leaf_area_df0 <- rbind(leaf_area_data_txt2, leaf_area_data_csv2) %>% 
+leaf_area_df0 <- rbind(leaf_area_data_txt2, leaf_area_data_txt33, leaf_area_data_csv2) %>% 
   separate(id, sep = c("-", "_"),
            into = c("spp", "tree", "date", "branch", "year", "extra_info", "more_info")) 
 
@@ -109,6 +157,14 @@ date_weird <- leaf_area_df1 %>%
   
 
 write.csv(leaf_area_df1, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
+
+#####
+leaf_area_df1 %>% 
+ggplot(aes(y = area_cm2, 
+           x= week, 
+           color = species)) +
+  geom_point()
+
 
 #####
 #Try bluebs!

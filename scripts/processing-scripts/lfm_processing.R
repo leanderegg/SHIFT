@@ -67,7 +67,13 @@ lfm_df <- lfm_raw %>%
          week = week(date_lfm)) %>% 
   select(-site, -date, -date_updated,
          -tree_id, -age, -container_g, 
-         -cont_wet_g, -cont_dry_g, -wet_wt_g, -dry_wt_g) 
+         -cont_wet_g, -cont_dry_g, -wet_wt_g, -dry_wt_g)
+# %>% 
+#   mutate(date_lfm_old = date_lfm) %>% 
+#   mutate(date_lfm = case_when(
+#   date_lfm_old %in% c("2022-03-11") ~ "2022-03-08", 
+#   TRUE ~ as.character(date_lfm_old))) %>% 
+#   mutate(date_lfm = ymd(date_lfm))
 
 write.csv(lfm_df, here("processed-data", paste0("lfm_alldates_",datver,".csv")))
 

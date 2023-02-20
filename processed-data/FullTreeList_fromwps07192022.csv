@@ -1,0 +1,64 @@
+"","tree","site","plot","species","n_pds","n_mds"
+"1","1478","Cucu Mesa","Low","blue oak",0,3
+"2","2004","Cucu Mesa","High","blue oak",1,1
+"3","2005","Cucu Mesa","High","blue oak",0,3
+"4","2006","Cucu Mesa","High","blue oak",1,3
+"5","2007","Cucu Mesa","High","blue oak",1,3
+"6","2009","LL","Hobbiton","blue oak",6,8
+"7","2010","LL","Weathertop","blue oak",7,8
+"8","2011","LL","Weathertop","blue oak",5,5
+"9","2012","Cucu Mesa","Low","blue oak",1,3
+"10","2015","Cucu Mesa","Low","blue oak",1,3
+"11","2020","Chamise","Chamise","blue oak",3,4
+"12","2021","Chamise","Chamise","blue oak",3,4
+"13","2022","Chamise","Chamise","live oak",3,3
+"14","2023","Chamise","Chamise","live oak",3,3
+"15","2024","Chamise","Chamise","blue oak",3,4
+"16","2025","Chamise","Chamise","blue oak",3,4
+"17","2026","Chamise","Shedd","blue oak",2,4
+"18","2027","Chamise","Shedd","blue oak",3,3
+"19","2028","Chamise","Shedd","blue oak",2,4
+"20","2029","Chamise","Shedd","live oak",2,3
+"21","2030","Chamise","Shedd","live oak",2,3
+"22","2031","Chamise","Shedd","blue oak",2,4
+"23","2086","PineNeedle","Low","blue oak",4,6
+"24","2087","PineNeedle","Low","blue oak",2,3
+"25","2088","PineNeedle","Low","blue oak",2,3
+"26","2089","PineNeedle","Low","live oak",1,3
+"27","2090","PineNeedle","Low","blue oak",2,3
+"28","2091","PineNeedle","Low","live oak",2,3
+"29","2092","PineNeedle","Low","live oak",2,3
+"30","2093","PineNeedle","Low","live oak",2,2
+"31","2301","LL","Hobbiton","live oak",7,8
+"32","2331","LL","Ridge","live oak",7,8
+"33","2343","LL","Hobbiton","blue oak",9,8
+"34","2345","LL","Hobbiton","live oak",8,9
+"35","2346","LL","Hobbiton","blue oak",10,9
+"36","2347","LL","Hobbiton","blue oak",9,9
+"37","2348","LL","Hobbiton","blue oak",1,0
+"38","2349","LL","Hobbiton","blue oak",2,1
+"39","2352","LL","MiddleEarth","live oak",7,7
+"40","2354","LL","MiddleEarth","live oak",7,8
+"41","2360","LL","MiddleEarth","blue oak",5,5
+"42","2365","LL","MiddleEarth","blue oak",9,9
+"43","2367","LL","MiddleEarth","blue oak",8,9
+"44","2369","LL","MiddleEarth","blue oak",8,7
+"45","2370","LL","Hobbiton","blue oak",6,5
+"46","2371","LL","Hobbiton","blue oak",8,5
+"47","2372","LL","Hobbiton","blue oak",8,6
+"48","2373","LL","Hobbiton","blue oak",2,0
+"49","2375","LL","Hobbiton","blue oak",7,5
+"50","2376","LL","MiddleEarth","live oak",7,9
+"51","2377","LL","Rohan","live oak",6,7
+"52","2378","LL","Rohan","blue oak",7,7
+"53","2379","LL","Rohan","blue oak",7,8
+"54","2380","LL","Rohan","live oak",7,9
+"55","2381","LL","Weathertop","blue oak",8,9
+"56","2382","LL","Weathertop","blue oak",8,10
+"57","2383","LL","Weathertop","blue oak",7,5
+"58","2384","LL","Weathertop","blue oak",7,9
+"59","Chamise-ARCA","Chamise","Chamise","ARCA",2,0
+"60","Cucu-ARCA","Cucu Mesa","High","ARCA",1,2
+"61","Cucu-LEU","Cucu Mesa","High","LEU",1,2
+"62","LL-ARCA","LL","Rohan","ARCA",3,2
+"63","LL-LEU","LL","Rohan","LEU",4,1

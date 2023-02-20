@@ -1,0 +1,221 @@
+"","tree","week","species","site","plot","time","date_wp","date_wc","date_rwc"
+"1",1478,14,"blue oak","Cucu Mesa","Low","md",NA,NA,NA
+"2",1478,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,"2022-05-09"
+"3",1478,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA
+"4",2004,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA
+"5",2005,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,"2022-05-09"
+"6",2005,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA
+"7",2006,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,"2022-05-09"
+"8",2006,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA
+"9",2006,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA
+"10",2007,19,"blue oak","Cucu Mesa","High","md",2022-05-09,NA,"2022-05-09"
+"11",2007,33,"blue oak","Cucu Mesa","High","md",2022-08-18,NA,NA
+"12",2007,33,"blue oak","Cucu Mesa","High","pd",2022-08-18,NA,NA
+"13",2009,12,"blue oak","LL","Hobbiton","pd",2022-03-23,NA,NA
+"14",2009,12,"blue oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"15",2009,13,"blue oak","LL","Hobbiton","md",2022-03-25,NA,NA
+"16",2009,14,"blue oak","LL","Hobbiton","pd",NA,NA,NA
+"17",2009,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA
+"18",2009,33,"blue oak","LL","Hobbiton","pd",NA,2022-08-18,NA
+"19",2010,12,"blue oak","LL","Weathertop","md",2022-03-23,NA,NA
+"20",2010,13,"blue oak","LL","Weathertop","md",2022-03-25,NA,NA
+"21",2010,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"22",2010,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"23",2011,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"24",2012,14,"blue oak","Cucu Mesa","Low","md",NA,NA,NA
+"25",2012,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,"2022-05-09"
+"26",2012,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA
+"27",2012,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA
+"28",2013,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,"2022-05-09"
+"29",2013,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA
+"30",2014,21,"blue oak","Cucu Mesa","Low","md",NA,NA,NA
+"31",2015,14,"blue oak","Cucu Mesa","Low","md",NA,NA,NA
+"32",2015,19,"blue oak","Cucu Mesa","Low","md",2022-05-09,NA,"2022-05-09"
+"33",2015,33,"blue oak","Cucu Mesa","Low","md",2022-08-18,NA,NA
+"34",2015,33,"blue oak","Cucu Mesa","Low","pd",2022-08-18,NA,NA
+"35",2020,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"36",2020,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"37",2020,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"38",2020,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"39",2021,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"40",2021,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"41",2021,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"42",2021,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"43",2022,14,"live oak","Chamise","Chamise","md",NA,NA,NA
+"44",2022,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"45",2022,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"46",2022,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"47",2022,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"48",2023,19,"live oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"49",2023,19,"live oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"50",2023,33,"live oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"51",2023,33,"live oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"52",2024,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"53",2024,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"54",2024,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"55",2024,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"56",2025,19,"blue oak","Chamise","Chamise","md",2022-05-09,NA,"2022-05-09"
+"57",2025,19,"blue oak","Chamise","Chamise","pd",2022-05-09,NA,"2022-05-09"
+"58",2025,14,"blue oak","Chamise","Chamise","md",NA,NA,NA
+"59",2025,33,"blue oak","Chamise","Chamise","md",2022-08-18,NA,NA
+"60",2025,33,"blue oak","Chamise","Chamise","pd",2022-08-18,NA,NA
+"61",2026,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"62",2026,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA
+"63",2026,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"64",2027,10,"blue oak","Chamise","Shedd","md",NA,NA,NA
+"65",2027,14,"blue oak","Chamise","Shedd","md",NA,NA,NA
+"66",2027,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"67",2027,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,"2022-05-09"
+"68",2027,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"69",2028,14,"blue oak","Chamise","Shedd","md",NA,NA,NA
+"70",2028,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"71",2028,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,"2022-05-09"
+"72",2028,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA
+"73",2028,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"74",2029,14,"live oak","Chamise","Shedd","md",NA,NA,NA
+"75",2029,17,"live oak","Chamise","Shedd","pd",NA,NA,NA
+"76",2029,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"77",2029,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,"2022-05-09"
+"78",2029,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA
+"79",2029,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"80",2030,14,"live oak","Chamise","Shedd","md",NA,NA,NA
+"81",2030,19,"live oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"82",2030,19,"live oak","Chamise","Shedd","pd",2022-05-09,NA,"2022-05-09"
+"83",2030,33,"live oak","Chamise","Shedd","md",2022-08-18,NA,NA
+"84",2030,33,"live oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"85",2031,14,"blue oak","Chamise","Shedd",NA,NA,NA,NA
+"86",2031,19,"blue oak","Chamise","Shedd","md",2022-05-09,NA,"2022-05-09"
+"87",2031,19,"blue oak","Chamise","Shedd","pd",2022-05-09,NA,"2022-05-09"
+"88",2031,33,"blue oak","Chamise","Shedd","md",2022-08-18,NA,NA
+"89",2031,33,"blue oak","Chamise","Shedd","pd",2022-08-18,NA,NA
+"90",2084,19,"blue oak",NA,NA,"md",2022-05-09,NA,NA
+"91",2085,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"92",2085,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"93",2085,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"94",2086,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"95",2086,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"96",2086,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"97",2087,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"98",2087,14,"blue oak","PineNeedle","Low","md",NA,NA,NA
+"99",2087,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"100",2087,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"101",2087,21,"blue oak","PineNeedle","Low","md",NA,NA,NA
+"102",2088,14,"blue oak","PineNeedle","Low","md",NA,NA,NA
+"103",2088,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"104",2088,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"105",2088,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"106",2089,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"107",2089,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"108",2090,19,"blue oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"109",2090,33,"blue oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"110",2090,33,"blue oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"111",2091,14,"live oak","PineNeedle","Low",NA,NA,NA,NA
+"112",2091,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"113",2091,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"114",2091,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"115",2092,14,"live oak","PineNeedle","Low","md",NA,NA,NA
+"116",2092,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"117",2092,33,"live oak","PineNeedle","Low","md",2022-08-18,NA,NA
+"118",2092,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"119",2093,14,"live oak","PineNeedle","Low","md",NA,NA,NA
+"120",2093,19,"live oak","PineNeedle","Low","md",2022-05-09,NA,"2022-05-09"
+"121",2093,33,"live oak","PineNeedle","Low","pd",2022-08-18,NA,NA
+"122",2301,12,"live oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"123",2301,12,"live oak","LL","Hobbiton","pd",2022-03-23,NA,NA
+"124",2301,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA
+"125",2322,9,"live oak","LL","Ridge","md",NA,NA,NA
+"126",2330,33,"blue oak","LL","Ridge","pd",NA,2022-08-18,NA
+"127",2331,12,"live oak","LL","Ridge","md",2022-03-23,NA,NA
+"128",2331,12,"live oak","LL","Ridge","pd",2022-03-23,NA,NA
+"129",2331,14,"live oak","LL","Ridge","pd",NA,NA,NA
+"130",2331,19,"live oak","LL","Ridge","pd",2022-05-09,NA,NA
+"131",2331,33,"live oak","LL","Ridge","pd",2022-08-18,NA,NA
+"132",2343,12,"blue oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"133",2343,14,"blue oak","LL","Hobbiton","pd",NA,NA,NA
+"134",2345,12,"live oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"135",2345,12,"live oak","LL","Hobbiton","pd",2022-03-23,NA,NA
+"136",2345,19,"live oak","LL","Hobbiton","pd",2022-05-09,NA,NA
+"137",2346,12,"blue oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"138",2346,33,"blue oak","LL","Hobbiton","pd",2022-08-18,NA,NA
+"139",2347,12,"blue oak","LL","Hobbiton","md",2022-03-23,NA,NA
+"140",2347,14,"blue oak","LL","Hobbiton","pd",NA,NA,NA
+"141",2352,11,"live oak","LL","MiddleEarth","pd",NA,NA,NA
+"142",2352,12,"live oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"143",2352,14,"live oak","LL","MiddleEarth","pd",NA,NA,NA
+"144",2352,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"145",2353,12,"live oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"146",2354,12,"live oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"147",2354,12,"live oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"148",2354,14,"live oak","LL","MiddleEarth","pd",NA,NA,NA
+"149",2354,17,"live oak","LL","MiddleEarth","md",NA,NA,NA
+"150",2354,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"151",2360,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"152",2360,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA
+"153",2364,19,"blue oak","LL","MiddleEarth","md",2022-05-09,NA,NA
+"154",2364,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"155",2365,12,"blue oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"156",2365,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"157",2366,9,"blue oak","LL","MiddleEarth","md",NA,NA,NA
+"158",2367,12,"blue oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"159",2367,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"160",2369,12,"blue oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"161",2369,12,"blue oak","LL","MiddleEarth","pd",NA,2022-03-23,NA
+"162",2369,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"163",2369,15,"blue oak","LL","MiddleEarth","md",2022-04-13,NA,"2022-04-14"
+"164",2369,33,"blue oak","LL","MiddleEarth","md",NA,2022-08-18,NA
+"165",2370,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"166",2370,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"167",2371,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"168",2371,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"169",2371,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"170",2372,12,"blue oak","LL","Weathertop","md",2022-03-23,NA,NA
+"171",2372,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"172",2372,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"173",2372,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"174",2373,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"175",2375,12,"blue oak","LL","Hobbiton","pd",2022-03-23,NA,NA
+"176",2375,17,"blue oak","LL","Hobbiton","md",NA,NA,NA
+"177",2375,19,"blue oak","LL","Hobbiton","pd",2022-05-09,NA,NA
+"178",2376,12,"live oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"179",2376,12,"live oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"180",2376,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"181",2377,12,"live oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"182",2377,14,"live oak","LL","MiddleEarth","pd",NA,NA,NA
+"183",2377,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"184",2377,33,"live oak","LL","MiddleEarth","md",NA,2022-08-18,NA
+"185",2378,12,"blue oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"186",2378,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"187",2378,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"188",2378,19,"blue oak","LL","MiddleEarth","md",NA,2022-05-09,NA
+"189",2378,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"190",2379,12,"blue oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"191",2379,12,"blue oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"192",2379,19,"blue oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"193",2380,12,"live oak","LL","MiddleEarth","md",2022-03-23,NA,NA
+"194",2380,12,"live oak","LL","MiddleEarth","pd",2022-03-23,NA,NA
+"195",2380,19,"live oak","LL","MiddleEarth","pd",2022-05-09,NA,NA
+"196",2381,12,"blue oak","LL","Weathertop","md",2022-03-23,NA,NA
+"197",2381,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"198",2381,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"199",2381,19,"blue oak","LL","Weathertop","md",NA,2022-05-09,NA
+"200",2381,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"201",2382,12,"blue oak","LL","Weathertop","md",2022-03-23,NA,NA
+"202",2382,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"203",2382,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"204",2383,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"205",2383,11,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"206",2383,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"207",2383,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"208",2384,9,"blue oak","LL","Weathertop","md",2022-03-03,NA,NA
+"209",2384,11,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"210",2384,12,"blue oak","LL","Weathertop","md",2022-03-23,NA,NA
+"211",2384,12,"blue oak","LL","Weathertop","pd",2022-03-23,NA,NA
+"212",2384,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
+"213",2384,19,"blue oak","LL","Weathertop","pd",2022-05-09,NA,NA
+"214",2385,14,"blue oak",NA,NA,"md",NA,NA,NA
+"215",2089,11,"live oak","PineNeedle","Low",NA,NA,NA,NA
+"216",2346,14,"blue oak","LL","Hobbiton","pd",NA,NA,NA
+"217",2375,14,"blue oak","LL","Hobbiton","pd",NA,NA,NA
+"218",2376,14,"live oak","LL","MiddleEarth","pd",NA,NA,NA
+"219",2379,14,"blue oak","LL","MiddleEarth","pd",NA,NA,NA
+"220",2382,14,"blue oak","LL","Weathertop","pd",NA,NA,NA
