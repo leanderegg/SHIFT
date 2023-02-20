@@ -64,4 +64,8 @@ alas_leaf_area_df_week <- merge(leaf_area_df, alas_df, by = c("tree_id", "branch
          alas = (area_mm2/area_stem_cm2), 
          sla_mm_mg = area_mm2/(dm_mg))
 
+write.csv(alas_leaf_area_df_week, here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
+
+
+  
 

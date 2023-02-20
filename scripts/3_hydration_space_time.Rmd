@@ -31,7 +31,7 @@ select = dplyr::select
 
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "01052023"
+#datver <- "01052023"
 dataversion <- paste0("Data_", datver)
 ```
 
@@ -42,8 +42,8 @@ wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,"
 wc_qudo_df <- wc_all_raw %>% 
    filter(#week > 15, 
          species == "blue oak", 
-         lwc_mean < 5, 
-         lwc_mean > 0
+        # lwc_mean < 5, 
+         #lwc_mean > 0
          ) %>% 
   filter(!(week == 29 & lwc_mean > 1)) %>% 
   mutate(lwc = lwc_mean) %>% 
@@ -58,7 +58,26 @@ wc_qudo_df <- wc_all_raw %>%
   select(week, time, lwc, water_potential,
          tree, tree_factor, plot, site, species, date_wc, date_wp) %>% 
   unique()
+```
 
+What is the linear portion? 
+```{r}
+alas_df <- read_csv(alas_leaf_area_df_week, here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")))
+
+
+plot <- alas %>% 
+  filter(spp == B) %>% 
+  ggplot(aes(y = alas, 
+             x = date_alas, 
+             color = tree_id)) +
+  geom_point() +
+  facet_wrap(~file)
+plot
+
+```
+
+
+```{r, echo=F}
 wc_lm_df <- wc_qudo_df %>% 
   filter(week > 15)
 ```
