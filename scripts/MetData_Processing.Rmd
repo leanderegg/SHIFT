@@ -30,12 +30,14 @@ Apr 2022 - Dec 2022 they were run on old Decagon EM50 data loggers
 require(readxl)
 require(tidyverse)
 require(lubridate)
+
 ```
 
 
 
 ```{r loading data, echo=FALSE}
-TS <- read_xlsx("./data/MetStationData/TS_Shire_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
+setwd("/Users/leeanderegg/Dropbox/Sedgwick/SHIFT2")
+TS <- read_xlsx(path = "./data/MetStationData/TS_Shire_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
 names(TS) <- c("datetime","rh","temp","pressure_atmos_kPa","PAR","precip_mm")
 
 RT <- read_xlsx("./data/MetStationData/RidgeTop_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]

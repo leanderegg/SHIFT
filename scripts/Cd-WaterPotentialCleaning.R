@@ -478,8 +478,10 @@ ggplot() + geom_raster(data=sdem_gg, aes(x=x, y=y, fill=DEM_sedgwick_3m)) + xlim
 # subset to week 15 to just plot data from around when roots were sampled
 tmp1 <- wp_ind %>% filter(week==15, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
 tmp2 <- wp_ind %>% filter(week==29, site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
-tmp3 <- wp_ind %>% filter(week %in% c(29,15), site=="LL", species=="blue oak", plot != "Ridge", plot != "Rohan")
+tmp3 <- wp_ind %>% filter(week %in% c(29,15), site=="LL")
 
+# write csv of water potentials for Holly
+write.csv(tmp3, "processed-data/WP_LL_AprilandJuly_forHolly_20221221.csv")
 # create a color palette
 library(RColorBrewer)
 c <- brewer.pal(n=4, name="Set2")

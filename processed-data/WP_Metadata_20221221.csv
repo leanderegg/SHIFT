@@ -1,0 +1,38 @@
+Column,Value,Description,
+tree,####,Unique Tree Tag #,
+,Site-Spp,identifier for shrubs that don't have tags,
+site,LL,Lower Lisque,
+,Cucu Mesa,other side of lower lisque on road going up to 'landing strip' where weather station is,
+,Chamise,ride top in SW corner of reserve spanning Shedd/Chamise soil contact,
+,Pine Needle,in or near stream channel of Pine Needle valley,
+,NA,trees that likely have a tag type and didn't match to a site,
+plot,,local areas nested within sites,
+,Low,Pine Needle,unhelpfully non-unique  but only plot at Pine Needle. Never got around to putting in Pine Needle - High
+,Low,Cucu Mesa,bottom of hill
+,High,Cucu Mesa,top of hill
+,Hobbiton,LL,"toe slope, including everything in the valley bottom (2345 and 2301 as well)"
+,Weathertop,LL,"ridge top, near road"
+,Middle Earth,LL,mid slope part way down the valley. 
+,Rohan,LL,2 lives and 2 blues going from Middle Earth up to top of ridge to the N (SE facing slope)
+,Ridge,LL,2331 live oak on top of east ridge (only tree we sampled on that ridge)
+,Chamise,Chamise,"unhelpfully nested name w/in Chamise site, trees on Chamise soil (NE along road)"
+,Shedd,Chamise,trees on Shedd soil (SW along fire break)
+species,live oak,Quercus agrifolia,
+,blue oak,Quercus douglasii,
+,ARCA,Artemisa californica,
+,LEU,Salvia leucophylla,
+week,##,week of year,
+date_md,YYYY-MM-DD,date midday water potentials were collected,
+md_sd_mpa,MPa,standard deviation of midday water potentials (from 3-10 measurements per tree),
+md_mpa,MPa,mean tree midday water potential,
+date_pd,YYYY-MM-DD,date predawn water potentials were collected,
+pd_sd_mpa,MPa,standard deviation of predawn water potentials (from 3-10 measurements per tree),
+pd_mpa,MPa,mean tree predawn water potential,
+longitude,dd.dddd,WGS84,
+latitude,dd.dddd,WGS84,
+name,B/L####,Species (B/L) concatenated with tree tag #,
+description,notes for the tree,,
+species_2,B/L/ARAC/LEU,Blue oak/Live oak/A. californica/S. leucophylla,
+e_drop,MPa,difference between midday and predawn water potentials (transpirative 'e' water potential drop),
+lat_utm,m,"UTM coordinates, NAD 83, AEA projection, zone 11S",
+lon_utm,m,"UTM coordinates, NAD 83, AEA projection, zone 11S",
