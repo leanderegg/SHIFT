@@ -51,6 +51,8 @@ list.files("processing-scripts", full.names = TRUE) %>% walk(source)
 
 #####WC:
 
+%in% c(21:40)
+
 Water content data looks like this: 
 
 md_bulk_wet = as.numeric(md_bulk_wet), 
