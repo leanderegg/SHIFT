@@ -37,11 +37,11 @@ dataversion <- paste0("Data_", datver)
 
 ```{r, echo=F}
 wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(species == "blue oak")
+  filter(species == "blue oak") %>% 
+  mutate(lwc_mean = lwc_mean_combined)
 
 wc_qudo_df <- wc_all_raw %>% 
    filter(#week > 15, 
-         species == "blue oak", 
         # lwc_mean < 5, 
          #lwc_mean > 0
          ) %>% 
@@ -53,11 +53,11 @@ wc_qudo_df <- wc_all_raw %>%
   ungroup() %>% 
   mutate(week = case_when(
     week %in% c(13) ~ 14, 
+    week %in% c(11) ~ 10, 
     TRUE ~ week
   )) %>% 
   select(week, time, lwc, water_potential,
-         tree, tree_factor, plot, site, species, date_wc, date_wp) %>% 
-  unique()
+         tree, tree_factor, plot, site, species, date_wp)
 ```
 
 What is the linear portion? 
@@ -83,10 +83,10 @@ alas_df_analysis %>%
   labs(title = "LMA")
 ```
 
-
+Week 17 looks like a goot cutoff:
 ```{r, echo=F}
 wc_lm_df <- wc_qudo_df %>% 
-  filter(week > 15)
+  filter(week > 17)
 ```
 
 From what weeks do we have the most trees?
@@ -125,6 +125,7 @@ MPa ~ lwc + (lwc|tree) + (1|wk)
 ```{r, echo=FALSE}
 wc_qudo_df %>% 
   #filter(week %in% c(10, 13, 17, 21, 29)) %>% 
+  filter(lwc < 5) %>% 
   ggplot(aes(y = water_potential, 
              x = lwc, 
              color = as.factor(tree)
@@ -133,7 +134,7 @@ wc_qudo_df %>%
   geom_smooth(method = "lm",
               se = F) +
   facet_wrap(~week, scales = "free") +
-  theme(legend.position = "none") +
+ # theme(legend.position = "none") +
   color_very_many +
   labs(y = "Water Potential (MPa)", 
        x = "LWC")

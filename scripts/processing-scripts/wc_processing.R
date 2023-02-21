@@ -2832,7 +2832,7 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
   mutate(date = lubridate::ymd(date),
         # tree = as.numeric(tree_id), 
          week = week(date), 
-         lwc_bulk = wm/dm
+         lwc_bulk = ((wm-dm)/dm)
          ) %>% 
   select(-tree_id, -wm, -dm, -notes)
 

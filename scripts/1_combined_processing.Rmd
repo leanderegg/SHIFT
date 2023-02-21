@@ -120,9 +120,19 @@ wp_wc_df <- merge(wp_df, wc_df,
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
+  mutate(lwc_leaf = case_when(
+    lwc_leaf < 0 ~ NA_real_, 
+    TRUE ~ as.numeric(lwc_leaf)
+  )) %>% 
+  mutate(lwc_bulk = case_when(
+    lwc_bulk > 5 ~ NA_real_, 
+    TRUE ~ as.numeric(lwc_bulk)
+  )) %>% 
   group_by(tree, week, time) %>% 
   mutate(mpa_mean = mean(mpa, na.rm = T), 
-         lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
+         lwc_leaf_mean = mean(lwc_leaf, na.rm=T), 
+         lwc_bulk_mean = mean(lwc_bulk, na.rm=T), 
+        # lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
          timing = timing.x) %>% 
   ungroup() %>% 
   #rowwise() %>% 
@@ -130,7 +140,17 @@ wp_wc_df <- merge(wp_df, wc_df,
           # timing = timing.x) %>% 
   dplyr::select(-timing.x, -timing.y) %>% 
   distinct()
-  
+
+long <- wp_wc_df %>% 
+  pivot_longer(cols = c(lwc_leaf_mean, lwc_bulk_mean),
+    names_to = "type", 
+               values_to = "lwc") %>% 
+  select(tree, species, time, week, mpa_mean, date_wp, type, lwc, site) %>% 
+  distinct() %>% 
+  group_by(tree, time, week, species, site) %>% 
+  mutate(lwc_mean_combined = mean(lwc, na.rm = T)) %>% 
+  select(-lwc, -type) %>% 
+  distinct()
 
 #wp_tmp <- wp_wc_df %>% 
  # dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
@@ -185,7 +205,7 @@ rwc_df_leaves_y0 <- rwc_df %>%
 
 #RWC + WC + WP:
 
-wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
+wp_wc_rwc_df <- merge(long, rwc_df_leaves_y0,
                     by = c("tree",
                            "week"
                           # "rep"
@@ -347,11 +367,11 @@ wp_wc_rwc_lfm_df_wide_leaves <- merge(wp_wc_rwc_df, lfm_leaves_both_df,
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
   distinct() %>% 
-  select(-site, -species, -plot)
+  select(-site, -species)
 
 wp_wc_rwc_lfm_df_wide_trees_leaves <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_leaves, 
                                      by = c("tree")) %>% 
-  select(-rep) %>% 
+ # select(-rep) %>% 
   distinct()
 
 #stem:
@@ -359,11 +379,11 @@ wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df,
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
   distinct() %>% 
-  select(-site, -species, -plot)
+  select(-site, -species)
 
 wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_stem, 
                                      by = c("tree")) %>% 
-  select(-rep) %>% 
+ # select(-rep) %>% 
   distinct()
 
 
@@ -374,7 +394,7 @@ wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_
 ```{r}
 #make a shorter name because the long one will be a pain to write out!
 all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_trees_leaves, wp_wc_rwc_lfm_df_wide_trees_stem) %>% 
-  mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
+  mutate(rwc_percent_y0 = ((lwc_mean_combined/mean_swc_per_dry_g_y0)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
          ) %>% 
   filter(!species %in% c("leaf"))
@@ -458,6 +478,11 @@ wp_wc_rwc_lfm_df_wide_trees_leaves %>%
     ) + 
   scale_x_continuous(breaks = seq(9, 30, by = 1)) +
   labs(title = "MPa")
+```
+```{r}
+all_water_df_new <- all_water_df %>% 
+  select(tree, plot, site, species, week, time, lwc_mean, mpa_mean) %>% 
+  distinct()
 ```
 
 Q: What are we missing??? 
