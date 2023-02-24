@@ -57,7 +57,8 @@ wc_qudo_df <- wc_all_raw %>%
     TRUE ~ week
   )) %>% 
   select(week, time, lwc, water_potential,
-         tree, tree_factor, plot, site, species, date_wp)
+         tree, tree_factor, plot, site, species, date_wp) %>% 
+  distinct()
 ```
 
 What is the linear portion? 
@@ -138,6 +139,29 @@ wc_qudo_df %>%
   color_very_many +
   labs(y = "Water Potential (MPa)", 
        x = "LWC")
+```
+```{r}
+wk10 <- wc_qudo_df %>% 
+  filter(week == 10)
+
+wk10_wide <- wk10 %>% 
+  pivot_wider(names_from=time, 
+              values_from = c(lwc, water_potential))
+
+wk10_long_lwc <- wk10_wide %>% 
+  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
+  pivot_longer(cols = c(lwc_pd, lwc_md), 
+               names_to = "time", 
+               values_to = "lwc") %>% 
+  mutate(time = gsub(time, "lwc_", ""))
+
+wk10_long_mpa <- wk10_wide %>% 
+  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
+  pivot_longer(cols = c(water_potential_pd, water_potential_md), 
+                names_to = "time", 
+                values_to = "water_potential") 
+
+wk10_long <- bind_rows(wk10_long_lwc, wk10_long_mpa)
 ```
 
 ```{r, echo=FALSE, fig.height= 5, fig.width= 2}
