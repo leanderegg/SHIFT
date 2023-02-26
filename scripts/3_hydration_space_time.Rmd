@@ -140,34 +140,89 @@ wc_qudo_df %>%
   labs(y = "Water Potential (MPa)", 
        x = "LWC")
 ```
+What we want to do, but just with week 10: 
 ```{r}
 wk10 <- wc_qudo_df %>% 
   filter(week == 10)
 
 wk10_wide <- wk10 %>% 
   pivot_wider(names_from=time, 
-              values_from = c(lwc, water_potential))
+              values_from = c(lwc, water_potential)) %>% 
+    dplyr::group_by(tree) %>%
+  fill(c(lwc_md, lwc_pd, water_potential_pd, water_potential_md, date_wp), .direction = "downup") %>%
+  dplyr::ungroup()%>% 
+  select(-date_wp) %>% 
+  distinct()
 
 wk10_long_lwc <- wk10_wide %>% 
   drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
-  pivot_longer(cols = c(lwc_pd, lwc_md), 
+  select(-water_potential_md, -water_potential_pd) %>% 
+  mutate(pd = lwc_pd, 
+         md = lwc_md) %>% 
+  pivot_longer(cols = c(pd, md), 
                names_to = "time", 
                values_to = "lwc") %>% 
-  mutate(time = gsub(time, "lwc_", ""))
+  select(-lwc_pd, -lwc_md)
 
 wk10_long_mpa <- wk10_wide %>% 
   drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
-  pivot_longer(cols = c(water_potential_pd, water_potential_md), 
-                names_to = "time", 
-                values_to = "water_potential") 
+  select(-lwc_md, -lwc_pd) %>% 
+  mutate(pd = water_potential_pd, 
+         md = water_potential_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "water_potential") %>% 
+  select(-water_potential_pd, -water_potential_md)
 
-wk10_long <- bind_rows(wk10_long_lwc, wk10_long_mpa)
+wk10_long <- merge(wk10_long_mpa, wk10_long_lwc)
 ```
 
+
+```{r}
+wk_all <- wc_qudo_df 
+
+wk_all_wide <- wk_all %>% 
+  pivot_wider(names_from=time, 
+              values_from = c(lwc, water_potential)) %>% 
+    dplyr::group_by(tree, week) %>%
+  fill(c(lwc_md, lwc_pd, water_potential_pd, water_potential_md, date_wp), .direction = "downup") %>%
+  dplyr::ungroup()%>% 
+  select(-date_wp) %>% 
+  distinct()
+
+wk_all_long_lwc <- wk_all_wide %>% 
+  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
+  select(-water_potential_md, -water_potential_pd) %>% 
+  mutate(pd = lwc_pd, 
+         md = lwc_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "lwc") %>% 
+  select(-lwc_pd, -lwc_md)
+
+wk_all_long_mpa <- wk_all_wide %>% 
+  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
+  select(-lwc_md, -lwc_pd) %>% 
+  mutate(pd = water_potential_pd, 
+         md = water_potential_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "water_potential") %>% 
+  select(-water_potential_pd, -water_potential_md)
+
+wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwc) %>% 
+  distinct() %>% 
+  select(-lwc_NA, -water_potential_NA) %>% 
+  group_by(tree, week, time) %>% 
+  summarise(lwc = mean(lwc), 
+            water_potential = mean(water_potential))
+```
+
+###nice hyd
 ```{r, echo=FALSE, fig.height= 5, fig.width= 2}
-nice_hyd <- wc_qudo_df %>% 
-  filter(week %in% c(10,14, 17, 21, 29), 
-         lwc < 3, 
+wk_figs <- wk_all_long %>% 
+  filter(week %in% c(10, 14, 17, 21, 29), 
+         lwc < 6, 
          lwc > 0
          ) %>% 
   mutate(week_nice = case_when(
@@ -175,37 +230,60 @@ nice_hyd <- wc_qudo_df %>%
     week == 14 ~ "Week 14", 
     week == 17 ~ "Week 17", 
     week == 21 ~ "Week 21", 
-    week == 29 ~ "Week 20"
-  )) %>% 
+    week == 29 ~ "Week 29"
+  )) 
+
+wk_figs_labels <- data.frame(label = c('10', '11', '17', '21', '29'), 
+                             week_nice = c("Week 10", "Week 14", "Week 17", 
+                                           "Week 21", "Week 29"))
+
+nice_hyd <- wk_figs %>% 
   filter(!(week == 29 & lwc > 1)) %>% 
   ggplot(aes(y = water_potential, 
-             x = lwc, 
+             x = lwc,
              color = as.factor(tree)
              )) +
-  geom_point(aes(shape = time), 
+  geom_point(aes(shape = time,
+                 color = as.factor(tree)
+                 ), 
              size = 2, 
              alpha = .6) + 
   geom_smooth(method = "lm",
               se = F, 
               alpha = .3) +
   facet_wrap(~week_nice, 
-             ncol = 1
+             ncol = 1,
+              strip.position="top"
             # scales = "free"
              ) +
-  theme(legend.position = "none") +
+  #annotate("text", x= .5, y = 6, label =unique(wk_figs$week_nice))+
+ # theme(legend.position = "none") +
+  theme(
+      legend.position="none",
+      strip.background = element_blank(),
+     # strip.text = element_text(size=9, lineheight=.3),
+     # panel.spacing = unit(0, "lines"),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+       axis.title = element_text(size = 16), 
+    # panel.margin = unit(c(-0.2,0, -0.2,0), "lines")
+    ) +
   color_very_many +
   labs(y = "Water Potential (MPa)", 
        x = "LWC", 
-       caption = "triangles = predawn, circles = midday") +
-  xlim(.5,2)
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+  xlim(.5,2) #+
+  #geom_text(aes(label = label), data = wk_figs_labels, x= .5, y = 6) 
+
 nice_hyd
 
-ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpeg", width = 3, height = 6, dpi = 300)
+ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpg", width = 3, height = 6, dpi = 300)
 ```
 
 
 ```{r, echo=FALSE}
-wc_qudo_df %>% 
+wk_all  %>% 
   filter(week %in% c(17)) %>% 
   ggplot(aes(y = water_potential, 
              x = lwc, 
@@ -220,7 +298,7 @@ wc_qudo_df %>%
 ```
 
 ```{r, include=F}
-wc_lm_hyd_df <- wc_qudo_df 
+wc_lm_hyd_df <- wk_all 
 
 for (i in unique(wc_lm_hyd_df$week)) {
   
@@ -245,7 +323,7 @@ for (i in unique(wc_lm_hyd_df$week)) {
 
 
 ```{r, warning=F, echo=FALSE, include = F}
-wc_qudo_df %>% 
+wk_all  %>% 
   ggplot(aes(y= water_potential, 
              x = lwc, 
              color = interaction(tree, week), 
@@ -255,18 +333,38 @@ wc_qudo_df %>%
   theme(legend.position = "none") 
 ```
 
-
+Slopes of the formula: 
 
 ```{r, warning=T}
 library(nlme)
-m_wk_rand <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week), data = wc_qudo_df)
-m_wk_rand
-summary(m_wk_rand)
+m_wk_rand <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week), data = wk_all )
+#m_wk_rand
+#summary(m_wk_rand)
 ```
+
+Should we include site? 
+
+```{r, include = F}
+wk_all_sites <- wk_all %>% mutate(site = as.factor(site)) %>% 
+  drop_na(site)
+
+m_wk_rand_nosite <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week), data = wk_all_sites, REML = T)
+#m_wk_rand_nosite
+
+m_wk_rand_site <- lmer(water_potential ~ lwc + (lwc|tree) + (lwc|week) + (1|site), data = wk_all_sites, REML = T)
+#m_wk_rand_site
+
+anova(m_wk_rand_nosite, m_wk_rand_site)
+```
+
+...NO, we do not need to include site.
+
+
+What is the slope?
 
 ```{r, echo=FALSE}
 grand_slope <- broom.mixed::tidy(m_wk_rand)
-grand_slope
+#grand_slope
 
 #ran_list <- ranef(m_wk_rand)
 
@@ -287,18 +385,22 @@ ran_err_df <- as.data.frame(ran_err[['week']]) %>%
 
 week_ranerr <- nrow(ran_err_df)
 
-weeks <- tibble(1:11)
-weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
+#Comment the below based on if we're combining weeks (e.g. week 13 and 14, or week 10 and 11)
+weeks <- tibble(1:9)
+weeks$week <- c(9, 10, 14, 15, 17, 18, 19, 21, 29) 
+
+#weeks <- tibble(1:11)
+#weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
 
 ran_df_week <- bind_cols(weeks, ran_df, ran_err_df) %>% 
-  select(-`1:11`) %>% 
   data_frame()
 ```
 
 Random slopes of each week: 
 
+####SLOPES
 ```{r, echo=FALSE}
-ran_df_week %>% 
+hyd_slopes <- ran_df_week %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
   mutate(upr = slope + (std.error.slope/2), 
@@ -321,17 +423,24 @@ ran_df_week %>%
 theme(
   strip.background = element_blank(),
   strip.text.y = element_blank(), 
-  strip.text.x = element_text(size = 18), 
+  strip.text.x = element_text(size = 16), 
  # axis.text.y = element_blank(), 
   #axis.ticks.y = element_blank(), 
-  axis.title = element_text(size = 20), 
+  axis.title = element_text(size = 16), 
   legend.title = element_text(size = 18)
   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  scale_x_continuous(breaks = c(10, 11,14,15, 17, 18, 19, 21, 29)
+                      # seq(10, 30, by = 1)
+                     ) +
   theme(legend.position = "none") +
   color_grad
+hyd_slopes
+
+ggsave(here("figures", "nice_hydration_slopes"), hyd_slopes, device = "jpg", width = 4, height = 2, dpi = 300)
 ```
+
+
 
 Random intercepts of each week:
 ```{r, echo=FALSE}
@@ -375,19 +484,22 @@ theme(
 1. Center and scale by week
 2. Plot all midday grand slopes
 
-#####Midday: 
+###Midday: 
 
 ```{r, warning = F}
 wc_wk_centered_df <- wc_qudo_df %>% 
   filter(time == "md") %>% 
   group_by(week) %>% 
-  mutate(mean_lwc = mean(lwc)) %>% 
+  mutate(mean_lwc = mean(lwc, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(lwc_centered = lwc - mean_lwc)
   # mutate(lwc_centered = scale(lwc,  scale=FALSE)) %>% 
   # filter(lwc_centered < 4)
 ```
 
+
+
+####SPACE - fig: 
 
 ```{r, warning = F, echo=FALSE}
 #not scaled
@@ -401,9 +513,13 @@ wc_wk_centered_df %>%
              )) +
   geom_point(alpha = .3, 
              aes (shape = site)) +
-  geom_smooth(method = "lm", se = F) 
+  geom_smooth(method = "lm", se = F)
+```
+
+
+```{r, warning = F, echo=FALSE}
 #scaled
-wc_wk_centered_df %>% 
+space_nice <- wc_wk_centered_df %>% 
   drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
              x = lwc_centered, 
@@ -411,32 +527,50 @@ wc_wk_centered_df %>%
              color = as.factor(week)
              )) +
   geom_point(alpha = .3, 
-             aes (shape = site)) +
+            # aes (shape = site)
+             ) +
+  theme(
+      legend.position="none",
+      strip.background = element_blank(),
+     # strip.text = element_text(size=9, lineheight=.3),
+     # panel.spacing = unit(0, "lines"),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+       axis.title = element_text(size = 16), 
+    # panel.margin = unit(c(-0.2,0, -0.2,0), "lines")
+    ) +
   geom_smooth(method = "lm", se = F) + 
   geom_vline(xintercept = 0, linetype = "dotted") +
-  labs(y= "Midday MPa", 
+  labs(y= "Middays (MPa)", 
        x = "LWC (centered by week)", 
        color = "Week", 
        shape = "Site") +
   color_many
-```
+space_nice
 
+ggsave(here("figures", "nice_space"), space_nice, device = "jpg", width = 4, height = 2, dpi = 300)
+```
+Do we need to include site here? 
 ```{r}
-space_df <- wc_wk_centered_df %>% 
+space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod_site <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data = space_df, REML = F)
+space_mod <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data = space_df, REML = T)
 #summary(space_mod)
 
-space_mod <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tree) + (1|site), data = space_df,  REML = F)
+space_mod_site <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tree) + (1|site), data = space_df,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
 ```
 
+...NO. 
+
 Get slopes from random effects: 
 
 ```{r, echo=FALSE}
+space_mod <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data =  wc_wk_centered_df, REML = T)
+
 space_mod_df <- broom.mixed::tidy(space_mod)
 #space_mod_df
 
@@ -457,17 +591,20 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
   select(-`(Intercept)`, 
          -lwc_centered)
 
-weeks_check <- unique(space_df$week) %>% as_data_frame() 
+weeks_check <- list(unique(space_df$week)) #%>% as_data_frame() 
+weeks_check
 
-weeks <- data_frame(1:10)
-weeks$week <- c(10, 11, 12, 14, 15, 17, 18, 19, 21, 29) 
+weeks <- data_frame(1:8)
+weeks$week <- c(10, 14, 15, 17, 18, 19, 21, 29) 
 
 ran_df_week <- bind_cols(weeks, ran_df, ran_err_df) %>% 
-  select(-`1:10`) %>% 
+  #select(-`1:10`) %>% 
   data_frame()
 ```
 
 Visualize: 
+
+####SLOPES - space
 
 ```{r, echo=FALSE}
 ran_df_week %>% 
@@ -494,12 +631,13 @@ ran_df_week %>%
 theme(
   strip.background = element_blank(),
   strip.text.y = element_blank(), 
-  strip.text.x = element_text(size = 18), 
+  strip.text.x = element_text(size = 16), 
  # axis.text.y = element_blank(), 
   #axis.ticks.y = element_blank(), 
-  axis.title = element_text(size = 20), 
+  axis.title = element_text(size = 16), 
   legend.title = element_text(size = 18)
   ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
 #  geom_hline(yintercept = 0, linetype="dotted") + 
   #scale_x_continuous(breaks = seq(9, 30, by = 1)) +
   theme(legend.position = "none") +
