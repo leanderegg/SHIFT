@@ -41,7 +41,8 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
 #_______________________________________________________________
 ############# LOAD DATA ########################################
 
-datver <- "07192022"
+# datver <- "07192022"
+datver <- "11272022"
 dataversion <- paste0("Data_", datver)
 
 
@@ -142,8 +143,9 @@ wp_ind_md <- wp_ind_md %>% rename(md_mpa = mpa, date_md=date, md_sd.mpa = sd.mpa
 wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
 wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
 
-wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
-wp_ind <- left_join(wp_ind, latlon, by=c("tree"="Tree")) %>% clean_names()
+wp_ind0 <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+wp_ind0$tree <- as.character(wp_ind0$tree)
+wp_ind <- left_join(wp_ind0, latlon, by=c("tree"="Tree")) %>% clean_names()
 
 
 # calculate delta Psi
@@ -523,6 +525,13 @@ boxplot(-1*pd_mpa~plot, tmp2, col=col
 palette(coldark)
 points(-1*pd_mpa~jitter(as.numeric(factor(plot)),factor = .5), tmp2, pch=16, col=factor(plot))
 #legend("topleft", c("Low","Mid","High"), fill = col,border=col, bg=col, bty = "n", title = "Elevation")
+boxplot(-1*pd_mpa~plot, tmp2, col=col
+        , xlab="Elevation", ylab="Predawn water potential\n(soil dryness)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+          , whisklty=1, whisklwd=3, whiskcol=col
+        , medlwd=3, outcol=col, outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Mid Slope","Ridge Top"))
 
 
 
@@ -565,6 +574,43 @@ boxplot(-1*pd_mpa~week+plot, tmp3, col=allcols
         , staplewex=0, notch=F, border="white"
         , whisklty=1, whisklwd=3, whiskcol=allcols
         , medlwd=3, outcol=allcols, outcex=.5, outlwd=1, bty="")
+
+
+
+
+
+######## Combine pd and midday for 140 ###########
+
+# quick average for maybe points instead of boxplot
+
+llavg <- tmp2 %>% group_by(plot) %>% summarise(pd = mean(pd_mpa, na.rm=T), pd_se = sd(pd_mpa, na.rm=T)/n(), pd_sd = sd(pd_mpa, na.rm=T)
+                                               , md = mean(md_mpa, na.rm=T), md_se = sd(md_mpa, na.rm=T)/n(), md_sd=sd(md_mpa, na.rm=T))
+summary(lm(md_mpa~plot, tmp2))
+  # not significantly different
+summary(lm(pd_mpa~plot, tmp2))
+  # marginally significantly different
+
+offset <- 0.03
+quartz(width=4.2, height=4)
+par(mar=c(4,5,1,1), mgp=c(2.7,1,0))
+palette(c)
+boxplot(-1*pd_mpa~plot, tmp2, col="white"
+        , xlab="Elevation", ylab="Leaf Water Potential (MPa)"
+        , boxwex=.6, at=c(1,2,3)
+        , staplewex=0, notch=F, border="white"
+          , whisklty=1, whisklwd=3, whiskcol="white"
+        , medlwd=3, outcol="white", outcex=.5, outlwd=1, bty=""
+        , names=c("Valley", "Mid Slope","Ridge Top")
+        , ylim=c(-5,-2.2))
+points(-1*pd~I(as.numeric(factor(plot))-offset), llavg, pch=1, cex=2, lwd=3
+     , col=factor(plot)
+     , ylim=c(-5,-2.2))
+points(-1*md~I(as.numeric(factor(plot))+offset), llavg, pch=16, cex=2
+       , col=factor(plot)
+       , ylim=c(-5,-2.2))
+legend("topright", legend=c(expression(paste(Psi[pd])), expression(paste(Psi[md]))), pch=c(1,16), pt.cex=2, lwd=3, lty=0, l, horiz=T)
+arrows(x0=c(1,2,3)-offset, y0=-1*(llavg$pd-llavg$pd_sd), y1=-1*(llavg$pd+llavg$pd_sd), lwd=5, col=col, length = 0)
+arrows(x0=c(1,2,3)+offset, y0=-1*(llavg$md-llavg$md_sd), y1=-1*(llavg$md+llavg$md_sd), lwd=5, col=col, length = 0)
 
 
 
