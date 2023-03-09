@@ -46,12 +46,12 @@ Run all scripts for processing to make sure those are updated:
 (NOTE: if changing datver, will have to change in each of these scripts)
 
 ```{r, warning=FALSE, eval=FALSE}
-# source(here::here("scripts", "processing-scripts", "leaf_area_processing.R"))
-# source(here("scripts","processing-scripts", "alas_processing.R"))
-# source(here::here("scripts","processing-scripts", "lfm_processing.R"))
-# source(here::here("scripts","processing-scripts", "md_pd_processing.R"))
-# source(here::here("scripts","processing-scripts", "wc_processing.R"))
-# source(here::here("scripts","processing-scripts", "swc_processing.R"))
+ source(here::here("scripts", "processing-scripts", "leaf_area_processing.R"))
+ source(here("scripts","processing-scripts", "alas_processing.R"))
+ source(here::here("scripts","processing-scripts", "lfm_processing.R"))
+ source(here::here("scripts","processing-scripts", "md_pd_processing.R"))
+ source(here::here("scripts","processing-scripts", "wc_processing.R"))
+ source(here::here("scripts","processing-scripts", "swc_processing.R"))
 
 #use below if you want to do them all at once.
 #list.files("processing-scripts", full.names = TRUE) %>% walk(source)
