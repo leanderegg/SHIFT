@@ -114,7 +114,7 @@ wpwc719$Tag <- str_remove(wpwc719$tag,"\\.0")
 
 
 #Date: 818 WP + LWC
-wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="719 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="818 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("08-18-2022")) 
 
 

@@ -5,6 +5,13 @@ date: "6/3/2022"
 output: html_document
 ---
 
+03-08-2023 notes: 
+
+goodbye indvidual leaves -- reps are confusing!
+lwcs from RWC overload to actual LWC
+
+
+
 ##setup
 
 
@@ -31,7 +38,7 @@ source(here::here("scripts","scripts_functions", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "02202023"
+datver <- "20230220"
 dataversion <- paste0("Data_", datver)
 
 
@@ -101,7 +108,7 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
 
 wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv"))) %>%
   #mutate(date = lubridate::ymd(date)) %>% 
-  select(-...1, -rep) %>% 
+  select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
     week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33) ~ "late"
@@ -116,7 +123,7 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
 #WC + WP:
 
 wp_wc_df <- merge(wp_df, wc_df, 
-                  by = c("tree","plot", "site", "species", "time", "week"), 
+                  by = c("tree","plot", "site", "species", "time", "week", "rep"), 
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
@@ -459,29 +466,30 @@ all_water_df %>%
 ######Missings: 
 
 ```{r, echo=F}
-wp_wc_rwc_lfm_df_wide_trees_leaves %>% 
-  filter(species == "blue oak") %>% 
+#wp_wc_rwc_lfm_df_wide_trees_leaves %>%
+  all_water_df %>% 
+ # filter(species == "blue oak") %>% 
   select(week, time, tree, lwc_mean_combined, species) %>% 
   distinct() %>% 
   drop_na(lwc_mean_combined) %>% 
   group_by(week, time, species) %>% 
   count() %>% 
   ggplot(aes(x = week, y = n, fill = time)) +
-  facet_wrap(~ species) +
+  #facet_wrap(~ species) +
   geom_col(stat = "identity") + 
   scale_x_continuous(breaks = seq(9, 40, by = 1)) +
   labs(title = "LWC")
 ```
 
 ```{r, echo=F}
-wp_wc_rwc_lfm_df_wide_trees_leaves %>% 
+all_water_df %>% 
   select(week, time, tree, mpa_mean, species) %>% 
   unique() %>% 
   drop_na(mpa_mean) %>% 
   group_by(week, time, species) %>% 
   count() %>% 
   ggplot(aes(x = week, y = n, fill = time)) +
-  facet_wrap(~ species) +
+ # facet_wrap(~ species) +
   geom_col(#stat = "identity"
     ) + 
   scale_x_continuous(breaks = seq(9, 30, by = 1)) +
