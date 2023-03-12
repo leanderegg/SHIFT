@@ -7,13 +7,10 @@ output: html_document
 
 03-08-2023 notes: 
 
-goodbye indvidual leaves -- reps are confusing!
+goodbye individual leaves -- reps are confusing!
 lwcs from RWC overload to actual LWC
 
-
-
 ##setup
-
 
 ```{r setup, include=FALSE}
 #install.packages("rstatix")
@@ -78,17 +75,17 @@ lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
 lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) 
 
 ```{r}
-wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) %>% #contains LWC data
+wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), show_col_types = FALSE) %>% #contains LWC data
   mutate(date = lubridate::ymd(date))%>% 
   select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
-    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33, 37) ~ "late"
+    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33, 37, 38, 40) ~ "late"
   ))%>% 
   mutate(date_wc = date) %>% 
   #select(-date) %>% 
   #drop_na(date_wc)  %>% 
-  drop_na(mpa)  %>% 
+ # drop_na(mpa)  %>% 
   mutate(time  = case_when(
      time %in% c("PD") ~ "pd", 
      time %in% c("MD") ~ "md", 
@@ -102,16 +99,21 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv"))) 
      lwc_leaf >= 5 ~ NA_real_, #weird value
      TRUE ~ lwc_leaf
    )) %>% 
-  select(-date, -mpa)
+  select(-date) %>% 
+  mutate(lwc_leaf = case_when(
+    lwc_leaf < 0 ~ NA_real_, 
+    TRUE ~ as.numeric(lwc_leaf))) %>% 
+  distinct()
+  
 
 #WP:
 
-wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv"))) %>%
+wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv")), show_col_types = FALSE)  %>%
   #mutate(date = lubridate::ymd(date)) %>% 
   select(-...1) %>% 
   mutate(timing = case_when(
     week %in% c(9, 10, 11, 12, 13, 14) ~ "early", 
-    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33) ~ "late"
+    week %in% c(15, 16, 17, 18, 19, 20, 21, 29, 33, 37, 38, 40) ~ "late"
   )) %>%  
   mutate(tree = as.numeric(tree), 
          tree = case_when(
@@ -127,12 +129,12 @@ wp_wc_df <- merge(wp_df, wc_df,
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
-  mutate(lwc_leaf = case_when(
-    lwc_leaf < 0 ~ NA_real_, 
-    TRUE ~ as.numeric(lwc_leaf)
+  mutate(lwc_bulk = case_when( #remove weird values before we combine leaves and bulk. 
+    lwc_bulk > 2.5 ~ NA_real_, 
+    TRUE ~ as.numeric(lwc_bulk)
   )) %>% 
   mutate(lwc_bulk = case_when(
-    lwc_bulk > 10 ~ NA_real_, 
+    lwc_bulk < 0 ~ NA_real_, 
     TRUE ~ as.numeric(lwc_bulk)
   )) %>% 
   group_by(tree, week, time) %>% 
@@ -145,24 +147,13 @@ wp_wc_df <- merge(wp_df, wc_df,
   #rowwise() %>% 
   #  mutate(lwc_mean = mean(c(lwc_bulk, lwc_leaf), na.rm = T), 
           # timing = timing.x) %>% 
-  dplyr::select(-timing.x, -timing.y) %>% 
-  distinct()
-
-long <- wp_wc_df %>% 
-  pivot_longer(cols = c(lwc_leaf_mean, lwc_bulk_mean),
-    names_to = "type", 
-               values_to = "lwc") %>% 
-  select(tree, species, time, week, mpa_mean, date_wp, type, lwc, site) %>% 
+  dplyr::select(-timing.x, -timing.y) %>%
+   dplyr::select(-mpa, -rep, -lwc_bulk, -lwc_leaf) %>%
   distinct() %>% 
-  group_by(tree, time, week, species, site) %>% 
-  summarise(lwc_mean_combined = mean(lwc, na.rm = T), 
-            mpa_mean = mpa_mean, 
-            date_wp = date_wp
-            ) %>% 
-  #select(-type) %>% 
-  distinct() %>% 
-  mutate(lwc_bulk = lwc_mean_combined, 
-         lwc_mean = lwc_mean_combined)
+  group_by(tree, plot, site, species, time, week) %>% 
+  mutate(lwc_mean = mean(c_across(c('lwc_leaf_mean', 'lwc_bulk_mean')), na.rm=TRUE)) %>% 
+  select(-date_wc, -lwc_leaf_mean, -lwc_bulk_mean) %>% 
+    distinct()
 
 #wp_tmp <- wp_wc_df %>% 
  # dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
@@ -173,23 +164,6 @@ trees_sites_df <- wp_wc_df %>%
   select(tree, plot, site, species) %>% 
   distinct()
 ```
-
-- some lwcs are missing! look into this (see google doc)
-
-Need to find lwcs:
-
-- week 19 (2022-05-09)
-- week 9 (2022 - 02-28),
-    -  specifically: tree 2085, 2086, 2087, 2088, 2090, 2348, 2349, 2361
-- week 12 (2022-03-25), middays all
-- week 15 (2022-04-13), trees: 2369, 2377
-- week 17, tree 2383 MD,
-- week 18, (2022-04-05), tree 2343 pd, 2346 pd, 2347 pd,  2365 pd, 2367 pd, 2369 pd, (all pds?)
-- week 19 (2022-05-09) all?
-- week 21 (20022-05-23) tree 2025 md, tree 2027 md, 2354 md
-- week 29 (2022-07-19) tree 2020 pd, 2030 pd, 2376 pd, 2379 pd, 
-- week 33 (2022 - 08-18) all (still need to be entered?)
-- week 37 (2022-09-12 and later) many (still need to be entered?)
 
 #####RWC:
 
@@ -212,12 +186,13 @@ rwc_df_leaves_y0 <- rwc_df %>%
   select(-date) %>% 
   distinct() %>% 
   select(mean_swc_per_dry_g_y0, mean_swc_g_y0, tree, week, date_rwc, 
-         swc_dw_g_y0, swc_ww_g_y0) %>% 
+         #swc_dw_g_y0, swc_ww_g_y0
+         ) %>% 
   as.data.frame()
 
 #RWC + WC + WP:
 
-wp_wc_rwc_df <- merge(long, rwc_df_leaves_y0,
+wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
                     by = c("tree",
                            "week"
                           # "rep"
@@ -226,6 +201,8 @@ wp_wc_rwc_df <- merge(long, rwc_df_leaves_y0,
                     all.x = T
                     ) %>% 
   distinct()
+
+write.csv(wp_wc_rwc_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv")))
 
  # wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
  #   group_by(week, tree) %>% 
@@ -254,6 +231,7 @@ rwc_df_spp %>%
        y = "SWC (g water/g dry)", 
        color = "Type") +
   color_two
+
 
 rwc_df_spp %>% 
   filter(species == "blue oak", 
@@ -378,34 +356,20 @@ lfm_stem_both_df <- merge(lfm_stem_df, lfm_stem_both_df,
 wp_wc_rwc_lfm_df_wide_leaves <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
-  distinct() %>% 
-  select(-site, -species)
-
-wp_wc_rwc_lfm_df_wide_trees_leaves <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_leaves, 
-                                     by = c("tree")) %>% 
- # select(-rep) %>% 
-  distinct()
+  distinct() 
 
 #stem:
 wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df, 
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
-  distinct() %>% 
-  select(-site, -species)
-
-wp_wc_rwc_lfm_df_wide_trees_stem <- merge(trees_sites_df, wp_wc_rwc_lfm_df_wide_stem, 
-                                     by = c("tree")) %>% 
- # select(-rep) %>% 
-  distinct()
-
-
+  distinct() 
 ```
 
 #FINAL: write.csv
 
 ```{r}
 #make a shorter name because the long one will be a pain to write out!
-all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_trees_leaves, wp_wc_rwc_lfm_df_wide_trees_stem) %>% 
+all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_leaves, wp_wc_rwc_lfm_df_wide_stem) %>% 
   mutate(rwc_percent_y0 = ((lwc_mean_combined/mean_swc_per_dry_g_y0)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
          ) %>% 
@@ -430,7 +394,7 @@ NOTE: This just includes leaves, need to make another df or add stems eventually
 ```{r}
 all_water_df %>% 
   filter(#year %in% c(0,1), 
-        # mean_swc_per_dry_g_y0 < 5, 
+         mean_swc_per_dry_g_y0 < 5, 
          #swc_percent < 300, 
          species == "blue oak") %>% 
   ggplot(aes(y = mean_swc_per_dry_g_y0, 
@@ -481,6 +445,20 @@ all_water_df %>%
   labs(title = "LWC")
 ```
 
+Need to find lwcs:
+
+- week 19 (2022-05-09)
+- week 9 (2022 - 02-28),
+    -  specifically: tree 2085, 2086, 2087, 2088, 2090, 2348, 2349, 2361
+- week 12 (2022-03-25), some middays
+- week 15 (2022-04-13), trees: 2369, 2377
+- week 17, tree 2383 MD,
+- week 18, (2022-04-05), tree 2343 pd, 2346 pd, 2347 pd,  2365 pd, 2367 pd, 2369 pd, (all pds?)
+- week 21 (20022-05-23) tree 2025 md, tree 2027 md, 2354 md
+- week 29 (2022-07-19) tree 2020 pd, 2030 pd, 2376 pd, 2379 pd, 
+- week 33 (2022-08-18) all (still need to be entered?)
+- week 37 (2022-09-12 and later) many (still need to be entered?)
+
 ```{r, echo=F}
 all_water_df %>% 
   select(week, time, tree, mpa_mean, species) %>% 
@@ -496,9 +474,9 @@ all_water_df %>%
   labs(title = "MPa")
 ```
 ```{r}
-all_water_df_new <- all_water_df %>% 
-  select(tree, plot, site, species, week, time, lwc_mean, mpa_mean) %>% 
-  distinct()
+# all_water_df_new <- all_water_df %>% 
+#   select(tree, plot, site, species, week, time, lwc_mean, mpa_mean) %>% 
+#   distinct()
 ```
 
 Q: What are we missing??? 
@@ -508,18 +486,18 @@ A: A lot....but where??
 (This is each date we collected the associated metric, so if NA in that cell then we don't have it)
 
 ```{r}
-missings_df <- all_water_df %>% 
-  select(tree, week, species, site, plot, time, date_wp, date_wc, 
-        # date_lfm, 
-         date_rwc
-         ) %>% 
-  filter(if_any(c(date_wp, 
-                  date_wc, 
-                 # date_lfm
-                  ), ~ is.na(.))) %>% 
-  distinct()
-
-write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",datver,".csv")))
+# missings_df <- all_water_df %>% 
+#   select(tree, week, species, site, plot, time, date_wp, date_wc, 
+#         # date_lfm, 
+#          date_rwc
+#          ) %>% 
+#   filter(if_any(c(date_wp, 
+#                   date_wc, 
+#                  # date_lfm
+#                   ), ~ is.na(.))) %>% 
+#   distinct()
+# 
+# write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",datver,".csv")))
 ```
 
 #####Outliers: 

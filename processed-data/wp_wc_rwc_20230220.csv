@@ -1,0 +1,1624 @@
+"","tree","week","plot","site","species","time","date_wp","mpa_mean","timing","lwc_mean","mean_swc_per_dry_g_y0","mean_swc_g_y0","date_rwc"
+"1",1478,14,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"2",1478,14,"Low","Cucu Mesa","blue oak","pd",2022-04-04,0.5714,"early",1.74375600384246,NA,NA,NA
+"3",1478,15,"Low","Cucu Mesa","blue oak","md",2022-04-13,1.6904,"late",1.04427438938878,1.3074871404077,0.6863,"2022-04-14"
+"4",1478,15,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.3074871404077,0.6863,"2022-04-14"
+"5",1478,17,"Low","Cucu Mesa","blue oak","md",2022-04-27,2.221,"late",1.0197904540163,NA,NA,NA
+"6",1478,17,"Low","Cucu Mesa","blue oak","pd",2022-04-27,0.903,"late",1.0767414403778,NA,NA,NA
+"7",1478,19,"Low","Cucu Mesa","blue oak","md",2022-05-09,2.535,"late",0.834794738939816,1.11212055194809,0.2477,"2022-05-09"
+"8",1478,19,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.11212055194809,0.2477,"2022-05-09"
+"9",1478,21,"Low","Cucu Mesa","blue oak","md",2022-05-25,3.9875,"late",0.667808219178082,NA,NA,NA
+"10",1478,21,"Low","Cucu Mesa","blue oak","pd",2022-05-25,1.55266666666667,"late",0.846251790545917,NA,NA,NA
+"11",1478,21,"Low","Cucu Mesa","blue oak","pd",NA,1.55266666666667,NA,0.846251790545917,NA,NA,NA
+"12",1478,29,"Low","Cucu Mesa","blue oak","md",2022-07-19,4.13333333333333,"late",0.585769230769231,NA,NA,NA
+"13",1478,29,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"14",1478,38,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,0.61517094017094,NA,NA,NA
+"15",1478,38,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,0.725960702486524,NA,NA,NA
+"16",1478,NA,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,1.56168774816373,NA,NA,NA
+"17",1478,NA,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,1.74375600384246,NA,NA,NA
+"18",2004,10,"High","Cucu Mesa","blue oak","md",2022-03-08,1.65333333333333,"early",1.78337099060783,NA,NA,NA
+"19",2004,10,"High","Cucu Mesa","blue oak","md",NA,1.65333333333333,NA,1.78337099060783,NA,NA,NA
+"20",2004,10,"High","Cucu Mesa","blue oak","pd",2022-03-08,0.3335,"early",2.02494061085973,NA,NA,NA
+"21",2004,14,"High","Cucu Mesa","blue oak","md",2022-04-04,2.38333333333333,"early",0.794647749168171,NA,NA,NA
+"22",2004,14,"High","Cucu Mesa","blue oak","md",NA,2.38333333333333,NA,0.794647749168171,NA,NA,NA
+"23",2004,14,"High","Cucu Mesa","blue oak","pd",2022-04-04,0.38925,"early",1.01301729162619,NA,NA,NA
+"24",2004,15,"High","Cucu Mesa","blue oak","md",2022-04-13,2.2,"late",0.822410202966214,0.984012348858943,0.4608,"2022-04-14"
+"25",2004,15,"High","Cucu Mesa","blue oak","md",NA,2.2,NA,0.822410202966214,0.984012348858943,0.4608,"2022-04-14"
+"26",2004,15,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,0.984012348858943,0.4608,"2022-04-14"
+"27",2004,17,"High","Cucu Mesa","blue oak","md",2022-04-27,2.62066666666667,"late",0.889679715302491,NA,NA,NA
+"28",2004,17,"High","Cucu Mesa","blue oak","md",NA,2.62066666666667,NA,0.889679715302491,NA,NA,NA
+"29",2004,17,"High","Cucu Mesa","blue oak","pd",2022-04-27,0.9345,"late",0.957777777777778,NA,NA,NA
+"30",2004,21,"High","Cucu Mesa","blue oak","md",2022-05-25,2.6858,"late",0.709677419354839,NA,NA,NA
+"31",2004,21,"High","Cucu Mesa","blue oak","pd",2022-05-25,1.81766666666667,"late",0.795422935895815,NA,NA,NA
+"32",2004,21,"High","Cucu Mesa","blue oak","pd",NA,1.81766666666667,NA,0.795422935895815,NA,NA,NA
+"33",2004,29,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"34",2004,29,"High","Cucu Mesa","blue oak","pd",2022-07-19,2.138,"late",0.57945945945946,NA,NA,NA
+"35",2004,37,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.671155729676787,0.748602341189759,0.5262,"2022-09-15"
+"36",2004,38,"High","Cucu Mesa","blue oak","md",NA,NA,NA,0.575609756097561,NA,NA,NA
+"37",2004,38,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.745921498950089,NA,NA,NA
+"38",2004,NA,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"39",2004,NA,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,1.01301729162619,NA,NA,NA
+"40",2005,10,"High","Cucu Mesa","blue oak","md",2022-03-08,1.46666666666667,"early",1.62323826973427,NA,NA,NA
+"41",2005,10,"High","Cucu Mesa","blue oak","pd",2022-03-08,1.045,"early",2.06130156027669,NA,NA,NA
+"42",2005,10,"High","Cucu Mesa","blue oak","pd",NA,1.045,NA,2.06130156027669,NA,NA,NA
+"43",2005,14,"High","Cucu Mesa","blue oak","md",2022-04-04,2.13333333333333,"early",0.8526937359215,NA,NA,NA
+"44",2005,14,"High","Cucu Mesa","blue oak","pd",2022-04-04,0.4295,"early",1.03670053795577,NA,NA,NA
+"45",2005,14,"High","Cucu Mesa","blue oak","pd",NA,0.4295,NA,1.03670053795577,NA,NA,NA
+"46",2005,15,"High","Cucu Mesa","blue oak","md",2022-04-13,1.61666666666667,"late",0.920980879746515,1.10154433742943,1.3267,"2022-04-14"
+"47",2005,15,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.10154433742943,1.3267,"2022-04-14"
+"48",2005,17,"High","Cucu Mesa","blue oak","md",2022-04-27,2.733,"late",0.915650406504065,NA,NA,NA
+"49",2005,17,"High","Cucu Mesa","blue oak","pd",2022-04-27,0.917666666666667,"late",1.00491883915396,NA,NA,NA
+"50",2005,19,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,0.852600160170121,0.4218,"2022-05-09"
+"51",2005,19,"High","Cucu Mesa","blue oak","md",2022-05-09,2.49,"late",0.819557254339863,0.852600160170121,0.4218,"2022-05-09"
+"52",2005,21,"High","Cucu Mesa","blue oak","md",2022-05-25,3,"late",0.755717255717256,NA,NA,NA
+"53",2005,21,"High","Cucu Mesa","blue oak","pd",2022-05-25,1.72933333333333,"late",0.896278003175163,NA,NA,NA
+"54",2005,29,"High","Cucu Mesa","blue oak","md",2022-07-19,4.33333333333333,"late",0.634094616639478,NA,NA,NA
+"55",2005,29,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"56",2005,37,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.823221892345424,0.800741345576119,0.456533333333333,"2022-09-15"
+"57",2005,38,"High","Cucu Mesa","blue oak","md",NA,NA,NA,0.639264203158066,NA,NA,NA
+"58",2005,NA,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"59",2005,NA,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,1.03670053795577,NA,NA,NA
+"60",2006,10,"High","Cucu Mesa","blue oak","md",2022-03-08,1.40666666666667,"early",1.68979659386345,NA,NA,NA
+"61",2006,10,"High","Cucu Mesa","blue oak","pd",2022-03-08,0.9475,"early",2.05004467984377,NA,NA,NA
+"62",2006,10,"High","Cucu Mesa","blue oak","pd",NA,0.9475,NA,2.05004467984377,NA,NA,NA
+"63",2006,14,"High","Cucu Mesa","blue oak","md",2022-04-04,2.13333333333333,"early",0.818537386246364,NA,NA,NA
+"64",2006,14,"High","Cucu Mesa","blue oak","pd",2022-04-04,0.540666666666667,"early",0.956377604714797,NA,NA,NA
+"65",2006,15,"High","Cucu Mesa","blue oak","md",2022-04-13,1.727,"late",0.817053291275715,NA,NA,NA
+"66",2006,15,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"67",2006,17,"High","Cucu Mesa","blue oak","md",2022-04-27,2.717,"late",NA,NA,NA,NA
+"68",2006,17,"High","Cucu Mesa","blue oak","pd",2022-04-27,0.991333333333333,"late",0.93878954607978,NA,NA,NA
+"69",2006,19,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.02403614991339,0.550833333333333,"2022-05-09"
+"70",2006,19,"High","Cucu Mesa","blue oak","md",2022-05-09,2.36066666666667,"late",0.822525178088922,1.02403614991339,0.550833333333333,"2022-05-09"
+"71",2006,21,"High","Cucu Mesa","blue oak","md",2022-05-25,3.19933333333333,"late",0.71007371007371,NA,NA,NA
+"72",2006,21,"High","Cucu Mesa","blue oak","pd",2022-05-25,1.767,"late",0.876157500603913,NA,NA,NA
+"73",2006,29,"High","Cucu Mesa","blue oak","md",2022-07-19,4.46666666666667,"late",0.637735849056604,NA,NA,NA
+"74",2006,29,"High","Cucu Mesa","blue oak","md",NA,4.46666666666667,NA,0.637735849056604,NA,NA,NA
+"75",2006,29,"High","Cucu Mesa","blue oak","pd",2022-07-19,2.775,"late",0.628070175438596,NA,NA,NA
+"76",2006,37,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.771685053032944,0.934980208555381,0.2309,"2022-09-15"
+"77",2006,38,"High","Cucu Mesa","blue oak","md",NA,NA,NA,0.683959767072525,NA,NA,NA
+"78",2006,38,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.768838924995608,NA,NA,NA
+"79",2006,NA,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"80",2006,NA,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.956377604714797,NA,NA,NA
+"81",2007,10,"High","Cucu Mesa","blue oak","md",2022-03-08,1.77,"early",1.38916526753778,NA,NA,NA
+"82",2007,10,"High","Cucu Mesa","blue oak","pd",2022-03-08,0.815,"early",1.57849597787833,NA,NA,NA
+"83",2007,14,"High","Cucu Mesa","blue oak","md",2022-04-04,2.1,"early",0.77519292537438,NA,NA,NA
+"84",2007,14,"High","Cucu Mesa","blue oak","md",NA,2.1,NA,0.77519292537438,NA,NA,NA
+"85",2007,14,"High","Cucu Mesa","blue oak","pd",2022-04-04,0.36675,"early",0.871411718442784,NA,NA,NA
+"86",2007,15,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.01270497455335,0.74665,"2022-04-14"
+"87",2007,15,"High","Cucu Mesa","blue oak","md",2022-04-13,1.70666666666667,"late",0.858635993582386,1.01270497455335,0.74665,"2022-04-14"
+"88",2007,17,"High","Cucu Mesa","blue oak","md",2022-04-27,2.42633333333333,"late",0.859447004608295,NA,NA,NA
+"89",2007,17,"High","Cucu Mesa","blue oak","md",NA,2.42633333333333,NA,0.859447004608295,NA,NA,NA
+"90",2007,17,"High","Cucu Mesa","blue oak","pd",2022-04-27,0.989,"late",0.90597539543058,NA,NA,NA
+"91",2007,19,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,0.846320882492383,0.289133333333333,"2022-05-09"
+"92",2007,19,"High","Cucu Mesa","blue oak","md",2022-05-09,2.23766666666667,"late",0.777748060978871,0.846320882492383,0.289133333333333,"2022-05-09"
+"93",2007,21,"High","Cucu Mesa","blue oak","md",2022-05-25,3.4,"late",0.698162729658793,NA,NA,NA
+"94",2007,21,"High","Cucu Mesa","blue oak","pd",2022-05-25,1.67233333333333,"late",NA,NA,NA,NA
+"95",2007,29,"High","Cucu Mesa","blue oak","md",2022-07-19,4.23333333333333,"late",0.579726651480638,NA,NA,NA
+"96",2007,29,"High","Cucu Mesa","blue oak","pd",2022-07-19,2.32333333333333,"late",0.643740095087163,NA,NA,NA
+"97",2007,37,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.813745828447731,0.896667819890932,0.242533333333333,"2022-09-15"
+"98",2007,38,"High","Cucu Mesa","blue oak","md",NA,NA,NA,0.627936507936508,NA,NA,NA
+"99",2007,38,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.790027562014533,NA,NA,NA
+"100",2007,NA,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"101",2007,NA,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.871411718442784,NA,NA,NA
+"102",2008,14,"High","Cucu Mesa","blue oak","md",2022-04-04,1.88333333333333,"early",0.809241286132183,NA,NA,NA
+"103",2008,14,"High","Cucu Mesa","blue oak","pd",2022-04-04,0.6765,"early",0.933194154488518,NA,NA,NA
+"104",2008,14,"High","Cucu Mesa","blue oak","pd",NA,0.6765,NA,0.933194154488518,NA,NA,NA
+"105",2008,21,"High","Cucu Mesa","blue oak","md",2022-05-25,3.3,"late",0.692063492063492,NA,NA,NA
+"106",2008,21,"High","Cucu Mesa","blue oak","pd",2022-05-25,1.736,"late",0.865671641791045,NA,NA,NA
+"107",2008,NA,"High","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"108",2008,NA,"High","Cucu Mesa","blue oak","pd",NA,NA,NA,0.933194154488518,NA,NA,NA
+"109",2009,12,"Hobbiton","LL","blue oak","md",2022-03-23,2.0625,"early",NA,NA,NA,NA
+"110",2009,12,"Hobbiton","LL","blue oak","pd",2022-03-23,1.26666666666667,"early",NA,NA,NA,NA
+"111",2009,13,"Hobbiton","LL","blue oak","md",2022-03-25,2.01,"early",1.13333333333333,NA,NA,NA
+"112",2009,13,"Hobbiton","LL","blue oak","pd",2022-03-30,1.195,"early",1.32787517531557,NA,NA,NA
+"113",2009,13,"Hobbiton","LL","blue oak","pd",2022-03-25,1.195,"early",1.32787517531557,NA,NA,NA
+"114",2009,13,"Hobbiton","LL","blue oak","pd",NA,1.195,NA,1.32787517531557,NA,NA,NA
+"115",2009,14,"Hobbiton","LL","blue oak","md",2022-04-06,2.95,"early",1.03923839041632,NA,NA,NA
+"116",2009,14,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"117",2009,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.32666666666667,"late",0.886140675847483,1.02432530557909,0.8464,"2022-04-14"
+"118",2009,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.32666666666667,"late",0.886140675847483,1.33441009221138,1.07866666666667,"2022-04-12"
+"119",2009,15,"Hobbiton","LL","blue oak","md",2022-04-13,2.088,"late",0.884505461811121,1.02432530557909,0.8464,"2022-04-14"
+"120",2009,15,"Hobbiton","LL","blue oak","md",2022-04-13,2.088,"late",0.884505461811121,1.33441009221138,1.07866666666667,"2022-04-12"
+"121",2009,17,"Hobbiton","LL","blue oak","md",2022-04-25,3.03333333333333,"late",0.84174624829468,NA,NA,NA
+"122",2009,17,"Hobbiton","LL","blue oak","pd",2022-04-25,1.276,"late",0.885623229461756,NA,NA,NA
+"123",2009,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.9542,"late",0.686443433029909,0.885809132933563,0.5841,"2022-05-03"
+"124",2009,18,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,0.885809132933563,0.5841,"2022-05-03"
+"125",2009,19,"Hobbiton","LL","blue oak","md",2022-05-09,2.83966666666667,"late",0.772787959703848,NA,NA,NA
+"126",2009,19,"Hobbiton","LL","blue oak","pd",2022-05-09,1.66266666666667,"late",0.707988980716253,NA,NA,NA
+"127",2009,21,"Hobbiton","LL","blue oak","pd",2022-05-23,1.789,"late",0.854419410745234,1.01652875095411,0.531933333333333,"2022-05-25"
+"128",2009,21,"Hobbiton","LL","blue oak","md",NA,3.276,NA,0.705295566502463,1.01652875095411,0.531933333333333,"2022-05-25"
+"129",2009,21,"Hobbiton","LL","blue oak","md",2022-05-23,3.276,"late",0.705295566502463,1.01652875095411,0.531933333333333,"2022-05-25"
+"130",2009,29,"Hobbiton","LL","blue oak","md",2022-07-19,3.93333333333333,"late",0.579160186625195,NA,NA,NA
+"131",2009,29,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"132",2009,33,"Hobbiton","LL","blue oak","md",2022-08-18,4.0635,"late",0.591337719298246,NA,NA,NA
+"133",2009,33,"Hobbiton","LL","blue oak","md",NA,4.0635,NA,0.591337719298246,NA,NA,NA
+"134",2009,33,"Hobbiton","LL","blue oak","pd",2022-08-18,2.851,"late",0.650943396226415,NA,NA,NA
+"135",2009,33,"Hobbiton","LL","blue oak","pd",NA,2.851,NA,0.650943396226415,NA,NA,NA
+"136",2009,38,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.503884372177055,NA,NA,NA
+"137",2009,NA,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.9375,NA,NA,NA
+"138",2009,NA,"Hobbiton","LL","blue oak","pd",NA,NA,NA,0.912300683371298,NA,NA,NA
+"139",2010,12,"Weathertop","LL","blue oak","md",2022-03-23,1.96,"early",NA,NA,NA,NA
+"140",2010,12,"Weathertop","LL","blue oak","pd",2022-03-23,1.4875,"early",NA,NA,NA,NA
+"141",2010,13,"Weathertop","LL","blue oak","md",2022-03-25,1.96,"early",NA,NA,NA,NA
+"142",2010,13,"Weathertop","LL","blue oak","md",NA,1.96,NA,NA,NA,NA,NA
+"143",2010,13,"Weathertop","LL","blue oak","pd",2022-03-25,1.00416326530612,"early",2.00555520700088,NA,NA,NA
+"144",2010,13,"Weathertop","LL","blue oak","pd",2022-03-30,1.00416326530612,"early",2.00555520700088,NA,NA,NA
+"145",2010,15,"Weathertop","LL","blue oak","md",NA,2.616,NA,0.778375411599256,0.975900689834698,0.7658,"2022-04-14"
+"146",2010,15,"Weathertop","LL","blue oak","md",2022-04-13,2.616,"late",0.778375411599256,0.975900689834698,0.7658,"2022-04-14"
+"147",2010,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.34525,"late",0.827448383174087,0.975900689834698,0.7658,"2022-04-14"
+"148",2010,17,"Weathertop","LL","blue oak","md",2022-04-25,2.62666666666667,"late",0.88861985472155,NA,NA,NA
+"149",2010,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.171,"late",0.885913853317812,NA,NA,NA
+"150",2010,18,"Weathertop","LL","blue oak","md",2022-05-04,2.44725,"late",0.76735382884035,0.940619056755311,0.631533333333333,"2022-05-03"
+"151",2010,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.940619056755311,0.631533333333333,"2022-05-03"
+"152",2010,19,"Weathertop","LL","blue oak","md",2022-05-09,2.285,"late",0.837979094076655,NA,NA,NA
+"153",2010,19,"Weathertop","LL","blue oak","md",NA,2.285,NA,0.837979094076655,NA,NA,NA
+"154",2010,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.49625,"late",0.756756756756757,NA,NA,NA
+"155",2010,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.486,"late",0.812080536912752,1.02667616363104,0.876266666666667,"2022-05-25"
+"156",2010,21,"Weathertop","LL","blue oak","pd",NA,1.486,NA,0.812080536912752,1.02667616363104,0.876266666666667,"2022-05-25"
+"157",2010,21,"Weathertop","LL","blue oak","md",2022-05-23,3.56833333333333,"late",0.752,1.02667616363104,0.876266666666667,"2022-05-25"
+"158",2010,29,"Weathertop","LL","blue oak","md",2022-07-19,3.73333333333333,"late",0.604578313253012,NA,NA,NA
+"159",2010,29,"Weathertop","LL","blue oak","pd",2022-07-19,3.43333333333333,"late",0.684691848906561,NA,NA,NA
+"160",2010,33,"Weathertop","LL","blue oak","md",2022-08-18,4.2655,"late",0.678798441664958,NA,NA,NA
+"161",2010,33,"Weathertop","LL","blue oak","md",NA,4.2655,NA,0.678798441664958,NA,NA,NA
+"162",2010,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.06166666666667,"late",0.698709507505926,NA,NA,NA
+"163",2010,33,"Weathertop","LL","blue oak","pd",NA,3.06166666666667,NA,0.698709507505926,NA,NA,NA
+"164",2010,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.747028550422742,0.95391049875496,0.351133333333333,"2022-09-12"
+"165",2010,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"166",2010,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.842966751918159,NA,NA,NA
+"167",2011,14,"Weathertop","LL","blue oak","md",2022-04-06,3.15,"early",0.853571428571428,NA,NA,NA
+"168",2011,14,"Weathertop","LL","blue oak","md",NA,3.15,NA,0.853571428571428,NA,NA,NA
+"169",2011,14,"Weathertop","LL","blue oak","pd",2022-04-04,0.856333333333333,"early",0.973965002134016,NA,NA,NA
+"170",2011,15,"Weathertop","LL","blue oak","md",2022-04-13,1.78133333333333,"late",0.798128574743812,1.07847016155621,0.6542,"2022-04-14"
+"171",2011,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.5,"late",0.814214454212858,1.07847016155621,0.6542,"2022-04-14"
+"172",2011,17,"Weathertop","LL","blue oak","md",2022-04-25,1.69666666666667,"late",0.770461251747166,NA,NA,NA
+"173",2011,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.253,"late",0.843921008803236,NA,NA,NA
+"174",2011,17,"Weathertop","LL","blue oak","pd",NA,1.253,NA,0.843921008803236,NA,NA,NA
+"175",2011,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.963560450938417,0.353233333333333,"2022-05-04"
+"176",2011,18,"Weathertop","LL","blue oak","md",2022-05-04,3.105,"late",0.727967306325515,0.963560450938417,0.353233333333333,"2022-05-04"
+"177",2011,19,"Weathertop","LL","blue oak","md",2022-05-09,2.3015,"late",0.793806740455167,NA,NA,NA
+"178",2011,19,"Weathertop","LL","blue oak","md",NA,2.3015,NA,0.793806740455167,NA,NA,NA
+"179",2011,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.583,"late",0.699346405228758,NA,NA,NA
+"180",2011,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.728,"late",0.793785310734463,0.924263186841599,0.3958,"2022-05-25"
+"181",2011,21,"Weathertop","LL","blue oak","md",2022-05-25,2.22,"late",NA,0.924263186841599,0.3958,"2022-05-25"
+"182",2011,29,"Weathertop","LL","blue oak","md",2022-07-19,4.875,"late",0.562850971922246,NA,NA,NA
+"183",2011,29,"Weathertop","LL","blue oak","pd",2022-07-19,4.13333333333333,"late",0.61679273827534,NA,NA,NA
+"184",2011,29,"Weathertop","LL","blue oak","pd",NA,4.13333333333333,NA,0.61679273827534,NA,NA,NA
+"185",2011,33,"Weathertop","LL","blue oak","md",2022-08-18,4.2785,"late",0.545520231213873,NA,NA,NA
+"186",2011,33,"Weathertop","LL","blue oak","md",NA,4.2785,NA,0.545520231213873,NA,NA,NA
+"187",2011,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.60766666666667,"late",0.552907186710004,NA,NA,NA
+"188",2011,33,"Weathertop","LL","blue oak","pd",NA,3.60766666666667,NA,0.552907186710004,NA,NA,NA
+"189",2011,37,"Weathertop","LL","blue oak","md",NA,NA,NA,0.566715086117452,NA,NA,NA
+"190",2011,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.637793340705246,NA,NA,NA
+"191",2011,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,0.888421052631579,NA,NA,NA
+"192",2011,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.905334866482995,NA,NA,NA
+"193",2012,14,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"194",2012,14,"Low","Cucu Mesa","blue oak","pd",2022-04-04,0.505,"early",1.67787916741218,NA,NA,NA
+"195",2012,15,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.34895243692528,0.330166666666667,"2022-04-14"
+"196",2012,15,"Low","Cucu Mesa","blue oak","md",2022-04-13,1.44133333333333,"late",0.977623062876194,1.34895243692528,0.330166666666667,"2022-04-14"
+"197",2012,17,"Low","Cucu Mesa","blue oak","md",2022-04-27,2.50333333333333,"late",0.971066907775769,NA,NA,NA
+"198",2012,17,"Low","Cucu Mesa","blue oak","pd",2022-04-27,1.2195,"late",1.04239766081871,NA,NA,NA
+"199",2012,17,"Low","Cucu Mesa","blue oak","pd",NA,1.2195,NA,1.04239766081871,NA,NA,NA
+"200",2012,19,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.14560991796751,0.300366666666667,"2022-05-09"
+"201",2012,19,"Low","Cucu Mesa","blue oak","md",2022-05-09,2.45666666666667,"late",0.850194552529183,1.14560991796751,0.300366666666667,"2022-05-09"
+"202",2012,21,"Low","Cucu Mesa","blue oak","md",2022-05-25,3.00471428571429,"late",0.741751990898748,NA,NA,NA
+"203",2012,21,"Low","Cucu Mesa","blue oak","pd",2022-05-25,2.607,"late",0.851851851851852,NA,NA,NA
+"204",2012,21,"Low","Cucu Mesa","blue oak","pd",NA,2.607,NA,0.851851851851852,NA,NA,NA
+"205",2012,29,"Low","Cucu Mesa","blue oak","md",2022-07-19,3.68333333333333,"late",0.582327586206896,NA,NA,NA
+"206",2012,29,"Low","Cucu Mesa","blue oak","pd",2022-07-19,2.63,"late",0.637818181818182,NA,NA,NA
+"207",2012,38,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,0.656576480042861,NA,NA,NA
+"208",2012,38,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,0.722444622364558,NA,NA,NA
+"209",2012,NA,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,1.38810097833683,NA,NA,NA
+"210",2012,NA,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,1.67787916741218,NA,NA,NA
+"211",2013,14,"Low","Cucu Mesa","blue oak","md",2022-04-04,1.6,"early",1.29703712607908,NA,NA,NA
+"212",2013,14,"Low","Cucu Mesa","blue oak","md",NA,1.6,NA,1.29703712607908,NA,NA,NA
+"213",2013,14,"Low","Cucu Mesa","blue oak","pd",2022-04-04,0.7244,"early",1.56633183235192,NA,NA,NA
+"214",2013,15,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,1.6109865470852,0.4311,"2022-04-14"
+"215",2013,15,"Low","Cucu Mesa","blue oak","md",2022-04-13,1.1585,"late",1.16748730107117,1.6109865470852,0.4311,"2022-04-14"
+"216",2013,17,"Low","Cucu Mesa","blue oak","md",2022-04-27,2.29,"late",1.06927374301676,NA,NA,NA
+"217",2013,17,"Low","Cucu Mesa","blue oak","md",NA,2.29,NA,1.06927374301676,NA,NA,NA
+"218",2013,17,"Low","Cucu Mesa","blue oak","pd",2022-04-27,1.198,"late",1.22927689594356,NA,NA,NA
+"219",2013,19,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,0.975333793791738,0.238533333333333,"2022-05-09"
+"220",2013,19,"Low","Cucu Mesa","blue oak","md",2022-05-09,2.11233333333333,"late",0.909960852544585,0.975333793791738,0.238533333333333,"2022-05-09"
+"221",2013,21,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"222",2013,21,"Low","Cucu Mesa","blue oak","pd",2022-05-25,2.104,"late",0.85792349726776,NA,NA,NA
+"223",2013,29,"Low","Cucu Mesa","blue oak","md",2022-07-19,3.96666666666667,"late",0.597010869565217,NA,NA,NA
+"224",2013,29,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"225",2013,38,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,0.718999704054454,NA,NA,NA
+"226",2013,NA,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,1.31666666666667,NA,NA,NA
+"227",2013,NA,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,1.56633183235192,NA,NA,NA
+"228",2014,14,"Low","Cucu Mesa","blue oak","md",2022-04-04,2.46666666666667,"early",1.28807692307692,NA,NA,NA
+"229",2014,14,"Low","Cucu Mesa","blue oak","md",NA,2.46666666666667,NA,1.28807692307692,NA,NA,NA
+"230",2014,14,"Low","Cucu Mesa","blue oak","pd",2022-04-04,0.787,"early",1.3767539498398,NA,NA,NA
+"231",2014,38,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,0.61648946092147,NA,NA,NA
+"232",2014,NA,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"233",2014,NA,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,1.3767539498398,NA,NA,NA
+"234",2015,14,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"235",2015,14,"Low","Cucu Mesa","blue oak","pd",2022-04-04,0.617666666666667,"early",1.24515269025691,NA,NA,NA
+"236",2015,15,"Low","Cucu Mesa","blue oak","md",2022-04-13,1.795,"late",0.891435576186348,NA,NA,NA
+"237",2015,15,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"238",2015,17,"Low","Cucu Mesa","blue oak","md",2022-04-27,2.731,"late",0.9836867862969,NA,NA,NA
+"239",2015,17,"Low","Cucu Mesa","blue oak","md",NA,2.731,NA,0.9836867862969,NA,NA,NA
+"240",2015,17,"Low","Cucu Mesa","blue oak","pd",2022-04-27,1.326,"late",NA,NA,NA,NA
+"241",2015,19,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,NA,0.952378693905408,0.281966666666667,"2022-05-09"
+"242",2015,19,"Low","Cucu Mesa","blue oak","md",2022-05-09,2.5325,"late",0.866947472745292,0.952378693905408,0.281966666666667,"2022-05-09"
+"243",2015,21,"Low","Cucu Mesa","blue oak","md",2022-05-25,3.1685,"late",0.714285714285714,NA,NA,NA
+"244",2015,21,"Low","Cucu Mesa","blue oak","md",NA,3.1685,NA,0.714285714285714,NA,NA,NA
+"245",2015,21,"Low","Cucu Mesa","blue oak","pd",2022-05-25,1.982,"late",0.902601902601903,NA,NA,NA
+"246",2015,29,"Low","Cucu Mesa","blue oak","md",2022-07-19,4.7,"late",0.611616161616162,NA,NA,NA
+"247",2015,29,"Low","Cucu Mesa","blue oak","md",NA,4.7,NA,0.611616161616162,NA,NA,NA
+"248",2015,29,"Low","Cucu Mesa","blue oak","pd",2022-07-19,3.75,"late",0.620666666666666,NA,NA,NA
+"249",2015,38,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,0.702747989276139,NA,NA,NA
+"250",2015,38,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,0.728144697177309,NA,NA,NA
+"251",2015,NA,"Low","Cucu Mesa","blue oak","md",NA,NA,NA,0.936996461130404,NA,NA,NA
+"252",2015,NA,"Low","Cucu Mesa","blue oak","pd",NA,NA,NA,1.24515269025691,NA,NA,NA
+"253",2020,10,"Chamise","Chamise","blue oak","md",2022-03-08,2.17333333333333,"early",1.12870514147688,NA,NA,NA
+"254",2020,10,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"255",2020,11,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,1.39786856127886,0.787,"2022-03-15"
+"256",2020,11,"Chamise","Chamise","blue oak","pd",2022-03-15,1.58275,"early",1.09438585579682,1.39786856127886,0.787,"2022-03-15"
+"257",2020,14,"Chamise","Chamise","blue oak","md",2022-04-04,2.43333333333333,"early",0.801378362377712,NA,NA,NA
+"258",2020,14,"Chamise","Chamise","blue oak","md",NA,2.43333333333333,NA,0.801378362377712,NA,NA,NA
+"259",2020,14,"Chamise","Chamise","blue oak","pd",2022-04-04,0.68625,"early",1.0582889376371,NA,NA,NA
+"260",2020,15,"Chamise","Chamise","blue oak","md",2022-04-13,2.16666666666667,"late",0.818538508992235,1.06664683130021,0.3585,"2022-04-14"
+"261",2020,15,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,1.06664683130021,0.3585,"2022-04-14"
+"262",2020,17,"Chamise","Chamise","blue oak","md",2022-04-27,1.781,"late",0.918429003021148,NA,NA,NA
+"263",2020,17,"Chamise","Chamise","blue oak","md",NA,1.781,NA,0.918429003021148,NA,NA,NA
+"264",2020,17,"Chamise","Chamise","blue oak","pd",2022-04-27,0.94,"late",1.01441677588467,NA,NA,NA
+"265",2020,19,"Chamise","Chamise","blue oak","md",2022-05-09,2.22025,"late",0.850150753768844,0.906586419753087,0.4383,"2022-05-09"
+"266",2020,19,"Chamise","Chamise","blue oak","pd",2022-05-09,1.52875,"late",0.809210526315789,0.906586419753087,0.4383,"2022-05-09"
+"267",2020,21,"Chamise","Chamise","blue oak","pd",2022-05-25,1.775,"late",0.885211562630918,1.00239005729794,0.596666666666667,"2022-05-25"
+"268",2020,21,"Chamise","Chamise","blue oak","md",2022-05-23,2.9805,"late",0.787974683544304,1.00239005729794,0.596666666666667,"2022-05-25"
+"269",2020,29,"Chamise","Chamise","blue oak","md",2022-07-19,3.86666666666667,"late",0.596783625730994,NA,NA,NA
+"270",2020,29,"Chamise","Chamise","blue oak","md",NA,3.86666666666667,NA,0.596783625730994,NA,NA,NA
+"271",2020,29,"Chamise","Chamise","blue oak","pd",2022-07-19,2.8575,"late",NA,NA,NA,NA
+"272",2020,37,"Chamise","Chamise","blue oak","pd",NA,NA,NA,0.689802517611734,0.773756172073196,0.116025,"2022-09-12"
+"273",2020,38,"Chamise","Chamise","blue oak","md",NA,NA,NA,0.654434250764526,NA,NA,NA
+"274",2020,NA,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"275",2020,NA,"Chamise","Chamise","blue oak","pd",NA,NA,NA,1.0582889376371,NA,NA,NA
+"276",2021,10,"Chamise","Chamise","blue oak","md",2022-03-08,1.87333333333333,"early",1.11980290467763,NA,NA,NA
+"277",2021,10,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"278",2021,11,"Chamise","Chamise","blue oak","pd",2022-03-15,1.39666666666667,"early",1.41897737376876,1.24582701062215,1.642,"2022-03-15"
+"279",2021,11,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,1.24582701062215,1.642,"2022-03-15"
+"280",2021,14,"Chamise","Chamise","blue oak","md",2022-04-04,2.875,"early",0.766964285714286,NA,NA,NA
+"281",2021,14,"Chamise","Chamise","blue oak","md",NA,2.875,NA,0.766964285714286,NA,NA,NA
+"282",2021,14,"Chamise","Chamise","blue oak","pd",2022-04-04,0.1682,"early",1.00603518821604,NA,NA,NA
+"283",2021,15,"Chamise","Chamise","blue oak","md",2022-04-13,1.97666666666667,"late",0.825656410037757,1.04358706986444,0.5004,"2022-04-14"
+"284",2021,15,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,1.04358706986444,0.5004,"2022-04-14"
+"285",2021,17,"Chamise","Chamise","blue oak","md",2022-04-27,2.14233333333333,"late",0.923076923076923,NA,NA,NA
+"286",2021,17,"Chamise","Chamise","blue oak","pd",2022-04-27,0.881333333333333,"late",0.999223602484472,NA,NA,NA
+"287",2021,19,"Chamise","Chamise","blue oak","md",NA,2.092,NA,0.832550578034682,0.989392133894687,0.4802,"2022-05-09"
+"288",2021,19,"Chamise","Chamise","blue oak","md",2022-05-09,2.092,"late",0.832550578034682,0.989392133894687,0.4802,"2022-05-09"
+"289",2021,19,"Chamise","Chamise","blue oak","pd",2022-05-09,1.28033333333333,"late",0.726739312657167,0.989392133894687,0.4802,"2022-05-09"
+"290",2021,21,"Chamise","Chamise","blue oak","pd",NA,1.65,NA,0.873023595232304,0.922393369274215,0.3046,"2022-05-23"
+"291",2021,21,"Chamise","Chamise","blue oak","pd",NA,1.65,NA,0.873023595232304,0.854723127035831,0.2624,"2022-05-25"
+"292",2021,21,"Chamise","Chamise","blue oak","pd",2022-05-25,1.65,"late",0.873023595232304,0.922393369274215,0.3046,"2022-05-23"
+"293",2021,21,"Chamise","Chamise","blue oak","pd",2022-05-25,1.65,"late",0.873023595232304,0.854723127035831,0.2624,"2022-05-25"
+"294",2021,21,"Chamise","Chamise","blue oak","md",2022-05-23,3.7402,"late",0.808510638297873,0.922393369274215,0.3046,"2022-05-23"
+"295",2021,21,"Chamise","Chamise","blue oak","md",2022-05-23,3.7402,"late",0.808510638297873,0.854723127035831,0.2624,"2022-05-25"
+"296",2021,29,"Chamise","Chamise","blue oak","md",2022-07-19,4.175,"late",0.610022271714922,NA,NA,NA
+"297",2021,29,"Chamise","Chamise","blue oak","pd",2022-07-19,3.2,"late",0.64671052631579,NA,NA,NA
+"298",2021,29,"Chamise","Chamise","blue oak","pd",NA,3.2,NA,0.64671052631579,NA,NA,NA
+"299",2021,37,"Chamise","Chamise","blue oak","pd",NA,NA,NA,0.694620755315773,0.724427527029256,0.59935,"2022-09-12"
+"300",2021,38,"Chamise","Chamise","blue oak","md",NA,NA,NA,0.575757575757576,NA,NA,NA
+"301",2021,NA,"Chamise","Chamise","blue oak","pd",NA,NA,NA,1.00603518821604,NA,NA,NA
+"302",2021,NA,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"303",2022,10,"Chamise","Chamise","live oak","md",2022-03-08,2.01,"early",1.07230017290778,NA,NA,NA
+"304",2022,10,"Chamise","Chamise","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"305",2022,11,"Chamise","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"306",2022,11,"Chamise","Chamise","live oak","pd",2022-03-15,1.0025,"early",0.836502902614816,NA,NA,NA
+"307",2022,14,"Chamise","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"308",2022,14,"Chamise","Chamise","live oak","pd",2022-04-04,0.18775,"early",0.778552971576227,NA,NA,NA
+"309",2022,17,"Chamise","Chamise","live oak","md",2022-04-27,1.94266666666667,"late",NA,NA,NA,NA
+"310",2022,17,"Chamise","Chamise","live oak","pd",2022-04-27,0.887333333333333,"late",0.851937984496124,NA,NA,NA
+"311",2022,19,"Chamise","Chamise","live oak","md",2022-05-09,2.063,"late",NA,1.02426543702052,0.619866666666667,"2022-05-09"
+"312",2022,19,"Chamise","Chamise","live oak","pd",2022-05-09,1.344,"late",0.85456595264938,1.02426543702052,0.619866666666667,"2022-05-09"
+"313",2022,19,"Chamise","Chamise","live oak","md",NA,2.063,NA,NA,1.02426543702052,0.619866666666667,"2022-05-09"
+"314",2022,21,"Chamise","Chamise","live oak","pd",2022-05-25,1.455,"late",0.565101565101565,0.832576365400959,1.00476666666667,"2022-05-23"
+"315",2022,21,"Chamise","Chamise","live oak","pd",NA,1.455,NA,0.565101565101565,0.832576365400959,1.00476666666667,"2022-05-23"
+"316",2022,21,"Chamise","Chamise","live oak","md",2022-05-23,2.65083333333333,"late",0.701577031945006,0.832576365400959,1.00476666666667,"2022-05-23"
+"317",2022,29,"Chamise","Chamise","live oak","md",2022-07-19,3.72,"late",0.572631578947368,NA,NA,NA
+"318",2022,29,"Chamise","Chamise","live oak","md",NA,3.72,NA,0.572631578947368,NA,NA,NA
+"319",2022,29,"Chamise","Chamise","live oak","pd",2022-07-19,2.3425,"late",0.583988764044944,NA,NA,NA
+"320",2022,37,"Chamise","Chamise","live oak","pd",NA,NA,NA,0.679897855721206,0.667729591836735,0.5235,"2022-09-12"
+"321",2022,38,"Chamise","Chamise","live oak","md",NA,NA,NA,0.576576576576577,NA,NA,NA
+"322",2022,NA,"Chamise","Chamise","live oak","md",NA,NA,NA,0.675742855340357,NA,NA,NA
+"323",2022,NA,"Chamise","Chamise","live oak","pd",NA,NA,NA,0.778552971576227,NA,NA,NA
+"324",2023,10,"Chamise","Chamise","live oak","md",2022-03-08,1.656,"early",1.18892696817916,NA,NA,NA
+"325",2023,10,"Chamise","Chamise","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"326",2023,11,"Chamise","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"327",2023,11,"Chamise","Chamise","live oak","pd",2022-03-15,0.70575,"early",0.893688847273341,NA,NA,NA
+"328",2023,14,"Chamise","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"329",2023,14,"Chamise","Chamise","live oak","pd",2022-04-04,0.323,"early",0.691372665283131,NA,NA,NA
+"330",2023,17,"Chamise","Chamise","live oak","md",2022-04-27,2.42766666666667,"late",0.907242693773824,NA,NA,NA
+"331",2023,17,"Chamise","Chamise","live oak","pd",2022-04-27,0.773,"late",0.922311519326445,NA,NA,NA
+"332",2023,19,"Chamise","Chamise","live oak","md",2022-05-09,1.849,"late",0.828729281767956,0.978579778892801,0.66115,"2022-05-09"
+"333",2023,19,"Chamise","Chamise","live oak","pd",2022-05-09,1.22185714285714,"late",0.498708010335917,0.978579778892801,0.66115,"2022-05-09"
+"334",2023,19,"Chamise","Chamise","live oak","md",NA,1.849,NA,0.828729281767956,0.978579778892801,0.66115,"2022-05-09"
+"335",2023,21,"Chamise","Chamise","live oak","pd",2022-05-25,1.30166666666667,"late",0.829883897021706,0.782393805571543,0.14865,"2022-05-25"
+"336",2023,21,"Chamise","Chamise","live oak","md",2022-05-23,2.149,"late",0.727262234533703,0.782393805571543,0.14865,"2022-05-25"
+"337",2023,21,"Chamise","Chamise","live oak","md",NA,2.149,NA,0.727262234533703,0.782393805571543,0.14865,"2022-05-25"
+"338",2023,29,"Chamise","Chamise","live oak","md",2022-07-19,3.46666666666667,"late",0.5575,NA,NA,NA
+"339",2023,29,"Chamise","Chamise","live oak","pd",2022-07-19,2.3,"late",0.586815728604472,NA,NA,NA
+"340",2023,37,"Chamise","Chamise","live oak","pd",NA,NA,NA,0.62287793047696,0.609669090211657,0.34864,"2022-09-12"
+"341",2023,38,"Chamise","Chamise","live oak","md",NA,NA,NA,0.635241686664381,NA,NA,NA
+"342",2023,NA,"Chamise","Chamise","live oak","md",NA,NA,NA,0.735165429156648,NA,NA,NA
+"343",2023,NA,"Chamise","Chamise","live oak","pd",NA,NA,NA,0.691372665283131,NA,NA,NA
+"344",2024,10,"Chamise","Chamise","blue oak","md",2022-03-08,1.685,"early",1.61262400793651,NA,NA,NA
+"345",2024,10,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"346",2024,11,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,1.53666146645866,0.985,"2022-03-15"
+"347",2024,11,"Chamise","Chamise","blue oak","pd",2022-03-15,1.0925,"early",1.51651062514556,1.53666146645866,0.985,"2022-03-15"
+"348",2024,14,"Chamise","Chamise","blue oak","md",2022-04-04,2.25,"early",0.844240039350713,NA,NA,NA
+"349",2024,14,"Chamise","Chamise","blue oak","md",NA,2.25,NA,0.844240039350713,NA,NA,NA
+"350",2024,14,"Chamise","Chamise","blue oak","pd",2022-04-04,0.413,"early",1.21058516585911,NA,NA,NA
+"351",2024,14,"Chamise","Chamise","blue oak","pd",NA,0.413,NA,1.21058516585911,NA,NA,NA
+"352",2024,15,"Chamise","Chamise","blue oak","md",2022-04-13,2.33666666666667,"late",0.864488100887905,NA,NA,NA
+"353",2024,15,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"354",2024,17,"Chamise","Chamise","blue oak","md",2022-04-27,1.871,"late",0.933541017653167,NA,NA,NA
+"355",2024,17,"Chamise","Chamise","blue oak","pd",2022-04-27,1.017,"late",NA,NA,NA,NA
+"356",2024,19,"Chamise","Chamise","blue oak","pd",2022-05-09,1.346,"late",0.74852652259332,1.01821969321932,0.802,"2022-05-09"
+"357",2024,19,"Chamise","Chamise","blue oak","md",2022-05-09,2.20733333333333,"late",0.815345021714653,1.01821969321932,0.802,"2022-05-09"
+"358",2024,21,"Chamise","Chamise","blue oak","pd",NA,1.7,NA,0.853738032185781,1.04069260852094,0.494866666666667,"2022-05-25"
+"359",2024,21,"Chamise","Chamise","blue oak","md",2022-05-23,2.692,"late",0.832627118644068,1.04069260852094,0.494866666666667,"2022-05-25"
+"360",2024,21,"Chamise","Chamise","blue oak","pd",2022-05-25,1.7,"late",0.853738032185781,1.04069260852094,0.494866666666667,"2022-05-25"
+"361",2024,29,"Chamise","Chamise","blue oak","md",2022-07-19,4.1,"late",0.6265664160401,NA,NA,NA
+"362",2024,29,"Chamise","Chamise","blue oak","md",NA,4.1,NA,0.6265664160401,NA,NA,NA
+"363",2024,29,"Chamise","Chamise","blue oak","pd",2022-07-19,2.76,"late",0.653937947494033,NA,NA,NA
+"364",2024,37,"Chamise","Chamise","blue oak","pd",NA,NA,NA,0.696020654431161,0.740285622007512,0.41605,"2022-09-12"
+"365",2024,38,"Chamise","Chamise","blue oak","md",NA,NA,NA,0.60480093676815,NA,NA,NA
+"366",2024,NA,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"367",2024,NA,"Chamise","Chamise","blue oak","pd",NA,NA,NA,1.21058516585911,NA,NA,NA
+"368",2025,10,"Chamise","Chamise","blue oak","md",2022-03-08,1.8025,"early",1.11191550230729,NA,NA,NA
+"369",2025,10,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"370",2025,11,"Chamise","Chamise","blue oak","pd",2022-03-15,1.3425,"early",1.20248223174779,1.19076305220884,1.186,"2022-03-15"
+"371",2025,11,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,1.19076305220884,1.186,"2022-03-15"
+"372",2025,14,"Chamise","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"373",2025,14,"Chamise","Chamise","blue oak","pd",2022-04-04,0.1056,"early",0.936752483275897,NA,NA,NA
+"374",2025,15,"Chamise","Chamise","blue oak","md",2022-04-13,1.6755,"late",0.873939931418751,1.03139675117243,0.30705,"2022-04-14"
+"375",2025,15,"Chamise","Chamise","blue oak","pd",NA,NA,NA,NA,1.03139675117243,0.30705,"2022-04-14"
+"376",2025,17,"Chamise","Chamise","blue oak","md",2022-04-27,1.428,"late",0.929280397022332,NA,NA,NA
+"377",2025,17,"Chamise","Chamise","blue oak","pd",2022-04-27,1.0305,"late",1.0421686746988,NA,NA,NA
+"378",2025,17,"Chamise","Chamise","blue oak","pd",NA,1.0305,NA,1.0421686746988,NA,NA,NA
+"379",2025,19,"Chamise","Chamise","blue oak","md",NA,1.9545,NA,0.834674469641551,1.08030712207087,0.764033333333333,"2022-05-09"
+"380",2025,19,"Chamise","Chamise","blue oak","md",2022-05-09,1.9545,"late",0.834674469641551,1.08030712207087,0.764033333333333,"2022-05-09"
+"381",2025,19,"Chamise","Chamise","blue oak","pd",2022-05-09,1.70942857142857,"late",0.763341067285383,1.08030712207087,0.764033333333333,"2022-05-09"
+"382",2025,21,"Chamise","Chamise","blue oak","pd",2022-05-25,1.5,"late",0.834470989761092,0.940559753639682,0.6581,"2022-05-25"
+"383",2025,21,"Chamise","Chamise","blue oak","md",2022-05-23,3.0585,"late",NA,0.940559753639682,0.6581,"2022-05-25"
+"384",2025,29,"Chamise","Chamise","blue oak","md",2022-07-19,4.06666666666667,"late",0.60359477124183,NA,NA,NA
+"385",2025,29,"Chamise","Chamise","blue oak","md",NA,4.06666666666667,NA,0.60359477124183,NA,NA,NA
+"386",2025,29,"Chamise","Chamise","blue oak","pd",2022-07-19,3.125,"late",0.641166380789022,NA,NA,NA
+"387",2025,38,"Chamise","Chamise","blue oak","md",NA,NA,NA,0.651715039577836,NA,NA,NA
+"388",2025,NA,"Chamise","Chamise","blue oak","md",NA,NA,NA,0.818953328213942,NA,NA,NA
+"389",2025,NA,"Chamise","Chamise","blue oak","pd",NA,NA,NA,0.936752483275897,NA,NA,NA
+"390",2026,10,"Shedd","Chamise","blue oak","md",2022-03-08,1.945,"early",1.23375508114314,NA,NA,NA
+"391",2026,10,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"392",2026,11,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"393",2026,11,"Shedd","Chamise","blue oak","pd",2022-03-15,1.4425,"early",1.53922270795361,NA,NA,NA
+"394",2026,14,"Shedd","Chamise","blue oak","md",2022-04-04,2.6,"early",0.729082929274854,NA,NA,NA
+"395",2026,14,"Shedd","Chamise","blue oak","md",NA,2.6,NA,0.729082929274854,NA,NA,NA
+"396",2026,14,"Shedd","Chamise","blue oak","pd",2022-04-04,0.4384,"early",NA,NA,NA,NA
+"397",2026,15,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,1.04393409885172,0.4182,"2022-04-14"
+"398",2026,15,"Shedd","Chamise","blue oak","md",2022-04-13,1.697,"late",0.789189642156649,1.04393409885172,0.4182,"2022-04-14"
+"399",2026,17,"Shedd","Chamise","blue oak","pd",2022-04-27,1.209,"late",0.943287037037037,NA,NA,NA
+"400",2026,17,"Shedd","Chamise","blue oak","md",2022-04-27,2.98233333333333,"late",0.856382978723405,NA,NA,NA
+"401",2026,17,"Shedd","Chamise","blue oak","pd",NA,1.209,NA,0.943287037037037,NA,NA,NA
+"402",2026,19,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,0.946095588645134,0.8279,"2022-05-09"
+"403",2026,19,"Shedd","Chamise","blue oak","md",2022-05-09,2.63266666666667,"late",0.770059397966375,0.946095588645134,0.8279,"2022-05-09"
+"404",2026,21,"Shedd","Chamise","blue oak","md",2022-05-23,3.367,"late",0.696401610468042,0.853801027099425,0.5152,"2022-05-23"
+"405",2026,21,"Shedd","Chamise","blue oak","md",NA,3.367,NA,0.696401610468042,0.853801027099425,0.5152,"2022-05-23"
+"406",2026,21,"Shedd","Chamise","blue oak","pd",2022-05-25,2.05333333333333,"late",0.831210191082802,0.853801027099425,0.5152,"2022-05-23"
+"407",2026,29,"Shedd","Chamise","blue oak","md",2022-07-19,4.53333333333333,"late",0.549074074074074,NA,NA,NA
+"408",2026,29,"Shedd","Chamise","blue oak","md",NA,4.53333333333333,NA,0.549074074074074,NA,NA,NA
+"409",2026,29,"Shedd","Chamise","blue oak","pd",2022-07-19,3.85,"late",0.5882096069869,NA,NA,NA
+"410",2026,37,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.630925429874339,0.731830896533789,0.4658,"2022-09-12"
+"411",2026,38,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.641708101784148,NA,NA,NA
+"412",2027,11,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,1.40583941605839,0.963,"2022-03-15"
+"413",2027,11,"Shedd","Chamise","blue oak","pd",2022-03-15,1.44666666666667,"early",0.973852589244691,1.40583941605839,0.963,"2022-03-15"
+"414",2027,14,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"415",2027,14,"Shedd","Chamise","blue oak","pd",2022-04-04,0.572666666666667,"early",1.03777929387685,NA,NA,NA
+"416",2027,15,"Shedd","Chamise","blue oak","md",2022-04-13,2.2905,"late",0.826954158307217,1.0772417875111,1.456,"2022-04-14"
+"417",2027,15,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,1.0772417875111,1.456,"2022-04-14"
+"418",2027,17,"Shedd","Chamise","blue oak","md",2022-04-27,2.66533333333333,"late",0.879207920792079,NA,NA,NA
+"419",2027,17,"Shedd","Chamise","blue oak","pd",2022-04-27,1.28133333333333,"late",0.99465811965812,NA,NA,NA
+"420",2027,19,"Shedd","Chamise","blue oak","pd",2022-05-09,1.78025,"late",0.741293532338308,1.03825987877873,1.1415,"2022-05-09"
+"421",2027,19,"Shedd","Chamise","blue oak","md",NA,2.51066666666667,NA,0.805398871877518,1.03825987877873,1.1415,"2022-05-09"
+"422",2027,19,"Shedd","Chamise","blue oak","md",2022-05-09,2.51066666666667,"late",0.805398871877518,1.03825987877873,1.1415,"2022-05-09"
+"423",2027,21,"Shedd","Chamise","blue oak","pd",NA,1.985,NA,0.822503961965135,0.924994324918028,0.615133333333333,"2022-05-23"
+"424",2027,21,"Shedd","Chamise","blue oak","md",2022-05-23,3.34425,"late",NA,0.924994324918028,0.615133333333333,"2022-05-23"
+"425",2027,21,"Shedd","Chamise","blue oak","pd",2022-05-25,1.985,"late",0.822503961965135,0.924994324918028,0.615133333333333,"2022-05-23"
+"426",2027,29,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"427",2027,29,"Shedd","Chamise","blue oak","pd",2022-07-19,3.46666666666667,"late",0.59144385026738,NA,NA,NA
+"428",2027,37,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.621411276374957,0.598115096295388,0.1088,"2022-09-12"
+"429",2027,37,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.557437955119631,0.598115096295388,0.1088,"2022-09-12"
+"430",2027,NA,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.783508564716209,NA,NA,NA
+"431",2027,NA,"Shedd","Chamise","blue oak","pd",NA,NA,NA,1.03777929387685,NA,NA,NA
+"432",2028,14,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"433",2028,14,"Shedd","Chamise","blue oak","pd",2022-04-04,0.53675,"early",0.849508109545334,NA,NA,NA
+"434",2028,15,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,1.05390984893191,0.2758,"2022-04-14"
+"435",2028,15,"Shedd","Chamise","blue oak","md",2022-04-13,1.664,"late",0.942226874252263,1.05390984893191,0.2758,"2022-04-14"
+"436",2028,17,"Shedd","Chamise","blue oak","md",2022-04-27,2.0795,"late",0.831376734258271,NA,NA,NA
+"437",2028,17,"Shedd","Chamise","blue oak","md",NA,2.0795,NA,0.831376734258271,NA,NA,NA
+"438",2028,17,"Shedd","Chamise","blue oak","pd",2022-04-27,1.216,"late",0.850348027842227,NA,NA,NA
+"439",2028,19,"Shedd","Chamise","blue oak","pd",NA,1.9845,NA,0.594048884165781,0.851359180863431,0.63905,"2022-05-09"
+"440",2028,19,"Shedd","Chamise","blue oak","md",2022-05-09,2.074,"late",0.715267339488941,0.851359180863431,0.63905,"2022-05-09"
+"441",2028,19,"Shedd","Chamise","blue oak","pd",2022-05-09,1.9845,"late",0.594048884165781,0.851359180863431,0.63905,"2022-05-09"
+"442",2028,21,"Shedd","Chamise","blue oak","pd",2022-05-25,1.775,"late",0.802346679569372,0.784514371810752,0.5174,"2022-05-23"
+"443",2028,21,"Shedd","Chamise","blue oak","md",2022-05-23,3.2125,"late",0.70353982300885,0.784514371810752,0.5174,"2022-05-23"
+"444",2028,29,"Shedd","Chamise","blue oak","pd",2022-07-19,3.36666666666667,"late",0.528924598269468,NA,NA,NA
+"445",2028,29,"Shedd","Chamise","blue oak","md",2022-07-19,4.75,"late",0.55587958607714,NA,NA,NA
+"446",2028,29,"Shedd","Chamise","blue oak","pd",NA,3.36666666666667,NA,0.528924598269468,NA,NA,NA
+"447",2028,37,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.534153120525562,0.599579766671784,0.1768,"2022-09-12"
+"448",2028,38,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.558911004346831,NA,NA,NA
+"449",2028,NA,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.714425978062342,NA,NA,NA
+"450",2028,NA,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.849508109545334,NA,NA,NA
+"451",2029,14,"Shedd","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"452",2029,14,"Shedd","Chamise","live oak","pd",2022-04-04,0.2346,"early",0.955947638019351,NA,NA,NA
+"453",2029,17,"Shedd","Chamise","live oak","md",2022-04-27,1.98666666666667,"late",NA,NA,NA,NA
+"454",2029,17,"Shedd","Chamise","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"455",2029,19,"Shedd","Chamise","live oak","md",NA,2.0006,NA,0.817509053692332,0.871784949395013,0.656966666666667,"2022-05-09"
+"456",2029,19,"Shedd","Chamise","live oak","pd",2022-05-09,1.869,"late",0.700680272108844,0.871784949395013,0.656966666666667,"2022-05-09"
+"457",2029,19,"Shedd","Chamise","live oak","md",2022-05-09,2.0006,"late",0.817509053692332,0.871784949395013,0.656966666666667,"2022-05-09"
+"458",2029,21,"Shedd","Chamise","live oak","md",NA,2.5555,NA,0.755852842809365,0.782296497053991,0.900666666666667,"2022-05-23"
+"459",2029,21,"Shedd","Chamise","live oak","md",2022-05-23,2.5555,"late",0.755852842809365,0.782296497053991,0.900666666666667,"2022-05-23"
+"460",2029,21,"Shedd","Chamise","live oak","pd",2022-05-25,1.394,"late",0.757697298572608,0.782296497053991,0.900666666666667,"2022-05-23"
+"461",2029,29,"Shedd","Chamise","live oak","md",2022-07-19,3.3,"late",0.553661327231121,NA,NA,NA
+"462",2029,29,"Shedd","Chamise","live oak","pd",2022-07-19,1.945,"late",0.600853727945362,NA,NA,NA
+"463",2029,37,"Shedd","Chamise","live oak","pd",NA,NA,NA,0.642248429026427,0.630367571281347,0.9175,"2022-09-12"
+"464",2029,38,"Shedd","Chamise","live oak","md",NA,NA,NA,0.596239289114567,NA,NA,NA
+"465",2029,NA,"Shedd","Chamise","live oak","md",NA,NA,NA,0.792886405959032,NA,NA,NA
+"466",2029,NA,"Shedd","Chamise","live oak","pd",NA,NA,NA,0.955947638019351,NA,NA,NA
+"467",2030,14,"Shedd","Chamise","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"468",2030,14,"Shedd","Chamise","live oak","pd",2022-04-04,0.1886,"early",0.826998150811588,NA,NA,NA
+"469",2030,17,"Shedd","Chamise","live oak","md",2022-04-27,2.97033333333333,"late",NA,NA,NA,NA
+"470",2030,17,"Shedd","Chamise","live oak","pd",2022-04-27,0.758,"late",0.815860945138512,NA,NA,NA
+"471",2030,17,"Shedd","Chamise","live oak","pd",NA,0.758,NA,0.815860945138512,NA,NA,NA
+"472",2030,19,"Shedd","Chamise","live oak","pd",NA,1.26025,NA,0.716833890746934,0.619886294831207,0.558966666666667,"2022-05-09"
+"473",2030,19,"Shedd","Chamise","live oak","md",2022-05-09,1.8912,"late",0.805603822762815,0.619886294831207,0.558966666666667,"2022-05-09"
+"474",2030,19,"Shedd","Chamise","live oak","pd",2022-05-09,1.26025,"late",0.716833890746934,0.619886294831207,0.558966666666667,"2022-05-09"
+"475",2030,21,"Shedd","Chamise","live oak","pd",2022-05-25,1.37625,"late",0.608502082435732,0.812102315945849,0.275633333333333,"2022-05-23"
+"476",2030,21,"Shedd","Chamise","live oak","md",2022-05-23,2.02375,"late",0.736526946107784,0.812102315945849,0.275633333333333,"2022-05-23"
+"477",2030,29,"Shedd","Chamise","live oak","pd",NA,3.1,NA,NA,NA,NA,NA
+"478",2030,29,"Shedd","Chamise","live oak","md",2022-07-19,3.39,"late",0.584718498659517,NA,NA,NA
+"479",2030,29,"Shedd","Chamise","live oak","pd",2022-07-19,3.1,"late",NA,NA,NA,NA
+"480",2030,37,"Shedd","Chamise","live oak","pd",NA,NA,NA,0.540224109341239,0.764189451057274,0.222966666666667,"2022-09-12"
+"481",2030,38,"Shedd","Chamise","live oak","md",NA,NA,NA,0.573248975227232,NA,NA,NA
+"482",2030,NA,"Shedd","Chamise","live oak","pd",NA,NA,NA,0.826998150811588,NA,NA,NA
+"483",2030,NA,"Shedd","Chamise","live oak","md",NA,NA,NA,0.740236306771364,NA,NA,NA
+"484",2031,14,"Shedd","Chamise","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"485",2031,14,"Shedd","Chamise","blue oak","pd",2022-04-04,0.244,"early",0.961170708955224,NA,NA,NA
+"486",2031,15,"Shedd","Chamise","blue oak","pd",NA,NA,NA,NA,0.98559187078183,1.2997,"2022-04-14"
+"487",2031,15,"Shedd","Chamise","blue oak","md",2022-04-13,2.00433333333333,"late",0.883269152839005,0.98559187078183,1.2997,"2022-04-14"
+"488",2031,17,"Shedd","Chamise","blue oak","md",2022-04-27,1.873,"late",0.908268733850129,NA,NA,NA
+"489",2031,17,"Shedd","Chamise","blue oak","pd",2022-04-27,0.899,"late",0.967063129002745,NA,NA,NA
+"490",2031,19,"Shedd","Chamise","blue oak","md",2022-05-09,2.786,"late",0.808999280057595,0.942648842363513,0.781033333333333,"2022-05-09"
+"491",2031,19,"Shedd","Chamise","blue oak","pd",2022-05-09,1.683,"late",0.711340206185567,0.942648842363513,0.781033333333333,"2022-05-09"
+"492",2031,19,"Shedd","Chamise","blue oak","pd",NA,1.683,NA,0.711340206185567,0.942648842363513,0.781033333333333,"2022-05-09"
+"493",2031,21,"Shedd","Chamise","blue oak","md",2022-05-23,2.971,"late",0.701694915254237,0.865343109572547,0.6119,"2022-05-23"
+"494",2031,21,"Shedd","Chamise","blue oak","pd",2022-05-25,1.9125,"late",0.842579611456038,0.865343109572547,0.6119,"2022-05-23"
+"495",2031,29,"Shedd","Chamise","blue oak","pd",2022-07-19,3.296,"late",0.631830985915493,NA,NA,NA
+"496",2031,29,"Shedd","Chamise","blue oak","md",2022-07-19,4.03333333333333,"late",0.590552325581396,NA,NA,NA
+"497",2031,29,"Shedd","Chamise","blue oak","md",NA,4.03333333333333,NA,0.590552325581396,NA,NA,NA
+"498",2031,37,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.526666827189328,0.821453542681665,0.1191,"2022-09-12"
+"499",2031,38,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.59749243406831,NA,NA,NA
+"500",2031,NA,"Shedd","Chamise","blue oak","pd",NA,NA,NA,0.961170708955224,NA,NA,NA
+"501",2031,NA,"Shedd","Chamise","blue oak","md",NA,NA,NA,0.737515413070283,NA,NA,NA
+"502",2032,17,NA,NA,"blue oak","md",2022-04-27,1.873,"late",0.908268733850129,NA,NA,NA
+"503",2032,17,NA,NA,"blue oak","pd",2022-04-27,0.899,"late",0.967063129002745,NA,NA,NA
+"504",2084,19,NA,NA,"blue oak","md",2022-05-09,2.035,"late",0.862469437652812,NA,NA,NA
+"505",2084,19,NA,NA,"blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"506",2085,11,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"507",2085,11,"Low","PineNeedle","blue oak","pd",2022-03-15,1.17966666666667,"early",NA,NA,NA,NA
+"508",2085,14,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"509",2085,14,"Low","PineNeedle","blue oak","pd",2022-04-04,0.518,"early",1.6518648258809,NA,NA,NA
+"510",2085,15,"Low","PineNeedle","blue oak","md",2022-04-11,1.5175,"late",2.01837270341207,1.31336062637717,0.68925,"2022-04-11"
+"511",2085,15,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.31336062637717,0.68925,"2022-04-11"
+"512",2085,17,"Low","PineNeedle","blue oak","md",2022-04-27,2.21066666666667,"late",1.02814814814815,NA,NA,NA
+"513",2085,17,"Low","PineNeedle","blue oak","md",NA,2.21066666666667,NA,1.02814814814815,NA,NA,NA
+"514",2085,17,"Low","PineNeedle","blue oak","pd",2022-04-27,1.044,"late",1.10227272727273,NA,NA,NA
+"515",2085,19,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.16263980769613,0.3453,"2022-05-09"
+"516",2085,19,"Low","PineNeedle","blue oak","md",2022-05-09,2.29533333333333,"late",0.89432199678879,1.16263980769613,0.3453,"2022-05-09"
+"517",2085,21,"Low","PineNeedle","blue oak","md",2022-05-25,3.21666666666667,"late",0.74587039390089,NA,NA,NA
+"518",2085,21,"Low","PineNeedle","blue oak","pd",2022-05-25,1.52,"late",0.923076923076923,NA,NA,NA
+"519",2085,29,"Low","PineNeedle","blue oak","pd",2022-07-19,2.78,"late",0.700455235204856,NA,NA,NA
+"520",2085,29,"Low","PineNeedle","blue oak","md",2022-07-19,4.1,"late",0.623753665689149,NA,NA,NA
+"521",2085,29,"Low","PineNeedle","blue oak","md",NA,4.1,NA,0.623753665689149,NA,NA,NA
+"522",2085,37,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.883578431372549,0.758008075367776,0.342046666666667,"2022-09-15"
+"523",2085,37,"Low","PineNeedle","blue oak","md",NA,NA,NA,0.635114503816794,0.758008075367776,0.342046666666667,"2022-09-15"
+"524",2085,38,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.589256995818591,NA,NA,NA
+"525",2085,NA,"Low","PineNeedle","blue oak","md",NA,NA,NA,1.62852588563574,NA,NA,NA
+"526",2085,NA,"Low","PineNeedle","blue oak","pd",NA,NA,NA,1.6518648258809,NA,NA,NA
+"527",2086,11,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"528",2086,11,"Low","PineNeedle","blue oak","pd",2022-03-15,0.936,"early",NA,NA,NA,NA
+"529",2086,14,"Low","PineNeedle","blue oak","md",2022-04-04,0.8625,"early",1.68135795692511,NA,NA,NA
+"530",2086,14,"Low","PineNeedle","blue oak","pd",NA,0.756333333333333,NA,1.8236641221374,NA,NA,NA
+"531",2086,14,"Low","PineNeedle","blue oak","pd",2022-04-04,0.756333333333333,"early",1.8236641221374,NA,NA,NA
+"532",2086,15,"Low","PineNeedle","blue oak","md",2022-04-11,1.58666666666667,"late",1.25562130177515,1.25249276294628,0.3894,"2022-04-11"
+"533",2086,15,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.25249276294628,0.3894,"2022-04-11"
+"534",2086,17,"Low","PineNeedle","blue oak","md",2022-04-27,1.99433333333333,"late",1.01717305151915,NA,NA,NA
+"535",2086,17,"Low","PineNeedle","blue oak","pd",2022-04-27,0.852666666666667,"late",1.16515426497278,NA,NA,NA
+"536",2086,19,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.11905481177268,0.93195,"2022-05-09"
+"537",2086,19,"Low","PineNeedle","blue oak","md",2022-05-09,2.241,"late",0.930685520205171,1.11905481177268,0.93195,"2022-05-09"
+"538",2086,21,"Low","PineNeedle","blue oak","md",2022-05-25,3.252,"late",0.724043715846995,NA,NA,NA
+"539",2086,21,"Low","PineNeedle","blue oak","pd",2022-05-25,1.55366666666667,"late",0.963220675944334,NA,NA,NA
+"540",2086,29,"Low","PineNeedle","blue oak","md",2022-07-19,4.13333333333333,"late",0.709550561797753,NA,NA,NA
+"541",2086,29,"Low","PineNeedle","blue oak","pd",2022-07-19,2.44,"late",0.696325088339223,NA,NA,NA
+"542",2086,37,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,0.91524476337164,0.6664,"2022-09-15"
+"543",2086,37,"Low","PineNeedle","blue oak","md",NA,NA,NA,0.655257039524671,0.91524476337164,0.6664,"2022-09-15"
+"544",2086,38,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.705693176879617,NA,NA,NA
+"545",2086,NA,"Low","PineNeedle","blue oak","md",NA,NA,NA,1.25562130177515,NA,NA,NA
+"546",2086,NA,"Low","PineNeedle","blue oak","pd",NA,NA,NA,1.8236641221374,NA,NA,NA
+"547",2087,11,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"548",2087,11,"Low","PineNeedle","blue oak","pd",2022-03-15,1.15,"early",NA,NA,NA,NA
+"549",2087,14,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"550",2087,14,"Low","PineNeedle","blue oak","pd",2022-04-04,0.617,"early",1.81722054380665,NA,NA,NA
+"551",2087,15,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.27019438444924,0.5881,"2022-04-11"
+"552",2087,15,"Low","PineNeedle","blue oak","md",2022-04-11,1.30666666666667,"late",NA,1.27019438444924,0.5881,"2022-04-11"
+"553",2087,17,"Low","PineNeedle","blue oak","md",2022-04-27,2.32733333333333,"late",1.04289940828402,NA,NA,NA
+"554",2087,17,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"555",2087,19,"Low","PineNeedle","blue oak","md",2022-05-09,1.7395,"late",0.942025611175786,1.19275775607625,0.809433333333333,"2022-05-09"
+"556",2087,19,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.19275775607625,0.809433333333333,"2022-05-09"
+"557",2087,21,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"558",2087,21,"Low","PineNeedle","blue oak","pd",2022-05-25,1.55,"late",0.921966509939784,NA,NA,NA
+"559",2087,29,"Low","PineNeedle","blue oak","md",2022-07-19,3.63333333333333,"late",0.619485294117647,NA,NA,NA
+"560",2087,29,"Low","PineNeedle","blue oak","pd",2022-07-19,1.6225,"late",0.716279069767442,NA,NA,NA
+"561",2087,29,"Low","PineNeedle","blue oak","md",NA,3.63333333333333,NA,0.619485294117647,NA,NA,NA
+"562",2087,37,"Low","PineNeedle","blue oak","md",NA,NA,NA,0.613561050216671,0.86981459013312,0.334,"2022-09-15"
+"563",2087,37,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.846673213847287,0.86981459013312,0.334,"2022-09-15"
+"564",2087,38,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.684131120559594,NA,NA,NA
+"565",2087,NA,"Low","PineNeedle","blue oak","md",NA,NA,NA,1.90502212767032,NA,NA,NA
+"566",2087,NA,"Low","PineNeedle","blue oak","pd",NA,NA,NA,1.81722054380665,NA,NA,NA
+"567",2088,11,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"568",2088,11,"Low","PineNeedle","blue oak","pd",2022-03-15,1.41666666666667,"early",NA,NA,NA,NA
+"569",2088,14,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"570",2088,14,"Low","PineNeedle","blue oak","pd",2022-04-04,0.201,"early",NA,NA,NA,NA
+"571",2088,15,"Low","PineNeedle","blue oak","md",2022-04-11,1.28,"late",NA,1.14595864153345,0.320333333333333,"2022-04-11"
+"572",2088,15,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.14595864153345,0.320333333333333,"2022-04-11"
+"573",2088,17,"Low","PineNeedle","blue oak","pd",2022-04-27,0.842333333333333,"late",NA,NA,NA,NA
+"574",2088,17,"Low","PineNeedle","blue oak","md",2022-04-27,2.08566666666667,"late",1.04200323101777,NA,NA,NA
+"575",2088,19,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.16615357986227,0.396,"2022-05-09"
+"576",2088,19,"Low","PineNeedle","blue oak","md",2022-05-09,1.65266666666667,"late",0.930131792742372,1.16615357986227,0.396,"2022-05-09"
+"577",2088,21,"Low","PineNeedle","blue oak","md",2022-05-25,2.8935,"late",0.793931731984829,NA,NA,NA
+"578",2088,21,"Low","PineNeedle","blue oak","md",NA,2.8935,NA,0.793931731984829,NA,NA,NA
+"579",2088,21,"Low","PineNeedle","blue oak","pd",2022-05-25,1.36766666666667,"late",0.896942242355606,NA,NA,NA
+"580",2088,29,"Low","PineNeedle","blue oak","pd",2022-07-19,2.255,"late",0.706039076376554,NA,NA,NA
+"581",2088,29,"Low","PineNeedle","blue oak","md",2022-07-19,3.53333333333333,"late",0.603846153846154,NA,NA,NA
+"582",2088,29,"Low","PineNeedle","blue oak","md",NA,3.53333333333333,NA,0.603846153846154,NA,NA,NA
+"583",2088,37,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.830658292626192,1.03714074431213,0.115566666666667,"2022-09-15"
+"584",2088,38,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.66150289017341,NA,NA,NA
+"585",2088,NA,"Low","PineNeedle","blue oak","md",NA,NA,NA,1.5583156053603,NA,NA,NA
+"586",2088,NA,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"587",2089,10,"Low","PineNeedle","live oak","md",2022-03-08,2.10166666666667,"early",0.643462693115071,NA,NA,NA
+"588",2089,10,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"589",2089,11,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"590",2089,11,"Low","PineNeedle","live oak","pd",2022-03-15,1.005,"early",0.632905407370479,NA,NA,NA
+"591",2089,14,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"592",2089,14,"Low","PineNeedle","live oak","pd",2022-04-04,0.2202,"early",0.651821436091809,NA,NA,NA
+"593",2089,15,"Low","PineNeedle","live oak","md",2022-04-11,1.32,"late",1.28370457209848,1.0993360240381,0.54535,"2022-04-11"
+"594",2089,15,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,1.0993360240381,0.54535,"2022-04-11"
+"595",2089,17,"Low","PineNeedle","live oak","md",2022-04-27,1.4525,"late",1.68929503916449,NA,NA,NA
+"596",2089,17,"Low","PineNeedle","live oak","pd",2022-04-27,0.838,"late",0.909947643979058,NA,NA,NA
+"597",2089,17,"Low","PineNeedle","live oak","pd",NA,0.838,NA,0.909947643979058,NA,NA,NA
+"598",2089,19,"Low","PineNeedle","live oak","md",2022-05-09,1.30933333333333,"late",1.54162487462387,1.05087940833808,0.5238,"2022-05-09"
+"599",2089,19,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,1.05087940833808,0.5238,"2022-05-09"
+"600",2089,21,"Low","PineNeedle","live oak","pd",2022-05-25,1.04466666666667,"late",0.643410852713178,NA,NA,NA
+"601",2089,21,"Low","PineNeedle","live oak","md",2022-05-25,1.9712,"late",0.636942675159236,NA,NA,NA
+"602",2089,21,"Low","PineNeedle","live oak","md",NA,1.9712,NA,0.636942675159236,NA,NA,NA
+"603",2089,29,"Low","PineNeedle","live oak","md",2022-07-19,2.43333333333333,"late",0.517094017094017,NA,NA,NA
+"604",2089,29,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"605",2089,37,"Low","PineNeedle","live oak","md",NA,NA,NA,0.483984719365266,0.795446954905122,0.5848,"2022-09-15"
+"606",2089,37,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.666666666666667,0.795446954905122,0.5848,"2022-09-15"
+"607",2089,38,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.573605706874189,NA,NA,NA
+"608",2089,NA,"Low","PineNeedle","live oak","md",NA,NA,NA,0.709975649624522,NA,NA,NA
+"609",2089,NA,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.651821436091809,NA,NA,NA
+"610",2090,11,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"611",2090,11,"Low","PineNeedle","blue oak","pd",2022-03-15,1.1595,"early",NA,NA,NA,NA
+"612",2090,14,"Low","PineNeedle","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"613",2090,14,"Low","PineNeedle","blue oak","pd",2022-04-04,0.874666666666667,"early",1.4502581538849,NA,NA,NA
+"614",2090,15,"Low","PineNeedle","blue oak","md",2022-04-11,1.8925,"late",2.05429071803853,1.16835850458034,0.9438,"2022-04-11"
+"615",2090,15,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.16835850458034,0.9438,"2022-04-11"
+"616",2090,17,"Low","PineNeedle","blue oak","md",2022-04-27,2.244,"late",1.06818181818182,NA,NA,NA
+"617",2090,17,"Low","PineNeedle","blue oak","md",NA,2.244,NA,1.06818181818182,NA,NA,NA
+"618",2090,17,"Low","PineNeedle","blue oak","pd",2022-04-27,1.1926,"late",1.1330376940133,NA,NA,NA
+"619",2090,19,"Low","PineNeedle","blue oak","pd",NA,NA,NA,NA,1.15695901679505,0.4681,"2022-05-09"
+"620",2090,19,"Low","PineNeedle","blue oak","md",2022-05-09,2.00566666666667,"late",0.943584860747441,1.15695901679505,0.4681,"2022-05-09"
+"621",2090,21,"Low","PineNeedle","blue oak","pd",2022-05-25,1.97875,"late",0.935923653715065,NA,NA,NA
+"622",2090,21,"Low","PineNeedle","blue oak","md",2022-05-25,2.665,"late",0.801724137931034,NA,NA,NA
+"623",2090,21,"Low","PineNeedle","blue oak","md",NA,2.665,NA,0.801724137931034,NA,NA,NA
+"624",2090,29,"Low","PineNeedle","blue oak","pd",2022-07-19,0.943,"late",0.450971599402093,NA,NA,NA
+"625",2090,29,"Low","PineNeedle","blue oak","md",2022-07-19,4,"late",0.637922077922078,NA,NA,NA
+"626",2090,29,"Low","PineNeedle","blue oak","md",NA,4,NA,0.637922077922078,NA,NA,NA
+"627",2090,37,"Low","PineNeedle","blue oak","md",NA,NA,NA,0.673127422783544,1.09129899801291,0.6636,"2022-09-15"
+"628",2090,37,"Low","PineNeedle","blue oak","md",NA,NA,NA,0.673127422783544,0.760484219628188,0.3518,"2022-09-12"
+"629",2090,38,"Low","PineNeedle","blue oak","pd",NA,NA,NA,0.722641812630564,NA,NA,NA
+"630",2090,NA,"Low","PineNeedle","blue oak","md",NA,NA,NA,1.43763346925842,NA,NA,NA
+"631",2090,NA,"Low","PineNeedle","blue oak","pd",NA,NA,NA,1.4502581538849,NA,NA,NA
+"632",2091,10,"Low","PineNeedle","live oak","md",2022-03-08,1.0525,"early",0.68131627167849,NA,NA,NA
+"633",2091,10,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"634",2091,11,"Low","PineNeedle","live oak","pd",2022-03-15,0.314666666666667,"early",0.680788046014928,NA,NA,NA
+"635",2091,11,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"636",2091,14,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"637",2091,14,"Low","PineNeedle","live oak","pd",2022-04-04,0.129,"early",0.637688139674895,NA,NA,NA
+"638",2091,15,"Low","PineNeedle","live oak","md",2022-04-11,1.44333333333333,"late",1.18901795142555,NA,NA,NA
+"639",2091,15,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"640",2091,17,"Low","PineNeedle","live oak","md",NA,2.02066666666667,NA,1.48559670781893,NA,NA,NA
+"641",2091,17,"Low","PineNeedle","live oak","pd",2022-04-27,0.5792,"late",1.08410548823949,NA,NA,NA
+"642",2091,17,"Low","PineNeedle","live oak","md",2022-04-27,2.02066666666667,"late",1.48559670781893,NA,NA,NA
+"643",2091,19,"Low","PineNeedle","live oak","md",2022-05-09,1.29433333333333,"late",0.869419042495965,1.03372030849648,0.7092,"2022-05-09"
+"644",2091,19,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,1.03372030849648,0.7092,"2022-05-09"
+"645",2091,21,"Low","PineNeedle","live oak","md",2022-05-25,2.122,"late",0.639518413597734,NA,NA,NA
+"646",2091,21,"Low","PineNeedle","live oak","md",NA,2.122,NA,0.639518413597734,NA,NA,NA
+"647",2091,21,"Low","PineNeedle","live oak","pd",2022-05-25,0.583666666666667,"late",0.850193971948672,NA,NA,NA
+"648",2091,29,"Low","PineNeedle","live oak","pd",2022-07-19,0.2925,"late",0.623163138231631,NA,NA,NA
+"649",2091,29,"Low","PineNeedle","live oak","md",2022-07-19,2.8225,"late",0.517880794701987,NA,NA,NA
+"650",2091,37,"Low","PineNeedle","live oak","md",NA,NA,NA,0.560431905259491,0.778687383601915,0.480333333333333,"2022-09-15"
+"651",2091,37,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.725155682407888,0.778687383601915,0.480333333333333,"2022-09-15"
+"652",2091,38,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.655806420882157,NA,NA,NA
+"653",2091,NA,"Low","PineNeedle","live oak","md",NA,NA,NA,0.711480774664363,NA,NA,NA
+"654",2091,NA,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.637688139674895,NA,NA,NA
+"655",2092,10,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"656",2092,10,"Low","PineNeedle","live oak","md",2022-03-08,1.77166666666667,"early",0.613355634889354,NA,NA,NA
+"657",2092,11,"Low","PineNeedle","live oak","pd",2022-03-15,0.25,"early",0.649248383762947,NA,NA,NA
+"658",2092,11,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"659",2092,14,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"660",2092,14,"Low","PineNeedle","live oak","pd",2022-04-04,0.109333333333333,"early",0.654942866128525,NA,NA,NA
+"661",2092,15,"Low","PineNeedle","live oak","md",2022-04-11,1.57357142857143,"late",1.44931921331316,NA,NA,NA
+"662",2092,15,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"663",2092,17,"Low","PineNeedle","live oak","md",2022-04-27,2.1235,"late",NA,NA,NA,NA
+"664",2092,17,"Low","PineNeedle","live oak","pd",2022-04-27,1.261,"late",0.86829268292683,NA,NA,NA
+"665",2092,17,"Low","PineNeedle","live oak","pd",NA,1.261,NA,0.86829268292683,NA,NA,NA
+"666",2092,19,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,0.949325204575989,0.21235,"2022-05-09"
+"667",2092,19,"Low","PineNeedle","live oak","md",2022-05-09,1.45528571428571,"late",1.06336805555556,0.949325204575989,0.21235,"2022-05-09"
+"668",2092,21,"Low","PineNeedle","live oak","md",2022-05-25,2.2205,"late",0.637333333333333,NA,NA,NA
+"669",2092,21,"Low","PineNeedle","live oak","md",NA,2.2205,NA,0.637333333333333,NA,NA,NA
+"670",2092,21,"Low","PineNeedle","live oak","pd",2022-05-25,1.09083333333333,"late",0.64426651415499,NA,NA,NA
+"671",2092,29,"Low","PineNeedle","live oak","md",2022-07-19,3.26,"late",0.520025348542459,NA,NA,NA
+"672",2092,29,"Low","PineNeedle","live oak","pd",2022-07-19,1.43333333333333,"late",0.522938144329897,NA,NA,NA
+"673",2092,29,"Low","PineNeedle","live oak","pd",NA,1.43333333333333,NA,0.522938144329897,NA,NA,NA
+"674",2092,37,"Low","PineNeedle","live oak","md",NA,NA,NA,0.566088443684339,0.746925603633416,0.312833333333333,"2022-09-15"
+"675",2092,37,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.668518518518519,0.746925603633416,0.312833333333333,"2022-09-15"
+"676",2092,38,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.57626188734455,NA,NA,NA
+"677",2092,NA,"Low","PineNeedle","live oak","md",NA,NA,NA,0.821560635346574,NA,NA,NA
+"678",2092,NA,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.654942866128525,NA,NA,NA
+"679",2093,10,"Low","PineNeedle","live oak","md",2022-03-08,2.064,"early",0.587192947932268,NA,NA,NA
+"680",2093,10,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"681",2093,11,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"682",2093,11,"Low","PineNeedle","live oak","pd",2022-03-15,0.3225,"early",0.561128529345577,NA,NA,NA
+"683",2093,14,"Low","PineNeedle","live oak","pd",2022-04-04,0.15425,"early",0.614782183064121,NA,NA,NA
+"684",2093,14,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"685",2093,15,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,0.674228395061728,0.4369,"2022-04-11"
+"686",2093,15,"Low","PineNeedle","live oak","md",2022-04-11,1.07714285714286,"late",2.05191256830601,0.674228395061728,0.4369,"2022-04-11"
+"687",2093,17,"Low","PineNeedle","live oak","md",2022-04-27,1.87566666666667,"late",1.57894736842105,NA,NA,NA
+"688",2093,17,"Low","PineNeedle","live oak","pd",2022-04-27,0.7785,"late",0.947430596574129,NA,NA,NA
+"689",2093,17,"Low","PineNeedle","live oak","pd",NA,0.7785,NA,0.947430596574129,NA,NA,NA
+"690",2093,19,"Low","PineNeedle","live oak","pd",NA,NA,NA,NA,1.15584423584164,1.02286666666667,"2022-05-09"
+"691",2093,19,"Low","PineNeedle","live oak","md",2022-05-09,1.83266666666667,"late",0.892740471869328,1.15584423584164,1.02286666666667,"2022-05-09"
+"692",2093,21,"Low","PineNeedle","live oak","md",2022-05-25,2.7215,"late",0.566548881036514,NA,NA,NA
+"693",2093,21,"Low","PineNeedle","live oak","pd",2022-05-25,0.820833333333333,"late",0.627290260366442,NA,NA,NA
+"694",2093,29,"Low","PineNeedle","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"695",2093,29,"Low","PineNeedle","live oak","pd",2022-07-19,1.07,"late",0.529398280802292,NA,NA,NA
+"696",2093,37,"Low","PineNeedle","live oak","md",NA,NA,NA,0.584232453797671,0.82746399952755,0.41265,"2022-09-15"
+"697",2093,NA,"Low","PineNeedle","live oak","md",NA,NA,NA,0.94197870752745,NA,NA,NA
+"698",2093,NA,"Low","PineNeedle","live oak","pd",NA,NA,NA,0.614782183064121,NA,NA,NA
+"699",2301,9,"Hobbiton","LL","live oak","pd",2022-02-28,0.975,"early",NA,NA,NA,NA
+"700",2301,9,"Hobbiton","LL","live oak","pd",NA,0.975,NA,NA,NA,NA,NA
+"701",2301,9,"Hobbiton","LL","live oak","md",2022-02-28,1.806,"early",0.728326554353555,NA,NA,NA
+"702",2301,10,"Hobbiton","LL","live oak","md",2022-03-08,2.293,"early",0.737431716642295,NA,NA,NA
+"703",2301,10,"Hobbiton","LL","live oak","pd",2022-03-08,1.0105,"early",0.726801256580669,NA,NA,NA
+"704",2301,10,"Hobbiton","LL","live oak","pd",NA,1.0105,NA,0.726801256580669,NA,NA,NA
+"705",2301,12,"Hobbiton","LL","live oak","md",2022-03-23,2.97,"early",NA,NA,NA,NA
+"706",2301,12,"Hobbiton","LL","live oak","pd",2022-03-23,0.875,"early",NA,NA,NA,NA
+"707",2301,13,"Hobbiton","LL","live oak","md",2022-03-25,2.97,"early",0.736235595390525,NA,NA,NA
+"708",2301,13,"Hobbiton","LL","live oak","pd",2022-03-30,0.65,"early",0.733714022216823,NA,NA,NA
+"709",2301,13,"Hobbiton","LL","live oak","pd",2022-03-25,0.65,"early",0.733714022216823,NA,NA,NA
+"710",2301,14,"Hobbiton","LL","live oak","pd",2022-04-04,2.25066666666667,"early",NA,NA,NA,NA
+"711",2301,14,"Hobbiton","LL","live oak","md",2022-04-06,3.4875,"early",0.640872897401013,NA,NA,NA
+"712",2301,14,"Hobbiton","LL","live oak","pd",NA,2.25066666666667,NA,NA,NA,NA,NA
+"713",2301,15,"Hobbiton","LL","live oak","md",2022-04-13,1.62425,"late",0.610684781759654,0.960151802656547,0.1012,"2022-04-14"
+"714",2301,15,"Hobbiton","LL","live oak","pd",NA,1.37466666666667,NA,0.596604371848558,0.960151802656547,0.1012,"2022-04-14"
+"715",2301,15,"Hobbiton","LL","live oak","pd",2022-04-11,1.37466666666667,"late",0.596604371848558,0.960151802656547,0.1012,"2022-04-14"
+"716",2301,17,"Hobbiton","LL","live oak","md",2022-04-25,3.4964,"late",0.629518636448773,NA,NA,NA
+"717",2301,17,"Hobbiton","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"718",2301,18,"Hobbiton","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"719",2301,18,"Hobbiton","LL","live oak","md",2022-05-04,3.19333333333333,"late",0.647562935190145,NA,NA,NA
+"720",2301,19,"Hobbiton","LL","live oak","md",2022-05-09,3.13666666666667,"late",NA,NA,NA,NA
+"721",2301,19,"Hobbiton","LL","live oak","pd",2022-05-09,1.87833333333333,"late",0.65597667638484,NA,NA,NA
+"722",2301,21,"Hobbiton","LL","live oak","pd",2022-05-23,1.5725,"late",0.63527397260274,NA,NA,NA
+"723",2301,21,"Hobbiton","LL","live oak","md",2022-05-25,2.87666666666667,"late",NA,NA,NA,NA
+"724",2301,21,"Hobbiton","LL","live oak","md",NA,2.87666666666667,NA,NA,NA,NA,NA
+"725",2301,29,"Hobbiton","LL","live oak","md",2022-07-19,4.38333333333333,"late",0.51169702780441,NA,NA,NA
+"726",2301,29,"Hobbiton","LL","live oak","pd",2022-07-19,2.11333333333333,"late",0.534381551362684,NA,NA,NA
+"727",2301,33,"Hobbiton","LL","live oak","pd",2022-08-18,2.7855,"late",0.585357065648195,NA,NA,NA
+"728",2301,33,"Hobbiton","LL","live oak","md",2022-08-18,3.7614,"late",0.567843788948899,NA,NA,NA
+"729",2301,33,"Hobbiton","LL","live oak","md",NA,3.7614,NA,0.567843788948899,NA,NA,NA
+"730",2301,33,"Hobbiton","LL","live oak","pd",NA,2.7855,NA,0.585357065648195,NA,NA,NA
+"731",2301,37,"Hobbiton","LL","live oak","pd",NA,NA,NA,0.680027564028942,NA,NA,NA
+"732",2301,38,"Hobbiton","LL","live oak","md",NA,NA,NA,0.548910675381263,NA,NA,NA
+"733",2301,NA,"Hobbiton","LL","live oak","pd",NA,NA,NA,0.596016483516484,NA,NA,NA
+"734",2301,NA,"Hobbiton","LL","live oak","md",NA,NA,NA,0.721759809750298,NA,NA,NA
+"735",2309,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.548,"early",NA,NA,NA,NA
+"736",2309,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"737",2313,9,"Ridge","LL","blue oak","pd",2022-02-28,1.2625,"early",0.76075269601408,NA,NA,NA
+"738",2313,9,"Ridge","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"739",2322,9,"Ridge","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"740",2322,9,"Ridge","LL","live oak","pd",2022-02-28,0.626666666666667,"early",NA,NA,NA,NA
+"741",2327,17,NA,NA,"blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"742",2327,17,NA,NA,"blue oak","pd",2022-04-25,1.235,"late",0.944149876281372,NA,NA,NA
+"743",2330,33,"Ridge","LL","blue oak","pd",2022-08-18,2.85233333333333,"late",0.465376879609233,NA,NA,NA
+"744",2330,33,"Ridge","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"745",2330,33,"Ridge","LL","blue oak","pd",NA,2.85233333333333,NA,0.465376879609233,NA,NA,NA
+"746",2331,9,"Ridge","LL","live oak","md",2022-02-28,2.612,"early",0.710632274283269,NA,NA,NA
+"747",2331,9,"Ridge","LL","live oak","pd",2022-02-28,0.496666666666667,"early",NA,NA,NA,NA
+"748",2331,9,"Ridge","LL","live oak","pd",NA,0.496666666666667,NA,NA,NA,NA,NA
+"749",2331,10,"Ridge","LL","live oak","pd",NA,0.9335,NA,0.672057759801404,NA,NA,NA
+"750",2331,10,"Ridge","LL","live oak","md",2022-03-08,2.22933333333333,"early",0.69465014079764,NA,NA,NA
+"751",2331,10,"Ridge","LL","live oak","pd",2022-03-08,0.9335,"early",0.672057759801404,NA,NA,NA
+"752",2331,12,"Ridge","LL","live oak","md",2022-03-23,2.38333333333333,"early",NA,NA,NA,NA
+"753",2331,12,"Ridge","LL","live oak","pd",2022-03-23,1.76666666666667,"early",NA,NA,NA,NA
+"754",2331,13,"Ridge","LL","live oak","md",2022-03-25,2.38333333333333,"early",0.678516228748068,NA,NA,NA
+"755",2331,13,"Ridge","LL","live oak","pd",2022-03-25,1.07916666666667,"early",0.647562612677465,NA,NA,NA
+"756",2331,13,"Ridge","LL","live oak","pd",2022-03-30,1.07916666666667,"early",0.647562612677465,NA,NA,NA
+"757",2331,14,"Ridge","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"758",2331,14,"Ridge","LL","live oak","md",2022-04-06,4.33333333333333,"early",0.544476463589564,NA,NA,NA
+"759",2331,15,"Ridge","LL","live oak","md",2022-04-13,3.0458,"late",0.559320816052591,NA,NA,NA
+"760",2331,15,"Ridge","LL","live oak","pd",2022-04-11,1.30333333333333,"late",1.01164952775993,NA,NA,NA
+"761",2331,15,"Ridge","LL","live oak","pd",NA,1.30333333333333,NA,1.01164952775993,NA,NA,NA
+"762",2331,17,"Ridge","LL","live oak","md",2022-04-25,2.99033333333333,"late",0.608910891089109,NA,NA,NA
+"763",2331,17,"Ridge","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"764",2331,18,"Ridge","LL","live oak","pd",NA,NA,NA,NA,0.835205992509363,0.0892,"2022-05-04"
+"765",2331,18,"Ridge","LL","live oak","md",2022-05-04,2.93333333333333,"late",0.555442964678634,0.835205992509363,0.0892,"2022-05-04"
+"766",2331,19,"Ridge","LL","live oak","md",2022-05-09,2.3625,"late",0.625551065393093,NA,NA,NA
+"767",2331,19,"Ridge","LL","live oak","md",NA,2.3625,NA,0.625551065393093,NA,NA,NA
+"768",2331,19,"Ridge","LL","live oak","pd",2022-05-09,1.26966666666667,"late",0.554568527918782,NA,NA,NA
+"769",2331,21,"Ridge","LL","live oak","pd",2022-05-23,1.898,"late",0.610305958132045,0.851761554002435,0.762733333333333,"2022-05-25"
+"770",2331,21,"Ridge","LL","live oak","md",2022-05-25,2.64,"late",NA,0.851761554002435,0.762733333333333,"2022-05-25"
+"771",2331,21,"Ridge","LL","live oak","md",NA,2.64,NA,NA,0.851761554002435,0.762733333333333,"2022-05-25"
+"772",2331,29,"Ridge","LL","live oak","pd",2022-07-19,3.19666666666667,"late",0.490409026798308,NA,NA,NA
+"773",2331,29,"Ridge","LL","live oak","md",2022-07-19,3.63333333333333,"late",0.490979782270607,NA,NA,NA
+"774",2331,33,"Ridge","LL","live oak","md",2022-08-18,3.86975,"late",0.539203406813627,NA,NA,NA
+"775",2331,33,"Ridge","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"776",2331,33,"Ridge","LL","live oak","md",NA,3.86975,NA,0.539203406813627,NA,NA,NA
+"777",2331,37,"Ridge","LL","live oak","pd",NA,NA,NA,0.57259842519685,0.623375946837647,0.26705,"2022-09-12"
+"778",2331,38,"Ridge","LL","live oak","md",NA,NA,NA,0.540139460039335,NA,NA,NA
+"779",2331,NA,"Ridge","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"780",2331,NA,"Ridge","LL","live oak","pd",NA,NA,NA,1.45277382645804,NA,NA,NA
+"781",2343,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"782",2343,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.13333333333333,"early",0.823007988767514,NA,NA,NA
+"783",2343,10,"Hobbiton","LL","blue oak","pd",2022-03-08,1.23933333333333,"early",2.07234042553192,NA,NA,NA
+"784",2343,10,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"785",2343,12,"Hobbiton","LL","blue oak","md",2022-03-23,2.12675,"early",NA,NA,NA,NA
+"786",2343,12,"Hobbiton","LL","blue oak","pd",2022-03-23,1.25,"early",NA,NA,NA,NA
+"787",2343,13,"Hobbiton","LL","blue oak","pd",2022-03-30,1.08897959183673,"early",1.97262445564,NA,NA,NA
+"788",2343,13,"Hobbiton","LL","blue oak","md",2022-03-25,2.12675,"early",1.65564738292011,NA,NA,NA
+"789",2343,13,"Hobbiton","LL","blue oak","pd",2022-03-25,1.08897959183673,"early",1.97262445564,NA,NA,NA
+"790",2343,14,"Hobbiton","LL","blue oak","md",2022-04-06,2.65,"early",1.01152737498592,NA,NA,NA
+"791",2343,14,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"792",2343,15,"Hobbiton","LL","blue oak","md",2022-04-13,1.88633333333333,"late",1.1515532896612,1.21737648949674,0.571333333333333,"2022-04-12"
+"793",2343,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.5,"late",0.868382224763773,1.21737648949674,0.571333333333333,"2022-04-12"
+"794",2343,17,"Hobbiton","LL","blue oak","md",2022-04-25,2.6195,"late",0.86150409530901,NA,NA,NA
+"795",2343,17,"Hobbiton","LL","blue oak","md",2022-04-27,2.6195,"late",0.86150409530901,NA,NA,NA
+"796",2343,17,"Hobbiton","LL","blue oak","pd",2022-04-27,1.15466666666667,"late",0.939163498098859,NA,NA,NA
+"797",2343,17,"Hobbiton","LL","blue oak","pd",2022-04-25,1.15466666666667,"late",0.939163498098859,NA,NA,NA
+"798",2343,18,"Hobbiton","LL","blue oak","pd",NA,1.51633333333333,NA,NA,0.920659435437352,1.56935,"2022-05-03"
+"799",2343,18,"Hobbiton","LL","blue oak","pd",NA,1.51633333333333,NA,NA,0.958826106000876,0.6567,"2022-05-04"
+"800",2343,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.50066666666667,"late",0.750445356672605,0.920659435437352,1.56935,"2022-05-03"
+"801",2343,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.50066666666667,"late",0.750445356672605,0.958826106000876,0.6567,"2022-05-04"
+"802",2343,18,"Hobbiton","LL","blue oak","pd",2022-05-04,1.51633333333333,"late",NA,0.920659435437352,1.56935,"2022-05-03"
+"803",2343,18,"Hobbiton","LL","blue oak","pd",2022-05-04,1.51633333333333,"late",NA,0.958826106000876,0.6567,"2022-05-04"
+"804",2343,19,"Hobbiton","LL","blue oak","pd",2022-05-09,1.48633333333333,"late",0.776223776223776,NA,NA,NA
+"805",2343,19,"Hobbiton","LL","blue oak","md",2022-05-09,2.27533333333333,"late",0.817787950625358,NA,NA,NA
+"806",2343,21,"Hobbiton","LL","blue oak","pd",2022-05-23,1.9245,"late",1.24627875507442,0.861803443841972,0.786433333333333,"2022-05-23"
+"807",2343,21,"Hobbiton","LL","blue oak","pd",2022-05-25,1.9245,"late",1.24627875507442,0.861803443841972,0.786433333333333,"2022-05-23"
+"808",2343,21,"Hobbiton","LL","blue oak","md",2022-05-23,3.71616666666667,"late",0.683516483516484,0.861803443841972,0.786433333333333,"2022-05-23"
+"809",2343,21,"Hobbiton","LL","blue oak","pd",NA,1.9245,NA,1.24627875507442,0.861803443841972,0.786433333333333,"2022-05-23"
+"810",2343,29,"Hobbiton","LL","blue oak","md",2022-07-19,3.175,"late",0.651623119556611,NA,NA,NA
+"811",2343,29,"Hobbiton","LL","blue oak","pd",2022-07-19,3.15,"late",0.665217391304348,NA,NA,NA
+"812",2343,29,"Hobbiton","LL","blue oak","pd",NA,3.15,NA,0.665217391304348,NA,NA,NA
+"813",2343,33,"Hobbiton","LL","blue oak","md",2022-08-18,4.00233333333333,"late",0.671194153337011,NA,NA,NA
+"814",2343,33,"Hobbiton","LL","blue oak","pd",2022-08-18,3.085,"late",NA,NA,NA,NA
+"815",2343,33,"Hobbiton","LL","blue oak","md",NA,4.00233333333333,NA,0.671194153337011,NA,NA,NA
+"816",2343,33,"Hobbiton","LL","blue oak","pd",NA,3.085,NA,NA,NA,NA,NA
+"817",2343,37,"Hobbiton","LL","blue oak","pd",NA,NA,NA,0.744446170576355,NA,NA,NA
+"818",2343,38,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.625556104794859,NA,NA,NA
+"819",2343,NA,"Hobbiton","LL","blue oak","pd",NA,NA,NA,0.889747191011236,NA,NA,NA
+"820",2343,NA,"Hobbiton","LL","blue oak","md",NA,NA,NA,1.08630393996248,NA,NA,NA
+"821",2344,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"822",2344,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.414,"early",NA,NA,NA,NA
+"823",2345,9,"Hobbiton","LL","live oak","md",2022-02-28,1.63,"early",0.734716201695368,NA,NA,NA
+"824",2345,9,"Hobbiton","LL","live oak","pd",2022-02-28,0.5335,"early",NA,NA,NA,NA
+"825",2345,10,"Hobbiton","LL","live oak","md",2022-03-08,1.35233333333333,"early",0.739601927474687,NA,NA,NA
+"826",2345,10,"Hobbiton","LL","live oak","pd",2022-03-08,0.301666666666667,"early",NA,NA,NA,NA
+"827",2345,10,"Hobbiton","LL","live oak","pd",NA,0.301666666666667,NA,NA,NA,NA,NA
+"828",2345,12,"Hobbiton","LL","live oak","md",2022-03-23,2.00714285714286,"early",NA,NA,NA,NA
+"829",2345,12,"Hobbiton","LL","live oak","pd",2022-03-23,2.7625,"early",NA,NA,NA,NA
+"830",2345,13,"Hobbiton","LL","live oak","pd",2022-03-30,1.77823529411765,"early",0.739443300352517,NA,NA,NA
+"831",2345,13,"Hobbiton","LL","live oak","pd",NA,1.77823529411765,NA,0.739443300352517,NA,NA,NA
+"832",2345,13,"Hobbiton","LL","live oak","md",2022-03-25,2.00714285714286,"early",NA,NA,NA,NA
+"833",2345,13,"Hobbiton","LL","live oak","pd",2022-03-25,1.77823529411765,"early",0.739443300352517,NA,NA,NA
+"834",2345,14,"Hobbiton","LL","live oak","pd",2022-04-04,1.708,"early",NA,NA,NA,NA
+"835",2345,14,"Hobbiton","LL","live oak","md",2022-04-06,3.65,"early",0.694468085106383,NA,NA,NA
+"836",2345,14,"Hobbiton","LL","live oak","pd",NA,1.708,NA,NA,NA,NA,NA
+"837",2345,15,"Hobbiton","LL","live oak","pd",NA,0.533333333333333,NA,0.625257921089853,0.725180350395053,0.4222,"2022-04-14"
+"838",2345,15,"Hobbiton","LL","live oak","md",2022-04-13,2.46625,"late",0.628653247152132,0.725180350395053,0.4222,"2022-04-14"
+"839",2345,15,"Hobbiton","LL","live oak","pd",2022-04-11,0.533333333333333,"late",0.625257921089853,0.725180350395053,0.4222,"2022-04-14"
+"840",2345,17,"Hobbiton","LL","live oak","md",NA,2.211,NA,0.703242712086472,NA,NA,NA
+"841",2345,17,"Hobbiton","LL","live oak","pd",2022-04-25,0.7015,"late",0.655629139072848,NA,NA,NA
+"842",2345,17,"Hobbiton","LL","live oak","md",2022-04-25,2.211,"late",0.703242712086472,NA,NA,NA
+"843",2345,18,"Hobbiton","LL","live oak","md",2022-05-04,1.51014285714286,"late",0.605771157571304,NA,NA,NA
+"844",2345,18,"Hobbiton","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"845",2345,19,"Hobbiton","LL","live oak","md",NA,1.2185,NA,0.808270676691729,NA,NA,NA
+"846",2345,19,"Hobbiton","LL","live oak","pd",2022-05-09,0.845571428571429,"late",0.611785095320624,NA,NA,NA
+"847",2345,19,"Hobbiton","LL","live oak","md",2022-05-09,1.2185,"late",0.808270676691729,NA,NA,NA
+"848",2345,21,"Hobbiton","LL","live oak","pd",2022-05-23,0.716,"late",0.678082191780822,NA,NA,NA
+"849",2345,21,"Hobbiton","LL","live oak","pd",NA,0.716,NA,0.678082191780822,NA,NA,NA
+"850",2345,21,"Hobbiton","LL","live oak","md",2022-05-23,2.16975,"late",0.58410480349345,NA,NA,NA
+"851",2345,29,"Hobbiton","LL","live oak","pd",2022-07-19,1.11666666666667,"late",0.566042154566745,NA,NA,NA
+"852",2345,29,"Hobbiton","LL","live oak","md",2022-07-19,3.45,"late",0.494289897510981,NA,NA,NA
+"853",2345,29,"Hobbiton","LL","live oak","pd",NA,1.11666666666667,NA,0.566042154566745,NA,NA,NA
+"854",2345,33,"Hobbiton","LL","live oak","md",2022-08-18,2.44433333333333,"late",0.578065395095368,NA,NA,NA
+"855",2345,33,"Hobbiton","LL","live oak","md",NA,2.44433333333333,NA,0.578065395095368,NA,NA,NA
+"856",2345,33,"Hobbiton","LL","live oak","pd",2022-08-18,2.93983333333333,"late",0.591737545565006,NA,NA,NA
+"857",2345,33,"Hobbiton","LL","live oak","pd",NA,2.93983333333333,NA,0.591737545565006,NA,NA,NA
+"858",2345,37,"Hobbiton","LL","live oak","pd",NA,NA,NA,0.708213699753897,NA,NA,NA
+"859",2345,38,"Hobbiton","LL","live oak","md",NA,NA,NA,0.542327735958309,NA,NA,NA
+"860",2345,NA,"Hobbiton","LL","live oak","md",NA,NA,NA,0.658846529814272,NA,NA,NA
+"861",2345,NA,"Hobbiton","LL","live oak","pd",NA,NA,NA,0.631042654028436,NA,NA,NA
+"862",2346,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.00875,"early",NA,NA,NA,NA
+"863",2346,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"864",2346,10,"Hobbiton","LL","blue oak","md",2022-03-08,2.29966666666667,"early",0.834008187663251,NA,NA,NA
+"865",2346,10,"Hobbiton","LL","blue oak","pd",2022-03-08,1.224,"early",NA,NA,NA,NA
+"866",2346,11,"Hobbiton","LL","blue oak","md",2022-03-15,2.70425,"early",0.765173653839421,NA,NA,NA
+"867",2346,11,"Hobbiton","LL","blue oak","pd",2022-03-15,1.73375,"early",0.82094179672984,NA,NA,NA
+"868",2346,12,"Hobbiton","LL","blue oak","md",2022-03-23,2.68333333333333,"early",NA,NA,NA,NA
+"869",2346,12,"Hobbiton","LL","blue oak","pd",2022-03-23,1.78333333333333,"early",NA,NA,NA,NA
+"870",2346,13,"Hobbiton","LL","blue oak","md",2022-03-25,2.68333333333333,"early",1.18421052631579,NA,NA,NA
+"871",2346,13,"Hobbiton","LL","blue oak","pd",2022-03-25,1.425,"early",1.62080925899177,NA,NA,NA
+"872",2346,13,"Hobbiton","LL","blue oak","pd",NA,1.425,NA,1.62080925899177,NA,NA,NA
+"873",2346,13,"Hobbiton","LL","blue oak","pd",2022-03-30,1.425,"early",1.62080925899177,NA,NA,NA
+"874",2346,14,"Hobbiton","LL","blue oak","md",2022-04-06,3.03333333333333,"early",0.977872205362876,NA,NA,NA
+"875",2346,14,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"876",2346,15,"Hobbiton","LL","blue oak","md",NA,1.98133333333333,NA,0.72627905350578,1.3067946363894,0.333333333333333,"2022-04-12"
+"877",2346,15,"Hobbiton","LL","blue oak","md",2022-04-13,1.98133333333333,"late",0.72627905350578,1.3067946363894,0.333333333333333,"2022-04-12"
+"878",2346,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.77575,"late",0.934932357749054,1.3067946363894,0.333333333333333,"2022-04-12"
+"879",2346,17,"Hobbiton","LL","blue oak","pd",2022-04-25,2.00033333333333,"late",0.844660194174757,NA,NA,NA
+"880",2346,17,"Hobbiton","LL","blue oak","pd",2022-04-27,2.00033333333333,"late",0.844660194174757,NA,NA,NA
+"881",2346,17,"Hobbiton","LL","blue oak","md",2022-04-27,2.211,"late",0.838321942022154,NA,NA,NA
+"882",2346,17,"Hobbiton","LL","blue oak","md",2022-04-25,2.211,"late",0.838321942022154,NA,NA,NA
+"883",2346,18,"Hobbiton","LL","blue oak","md",NA,2.271,NA,0.732686607383455,0.95998558038933,0.2663,"2022-05-04"
+"884",2346,18,"Hobbiton","LL","blue oak","md",NA,2.271,NA,0.732686607383455,0.928207829344135,0.6001,"2022-05-03"
+"885",2346,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.271,"late",0.732686607383455,0.95998558038933,0.2663,"2022-05-04"
+"886",2346,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.271,"late",0.732686607383455,0.928207829344135,0.6001,"2022-05-03"
+"887",2346,18,"Hobbiton","LL","blue oak","pd",2022-05-04,1.90175,"late",NA,0.95998558038933,0.2663,"2022-05-04"
+"888",2346,18,"Hobbiton","LL","blue oak","pd",2022-05-04,1.90175,"late",NA,0.928207829344135,0.6001,"2022-05-03"
+"889",2346,19,"Hobbiton","LL","blue oak","pd",2022-05-09,1.90625,"late",0.748837209302326,NA,NA,NA
+"890",2346,19,"Hobbiton","LL","blue oak","md",NA,2.48133333333333,NA,0.792486415589283,NA,NA,NA
+"891",2346,19,"Hobbiton","LL","blue oak","md",2022-05-09,2.48133333333333,"late",0.792486415589283,NA,NA,NA
+"892",2346,21,"Hobbiton","LL","blue oak","pd",2022-05-25,2.0605,"late",0.819505094614265,1.03804728399715,0.395133333333333,"2022-05-25"
+"893",2346,21,"Hobbiton","LL","blue oak","md",2022-05-23,3.3165,"late",0.674863387978142,1.03804728399715,0.395133333333333,"2022-05-25"
+"894",2346,21,"Hobbiton","LL","blue oak","pd",2022-05-23,2.0605,"late",0.819505094614265,1.03804728399715,0.395133333333333,"2022-05-25"
+"895",2346,29,"Hobbiton","LL","blue oak","md",2022-07-19,4.7,"late",0.515032679738562,NA,NA,NA
+"896",2346,29,"Hobbiton","LL","blue oak","md",NA,4.7,NA,0.515032679738562,NA,NA,NA
+"897",2346,29,"Hobbiton","LL","blue oak","pd",2022-07-19,3.8,"late",0.585975609756098,NA,NA,NA
+"898",2346,33,"Hobbiton","LL","blue oak","md",2022-08-18,5.112,"late",0.552876712328767,NA,NA,NA
+"899",2346,33,"Hobbiton","LL","blue oak","md",NA,5.112,NA,0.552876712328767,NA,NA,NA
+"900",2346,33,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"901",2346,37,"Hobbiton","LL","blue oak","pd",NA,NA,NA,0.929184023523646,0.678605391264193,0.175733333333333,"2022-09-12"
+"902",2346,38,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.535292574127526,NA,NA,NA
+"903",2346,NA,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"904",2346,NA,"Hobbiton","LL","blue oak","pd",NA,NA,NA,1.11004184100418,NA,NA,NA
+"905",2347,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"906",2347,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.786,"early",NA,NA,NA,NA
+"907",2347,10,"Hobbiton","LL","blue oak","md",2022-03-08,2.25675,"early",0.872480392156863,NA,NA,NA
+"908",2347,10,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"909",2347,11,"Hobbiton","LL","blue oak","md",2022-03-15,1.9725,"early",1.60230429292929,NA,NA,NA
+"910",2347,11,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"911",2347,12,"Hobbiton","LL","blue oak","md",2022-03-23,2.3125,"early",NA,NA,NA,NA
+"912",2347,12,"Hobbiton","LL","blue oak","pd",2022-03-23,1.2,"early",NA,NA,NA,NA
+"913",2347,13,"Hobbiton","LL","blue oak","md",2022-03-25,2.3125,"early",NA,NA,NA,NA
+"914",2347,13,"Hobbiton","LL","blue oak","pd",NA,1.21616666666667,NA,1.35562913907285,NA,NA,NA
+"915",2347,13,"Hobbiton","LL","blue oak","pd",2022-03-30,1.21616666666667,"early",1.35562913907285,NA,NA,NA
+"916",2347,13,"Hobbiton","LL","blue oak","pd",2022-03-25,1.21616666666667,"early",1.35562913907285,NA,NA,NA
+"917",2347,14,"Hobbiton","LL","blue oak","md",2022-04-06,2.36666666666667,"early",1.13278098865471,NA,NA,NA
+"918",2347,14,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"919",2347,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.6,"late",0.990005053972308,1.34424018889898,0.429,"2022-04-12"
+"920",2347,15,"Hobbiton","LL","blue oak","md",2022-04-13,1.559,"late",0.918294850018624,1.34424018889898,0.429,"2022-04-12"
+"921",2347,17,"Hobbiton","LL","blue oak","md",2022-04-25,2.37856,"late",0.952044266830618,NA,NA,NA
+"922",2347,17,"Hobbiton","LL","blue oak","pd",2022-04-25,1.36066666666667,"late",0.992244952533761,NA,NA,NA
+"923",2347,17,"Hobbiton","LL","blue oak","pd",NA,1.36066666666667,NA,0.992244952533761,NA,NA,NA
+"924",2347,17,"Hobbiton","LL","blue oak","md",2022-04-27,2.37856,"late",0.952044266830618,NA,NA,NA
+"925",2347,17,"Hobbiton","LL","blue oak","pd",2022-04-27,1.36066666666667,"late",0.992244952533761,NA,NA,NA
+"926",2347,18,"Hobbiton","LL","blue oak","pd",2022-05-04,1.5664,"late",NA,0.954428564512052,0.563133333333333,"2022-05-03"
+"927",2347,18,"Hobbiton","LL","blue oak","md",2022-05-04,2.87285714285714,"late",0.791116832957837,0.954428564512052,0.563133333333333,"2022-05-03"
+"928",2347,18,"Hobbiton","LL","blue oak","pd",NA,1.5664,NA,NA,0.954428564512052,0.563133333333333,"2022-05-03"
+"929",2347,19,"Hobbiton","LL","blue oak","md",2022-05-09,2.86033333333333,"late",0.87332838038633,NA,NA,NA
+"930",2347,19,"Hobbiton","LL","blue oak","md",NA,2.86033333333333,NA,0.87332838038633,NA,NA,NA
+"931",2347,19,"Hobbiton","LL","blue oak","pd",2022-05-09,1.5556,"late",0.791845493562232,NA,NA,NA
+"932",2347,21,"Hobbiton","LL","blue oak","md",2022-05-23,2.86,"late",0.818181818181818,1.01882480667447,0.625933333333333,"2022-05-25"
+"933",2347,21,"Hobbiton","LL","blue oak","pd",2022-05-25,1.934,"late",0.917211328976035,1.01882480667447,0.625933333333333,"2022-05-25"
+"934",2347,21,"Hobbiton","LL","blue oak","pd",2022-05-23,1.934,"late",0.917211328976035,1.01882480667447,0.625933333333333,"2022-05-25"
+"935",2347,21,"Hobbiton","LL","blue oak","md",2022-05-25,2.86,"late",0.818181818181818,1.01882480667447,0.625933333333333,"2022-05-25"
+"936",2347,29,"Hobbiton","LL","blue oak","md",2022-07-19,4.2,"late",0.636344086021505,NA,NA,NA
+"937",2347,29,"Hobbiton","LL","blue oak","pd",2022-07-19,3.375,"late",0.622371638141809,NA,NA,NA
+"938",2347,33,"Hobbiton","LL","blue oak","md",2022-08-18,4.4565,"late",0.666062801932367,NA,NA,NA
+"939",2347,33,"Hobbiton","LL","blue oak","pd",2022-08-18,3.991,"late",0.588323674608285,NA,NA,NA
+"940",2347,33,"Hobbiton","LL","blue oak","pd",NA,3.991,NA,0.588323674608285,NA,NA,NA
+"941",2347,33,"Hobbiton","LL","blue oak","md",NA,4.4565,NA,0.666062801932367,NA,NA,NA
+"942",2347,37,"Hobbiton","LL","blue oak","pd",NA,NA,NA,0.739592143595527,0.873597511071738,0.269925,"2022-09-12"
+"943",2347,38,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.622602168473728,NA,NA,NA
+"944",2347,NA,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"945",2347,NA,"Hobbiton","LL","blue oak","pd",NA,NA,NA,1.00784708249497,NA,NA,NA
+"946",2348,10,"Hobbiton","LL","blue oak","pd",2022-03-08,2.203,"early",NA,NA,NA,NA
+"947",2348,10,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"948",2348,11,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"949",2348,11,"Hobbiton","LL","blue oak","pd",2022-03-15,1.47666666666667,"early",NA,NA,NA,NA
+"950",2349,9,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"951",2349,9,"Hobbiton","LL","blue oak","pd",2022-02-28,1.89,"early",NA,NA,NA,NA
+"952",2349,10,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"953",2349,10,"Hobbiton","LL","blue oak","pd",2022-03-08,2.43333333333333,"early",NA,NA,NA,NA
+"954",2349,11,"Hobbiton","LL","blue oak","md",2022-03-15,3.355,"early",0.646438615148292,NA,NA,NA
+"955",2349,11,"Hobbiton","LL","blue oak","md",NA,3.355,NA,0.646438615148292,NA,NA,NA
+"956",2349,11,"Hobbiton","LL","blue oak","pd",2022-03-15,1.54333333333333,"early",0.593939393939394,NA,NA,NA
+"957",2352,9,"MiddleEarth","LL","live oak","md",2022-02-28,2.274,"early",0.594613452368969,NA,NA,NA
+"958",2352,9,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"959",2352,10,"MiddleEarth","LL","live oak","pd",2022-03-08,1.40666666666667,"early",0.830483334469996,NA,NA,NA
+"960",2352,10,"MiddleEarth","LL","live oak","pd",NA,1.40666666666667,NA,0.830483334469996,NA,NA,NA
+"961",2352,10,"MiddleEarth","LL","live oak","md",2022-03-08,2.44166666666667,"early",0.617558321601063,NA,NA,NA
+"962",2352,12,"MiddleEarth","LL","live oak","pd",2022-03-23,1.1,"early",NA,NA,NA,NA
+"963",2352,13,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"964",2352,13,"MiddleEarth","LL","live oak","pd",2022-03-30,0.980244897959184,"early",0.610186010563304,NA,NA,NA
+"965",2352,13,"MiddleEarth","LL","live oak","pd",2022-03-25,0.980244897959184,"early",0.610186010563304,NA,NA,NA
+"966",2352,15,"MiddleEarth","LL","live oak","md",NA,2.82125,NA,0.759597370193408,NA,NA,NA
+"967",2352,15,"MiddleEarth","LL","live oak","md",2022-04-13,2.82125,"late",0.759597370193408,NA,NA,NA
+"968",2352,15,"MiddleEarth","LL","live oak","pd",2022-04-11,1.4284,"late",0.54854324216071,NA,NA,NA
+"969",2352,17,"MiddleEarth","LL","live oak","md",NA,2.734,NA,0.544943820224719,NA,NA,NA
+"970",2352,17,"MiddleEarth","LL","live oak","pd",2022-04-25,1.64725,"late",0.563225506887479,NA,NA,NA
+"971",2352,17,"MiddleEarth","LL","live oak","md",2022-04-25,2.734,"late",0.544943820224719,NA,NA,NA
+"972",2352,18,"MiddleEarth","LL","live oak","md",2022-05-04,2.04925,"late",0.518165378924873,NA,NA,NA
+"973",2352,18,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"974",2352,19,"MiddleEarth","LL","live oak","pd",2022-05-09,1.75383333333333,"late",0.656686626746507,NA,NA,NA
+"975",2352,19,"MiddleEarth","LL","live oak","md",2022-05-09,2.216,"late",0.558605544880593,NA,NA,NA
+"976",2352,19,"MiddleEarth","LL","live oak","md",NA,2.216,NA,0.558605544880593,NA,NA,NA
+"977",2352,21,"MiddleEarth","LL","live oak","md",2022-05-23,4.1634,"late",0.457358870967742,NA,NA,NA
+"978",2352,21,"MiddleEarth","LL","live oak","pd",2022-05-23,1.412,"late",0.542130365659777,NA,NA,NA
+"979",2352,21,"MiddleEarth","LL","live oak","pd",NA,1.412,NA,0.542130365659777,NA,NA,NA
+"980",2352,29,"MiddleEarth","LL","live oak","pd",2022-07-19,2.5425,"late",0.558181818181818,NA,NA,NA
+"981",2352,29,"MiddleEarth","LL","live oak","md",2022-07-19,5.6,"late",0.402107728337237,NA,NA,NA
+"982",2352,29,"MiddleEarth","LL","live oak","md",NA,5.6,NA,0.402107728337237,NA,NA,NA
+"983",2352,33,"MiddleEarth","LL","live oak","md",2022-08-18,4.201,"late",0.531367200818275,NA,NA,NA
+"984",2352,33,"MiddleEarth","LL","live oak","md",NA,4.201,NA,0.531367200818275,NA,NA,NA
+"985",2352,33,"MiddleEarth","LL","live oak","pd",2022-08-18,3.25825,"late",0.504237288135593,NA,NA,NA
+"986",2352,33,"MiddleEarth","LL","live oak","pd",NA,3.25825,NA,0.504237288135593,NA,NA,NA
+"987",2352,37,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.657544956997655,NA,NA,NA
+"988",2352,38,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.547684865238424,NA,NA,NA
+"989",2352,NA,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.59555582377748,NA,NA,NA
+"990",2352,NA,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.572611464968153,NA,NA,NA
+"991",2353,12,"MiddleEarth","LL","live oak","md",2022-03-23,2.3,"early",NA,NA,NA,NA
+"992",2353,13,"MiddleEarth","LL","live oak","md",2022-03-25,2.3,"early",NA,NA,NA,NA
+"993",2353,13,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"994",2353,14,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"995",2353,14,"MiddleEarth","LL","live oak","md",2022-04-06,3.34,"early",NA,NA,NA,NA
+"996",2354,9,"MiddleEarth","LL","live oak","md",2022-02-28,1.7684,"early",0.666092448925548,NA,NA,NA
+"997",2354,9,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"998",2354,10,"MiddleEarth","LL","live oak","md",2022-03-08,1.985,"early",0.667618629186895,NA,NA,NA
+"999",2354,10,"MiddleEarth","LL","live oak","pd",2022-03-08,2.47975,"early",0.674120622085719,NA,NA,NA
+"1000",2354,12,"MiddleEarth","LL","live oak","md",2022-03-23,2.755,"early",NA,NA,NA,NA
+"1001",2354,12,"MiddleEarth","LL","live oak","pd",2022-03-23,0.973333333333333,"early",NA,NA,NA,NA
+"1002",2354,13,"MiddleEarth","LL","live oak","md",2022-03-25,2.755,"early",0.701612903225806,NA,NA,NA
+"1003",2354,13,"MiddleEarth","LL","live oak","pd",2022-03-30,0.85292,"early",0.970692144523832,NA,NA,NA
+"1004",2354,13,"MiddleEarth","LL","live oak","pd",2022-03-25,0.85292,"early",0.970692144523832,NA,NA,NA
+"1005",2354,14,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1006",2354,14,"MiddleEarth","LL","live oak","md",2022-04-06,3.86666666666667,"early",0.843917545301008,NA,NA,NA
+"1007",2354,15,"MiddleEarth","LL","live oak","pd",2022-04-11,1.5902,"late",0.615370978326771,1.35151696442166,0.426333333333333,"2022-04-12"
+"1008",2354,15,"MiddleEarth","LL","live oak","md",NA,1.63733333333333,NA,1.08517278682011,1.35151696442166,0.426333333333333,"2022-04-12"
+"1009",2354,15,"MiddleEarth","LL","live oak","md",2022-04-13,1.63733333333333,"late",1.08517278682011,1.35151696442166,0.426333333333333,"2022-04-12"
+"1010",2354,17,"MiddleEarth","LL","live oak","pd",2022-04-25,1.4596,"late",0.650399290150843,NA,NA,NA
+"1011",2354,17,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1012",2354,18,"MiddleEarth","LL","live oak","md",2022-05-04,2.70733333333333,"late",0.62999185004075,0.924014572628437,0.591666666666667,"2022-05-04"
+"1013",2354,18,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,0.924014572628437,0.591666666666667,"2022-05-04"
+"1014",2354,19,"MiddleEarth","LL","live oak","pd",2022-05-09,1.98933333333333,"late",0.550151975683891,NA,NA,NA
+"1015",2354,19,"MiddleEarth","LL","live oak","md",2022-05-09,2.83775,"late",0.648620097715568,NA,NA,NA
+"1016",2354,19,"MiddleEarth","LL","live oak","pd",NA,1.98933333333333,NA,0.550151975683891,NA,NA,NA
+"1017",2354,21,"MiddleEarth","LL","live oak","md",NA,3.67633333333333,NA,NA,NA,NA,NA
+"1018",2354,21,"MiddleEarth","LL","live oak","pd",2022-05-23,1.3375,"late",0.5995115995116,NA,NA,NA
+"1019",2354,21,"MiddleEarth","LL","live oak","md",2022-05-23,3.67633333333333,"late",NA,NA,NA,NA
+"1020",2354,29,"MiddleEarth","LL","live oak","md",2022-07-19,4.1,"late",0.487928221859706,NA,NA,NA
+"1021",2354,29,"MiddleEarth","LL","live oak","pd",2022-07-19,2.63333333333333,"late",0.607127882599581,NA,NA,NA
+"1022",2354,29,"MiddleEarth","LL","live oak","pd",NA,2.63333333333333,NA,0.607127882599581,NA,NA,NA
+"1023",2354,33,"MiddleEarth","LL","live oak","md",2022-08-18,3.49833333333333,"late",0.625531503672207,NA,NA,NA
+"1024",2354,33,"MiddleEarth","LL","live oak","md",NA,3.49833333333333,NA,0.625531503672207,NA,NA,NA
+"1025",2354,33,"MiddleEarth","LL","live oak","pd",2022-08-18,2.42166666666667,"late",0.627728839525086,NA,NA,NA
+"1026",2354,33,"MiddleEarth","LL","live oak","pd",NA,2.42166666666667,NA,0.627728839525086,NA,NA,NA
+"1027",2354,37,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.643332783005889,NA,NA,NA
+"1028",2354,38,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.477956787810666,NA,NA,NA
+"1029",2354,NA,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1030",2354,NA,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.624770642201835,NA,NA,NA
+"1031",2360,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,1.08133333333333,"early",1.07714663143989,NA,NA,NA
+"1032",2360,13,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1033",2360,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1034",2360,14,"MiddleEarth","LL","blue oak","md",2022-04-06,3.13333333333333,"early",0.834769180956651,NA,NA,NA
+"1035",2360,15,"MiddleEarth","LL","blue oak","pd",NA,1.36666666666667,NA,0.846761604563023,1.14191176470588,0.7765,"2022-04-14"
+"1036",2360,15,"MiddleEarth","LL","blue oak","md",2022-04-13,2.52025,"late",0.808557387859272,1.14191176470588,0.7765,"2022-04-14"
+"1037",2360,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.36666666666667,"late",0.846761604563023,1.14191176470588,0.7765,"2022-04-14"
+"1038",2360,17,"MiddleEarth","LL","blue oak","md",2022-04-25,2.75833333333333,"late",0.767519234768143,NA,NA,NA
+"1039",2360,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.485,"late",0.863710216954984,NA,NA,NA
+"1040",2360,17,"MiddleEarth","LL","blue oak","md",NA,2.75833333333333,NA,0.767519234768143,NA,NA,NA
+"1041",2360,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.96966666666667,"late",0.759281925744594,0.967036009119794,0.6547,"2022-05-04"
+"1042",2360,18,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,0.967036009119794,0.6547,"2022-05-04"
+"1043",2360,21,"MiddleEarth","LL","blue oak","md",2022-05-23,3.27725,"late",0.707836990595611,0.991569144923636,0.8537,"2022-05-23"
+"1044",2360,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,2.13425,"late",0.838417147568013,0.991569144923636,0.8537,"2022-05-23"
+"1045",2360,29,"MiddleEarth","LL","blue oak","md",2022-07-19,4.56666666666667,"late",0.578012684989429,NA,NA,NA
+"1046",2360,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,3.83333333333333,"late",0.655671902268761,NA,NA,NA
+"1047",2360,33,"MiddleEarth","LL","blue oak","md",NA,4.88075,NA,0.592247572432305,NA,NA,NA
+"1048",2360,33,"MiddleEarth","LL","blue oak","md",2022-08-18,4.88075,"late",0.592247572432305,NA,NA,NA
+"1049",2360,33,"MiddleEarth","LL","blue oak","pd",NA,3.8955,NA,0.693851944792974,NA,NA,NA
+"1050",2360,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,3.8955,"late",0.693851944792974,NA,NA,NA
+"1051",2360,37,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.768909226261355,0.778538186542197,0.3366,"2022-09-12"
+"1052",2360,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.857142857142857,NA,NA,NA
+"1053",2360,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1054",2361,11,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1055",2361,11,"MiddleEarth","LL","blue oak","pd",2022-03-15,1.61333333333333,"early",NA,NA,NA,NA
+"1056",2364,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.53,"late",0.747368421052632,NA,NA,NA
+"1057",2364,19,"MiddleEarth","LL","blue oak","md",2022-05-09,2.862,"late",0.777374212156821,NA,NA,NA
+"1058",2365,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.65633333333333,"early",1.79320388349515,NA,NA,NA
+"1059",2365,10,"MiddleEarth","LL","blue oak","md",2022-03-08,2.1,"early",1.43477285354981,NA,NA,NA
+"1060",2365,11,"MiddleEarth","LL","blue oak","md",2022-03-15,2.2674,"early",1.36268870911728,NA,NA,NA
+"1061",2365,11,"MiddleEarth","LL","blue oak","pd",2022-03-15,1.233,"early",1.47227642513203,NA,NA,NA
+"1062",2365,12,"MiddleEarth","LL","blue oak","pd",2022-03-23,2.09,"early",NA,NA,NA,NA
+"1063",2365,12,"MiddleEarth","LL","blue oak","md",2022-03-23,2.2,"early",NA,NA,NA,NA
+"1064",2365,13,"MiddleEarth","LL","blue oak","md",2022-03-25,2.2,"early",1.27536231884058,NA,NA,NA
+"1065",2365,13,"MiddleEarth","LL","blue oak","pd",2022-03-25,1.58959183673469,"early",1.33634868219524,NA,NA,NA
+"1066",2365,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,1.58959183673469,"early",1.33634868219524,NA,NA,NA
+"1067",2365,14,"MiddleEarth","LL","blue oak","md",2022-04-06,2.4,"early",0.919566836261417,NA,NA,NA
+"1068",2365,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1069",2365,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.4,"late",0.933335178525099,1.18574514038877,0.4392,"2022-04-14"
+"1070",2365,15,"MiddleEarth","LL","blue oak","md",2022-04-13,1.80033333333333,"late",0.87452431803489,1.18574514038877,0.4392,"2022-04-14"
+"1071",2365,15,"MiddleEarth","LL","blue oak","pd",NA,1.4,NA,0.933335178525099,1.18574514038877,0.4392,"2022-04-14"
+"1072",2365,17,"MiddleEarth","LL","blue oak","md",2022-04-27,3.18333333333333,"late",0.849246231155779,NA,NA,NA
+"1073",2365,17,"MiddleEarth","LL","blue oak","md",2022-04-25,3.18333333333333,"late",0.849246231155779,NA,NA,NA
+"1074",2365,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.402,"late",0.952554744525547,NA,NA,NA
+"1075",2365,17,"MiddleEarth","LL","blue oak","pd",2022-04-27,1.402,"late",0.952554744525547,NA,NA,NA
+"1076",2365,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.7922,"late",0.768893756845564,1.03719140579205,0.4198,"2022-05-03"
+"1077",2365,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.7922,"late",0.768893756845564,1.05023923444976,0.3951,"2022-05-04"
+"1078",2365,18,"MiddleEarth","LL","blue oak","pd",2022-05-04,1.35666666666667,"late",NA,1.03719140579205,0.4198,"2022-05-03"
+"1079",2365,18,"MiddleEarth","LL","blue oak","pd",2022-05-04,1.35666666666667,"late",NA,1.05023923444976,0.3951,"2022-05-04"
+"1080",2365,18,"MiddleEarth","LL","blue oak","pd",NA,1.35666666666667,NA,NA,1.03719140579205,0.4198,"2022-05-03"
+"1081",2365,18,"MiddleEarth","LL","blue oak","pd",NA,1.35666666666667,NA,NA,1.05023923444976,0.3951,"2022-05-04"
+"1082",2365,19,"MiddleEarth","LL","blue oak","md",NA,2.6145,NA,0.815105285775677,NA,NA,NA
+"1083",2365,19,"MiddleEarth","LL","blue oak","md",2022-05-09,2.6145,"late",0.815105285775677,NA,NA,NA
+"1084",2365,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.35666666666667,"late",0.864197530864197,NA,NA,NA
+"1085",2365,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,1.87766666666667,"late",0.847133757961783,0.971485092473096,0.3961,"2022-05-23"
+"1086",2365,21,"MiddleEarth","LL","blue oak","pd",2022-05-25,1.87766666666667,"late",0.847133757961783,0.971485092473096,0.3961,"2022-05-23"
+"1087",2365,21,"MiddleEarth","LL","blue oak","md",2022-05-23,2.97266666666667,"late",0.770127504553734,0.971485092473096,0.3961,"2022-05-23"
+"1088",2365,29,"MiddleEarth","LL","blue oak","md",2022-07-19,3.93333333333333,"late",0.586177105831533,NA,NA,NA
+"1089",2365,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,3.9,"late",0.546205357142857,NA,NA,NA
+"1090",2365,33,"MiddleEarth","LL","blue oak","pd",NA,3.82,NA,0.586782267299198,NA,NA,NA
+"1091",2365,33,"MiddleEarth","LL","blue oak","md",2022-08-18,5.1675,"late",0.53375,NA,NA,NA
+"1092",2365,33,"MiddleEarth","LL","blue oak","md",NA,5.1675,NA,0.53375,NA,NA,NA
+"1093",2365,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,3.82,"late",0.586782267299198,NA,NA,NA
+"1094",2365,38,"MiddleEarth","LL","blue oak","md",NA,NA,NA,0.535108250438853,NA,NA,NA
+"1095",2365,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1096",2365,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.953652636671505,NA,NA,NA
+"1097",2366,10,"MiddleEarth","LL","blue oak","md",2022-03-08,2.28666666666667,"early",0.93009669869426,NA,NA,NA
+"1098",2366,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.508,"early",1.80352422907489,NA,NA,NA
+"1099",2366,10,"MiddleEarth","LL","blue oak","pd",NA,1.508,NA,1.80352422907489,NA,NA,NA
+"1100",2367,10,"MiddleEarth","LL","blue oak","md",2022-03-08,2.248,"early",1.15922746781116,NA,NA,NA
+"1101",2367,10,"MiddleEarth","LL","blue oak","pd",NA,1.4865,NA,1.97326732673267,NA,NA,NA
+"1102",2367,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.4865,"early",1.97326732673267,NA,NA,NA
+"1103",2367,11,"MiddleEarth","LL","blue oak","md",2022-03-15,2.5195,"early",1.50890003813391,NA,NA,NA
+"1104",2367,11,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1105",2367,12,"MiddleEarth","LL","blue oak","pd",2022-03-23,0.9,"early",NA,NA,NA,NA
+"1106",2367,12,"MiddleEarth","LL","blue oak","md",2022-03-23,1.8,"early",NA,NA,NA,NA
+"1107",2367,12,"MiddleEarth","LL","blue oak","pd",NA,0.9,NA,NA,NA,NA,NA
+"1108",2367,13,"MiddleEarth","LL","blue oak","pd",2022-03-25,1.01666666666667,"early",1.16523235800344,NA,NA,NA
+"1109",2367,13,"MiddleEarth","LL","blue oak","pd",NA,1.01666666666667,NA,1.16523235800344,NA,NA,NA
+"1110",2367,13,"MiddleEarth","LL","blue oak","md",2022-03-25,1.8,"early",1.49305555555556,NA,NA,NA
+"1111",2367,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,1.01666666666667,"early",1.16523235800344,NA,NA,NA
+"1112",2367,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1113",2367,14,"MiddleEarth","LL","blue oak","md",2022-04-06,2.25,"early",0.94551282051282,NA,NA,NA
+"1114",2367,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.2,"late",0.911894173902553,1.22596691543438,0.31155,"2022-04-14"
+"1115",2367,15,"MiddleEarth","LL","blue oak","md",2022-04-13,2.07175,"late",0.894460670211853,1.22596691543438,0.31155,"2022-04-14"
+"1116",2367,17,"MiddleEarth","LL","blue oak","md",2022-04-25,2.71266666666667,"late",0.853072757240405,NA,NA,NA
+"1117",2367,17,"MiddleEarth","LL","blue oak","pd",2022-04-27,1.546,"late",0.964542405366555,NA,NA,NA
+"1118",2367,17,"MiddleEarth","LL","blue oak","pd",NA,1.546,NA,0.964542405366555,NA,NA,NA
+"1119",2367,17,"MiddleEarth","LL","blue oak","md",2022-04-27,2.71266666666667,"late",0.853072757240405,NA,NA,NA
+"1120",2367,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.546,"late",0.964542405366555,NA,NA,NA
+"1121",2367,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.976,"late",0.749014852985753,1.09290414579743,0.3145,"2022-05-03"
+"1122",2367,18,"MiddleEarth","LL","blue oak","pd",NA,1.678,NA,NA,1.09290414579743,0.3145,"2022-05-03"
+"1123",2367,18,"MiddleEarth","LL","blue oak","pd",2022-05-04,1.678,"late",NA,1.09290414579743,0.3145,"2022-05-03"
+"1124",2367,19,"MiddleEarth","LL","blue oak","md",2022-05-09,2.584,"late",0.856641721234799,NA,NA,NA
+"1125",2367,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.678,"late",0.745283018867924,NA,NA,NA
+"1126",2367,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,2.01425,"late",0.814159292035398,0.964622726117697,0.3621,"2022-05-23"
+"1127",2367,21,"MiddleEarth","LL","blue oak","md",2022-05-23,2.96033333333333,"late",0.728358208955224,0.964622726117697,0.3621,"2022-05-23"
+"1128",2367,21,"MiddleEarth","LL","blue oak","pd",2022-05-25,2.01425,"late",0.814159292035398,0.964622726117697,0.3621,"2022-05-23"
+"1129",2367,21,"MiddleEarth","LL","blue oak","pd",NA,2.01425,NA,0.814159292035398,0.964622726117697,0.3621,"2022-05-23"
+"1130",2367,29,"MiddleEarth","LL","blue oak","md",2022-07-19,3.88333333333333,"late",0.496491228070175,NA,NA,NA
+"1131",2367,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,3.26666666666667,"late",0.577777777777778,NA,NA,NA
+"1132",2367,33,"MiddleEarth","LL","blue oak","md",2022-08-18,5.2685,"late",0.622279792746114,NA,NA,NA
+"1133",2367,33,"MiddleEarth","LL","blue oak","md",NA,5.2685,NA,0.622279792746114,NA,NA,NA
+"1134",2367,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,3.507,"late",0.596755797744266,NA,NA,NA
+"1135",2367,33,"MiddleEarth","LL","blue oak","pd",NA,3.507,NA,0.596755797744266,NA,NA,NA
+"1136",2367,38,"MiddleEarth","LL","blue oak","md",NA,NA,NA,0.636964845109641,NA,NA,NA
+"1137",2367,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.916339869281046,NA,NA,NA
+"1138",2367,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,0.967078189300412,NA,NA,NA
+"1139",2369,10,"MiddleEarth","LL","blue oak","md",2022-03-08,2.2265,"early",0.86697073675518,NA,NA,NA
+"1140",2369,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.451,"early",1.22338709677419,NA,NA,NA
+"1141",2369,10,"MiddleEarth","LL","blue oak","pd",NA,1.451,NA,1.22338709677419,NA,NA,NA
+"1142",2369,11,"MiddleEarth","LL","blue oak","pd",NA,1.31166666666667,NA,1.37843013468013,NA,NA,NA
+"1143",2369,11,"MiddleEarth","LL","blue oak","pd",2022-03-15,1.31166666666667,"early",1.37843013468013,NA,NA,NA
+"1144",2369,11,"MiddleEarth","LL","blue oak","md",2022-03-15,2.452,"early",1.3483612042995,NA,NA,NA
+"1145",2369,12,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1146",2369,12,"MiddleEarth","LL","blue oak","md",2022-03-23,2.8,"early",NA,NA,NA,NA
+"1147",2369,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,1.045,"early",1.09925,NA,NA,NA
+"1148",2369,13,"MiddleEarth","LL","blue oak","md",NA,2.8,NA,1.33101045296167,NA,NA,NA
+"1149",2369,13,"MiddleEarth","LL","blue oak","md",2022-03-25,2.8,"early",1.33101045296167,NA,NA,NA
+"1150",2369,14,"MiddleEarth","LL","blue oak","md",2022-04-06,2.63333333333333,"early",0.969417778422419,NA,NA,NA
+"1151",2369,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1152",2369,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.46666666666667,"late",0.848496034167175,1.13416746385791,0.3969,"2022-04-14"
+"1153",2369,15,"MiddleEarth","LL","blue oak","md",2022-04-13,2.66675,"late",NA,1.13416746385791,0.3969,"2022-04-14"
+"1154",2369,17,"MiddleEarth","LL","blue oak","md",2022-04-27,3.35,"late",0.819589624467673,NA,NA,NA
+"1155",2369,17,"MiddleEarth","LL","blue oak","pd",2022-04-27,1.50533333333333,"late",0.876603213176725,NA,NA,NA
+"1156",2369,17,"MiddleEarth","LL","blue oak","md",2022-04-25,3.35,"late",0.819589624467673,NA,NA,NA
+"1157",2369,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.50533333333333,"late",0.876603213176725,NA,NA,NA
+"1158",2369,18,"MiddleEarth","LL","blue oak","pd",2022-05-04,1.693,"late",NA,0.906313706252513,0.545566666666667,"2022-05-03"
+"1159",2369,18,"MiddleEarth","LL","blue oak","pd",NA,1.693,NA,NA,0.906313706252513,0.545566666666667,"2022-05-03"
+"1160",2369,18,"MiddleEarth","LL","blue oak","md",2022-05-04,3.0355,"late",0.737671056028918,0.906313706252513,0.545566666666667,"2022-05-03"
+"1161",2369,19,"MiddleEarth","LL","blue oak","md",2022-05-09,2.803,"late",0.815533980582524,NA,NA,NA
+"1162",2369,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.693,"late",0.733800350262697,NA,NA,NA
+"1163",2369,21,"MiddleEarth","LL","blue oak","pd",2022-05-25,1.898,"late",0.835518474374255,0.889238236358177,0.597733333333333,"2022-05-25"
+"1164",2369,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,1.898,"late",0.835518474374255,0.889238236358177,0.597733333333333,"2022-05-25"
+"1165",2369,21,"MiddleEarth","LL","blue oak","md",2022-05-23,3.72,"late",0.796042617960426,0.889238236358177,0.597733333333333,"2022-05-25"
+"1166",2369,29,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1167",2369,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,4.63,"late",0.521282798833819,NA,NA,NA
+"1168",2369,33,"MiddleEarth","LL","blue oak","md",2022-08-18,4.926,"late",0.560145492335672,NA,NA,NA
+"1169",2369,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,3.314,"late",0.512151215121512,NA,NA,NA
+"1170",2369,33,"MiddleEarth","LL","blue oak","md",NA,4.926,NA,0.560145492335672,NA,NA,NA
+"1171",2369,33,"MiddleEarth","LL","blue oak","pd",NA,3.314,NA,0.512151215121512,NA,NA,NA
+"1172",2369,37,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.725609139621879,0.361922714420358,0.0384,"2022-09-12"
+"1173",2369,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1174",2369,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.831557410436209,NA,NA,NA
+"1175",2370,10,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1176",2370,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.45033333333333,"early",NA,NA,NA,NA
+"1177",2370,12,"Weathertop","LL","blue oak","pd",2022-03-23,1.25,"early",NA,NA,NA,NA
+"1178",2370,13,"Weathertop","LL","blue oak","pd",2022-03-25,1.20566666666667,"early",1.60430107526882,NA,NA,NA
+"1179",2370,13,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1180",2370,13,"Weathertop","LL","blue oak","pd",2022-03-30,1.20566666666667,"early",1.60430107526882,NA,NA,NA
+"1181",2370,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1182",2370,14,"Weathertop","LL","blue oak","md",2022-04-06,3.1,"early",1.23241590214067,NA,NA,NA
+"1183",2370,15,"Weathertop","LL","blue oak","md",2022-04-13,1.40433333333333,"late",0.943140585749366,1.46007805793601,0.26,"2022-04-12"
+"1184",2370,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.433,"late",1.0767283052518,1.46007805793601,0.26,"2022-04-12"
+"1185",2370,15,"Weathertop","LL","blue oak","pd",NA,1.433,NA,1.0767283052518,1.46007805793601,0.26,"2022-04-12"
+"1186",2370,17,"Weathertop","LL","blue oak","md",2022-04-25,2.28725,"late",0.932712956335004,NA,NA,NA
+"1187",2370,17,"Weathertop","LL","blue oak","pd",NA,1.3795,NA,0.94393727848781,NA,NA,NA
+"1188",2370,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.3795,"late",0.94393727848781,NA,NA,NA
+"1189",2370,18,"Weathertop","LL","blue oak","md",2022-05-04,2.68366666666667,"late",0.803758847937515,1.01869096318965,0.4677,"2022-05-04"
+"1190",2370,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,1.01869096318965,0.4677,"2022-05-04"
+"1191",2370,19,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1192",2370,19,"Weathertop","LL","blue oak","md",2022-05-09,2.34533333333333,"late",0.863404526617788,NA,NA,NA
+"1193",2370,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.92933333333333,"late",0.690821256038647,1.11726572323184,0.2998,"2022-05-25"
+"1194",2370,21,"Weathertop","LL","blue oak","md",2022-05-25,3.2,"late",NA,1.11726572323184,0.2998,"2022-05-25"
+"1195",2370,29,"Weathertop","LL","blue oak","md",2022-07-19,4.43333333333333,"late",1.11228070175439,NA,NA,NA
+"1196",2370,29,"Weathertop","LL","blue oak","pd",2022-07-19,3.53333333333333,"late",0.596811594202899,NA,NA,NA
+"1197",2370,33,"Weathertop","LL","blue oak","md",2022-08-18,4.79925,"late",0.561261558784676,NA,NA,NA
+"1198",2370,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.744,"late",0.607212857702862,NA,NA,NA
+"1199",2370,33,"Weathertop","LL","blue oak","md",NA,4.79925,NA,0.561261558784676,NA,NA,NA
+"1200",2370,33,"Weathertop","LL","blue oak","pd",NA,3.744,NA,0.607212857702862,NA,NA,NA
+"1201",2370,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.718773829495196,0.902556105511761,0.0870666666666667,"2022-09-12"
+"1202",2370,38,"Weathertop","LL","blue oak","md",NA,NA,NA,0.62901023890785,NA,NA,NA
+"1203",2370,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,1.09947113227732,NA,NA,NA
+"1204",2370,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,1.19261744966443,NA,NA,NA
+"1205",2371,9,"Weathertop","LL","blue oak","pd",2022-02-28,1.642,"early",NA,NA,NA,NA
+"1206",2371,9,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1207",2371,10,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1208",2371,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.2455,"early",NA,NA,NA,NA
+"1209",2371,12,"Weathertop","LL","blue oak","pd",2022-03-23,1.15,"early",NA,NA,NA,NA
+"1210",2371,13,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1211",2371,13,"Weathertop","LL","blue oak","pd",2022-03-30,1.02040816326531,"early",2.06673908797969,NA,NA,NA
+"1212",2371,13,"Weathertop","LL","blue oak","pd",2022-03-25,1.02040816326531,"early",2.06673908797969,NA,NA,NA
+"1213",2371,14,"Weathertop","LL","blue oak","md",2022-04-06,2.65,"early",1.26292961277129,NA,NA,NA
+"1214",2371,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1215",2371,15,"Weathertop","LL","blue oak","md",2022-04-13,1.413,"late",1.07694983385681,1.49515699223728,0.673,"2022-04-12"
+"1216",2371,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.002,"late",1.10038772988972,1.49515699223728,0.673,"2022-04-12"
+"1217",2371,17,"Weathertop","LL","blue oak","pd",2022-04-25,0.952333333333333,"late",1.05661467359908,NA,NA,NA
+"1218",2371,17,"Weathertop","LL","blue oak","md",2022-04-25,2.696,"late",0.917525773195876,NA,NA,NA
+"1219",2371,17,"Weathertop","LL","blue oak","md",NA,2.696,NA,0.917525773195876,NA,NA,NA
+"1220",2371,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.932367550344684,0.535433333333333,"2022-05-04"
+"1221",2371,18,"Weathertop","LL","blue oak","md",2022-05-04,2.97433333333333,"late",0.755898366606171,0.932367550344684,0.535433333333333,"2022-05-04"
+"1222",2371,19,"Weathertop","LL","blue oak","md",2022-05-09,2.298,"late",0.864293659621802,NA,NA,NA
+"1223",2371,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.265,"late",0.84964200477327,NA,NA,NA
+"1224",2371,19,"Weathertop","LL","blue oak","md",NA,2.298,NA,0.864293659621802,NA,NA,NA
+"1225",2371,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.5165,"late",0.864904552129222,0.895770322347498,0.4201,"2022-05-25"
+"1226",2371,21,"Weathertop","LL","blue oak","md",2022-05-25,2.55666666666667,"late",NA,0.895770322347498,0.4201,"2022-05-25"
+"1227",2371,21,"Weathertop","LL","blue oak","pd",NA,1.5165,NA,0.864904552129222,0.895770322347498,0.4201,"2022-05-25"
+"1228",2371,29,"Weathertop","LL","blue oak","md",2022-07-19,3.45,"late",0.611168831168831,NA,NA,NA
+"1229",2371,29,"Weathertop","LL","blue oak","pd",2022-07-19,3.13333333333333,"late",0.66074074074074,NA,NA,NA
+"1230",2371,33,"Weathertop","LL","blue oak","pd",NA,2.98575,NA,0.701129197829594,NA,NA,NA
+"1231",2371,33,"Weathertop","LL","blue oak","md",2022-08-18,4.72,"late",NA,NA,NA,NA
+"1232",2371,33,"Weathertop","LL","blue oak","pd",2022-08-18,2.98575,"late",0.701129197829594,NA,NA,NA
+"1233",2371,33,"Weathertop","LL","blue oak","md",NA,4.72,NA,NA,NA,NA,NA
+"1234",2371,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.858463619963921,0.987667278929415,0.7528,"2022-09-12"
+"1235",2371,38,"Weathertop","LL","blue oak","md",NA,NA,NA,0.630022183879714,NA,NA,NA
+"1236",2371,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1237",2371,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,1.09682926829268,NA,NA,NA
+"1238",2372,9,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1239",2372,9,"Weathertop","LL","blue oak","pd",2022-02-28,1.302,"early",NA,NA,NA,NA
+"1240",2372,10,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1241",2372,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.485,"early",NA,NA,NA,NA
+"1242",2372,12,"Weathertop","LL","blue oak","md",2022-03-23,1.87,"early",NA,NA,NA,NA
+"1243",2372,12,"Weathertop","LL","blue oak","pd",2022-03-23,1.75,"early",NA,NA,NA,NA
+"1244",2372,13,"Weathertop","LL","blue oak","pd",2022-03-25,1.51666666666667,"early",1.91440430176436,NA,NA,NA
+"1245",2372,13,"Weathertop","LL","blue oak","md",2022-03-25,1.87,"early",NA,NA,NA,NA
+"1246",2372,13,"Weathertop","LL","blue oak","pd",2022-03-30,1.51666666666667,"early",1.91440430176436,NA,NA,NA
+"1247",2372,13,"Weathertop","LL","blue oak","pd",NA,1.51666666666667,NA,1.91440430176436,NA,NA,NA
+"1248",2372,14,"Weathertop","LL","blue oak","md",2022-04-06,3.08333333333333,"early",0.971753934387075,NA,NA,NA
+"1249",2372,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1250",2372,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.211,"late",1.13798323092678,1.4238803826694,0.757,"2022-04-12"
+"1251",2372,15,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,1.4238803826694,0.757,"2022-04-12"
+"1252",2372,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.307,"late",0.918851618573312,NA,NA,NA
+"1253",2372,17,"Weathertop","LL","blue oak","md",NA,1.9765,NA,0.84493227463802,NA,NA,NA
+"1254",2372,17,"Weathertop","LL","blue oak","md",2022-04-25,1.9765,"late",0.84493227463802,NA,NA,NA
+"1255",2372,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.972880537050482,0.4575,"2022-05-04"
+"1256",2372,18,"Weathertop","LL","blue oak","md",2022-05-04,3.519,"late",0.752823920265781,0.972880537050482,0.4575,"2022-05-04"
+"1257",2372,19,"Weathertop","LL","blue oak","md",2022-05-09,1.9765,"late",0.836102564102564,NA,NA,NA
+"1258",2372,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.851,"late",0.69811320754717,NA,NA,NA
+"1259",2372,21,"Weathertop","LL","blue oak","md",2022-05-25,2.18,"late",NA,0.87079969359467,0.49965,"2022-05-25"
+"1260",2372,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.78833333333333,"late",0.883656509695291,0.87079969359467,0.49965,"2022-05-25"
+"1261",2372,29,"Weathertop","LL","blue oak","pd",NA,2.76666666666667,NA,0.608551483420593,NA,NA,NA
+"1262",2372,29,"Weathertop","LL","blue oak","md",2022-07-19,3.92,"late",0.597413793103448,NA,NA,NA
+"1263",2372,29,"Weathertop","LL","blue oak","pd",2022-07-19,2.76666666666667,"late",0.608551483420593,NA,NA,NA
+"1264",2372,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.6175,"late",0.733102253032929,NA,NA,NA
+"1265",2372,33,"Weathertop","LL","blue oak","md",2022-08-18,4.97566666666667,"late",NA,NA,NA,NA
+"1266",2372,33,"Weathertop","LL","blue oak","pd",NA,3.6175,NA,0.733102253032929,NA,NA,NA
+"1267",2372,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.789003212440058,0.654730078371925,0.17865,"2022-09-12"
+"1268",2372,38,"Weathertop","LL","blue oak","md",NA,NA,NA,0.62704343764596,NA,NA,NA
+"1269",2372,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,1.35625,NA,NA,NA
+"1270",2372,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1271",2373,9,"Weathertop","LL","blue oak","pd",2022-02-28,1.31,"early",NA,NA,NA,NA
+"1272",2373,9,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1273",2373,10,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1274",2373,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.43,"early",1.93650793650794,NA,NA,NA
+"1275",2373,12,"Weathertop","LL","blue oak","pd",2022-03-23,1.04166666666667,"early",NA,NA,NA,NA
+"1276",2373,13,"Weathertop","LL","blue oak","pd",2022-03-25,1.04166666666667,"early",2.22522522522523,NA,NA,NA
+"1277",2373,13,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1278",2374,10,"Ridge","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1279",2374,10,"Ridge","LL","blue oak","pd",2022-03-08,1.1375,"early",1.37008547008547,NA,NA,NA
+"1280",2374,15,"Ridge","LL","blue oak","md",2022-04-13,1.6905,"late",0.970157400981258,NA,NA,NA
+"1281",2374,15,"Ridge","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1282",2375,12,"Hobbiton","LL","blue oak","pd",2022-03-23,1.075,"early",NA,NA,NA,NA
+"1283",2375,13,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1284",2375,13,"Hobbiton","LL","blue oak","pd",2022-03-25,1.0892,"early",1.71105527638191,NA,NA,NA
+"1285",2375,13,"Hobbiton","LL","blue oak","pd",2022-03-30,1.0892,"early",1.71105527638191,NA,NA,NA
+"1286",2375,14,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1287",2375,14,"Hobbiton","LL","blue oak","md",2022-04-06,2.8,"early",1.0686638471178,NA,NA,NA
+"1288",2375,15,"Hobbiton","LL","blue oak","pd",2022-04-11,1.33333333333333,"late",1.09138655598849,0.918450406994272,0.6093,"2022-04-14"
+"1289",2375,15,"Hobbiton","LL","blue oak","md",2022-04-13,1.929,"late",0.959370729663042,0.918450406994272,0.6093,"2022-04-14"
+"1290",2375,17,"Hobbiton","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1291",2375,17,"Hobbiton","LL","blue oak","pd",2022-04-25,1.3405,"late",0.959436232382262,NA,NA,NA
+"1292",2375,18,"Hobbiton","LL","blue oak","md",2022-05-04,3.16133333333333,"late",0.780154713016904,1.02302337184806,0.559975,"2022-05-04"
+"1293",2375,18,"Hobbiton","LL","blue oak","pd",NA,NA,NA,NA,1.02302337184806,0.559975,"2022-05-04"
+"1294",2375,19,"Hobbiton","LL","blue oak","pd",2022-05-09,1.55616666666667,"late",NA,NA,NA,NA
+"1295",2375,19,"Hobbiton","LL","blue oak","md",2022-05-09,2.60266666666667,"late",0.852332746478873,NA,NA,NA
+"1296",2375,19,"Hobbiton","LL","blue oak","md",NA,2.60266666666667,NA,0.852332746478873,NA,NA,NA
+"1297",2375,21,"Hobbiton","LL","blue oak","pd",2022-05-23,1.69933333333333,"late",0.851851851851852,1.0692774463686,0.478666666666667,"2022-05-25"
+"1298",2375,21,"Hobbiton","LL","blue oak","md",2022-05-23,3.442,"late",0.763187588152327,1.0692774463686,0.478666666666667,"2022-05-25"
+"1299",2375,21,"Hobbiton","LL","blue oak","md",NA,3.442,NA,0.763187588152327,1.0692774463686,0.478666666666667,"2022-05-25"
+"1300",2375,29,"Hobbiton","LL","blue oak","md",2022-07-19,4.5,"late",0.576752767527675,NA,NA,NA
+"1301",2375,29,"Hobbiton","LL","blue oak","pd",2022-07-19,2.18666666666667,"late",0.701626016260163,NA,NA,NA
+"1302",2375,33,"Hobbiton","LL","blue oak","pd",NA,3.11366666666667,NA,0.676780581283935,NA,NA,NA
+"1303",2375,33,"Hobbiton","LL","blue oak","pd",2022-08-18,3.11366666666667,"late",0.676780581283935,NA,NA,NA
+"1304",2375,33,"Hobbiton","LL","blue oak","md",NA,4.1515,NA,0.602439489231942,NA,NA,NA
+"1305",2375,33,"Hobbiton","LL","blue oak","md",2022-08-18,4.1515,"late",0.602439489231942,NA,NA,NA
+"1306",2375,37,"Hobbiton","LL","blue oak","pd",NA,NA,NA,1.00362478031634,0.944141252006421,0.5882,"2022-09-12"
+"1307",2375,38,"Hobbiton","LL","blue oak","md",NA,NA,NA,0.668363351605325,NA,NA,NA
+"1308",2375,NA,"Hobbiton","LL","blue oak","pd",NA,NA,NA,1.09973684210526,NA,NA,NA
+"1309",2375,NA,"Hobbiton","LL","blue oak","md",NA,NA,NA,1.11143695014663,NA,NA,NA
+"1310",2376,9,"MiddleEarth","LL","live oak","md",2022-02-28,1.69166666666667,"early",0.694415536938921,NA,NA,NA
+"1311",2376,9,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1312",2376,10,"MiddleEarth","LL","live oak","pd",2022-03-08,0.820666666666667,"early",0.69395982568142,NA,NA,NA
+"1313",2376,10,"MiddleEarth","LL","live oak","md",2022-03-08,2.683,"early",0.672467668538756,NA,NA,NA
+"1314",2376,10,"MiddleEarth","LL","live oak","pd",NA,0.820666666666667,NA,0.69395982568142,NA,NA,NA
+"1315",2376,12,"MiddleEarth","LL","live oak","pd",2022-03-23,0.441666666666667,"early",NA,NA,NA,NA
+"1316",2376,12,"MiddleEarth","LL","live oak","md",2022-03-23,2.4,"early",NA,NA,NA,NA
+"1317",2376,13,"MiddleEarth","LL","live oak","md",2022-03-25,2.4,"early",0.672386895475819,NA,NA,NA
+"1318",2376,13,"MiddleEarth","LL","live oak","pd",2022-03-25,0.3625,"early",0.702810708337763,NA,NA,NA
+"1319",2376,13,"MiddleEarth","LL","live oak","pd",2022-03-30,0.3625,"early",0.702810708337763,NA,NA,NA
+"1320",2376,14,"MiddleEarth","LL","live oak","md",2022-04-06,2.8,"early",0.638131812153933,NA,NA,NA
+"1321",2376,14,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1322",2376,15,"MiddleEarth","LL","live oak","pd",2022-04-11,0.828333333333333,"late",0.58289593755656,NA,NA,NA
+"1323",2376,15,"MiddleEarth","LL","live oak","md",2022-04-13,1.55933333333333,"late",0.636271200389131,NA,NA,NA
+"1324",2376,17,"MiddleEarth","LL","live oak","md",2022-04-25,2.48825,"late",0.628071594701183,NA,NA,NA
+"1325",2376,17,"MiddleEarth","LL","live oak","pd",NA,0.969333333333333,NA,0.661490214998643,NA,NA,NA
+"1326",2376,17,"MiddleEarth","LL","live oak","pd",2022-04-25,0.969333333333333,"late",0.661490214998643,NA,NA,NA
+"1327",2376,18,"MiddleEarth","LL","live oak","md",2022-05-04,2.98,"late",0.58828469452026,NA,NA,NA
+"1328",2376,18,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1329",2376,19,"MiddleEarth","LL","live oak","md",2022-05-09,3.50566666666667,"late",0.62862783810464,NA,NA,NA
+"1330",2376,19,"MiddleEarth","LL","live oak","md",NA,3.50566666666667,NA,0.62862783810464,NA,NA,NA
+"1331",2376,19,"MiddleEarth","LL","live oak","pd",2022-05-09,0.7265,"late",0.578112609040444,NA,NA,NA
+"1332",2376,21,"MiddleEarth","LL","live oak","md",NA,2.35,NA,0.58600129617628,NA,NA,NA
+"1333",2376,21,"MiddleEarth","LL","live oak","pd",2022-05-23,1.2044,"late",0.659090909090909,NA,NA,NA
+"1334",2376,21,"MiddleEarth","LL","live oak","md",2022-05-23,2.35,"late",0.58600129617628,NA,NA,NA
+"1335",2376,29,"MiddleEarth","LL","live oak","md",2022-07-19,5,"late",0.561129568106312,NA,NA,NA
+"1336",2376,29,"MiddleEarth","LL","live oak","pd",2022-07-19,2.05,"late",NA,NA,NA,NA
+"1337",2376,33,"MiddleEarth","LL","live oak","pd",NA,2.519,NA,0.554793948006353,NA,NA,NA
+"1338",2376,33,"MiddleEarth","LL","live oak","md",NA,3.76166666666667,NA,0.548951211571555,NA,NA,NA
+"1339",2376,33,"MiddleEarth","LL","live oak","pd",2022-08-18,2.519,"late",0.554793948006353,NA,NA,NA
+"1340",2376,33,"MiddleEarth","LL","live oak","md",2022-08-18,3.76166666666667,"late",0.548951211571555,NA,NA,NA
+"1341",2376,37,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.567171417793824,NA,NA,NA
+"1342",2376,38,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.532171712255427,NA,NA,NA
+"1343",2376,NA,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1344",2376,NA,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.582518210197711,NA,NA,NA
+"1345",2377,9,"MiddleEarth","LL","live oak","md",2022-02-28,2.14,"early",0.677196164961801,NA,NA,NA
+"1346",2377,9,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1347",2377,10,"MiddleEarth","LL","live oak","pd",2022-03-08,0.3665,"early",NA,NA,NA,NA
+"1348",2377,10,"MiddleEarth","LL","live oak","pd",NA,0.3665,NA,NA,NA,NA,NA
+"1349",2377,10,"MiddleEarth","LL","live oak","md",2022-03-08,2.21666666666667,"early",1.2779567436198,NA,NA,NA
+"1350",2377,12,"MiddleEarth","LL","live oak","md",2022-03-23,2.3,"early",NA,NA,NA,NA
+"1351",2377,13,"MiddleEarth","LL","live oak","pd",2022-03-30,0.243333333333333,"early",0.5585931254996,NA,NA,NA
+"1352",2377,13,"MiddleEarth","LL","live oak","pd",NA,0.243333333333333,NA,0.5585931254996,NA,NA,NA
+"1353",2377,13,"MiddleEarth","LL","live oak","md",2022-03-25,2.3,"early",0.815217391304348,NA,NA,NA
+"1354",2377,14,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1355",2377,14,"MiddleEarth","LL","live oak","md",2022-04-06,2.815,"early",0.657732873851295,NA,NA,NA
+"1356",2377,15,"MiddleEarth","LL","live oak","md",2022-04-13,1.90322857142857,"late",0.828499594523267,1.00555679039787,0.4524,"2022-04-14"
+"1357",2377,15,"MiddleEarth","LL","live oak","pd",2022-04-11,0.825,"late",0.582370681224996,1.00555679039787,0.4524,"2022-04-14"
+"1358",2377,15,"MiddleEarth","LL","live oak","pd",NA,0.825,NA,0.582370681224996,1.00555679039787,0.4524,"2022-04-14"
+"1359",2377,17,"MiddleEarth","LL","live oak","pd",2022-04-25,1.307,"late",0.639235465887975,NA,NA,NA
+"1360",2377,17,"MiddleEarth","LL","live oak","md",2022-04-25,2.96633333333333,"late",0.624129930394431,NA,NA,NA
+"1361",2377,18,"MiddleEarth","LL","live oak","md",2022-05-04,2.10114285714286,"late",0.5875,NA,NA,NA
+"1362",2377,18,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1363",2377,19,"MiddleEarth","LL","live oak","md",2022-05-09,1.77316666666667,"late",0.745815602836879,NA,NA,NA
+"1364",2377,19,"MiddleEarth","LL","live oak","pd",2022-05-09,0.583333333333333,"late",0.572750210260723,NA,NA,NA
+"1365",2377,19,"MiddleEarth","LL","live oak","pd",NA,0.583333333333333,NA,0.572750210260723,NA,NA,NA
+"1366",2377,21,"MiddleEarth","LL","live oak","md",2022-05-23,1.61575,"late",0.56870026525199,1.25901639344262,0.0768,"2022-05-25"
+"1367",2377,21,"MiddleEarth","LL","live oak","pd",2022-05-23,0.905666666666667,"late",0.547619047619048,1.25901639344262,0.0768,"2022-05-25"
+"1368",2377,21,"MiddleEarth","LL","live oak","md",NA,1.61575,NA,0.56870026525199,1.25901639344262,0.0768,"2022-05-25"
+"1369",2377,29,"MiddleEarth","LL","live oak","pd",2022-07-19,2.36666666666667,"late",0.536885245901639,NA,NA,NA
+"1370",2377,29,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1371",2377,33,"MiddleEarth","LL","live oak","md",NA,4.0285,NA,0.423654462628649,NA,NA,NA
+"1372",2377,33,"MiddleEarth","LL","live oak","pd",2022-08-18,1.42,"late",NA,NA,NA,NA
+"1373",2377,33,"MiddleEarth","LL","live oak","md",2022-08-18,4.0285,"late",0.423654462628649,NA,NA,NA
+"1374",2377,37,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.541074737492279,NA,NA,NA
+"1375",2377,37,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.604042573967386,NA,NA,NA
+"1376",2377,NA,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.749440280193797,NA,NA,NA
+"1377",2377,NA,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1378",2378,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.02433333333333,"early",1.35982805577392,NA,NA,NA
+"1379",2378,10,"MiddleEarth","LL","blue oak","pd",NA,1.02433333333333,NA,1.35982805577392,NA,NA,NA
+"1380",2378,10,"MiddleEarth","LL","blue oak","md",2022-03-08,1.7875,"early",1.39488995469623,NA,NA,NA
+"1381",2378,12,"MiddleEarth","LL","blue oak","md",2022-03-23,2.95,"early",NA,NA,NA,NA
+"1382",2378,12,"MiddleEarth","LL","blue oak","pd",2022-03-23,0.991666666666667,"early",NA,NA,NA,NA
+"1383",2378,13,"MiddleEarth","LL","blue oak","pd",2022-03-25,0.781780821917808,"early",0.876486224398032,NA,NA,NA
+"1384",2378,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,0.781780821917808,"early",0.876486224398032,NA,NA,NA
+"1385",2378,13,"MiddleEarth","LL","blue oak","md",NA,2.95,NA,1.10111317254174,NA,NA,NA
+"1386",2378,13,"MiddleEarth","LL","blue oak","md",2022-03-25,2.95,"early",1.10111317254174,NA,NA,NA
+"1387",2378,14,"MiddleEarth","LL","blue oak","md",2022-04-06,2.85,"early",0.882064905974892,NA,NA,NA
+"1388",2378,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1389",2378,15,"MiddleEarth","LL","blue oak","md",NA,1.621,NA,0.876132113549622,1.19257950530035,0.3375,"2022-04-14"
+"1390",2378,15,"MiddleEarth","LL","blue oak","md",2022-04-13,1.621,"late",0.876132113549622,1.19257950530035,0.3375,"2022-04-14"
+"1391",2378,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.305,"late",0.84121444328721,1.19257950530035,0.3375,"2022-04-14"
+"1392",2378,17,"MiddleEarth","LL","blue oak","md",2022-04-25,3.096,"late",0.844955991875423,NA,NA,NA
+"1393",2378,17,"MiddleEarth","LL","blue oak","pd",NA,1.5095,NA,0.910086186815746,NA,NA,NA
+"1394",2378,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.5095,"late",0.910086186815746,NA,NA,NA
+"1395",2378,18,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,0.851773264625644,0.281,"2022-05-04"
+"1396",2378,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.466,"late",0.806794267962722,0.851773264625644,0.281,"2022-05-04"
+"1397",2378,19,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1398",2378,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.55,"late",0.796276013143483,NA,NA,NA
+"1399",2378,21,"MiddleEarth","LL","blue oak","pd",NA,1.70233333333333,NA,0.856899488926746,1.03678588637324,0.512533333333333,"2022-05-25"
+"1400",2378,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,1.70233333333333,"late",0.856899488926746,1.03678588637324,0.512533333333333,"2022-05-25"
+"1401",2378,21,"MiddleEarth","LL","blue oak","md",2022-05-23,3.192,"late",0.760397830018083,1.03678588637324,0.512533333333333,"2022-05-25"
+"1402",2378,29,"MiddleEarth","LL","blue oak","md",2022-07-19,3.7375,"late",0.613399503722084,NA,NA,NA
+"1403",2378,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,2.005,"late",0.659913793103448,NA,NA,NA
+"1404",2378,33,"MiddleEarth","LL","blue oak","pd",NA,3.0715,NA,0.635625596943649,NA,NA,NA
+"1405",2378,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,3.0715,"late",0.635625596943649,NA,NA,NA
+"1406",2378,33,"MiddleEarth","LL","blue oak","md",2022-08-18,3.946,"late",0.643972517176764,NA,NA,NA
+"1407",2378,33,"MiddleEarth","LL","blue oak","md",NA,3.946,NA,0.643972517176764,NA,NA,NA
+"1408",2378,37,"MiddleEarth","LL","blue oak","md",NA,NA,NA,0.633228320344885,0.849584431380499,0.4191,"2022-09-12"
+"1409",2378,37,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.824079723408582,0.849584431380499,0.4191,"2022-09-12"
+"1410",2378,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.866971279373368,NA,NA,NA
+"1411",2378,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,1.46174863387978,NA,NA,NA
+"1412",2379,10,"MiddleEarth","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1413",2379,10,"MiddleEarth","LL","blue oak","pd",2022-03-08,1.23875,"early",NA,NA,NA,NA
+"1414",2379,12,"MiddleEarth","LL","blue oak","md",2022-03-23,3.19375,"early",NA,NA,NA,NA
+"1415",2379,12,"MiddleEarth","LL","blue oak","pd",2022-03-23,1.032,"early",NA,NA,NA,NA
+"1416",2379,13,"MiddleEarth","LL","blue oak","pd",2022-03-25,0.764658385093168,"early",0.728122541482708,NA,NA,NA
+"1417",2379,13,"MiddleEarth","LL","blue oak","pd",2022-03-30,0.764658385093168,"early",0.728122541482708,NA,NA,NA
+"1418",2379,13,"MiddleEarth","LL","blue oak","md",2022-03-25,3.19375,"early",1.01785714285714,NA,NA,NA
+"1419",2379,13,"MiddleEarth","LL","blue oak","md",NA,3.19375,NA,1.01785714285714,NA,NA,NA
+"1420",2379,14,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1421",2379,14,"MiddleEarth","LL","blue oak","md",2022-04-06,2.55,"early",0.857150331356819,NA,NA,NA
+"1422",2379,15,"MiddleEarth","LL","blue oak","md",2022-04-13,2.443,"late",0.788168650876367,1.09923179328115,0.483366666666667,"2022-04-14"
+"1423",2379,15,"MiddleEarth","LL","blue oak","pd",2022-04-11,1.179,"late",0.81070309122352,1.09923179328115,0.483366666666667,"2022-04-14"
+"1424",2379,15,"MiddleEarth","LL","blue oak","pd",NA,1.179,NA,0.81070309122352,1.09923179328115,0.483366666666667,"2022-04-14"
+"1425",2379,17,"MiddleEarth","LL","blue oak","md",2022-04-25,2.895,"late",0.851531406817789,NA,NA,NA
+"1426",2379,17,"MiddleEarth","LL","blue oak","pd",NA,1.246,NA,0.849383538820394,NA,NA,NA
+"1427",2379,17,"MiddleEarth","LL","blue oak","pd",2022-04-25,1.246,"late",0.849383538820394,NA,NA,NA
+"1428",2379,18,"MiddleEarth","LL","blue oak","md",2022-05-04,2.94875,"late",0.739221431561323,0.931639891951103,0.5145,"2022-05-04"
+"1429",2379,18,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,NA,0.931639891951103,0.5145,"2022-05-04"
+"1430",2379,19,"MiddleEarth","LL","blue oak","md",2022-05-09,2.43366666666667,"late",0.840024580090127,NA,NA,NA
+"1431",2379,19,"MiddleEarth","LL","blue oak","pd",2022-05-09,1.62533333333333,"late",0.7621776504298,NA,NA,NA
+"1432",2379,21,"MiddleEarth","LL","blue oak","pd",2022-05-23,2.286,"late",0.880687563195147,1.03565286002976,0.596266666666667,"2022-05-25"
+"1433",2379,21,"MiddleEarth","LL","blue oak","md",2022-05-23,3.3255,"late",0.698007033997655,1.03565286002976,0.596266666666667,"2022-05-25"
+"1434",2379,29,"MiddleEarth","LL","blue oak","md",2022-07-19,4.63333333333333,"late",0.568361581920904,NA,NA,NA
+"1435",2379,29,"MiddleEarth","LL","blue oak","pd",2022-07-19,4.06666666666667,"late",NA,NA,NA,NA
+"1436",2379,33,"MiddleEarth","LL","blue oak","md",NA,4.349,NA,0.663801694070753,NA,NA,NA
+"1437",2379,33,"MiddleEarth","LL","blue oak","pd",NA,2.982,NA,0.657824933687003,NA,NA,NA
+"1438",2379,33,"MiddleEarth","LL","blue oak","md",2022-08-18,4.349,"late",0.663801694070753,NA,NA,NA
+"1439",2379,33,"MiddleEarth","LL","blue oak","pd",2022-08-18,2.982,"late",0.657824933687003,NA,NA,NA
+"1440",2379,37,"MiddleEarth","LL","blue oak","md",NA,NA,NA,0.624784853700516,NA,NA,NA
+"1441",2379,37,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.711864406779661,NA,NA,NA
+"1442",2379,NA,"MiddleEarth","LL","blue oak","md",NA,NA,NA,2.08904109589041,NA,NA,NA
+"1443",2379,NA,"MiddleEarth","LL","blue oak","pd",NA,NA,NA,0.831128404669261,NA,NA,NA
+"1444",2380,9,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1445",2380,9,"MiddleEarth","LL","live oak","md",2022-02-28,1.865,"early",0.662534710901753,NA,NA,NA
+"1446",2380,10,"MiddleEarth","LL","live oak","pd",2022-03-08,0.7378,"early",NA,NA,NA,NA
+"1447",2380,10,"MiddleEarth","LL","live oak","md",NA,2.82975,NA,0.620805528431384,NA,NA,NA
+"1448",2380,10,"MiddleEarth","LL","live oak","md",2022-03-08,2.82975,"early",0.620805528431384,NA,NA,NA
+"1449",2380,12,"MiddleEarth","LL","live oak","md",2022-03-23,2.0375,"early",NA,NA,NA,NA
+"1450",2380,12,"MiddleEarth","LL","live oak","pd",2022-03-23,0.3875,"early",NA,NA,NA,NA
+"1451",2380,13,"MiddleEarth","LL","live oak","md",NA,2.0375,NA,0.755165936130244,NA,NA,NA
+"1452",2380,13,"MiddleEarth","LL","live oak","pd",2022-03-25,0.338830769230769,"early",0.711861412692866,NA,NA,NA
+"1453",2380,13,"MiddleEarth","LL","live oak","pd",2022-03-30,0.338830769230769,"early",0.711861412692866,NA,NA,NA
+"1454",2380,13,"MiddleEarth","LL","live oak","md",2022-03-25,2.0375,"early",0.755165936130244,NA,NA,NA
+"1455",2380,14,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1456",2380,14,"MiddleEarth","LL","live oak","md",2022-04-06,3.2,"early",0.558678222136148,NA,NA,NA
+"1457",2380,15,"MiddleEarth","LL","live oak","md",NA,0.831666666666667,NA,0.545797497904175,1.00391644908616,0.1538,"2022-04-14"
+"1458",2380,15,"MiddleEarth","LL","live oak","md",2022-04-13,0.831666666666667,"late",0.545797497904175,1.00391644908616,0.1538,"2022-04-14"
+"1459",2380,15,"MiddleEarth","LL","live oak","pd",2022-04-11,1.11175,"late",0.624946558101248,1.00391644908616,0.1538,"2022-04-14"
+"1460",2380,17,"MiddleEarth","LL","live oak","md",2022-04-25,2.38833333333333,"late",0.582315299592786,NA,NA,NA
+"1461",2380,17,"MiddleEarth","LL","live oak","pd",NA,0.9764,NA,0.587768303440165,NA,NA,NA
+"1462",2380,17,"MiddleEarth","LL","live oak","pd",2022-04-25,0.9764,"late",0.587768303440165,NA,NA,NA
+"1463",2380,18,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1464",2380,18,"MiddleEarth","LL","live oak","md",2022-05-04,2.3756,"late",0.562142221091464,NA,NA,NA
+"1465",2380,19,"MiddleEarth","LL","live oak","pd",2022-05-09,0.515,"late",0.56686626746507,NA,NA,NA
+"1466",2380,19,"MiddleEarth","LL","live oak","md",2022-05-09,1.74233333333333,"late",0.594702467343977,NA,NA,NA
+"1467",2380,21,"MiddleEarth","LL","live oak","md",2022-05-23,3.78,"late",0.567164179104478,0.86862093520057,0.0221,"2022-05-25"
+"1468",2380,21,"MiddleEarth","LL","live oak","md",2022-05-25,3.78,"late",0.567164179104478,0.86862093520057,0.0221,"2022-05-25"
+"1469",2380,21,"MiddleEarth","LL","live oak","pd",2022-05-23,0.850333333333333,"late",0.621621621621622,0.86862093520057,0.0221,"2022-05-25"
+"1470",2380,21,"MiddleEarth","LL","live oak","md",NA,3.78,NA,0.567164179104478,0.86862093520057,0.0221,"2022-05-25"
+"1471",2380,29,"MiddleEarth","LL","live oak","md",2022-07-19,4.1,"late",0.49437984496124,NA,NA,NA
+"1472",2380,29,"MiddleEarth","LL","live oak","pd",2022-07-19,1.816,"late",0.524926686217009,NA,NA,NA
+"1473",2380,29,"MiddleEarth","LL","live oak","md",NA,4.1,NA,0.49437984496124,NA,NA,NA
+"1474",2380,33,"MiddleEarth","LL","live oak","md",NA,3.1325,NA,0.486189138576779,NA,NA,NA
+"1475",2380,33,"MiddleEarth","LL","live oak","md",2022-08-18,3.1325,"late",0.486189138576779,NA,NA,NA
+"1476",2380,33,"MiddleEarth","LL","live oak","pd",2022-08-18,1.38366666666667,"late",NA,NA,NA,NA
+"1477",2380,37,"MiddleEarth","LL","live oak","md",NA,NA,NA,0.474568362109193,0.748818962551453,0.3529,"2022-09-12"
+"1478",2380,37,"MiddleEarth","LL","live oak","pd",NA,NA,NA,NA,0.748818962551453,0.3529,"2022-09-12"
+"1479",2380,NA,"MiddleEarth","LL","live oak","md",NA,NA,NA,NA,NA,NA,NA
+"1480",2380,NA,"MiddleEarth","LL","live oak","pd",NA,NA,NA,0.710814542107685,NA,NA,NA
+"1481",2381,9,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1482",2381,9,"Weathertop","LL","blue oak","md",2022-03-03,1.41,"early",NA,NA,NA,NA
+"1483",2381,10,"Weathertop","LL","blue oak","pd",NA,1.325,NA,1.91173708920188,NA,NA,NA
+"1484",2381,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.325,"early",1.91173708920188,NA,NA,NA
+"1485",2381,10,"Weathertop","LL","blue oak","md",2022-03-08,1.83433333333333,"early",1.79684959227568,NA,NA,NA
+"1486",2381,11,"Weathertop","LL","blue oak","md",NA,1.57875,NA,1.18539957070654,1.75251076040172,2.443,"2022-03-15"
+"1487",2381,11,"Weathertop","LL","blue oak","pd",2022-03-15,1.2254,"early",1.50020295645069,1.75251076040172,2.443,"2022-03-15"
+"1488",2381,11,"Weathertop","LL","blue oak","md",2022-03-15,1.57875,"early",1.18539957070654,1.75251076040172,2.443,"2022-03-15"
+"1489",2381,12,"Weathertop","LL","blue oak","md",2022-03-23,2.33333333333333,"early",NA,NA,NA,NA
+"1490",2381,12,"Weathertop","LL","blue oak","pd",2022-03-23,0.437333333333333,"early",NA,NA,NA,NA
+"1491",2381,13,"Weathertop","LL","blue oak","pd",2022-03-30,0.435333333333333,"early",1.23133600917431,NA,NA,NA
+"1492",2381,13,"Weathertop","LL","blue oak","pd",2022-03-25,0.435333333333333,"early",1.23133600917431,NA,NA,NA
+"1493",2381,13,"Weathertop","LL","blue oak","md",2022-03-25,2.33333333333333,"early",1.19469026548673,NA,NA,NA
+"1494",2381,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1495",2381,14,"Weathertop","LL","blue oak","md",2022-04-06,2.96833333333333,"early",0.828829817498015,NA,NA,NA
+"1496",2381,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.4,"late",0.830493028161795,1.16011728524098,0.949133333333333,"2022-04-14"
+"1497",2381,15,"Weathertop","LL","blue oak","md",2022-04-13,1.594,"late",0.401119091364623,1.16011728524098,0.949133333333333,"2022-04-14"
+"1498",2381,17,"Weathertop","LL","blue oak","md",2022-04-25,2.001,"late",0.830663615560641,NA,NA,NA
+"1499",2381,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.26233333333333,"late",0.891447368421053,NA,NA,NA
+"1500",2381,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1501",2381,18,"Weathertop","LL","blue oak","md",2022-05-04,2.645,"late",0.773996789727127,NA,NA,NA
+"1502",2381,19,"Weathertop","LL","blue oak","pd",2022-05-09,2.36075,"late",0.814345991561181,NA,NA,NA
+"1503",2381,19,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1504",2381,21,"Weathertop","LL","blue oak","pd",NA,1.2905,NA,0.87012987012987,1.00039344627889,0.55885,"2022-05-25"
+"1505",2381,21,"Weathertop","LL","blue oak","md",2022-05-23,2.6365,"late",0.747482571649884,1.00039344627889,0.55885,"2022-05-25"
+"1506",2381,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.2905,"late",0.87012987012987,1.00039344627889,0.55885,"2022-05-25"
+"1507",2381,29,"Weathertop","LL","blue oak","md",2022-07-19,4.63333333333333,"late",0.589850057670127,NA,NA,NA
+"1508",2381,29,"Weathertop","LL","blue oak","pd",2022-07-19,3.53333333333333,"late",0.658724832214765,NA,NA,NA
+"1509",2381,33,"Weathertop","LL","blue oak","md",2022-08-18,4.657,"late",0.633887414443358,NA,NA,NA
+"1510",2381,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.83066666666667,"late",0.649250912753368,NA,NA,NA
+"1511",2381,33,"Weathertop","LL","blue oak","pd",NA,3.83066666666667,NA,0.649250912753368,NA,NA,NA
+"1512",2381,33,"Weathertop","LL","blue oak","md",NA,4.657,NA,0.633887414443358,NA,NA,NA
+"1513",2381,37,"Weathertop","LL","blue oak","md",NA,NA,NA,0.582907820478366,NA,NA,NA
+"1514",2381,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.725470117296593,NA,NA,NA
+"1515",2381,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.847608200455581,NA,NA,NA
+"1516",2381,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1517",2382,9,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1518",2382,9,"Weathertop","LL","blue oak","md",2022-03-03,1.59285714285714,"early",NA,NA,NA,NA
+"1519",2382,10,"Weathertop","LL","blue oak","pd",NA,0.803333333333333,NA,2.0256880733945,NA,NA,NA
+"1520",2382,10,"Weathertop","LL","blue oak","md",2022-03-08,2.07475,"early",1.49851692314513,NA,NA,NA
+"1521",2382,10,"Weathertop","LL","blue oak","pd",2022-03-08,0.803333333333333,"early",2.0256880733945,NA,NA,NA
+"1522",2382,11,"Weathertop","LL","blue oak","md",2022-03-15,2.695,"early",0.961727021849702,1.34732142857143,1.509,"2022-03-15"
+"1523",2382,11,"Weathertop","LL","blue oak","pd",2022-03-15,0.794,"early",1.15732665505226,1.34732142857143,1.509,"2022-03-15"
+"1524",2382,12,"Weathertop","LL","blue oak","md",2022-03-23,2.7,"early",NA,NA,NA,NA
+"1525",2382,12,"Weathertop","LL","blue oak","pd",2022-03-23,0.958,"early",NA,NA,NA,NA
+"1526",2382,13,"Weathertop","LL","blue oak","pd",NA,0.644,NA,1.13538475911016,NA,NA,NA
+"1527",2382,13,"Weathertop","LL","blue oak","pd",2022-03-30,0.644,"early",1.13538475911016,NA,NA,NA
+"1528",2382,13,"Weathertop","LL","blue oak","md",2022-03-25,2.7,"early",NA,NA,NA,NA
+"1529",2382,13,"Weathertop","LL","blue oak","pd",2022-03-25,0.644,"early",1.13538475911016,NA,NA,NA
+"1530",2382,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1531",2382,14,"Weathertop","LL","blue oak","md",2022-04-06,3.15,"early",0.781817866840269,NA,NA,NA
+"1532",2382,15,"Weathertop","LL","blue oak","md",NA,1.7642,NA,0.796443904027983,NA,NA,NA
+"1533",2382,15,"Weathertop","LL","blue oak","md",2022-04-13,1.7642,"late",0.796443904027983,NA,NA,NA
+"1534",2382,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.71428571428571,"late",0.788744695307031,NA,NA,NA
+"1535",2382,17,"Weathertop","LL","blue oak","pd",NA,1.20466666666667,NA,0.738170782176852,NA,NA,NA
+"1536",2382,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.20466666666667,"late",0.738170782176852,NA,NA,NA
+"1537",2382,17,"Weathertop","LL","blue oak","md",2022-04-25,2.695,"late",0.763309596473381,NA,NA,NA
+"1538",2382,18,"Weathertop","LL","blue oak","md",2022-05-04,2.379,"late",0.706187824563599,0.826915952148762,0.6496,"2022-05-03"
+"1539",2382,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.826915952148762,0.6496,"2022-05-03"
+"1540",2382,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.65333333333333,"late",0.682615629984051,NA,NA,NA
+"1541",2382,19,"Weathertop","LL","blue oak","pd",NA,1.65333333333333,NA,0.682615629984051,NA,NA,NA
+"1542",2382,19,"Weathertop","LL","blue oak","md",2022-05-09,2.79225,"late",0.786878395319682,NA,NA,NA
+"1543",2382,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.366,"late",0.758664955070603,6.85522648150996,0.602066666666667,"2022-05-25"
+"1544",2382,21,"Weathertop","LL","blue oak","md",2022-05-23,3.88833333333333,"late",0.630057388809182,6.85522648150996,0.602066666666667,"2022-05-25"
+"1545",2382,29,"Weathertop","LL","blue oak","md",2022-07-19,3.975,"late",0.528040973111396,NA,NA,NA
+"1546",2382,29,"Weathertop","LL","blue oak","pd",2022-07-19,2.9,"late",0.647741935483871,NA,NA,NA
+"1547",2382,29,"Weathertop","LL","blue oak","pd",NA,2.9,NA,0.647741935483871,NA,NA,NA
+"1548",2382,33,"Weathertop","LL","blue oak","md",2022-08-18,4.44666666666667,"late",NA,NA,NA,NA
+"1549",2382,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.33433333333333,"late",NA,NA,NA,NA
+"1550",2382,37,"Weathertop","LL","blue oak","md",NA,NA,NA,0.612541993281075,NA,NA,NA
+"1551",2382,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.674750305963538,NA,NA,NA
+"1552",2382,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,0.83203125,NA,NA,NA
+"1553",2382,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.783333333333333,NA,NA,NA
+"1554",2383,10,"Weathertop","LL","blue oak","pd",2022-03-08,0.96,"early",1.35391424177475,NA,NA,NA
+"1555",2383,10,"Weathertop","LL","blue oak","md",2022-03-08,2.36033333333333,"early",1.30570855478943,NA,NA,NA
+"1556",2383,12,"Weathertop","LL","blue oak","pd",2022-03-23,0.646,"early",NA,NA,NA,NA
+"1557",2383,13,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1558",2383,13,"Weathertop","LL","blue oak","pd",2022-03-30,0.541333333333333,"early",1.12110947473004,NA,NA,NA
+"1559",2383,13,"Weathertop","LL","blue oak","pd",2022-03-25,0.541333333333333,"early",1.12110947473004,NA,NA,NA
+"1560",2383,14,"Weathertop","LL","blue oak","md",2022-04-06,2.825,"early",0.840616842632717,NA,NA,NA
+"1561",2383,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1562",2383,15,"Weathertop","LL","blue oak","pd",NA,0.9505,NA,0.812739143192488,0.985638140361268,0.4095,"2022-04-14"
+"1563",2383,15,"Weathertop","LL","blue oak","md",2022-04-13,1.869,"late",0.748557581448615,0.985638140361268,0.4095,"2022-04-14"
+"1564",2383,15,"Weathertop","LL","blue oak","pd",2022-04-11,0.9505,"late",0.812739143192488,0.985638140361268,0.4095,"2022-04-14"
+"1565",2383,17,"Weathertop","LL","blue oak","md",2022-04-25,2.96,"late",NA,NA,NA,NA
+"1566",2383,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.349,"late",0.776262671570826,NA,NA,NA
+"1567",2383,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.933163507629302,0.414533333333333,"2022-05-04"
+"1568",2383,18,"Weathertop","LL","blue oak","md",2022-05-04,2.23666666666667,"late",0.722915138175593,0.933163507629302,0.414533333333333,"2022-05-04"
+"1569",2383,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.58975,"late",0.747474747474748,NA,NA,NA
+"1570",2383,19,"Weathertop","LL","blue oak","md",NA,2.48,NA,0.798116925771842,NA,NA,NA
+"1571",2383,19,"Weathertop","LL","blue oak","md",2022-05-09,2.48,"late",0.798116925771842,NA,NA,NA
+"1572",2383,21,"Weathertop","LL","blue oak","md",2022-05-25,3.34333333333333,"late",NA,NA,NA,NA
+"1573",2383,21,"Weathertop","LL","blue oak","md",NA,3.34333333333333,NA,NA,NA,NA,NA
+"1574",2383,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.53225,"late",0.649484536082474,NA,NA,NA
+"1575",2383,29,"Weathertop","LL","blue oak","md",NA,4.2,NA,0.58970398970399,NA,NA,NA
+"1576",2383,29,"Weathertop","LL","blue oak","md",2022-07-19,4.2,"late",0.58970398970399,NA,NA,NA
+"1577",2383,29,"Weathertop","LL","blue oak","pd",2022-07-19,2.358,"late",0.614887218045113,NA,NA,NA
+"1578",2383,33,"Weathertop","LL","blue oak","md",NA,4.6335,NA,0.562345983242977,NA,NA,NA
+"1579",2383,33,"Weathertop","LL","blue oak","pd",NA,3.1875,NA,0.663716814159292,NA,NA,NA
+"1580",2383,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.1875,"late",0.663716814159292,NA,NA,NA
+"1581",2383,33,"Weathertop","LL","blue oak","md",2022-08-18,4.6335,"late",0.562345983242977,NA,NA,NA
+"1582",2383,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,1.06708017222796,0.718353212774144,0.1867,"2022-09-12"
+"1583",2383,37,"Weathertop","LL","blue oak","md",NA,NA,NA,0.57862218103182,0.718353212774144,0.1867,"2022-09-12"
+"1584",2383,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.815158561431482,NA,NA,NA
+"1585",2383,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,NA,NA,NA,NA
+"1586",2384,9,"Weathertop","LL","blue oak","md",2022-03-03,1.41666666666667,"early",NA,NA,NA,NA
+"1587",2384,10,"Weathertop","LL","blue oak","md",2022-03-08,2.19566666666667,"early",0.827777777777778,NA,NA,NA
+"1588",2384,10,"Weathertop","LL","blue oak","pd",2022-03-08,1.4495,"early",NA,NA,NA,NA
+"1589",2384,10,"Weathertop","LL","blue oak","pd",NA,1.4495,NA,NA,NA,NA,NA
+"1590",2384,11,"Weathertop","LL","blue oak","md",2022-03-15,2.2722,"early",1.09279096825645,1.82331511839709,1.001,"2022-03-15"
+"1591",2384,11,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,1.82331511839709,1.001,"2022-03-15"
+"1592",2384,12,"Weathertop","LL","blue oak","md",2022-03-23,2.51,"early",NA,NA,NA,NA
+"1593",2384,12,"Weathertop","LL","blue oak","pd",2022-03-23,0.67925,"early",NA,NA,NA,NA
+"1594",2384,13,"Weathertop","LL","blue oak","pd",2022-03-25,0.756073619631901,"early",0.772556763290909,NA,NA,NA
+"1595",2384,13,"Weathertop","LL","blue oak","pd",2022-03-30,0.756073619631901,"early",0.772556763290909,NA,NA,NA
+"1596",2384,13,"Weathertop","LL","blue oak","md",2022-03-25,2.51,"early",NA,NA,NA,NA
+"1597",2384,13,"Weathertop","LL","blue oak","md",NA,2.51,NA,NA,NA,NA,NA
+"1598",2384,14,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,NA,NA,NA
+"1599",2384,14,"Weathertop","LL","blue oak","md",2022-04-06,2.7125,"early",0.808893889919803,NA,NA,NA
+"1600",2384,15,"Weathertop","LL","blue oak","md",2022-04-13,1.45966666666667,"late",0.798110712764778,1.06289387312106,0.834533333333333,"2022-04-14"
+"1601",2384,15,"Weathertop","LL","blue oak","pd",2022-04-11,1.06666666666667,"late",0.789034173082477,1.06289387312106,0.834533333333333,"2022-04-14"
+"1602",2384,17,"Weathertop","LL","blue oak","pd",NA,1.64,NA,0.854354354354354,NA,NA,NA
+"1603",2384,17,"Weathertop","LL","blue oak","md",2022-04-25,2.56333333333333,"late",0.786652653704677,NA,NA,NA
+"1604",2384,17,"Weathertop","LL","blue oak","pd",2022-04-25,1.64,"late",0.854354354354354,NA,NA,NA
+"1605",2384,18,"Weathertop","LL","blue oak","pd",NA,NA,NA,NA,0.837742553440405,0.382,"2022-05-03"
+"1606",2384,18,"Weathertop","LL","blue oak","md",2022-05-04,2.84925,"late",0.733258824625128,0.837742553440405,0.382,"2022-05-03"
+"1607",2384,19,"Weathertop","LL","blue oak","md",2022-05-09,2.311,"late",0.790554556769465,NA,NA,NA
+"1608",2384,19,"Weathertop","LL","blue oak","pd",2022-05-09,1.803,"late",0.675579322638146,NA,NA,NA
+"1609",2384,19,"Weathertop","LL","blue oak","pd",NA,1.803,NA,0.675579322638146,NA,NA,NA
+"1610",2384,21,"Weathertop","LL","blue oak","pd",2022-05-23,1.2535,"late",0.764705882352941,0.856492966968664,0.381033333333333,"2022-05-23"
+"1611",2384,21,"Weathertop","LL","blue oak","pd",NA,1.2535,NA,0.764705882352941,0.856492966968664,0.381033333333333,"2022-05-23"
+"1612",2384,21,"Weathertop","LL","blue oak","md",2022-05-25,3.01666666666667,"late",NA,0.856492966968664,0.381033333333333,"2022-05-23"
+"1613",2384,29,"Weathertop","LL","blue oak","md",NA,4.85,NA,0.538375350140056,NA,NA,NA
+"1614",2384,29,"Weathertop","LL","blue oak","md",2022-07-19,4.85,"late",0.538375350140056,NA,NA,NA
+"1615",2384,29,"Weathertop","LL","blue oak","pd",2022-07-19,3.9,"late",0.615589353612167,NA,NA,NA
+"1616",2384,33,"Weathertop","LL","blue oak","md",2022-08-18,5.094,"late",NA,NA,NA,NA
+"1617",2384,33,"Weathertop","LL","blue oak","pd",NA,3.884,NA,0.604611310172924,NA,NA,NA
+"1618",2384,33,"Weathertop","LL","blue oak","pd",2022-08-18,3.884,"late",0.604611310172924,NA,NA,NA
+"1619",2384,37,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.922545974011721,NA,NA,NA
+"1620",2384,37,"Weathertop","LL","blue oak","md",NA,NA,NA,0.596059113300493,NA,NA,NA
+"1621",2384,NA,"Weathertop","LL","blue oak","md",NA,NA,NA,0.773529411764706,NA,NA,NA
+"1622",2384,NA,"Weathertop","LL","blue oak","pd",NA,NA,NA,0.811308562197092,NA,NA,NA
+"1623",2385,17,NA,NA,"blue oak","pd",2022-04-27,1.044,"late",NA,NA,NA,NA

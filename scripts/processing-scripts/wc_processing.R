@@ -24,8 +24,8 @@ library(MetBrewer)
 
 
 ## Data file version (so it's not hard coded in every read_excel() call)
-#datver <- "10182022"
-#dataversion <- paste0("Data_", datver)
+datver <- "20230220"
+dataversion <- paste0("Data_", datver)
 
 #______________________________________________________________
 ############### Begin: WATER CONTENT - Load and Clean #######################################
@@ -105,13 +105,29 @@ wc504 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"),
   mutate(date = mdy("05-04-2022")) 
 
 #Date: 509WP + LWC
-wc509 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="54 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wc509 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="59 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-09-2022")) 
 
 
 #Date: 523-525 WP + LWC
 wc523 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="523 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("05-23-2022")) 
+
+###INTERLUDE:
+#Both 509 and 523 middays have LWC for Y0 and Y1. To see if that has an effect, lets make a lil' dataframe that just looks at those dates. 
+
+wc_509both <- wc509 %>% 
+  select(site, plot, species, tag, md_bulk_dry_y0, md_bulk_dry_y1, md_bulk_wet_y1, md_bulk_wet_y0, date)
+
+wc_523both <- wc523 %>% 
+  select(site, plot, species, tag, md_bulk_dry_y0, md_bulk_dry_y1, md_bulk_wet_y1, md_bulk_wet_y0, date)
+
+wc_md_bothyears <- rbind(wc_509both, wc_523both)
+
+#Actually, there aren't that meany year 1s, so we should probably just ignore them. 
+
+
+#####END INTERLUDE:
 
 
 wc525 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="525 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
@@ -1028,7 +1044,14 @@ wc509md <- wc509 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("md")) %>% 
-  dplyr::select(!matches("pd")) 
+  dplyr::select(!matches("pd"))  %>% 
+  mutate(md_bulk_dry = md_bulk_dry_y0, 
+         md_bulk_wet = md_bulk_wet_y0) %>% 
+  # rowwise() %>% 
+  # group_by(tag, plot, site) %>% 
+  # mutate(lwc_mean_combined = mean(c_across(c('md_bulk_wet_y0', 'md_bulk_wet_y1')), na.rm=TRUE)) %>% 
+  # mutate(lwc_mean_combined = mean(c_across(c('md_bulk_dry_y0', 'md_bulk_dry_y1')), na.rm=TRUE)) %>%
+  select(-md_bulk_wet_y0, -md_bulk_wet_y1,  -md_bulk_dry_y0, -md_bulk_dry_y1)
 
 wc509_long_md <- wc509md %>% 
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
@@ -1091,7 +1114,14 @@ wc523md <- wc523 %>%
   as.data.frame() %>% 
   filter(!is.na(tag)) %>%
   dplyr::select(1:5, matches("md")) %>% 
-  dplyr::select(!matches("pd")) 
+  dplyr::select(!matches("pd"))  %>% 
+  mutate(md_bulk_dry = md_bulk_dry_y0, 
+         md_bulk_wet = md_bulk_wet_y0) %>% 
+  # rowwise() %>% 
+  # group_by(tag, plot, site) %>% 
+  # mutate(lwc_mean_combined = mean(c_across(c('md_bulk_wet_y0', 'md_bulk_wet_y1')), na.rm=TRUE)) %>% 
+  # mutate(lwc_mean_combined = mean(c_across(c('md_bulk_dry_y0', 'md_bulk_dry_y1')), na.rm=TRUE)) %>%
+  select(-md_bulk_wet_y0, -md_bulk_wet_y1,  -md_bulk_dry_y0, -md_bulk_dry_y1)
 
 wc523_long_md <- wc523md %>% 
   dplyr::select(!matches("md[1-9]_g_[dry,wet]")) %>% 
@@ -1142,12 +1172,12 @@ wc523_long_wet <- wc523md %>%
 
 wc523_long_dry_premerge <- merge(wc523_long_md, wc523_long_dry, all.x = T)
 
-wc_long_md_523 <- merge(wc523_long_dry_premerge, wc523_long_wet, all.x = T) %>% 
+wc_long_md_523 <- merge(wc523_long_dry_premerge, wc523_long_wet, all.x = T) #%>% 
   #mutate(md_bulk_dry = mean("md_bulk_dry_y0"), "md_bulk_dry_y1"), 
       #   md_bulk_wet = mean("md_bulk_wet_y0", "md_bulk_wet_y1")) %>% ##y1 is only shrubs
-  mutate(md_bulk_dry = md_bulk_dry_y0, 
-         md_bulk_wet = md_bulk_wet_y0) %>% 
-  select(-md_bulk_dry_y1, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_wet_y0)
+  # mutate(md_bulk_dry = md_bulk_dry_y0, 
+  #        md_bulk_wet = md_bulk_wet_y0) %>% 
+  # select(-md_bulk_dry_y1, -md_bulk_wet_y1, -md_bulk_dry_y0, -md_bulk_wet_y0)
 
 
 #______________________________________________________________
@@ -1346,7 +1376,7 @@ wc_long_md_818 <- merge(wc818_long_dry_premerge, wc818_long_wet, all.x = T) #com
 #______________________________________________________________
 
 
-wc_alldates_md <- rbind( 
+wc_alldates_md <- rbind(wc_long_md_228,
                         wc_long_md_411, 
                         wc_long_md_303, 
                         wc_long_md_308,
@@ -2842,12 +2872,15 @@ trees_sites_df <- wc_alldates_longer_lwc_mpa_dates %>%
 
 wc912_trees <- merge(trees_sites_df, wc912, all.y = T) 
 
-wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees,wc_alldates_longer_lwc_mpa_dates )
+
+wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_longer_lwc_mpa_dates ) %>% 
+  select(-mpa)
 
 
 ##super annoying name, so rename: 
-wc_ad_lwc_mpa <- merge(wc_alldates_longer_lwc_mpa_dates_fall2022, trees_sites_df)
+#wc_ad_lwc_mpa <- merge(wc_alldates_longer_lwc_mpa_dates_fall2022, trees_sites_df)
 
 ##write csv: ####
 
-write.csv(wc_ad_lwc_mpa, here("processed-data", paste0("wc_alldates_",datver,".csv")))
+write.csv(wc_alldates_longer_lwc_mpa_dates_fall2022, here("processed-data", paste0("wc_alldates_",datver,".csv")))
+

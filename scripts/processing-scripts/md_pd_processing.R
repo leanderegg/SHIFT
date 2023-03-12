@@ -117,6 +117,10 @@ wpwc719$Tag <- str_remove(wpwc719$tag,"\\.0")
 wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="818 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("08-18-2022")) 
 
+#Date: 912 WP (NOT ENTERED YET AS OF 2023-03-11)
+# wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="912 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+#   mutate(date = mdy("09-12-2022")) 
+
 
 
 ###Fix that data to be long:
