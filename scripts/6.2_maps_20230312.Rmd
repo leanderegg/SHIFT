@@ -1,3 +1,5 @@
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
@@ -55,26 +57,26 @@ Sedgwick tifs:
 #contours 
 
 ```{r}
-contours_shp  <- read_sf(here("data", "geospatial", "contour", "contourfile.shp")) %>% 
-  st_transform(crs = 4326)
-contours_shx  <- st_read(here("data", "geospatial", "contour", "contourfile.shx")) %>% 
-  st_transform(crs = 4326)
-
-contours_shp
+# contours_shp  <- read_sf(here("data", "geospatial", "contour", "contourfile.shp")) %>% 
+#   st_transform(crs = 4326)
+# contours_shx  <- st_read(here("data", "geospatial", "contour", "contourfile.shx")) %>% 
+#   st_transform(crs = 4326)
+# 
+# contours_shp
 ```
 
 ```{r, include = T}
-sedg_output_be <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_be.tif"))
-plot(sedg_output_be)
-
-sedg_output_hh <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_hh.tif"))
-plot(sedg_output_hh)
-
-sedg_output_srtm <- raster(here("data", "geospatial", "output_SRTMGL1.tif"))
-plot(sedg_output_srtm)
-
-sedg_output_chm <- raster(here("data", "geospatial", "CHM", "output.dtm.tif"))
-plot(sedg_output_chm)
+# sedg_output_be <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_be.tif"))
+# plot(sedg_output_be)
+# 
+# sedg_output_hh <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_hh.tif"))
+# plot(sedg_output_hh)
+# 
+# sedg_output_srtm <- raster(here("data", "geospatial", "output_SRTMGL1.tif"))
+# plot(sedg_output_srtm)
+# 
+# sedg_output_chm <- raster(here("data", "geospatial", "CHM", "output.dtm.tif"))
+# plot(sedg_output_chm)
 ```
 
 #Our trees: 
