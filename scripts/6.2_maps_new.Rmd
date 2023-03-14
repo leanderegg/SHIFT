@@ -189,7 +189,9 @@ wp_wc_ind_new <- wp_wc_ind %>%
   mutate(time = case_when(
     week < 17 ~ "early", 
     week > 18 ~ "late"
-  ))
+  )) %>% 
+  group_by(tree, time)
+  mutate(change_mpa = mean())
 
 write_csv(wp_wc_ind_new, here("processed-data", "geospatial", "wp_wc_ind_new.csv"))
 ```
@@ -416,4 +418,170 @@ save_tags(all_synced, here("figures", "all_synced.html"))
 ```
 
 
+```{r}
+change_percent_df <- wp_wc_ind_new %>% 
+  drop_na(latitude, longitude) %>% 
+  mutate(time = case_when(
+    week < 17 ~ "early", 
+    week > 18 ~ "late"
+  )) %>%
+  mutate(first_last_month = case_when(
+    week %in% c(9, 10, 11, 12, 13, 14, 15) ~ "start", 
+    week %in% c(29, 33, 37, 38) ~ "end", 
+    TRUE ~ as.character("middle")
+  )) %>% 
+  group_by(tree, first_last_month) %>% 
+  mutate(md_mpa = mean(md_mpa, na.rm = T),
+         pd_mpa = mean(pd_mpa, na.rm = T),
+         md_lwc = mean(md_lwc, na.rm = T),
+         pd_lwc = mean(pd_lwc, na.rm = T),
+         e_drop = mean(e_drop, na.rm = T)
+         ) %>% 
+  ungroup() %>% 
+  select(-week, -time, -description) %>% 
+  distinct() %>% 
+  filter(!first_last_month == "middle") %>% 
+ # select(-time, -week) %>% 
+  pivot_wider(names_from = c(first_last_month), 
+              values_from = c(md_mpa, pd_mpa, md_lwc, pd_lwc, e_drop)) %>% 
+  group_by(tree) %>% 
+  mutate(
+    md_mpa_first_last = ((mean(md_mpa_end, na.rm = T) - mean(md_mpa_start, na.rm = T))/mean(md_mpa_start, na.rm = T)) *100,
+    pd_mpa_first_last = ((mean(pd_mpa_end, na.rm = T) - mean(pd_mpa_start, na.rm = T))/mean(pd_mpa_start, na.rm = T)) *100,
+    md_lwc_first_last = ((mean(md_lwc_end, na.rm = T) - mean(md_lwc_start, na.rm = T))/mean(md_lwc_start, na.rm = T)) * -100,
+    pd_lwc_first_last = ((mean(pd_lwc_end, na.rm = T) - mean(pd_lwc_start, na.rm = T))/mean(pd_lwc_start, na.rm = T)) * -100,
+    e_drop_first_last = ((mean(e_drop_end, na.rm = T) - mean(e_drop_start, na.rm = T))/mean(e_drop_start, na.rm = T)) *100,
+  ) 
 
+change_percent_sd <- SpatialPointsDataFrame(coords = data.frame(change_percent_df$longitude, change_percent_df$latitude),
+                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
+                                    data=change_percent_df)
+```
+
+#MPA change
+```{r}
+pal_lwc <- colorNumeric(c("#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926",
+                                 "#ee8577", 
+                                  "#ce4441"
+                                  
+                                  ), domain = c(c(10,380)))
+
+change_md_mpa <- leaflet(change_percent_sd) %>% 
+ # drop_na(md_mpa_first_last) %>% 
+  addTiles() %>% 
+  addCircleMarkers(#radius = 5,
+                   radius = ~ifelse(species.x == "blue oak", 6, 3),
+    color = ~ pal_lwc(md_mpa_first_last),
+    stroke = FALSE, fillOpacity = 0.8) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>%
+  addLegend("bottomright", pal = pal_lwc, values = ~md_mpa_first_last,
+    title = "% change",
+    labFormat = labelFormat(prefix = " "),
+    opacity = 1
+  )
+change_md_mpa
+```
+
+```{r}
+pal_lwc <- colorNumeric(c("#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926",
+                                 "#ee8577", 
+                                  "#ce4441"
+                                  
+                                  ), domain = c(c(0, 380)))
+
+
+change_md_lwc <- leaflet(change_percent_sd) %>% 
+  #filter(species.x == "blue oak") %>% 
+ # drop_na(md_mpa_first_last) %>% 
+  addTiles() %>% 
+  addCircleMarkers(#radius = 5,
+    color = ~ pal_lwc(md_lwc_first_last),
+    radius = ~ifelse(species.x == "blue oak", 6, 3),
+    stroke = FALSE, fillOpacity = 0.8) %>% 
+   addProviderTiles("Esri.WorldTopoMap") #%>%
+  # addLegend("bottomright", pal = pal_lwc, values = ~md_lwc_first_last,
+  #   title = "% Change",
+  #   labFormat = labelFormat(prefix = " "),
+  #   opacity = 1
+  # )  
+change_md_lwc
+```
+
+```{r}
+all_synced <- leafsync::latticeView(change_md_lwc, change_md_mpa,
+                                    ncol = 2, sync = list(c(1, 2)), 
+                     sync.cursor = T, no.initial.sync = FALSE)
+all_synced
+```
+
+
+#PDS:
+
+```{r}
+pal_lwc <- colorNumeric(c("#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926",
+                                 "#ee8577", 
+                                  "#ce4441"
+                                  
+                                  ), domain = c(c(0, 380)))
+
+
+change_pd_lwc <- leaflet(change_percent_sd) %>% 
+  #filter(species.x == "blue oak") %>% 
+ # drop_na(md_mpa_first_last) %>% 
+  addTiles() %>% 
+  addCircleMarkers(#radius = 5,
+    color = ~ pal_lwc(pd_lwc_first_last),
+    radius = ~ifelse(species.x == "blue oak", 6, 3),
+    stroke = FALSE, fillOpacity = 0.8) %>% 
+   addProviderTiles("Esri.WorldTopoMap") #%>%
+  # addLegend("bottomright", pal = pal_lwc, values = ~md_lwc_first_last,
+  #   title = "% Change",
+  #   labFormat = labelFormat(prefix = " "),
+  #   opacity = 1
+  # )  
+change_pd_lwc
+```
+
+#MPA change
+```{r}
+pal_lwc <- colorNumeric(c("#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926",
+                                 "#ee8577", 
+                                  "#ce4441"
+                                  
+                                  ), domain = c(c(10,1000)))
+
+change_pd_mpa <- leaflet(change_percent_sd) %>% 
+ # drop_na(md_mpa_first_last) %>% 
+  addTiles() %>% 
+  addCircleMarkers(#radius = 5,
+                   radius = ~ifelse(species.x == "blue oak", 6, 3),
+    color = ~ pal_lwc(pd_mpa_first_last),
+    stroke = FALSE, fillOpacity = 0.8) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>%
+  addLegend("bottomright", pal = pal_lwc, values = ~pd_mpa_first_last,
+    title = "% change",
+    labFormat = labelFormat(prefix = " "),
+    opacity = 1
+  )
+change_pd_mpa
+```

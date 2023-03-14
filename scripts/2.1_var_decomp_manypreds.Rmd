@@ -73,7 +73,8 @@ lfm_matrix <- qudo_wc_all %>%
 varPart <- fitExtractVarPartModel(lfm_matrix, form, qudo_wc_all )
 varPart
 
-all_vdc <- plotPercentBars.new(varPart)
+all_vdc <- plotPercentBars.new(varPart)+
+  labs(title = "All weeks")
 all_vdc
 ```
 ```{r}
@@ -100,7 +101,7 @@ lin_vdc
 qudo_wc_lin <- qudo_wc_all %>% 
   filter(week > 19)
 
-form  <- ~ mpa_mean + (1|week_fact) + (1|tree_fact)  + (1|plot)
+form  <- ~ mpa_mean + (1|week_fact) + (1|tree_fact)  + (1|site)
 
 lfm_matrix <- qudo_wc_lin %>% 
   ungroup() %>% 
@@ -112,6 +113,78 @@ lfm_matrix <- qudo_wc_lin %>%
 varPart <- fitExtractVarPartModel(lfm_matrix, form, qudo_wc_lin )
 varPart
 
+lin_vdc <- plotPercentBars.new(varPart) +
+  labs(title = "After week 17")
+lin_vdc
+```
+
+Put together: 
+```{r}
+cowplot::plot_grid(lin_vdc, all_vdc)
+```
+
+Mpa from LWC: 
+
+```{r}
+form  <- ~ lwc_mean + (1|week_fact) + (1|tree_fact)  + (1|site)
+
+lfm_matrix <- qudo_wc_all %>% 
+  drop_na(mpa_mean, lwc_mean) %>% 
+  ungroup() %>% 
+  mutate(id = row_number()) %>% 
+  select(id, mpa_mean) %>% 
+  pivot_wider(names_from = id, 
+              values_from = mpa_mean) 
+
+varPart <- fitExtractVarPartModel(lfm_matrix, form, qudo_wc_all )
+varPart
+
+all_vdc <- plotPercentBars.new(varPart)+
+  labs(title = "All weeks")
+all_vdc
+```
+```{r}
+qudo_wc_lin <- qudo_wc_all %>% 
+  filter(week > 15)
+
+form  <- ~ lwc_mean + (1|week_fact) + (1|tree_fact)  + (1|plot)
+
+lfm_matrix <- qudo_wc_lin %>% 
+  ungroup() %>% 
+  mutate(id = row_number()) %>% 
+  select(id, mpa_mean) %>% 
+  pivot_wider(names_from = id, 
+              values_from = mpa_mean) 
+
+varPart <- fitExtractVarPartModel(lfm_matrix, form, qudo_wc_lin )
+varPart
+
 lin_vdc <- plotPercentBars.new(varPart)
 lin_vdc
+```
+
+```{r}
+qudo_wc_lin <- qudo_wc_all %>% 
+  filter(week > 19)
+
+form  <- ~ lwc_mean + (1|week_fact) + (1|tree_fact)  + (1|site)
+
+lfm_matrix <- qudo_wc_lin %>% 
+  ungroup() %>% 
+  mutate(id = row_number()) %>% 
+  select(id, mpa_mean) %>% 
+  pivot_wider(names_from = id, 
+              values_from = mpa_mean) 
+
+varPart <- fitExtractVarPartModel(lfm_matrix, form, qudo_wc_lin )
+varPart
+
+lin_vdc <- plotPercentBars.new(varPart) +
+  labs(title = "After week 17")
+lin_vdc
+```
+
+Put together: 
+```{r}
+cowplot::plot_grid(lin_vdc, all_vdc)
 ```
