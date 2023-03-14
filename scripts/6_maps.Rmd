@@ -86,6 +86,8 @@ latlon$Tree[grep("Dont", latlon$Name)] <- "2373"
 latlon <- latlon %>% 
   clean_names()
 
+write_csv(latlon, here("processed-data", "geospatial", "trees_latlon.csv"))
+
 # make a latlon and utm spatial data version
 latlon.ll <- SpatialPointsDataFrame(coords = data.frame(latlon$longitude, latlon$latitude),
                                     proj4string = CRS("+proj=longlat +datum=WGS84"), 
@@ -140,6 +142,8 @@ wp_ind_new <- wp_ind %>%
  # mutate(species = species_x) %>% 
   #select(-species_x, -species_y) %>% 
   drop_na(latitude, longitude)
+
+write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
 
 ### making a spatial dataframe
 latlonproj <- CRS("+proj=longlat +datum=WGS84")

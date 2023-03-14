@@ -1,0 +1,423 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+
+library(tidyverse)
+library(sf)
+library(raster)
+library(leaflet)
+library(spdplyr)
+library(rgdal)
+library(leafsync)
+```
+
+```{r}
+save_tags <- function (tags, file, selfcontained = F, libdir = "./lib") 
+{
+  if (is.null(libdir)) {
+    libdir <- paste(tools::file_path_sans_ext(basename(file)), 
+                    "_files", sep = "")
+  }
+  htmltools::save_html(tags, file = file, libdir = libdir)
+  if (selfcontained) {
+    if (!htmlwidgets:::pandoc_available()) {
+      stop("Saving a widget with selfcontained = TRUE requires pandoc. For details see:\n", 
+           "https://github.com/rstudio/rmarkdown/blob/master/PANDOC.md")
+    }
+    htmlwidgets:::pandoc_self_contained_html(file, file)
+    unlink(libdir, recursive = TRUE)
+  }
+  return(file)
+}
+```
+
+
+## Loading in vector data and reprojecting it with sf package
+
+Sedgwick tifs: 
+
+```{r}
+# sedg_hillshade1 <- raster(here("data", "geospatial", "viz", "viz.be_hillshade-color.tif"))
+# plot(sedg_hillshade1)
+
+# sedg_hillshade2 <- raster(here("data", "geospatial", "viz", "viz.be_hillshade.tif"))
+# plot(sedg_hillshade2)
+# 
+# sedg_hillshade2
+
+# sedg_hillshade3 <- raster(here("data", "geospatial", "viz", "viz.hh_hillshade.tif"))
+# plot(sedg_hillshade3)
+# 
+# sedg_hillshade4 <- raster(here("data", "geospatial", "viz", "viz.hh_hillshade-color.tif"))
+# plot(sedg_hillshade4)
+```
+
+#contours 
+
+```{r}
+contours_shp  <- read_sf(here("data", "geospatial", "contour", "contourfile.shp")) %>% 
+  st_transform(crs = 4326)
+contours_shx  <- st_read(here("data", "geospatial", "contour", "contourfile.shx")) %>% 
+  st_transform(crs = 4326)
+
+contours_shp
+```
+
+```{r, include = T}
+sedg_output_be <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_be.tif"))
+plot(sedg_output_be)
+
+sedg_output_hh <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_hh.tif"))
+plot(sedg_output_hh)
+
+sedg_output_srtm <- raster(here("data", "geospatial", "output_SRTMGL1.tif"))
+plot(sedg_output_srtm)
+
+sedg_output_chm <- raster(here("data", "geospatial", "CHM", "output.dtm.tif"))
+plot(sedg_output_chm)
+```
+
+#Our trees: 
+```{r}
+#### Lee's version which hopefully cuts down on replicate values
+wp_ind_long <- wp_ad %>%  #from data processing
+  group_by(tree, site, plot, species, week, date, time) %>% 
+  summarise(sd.mpa = sd(mpa), mpa = mean(mpa)) %>% 
+  mutate(tree = as.character(tree))
+
+# rename midday and predawn columns so I can combine them
+wp_ind_md <- wp_ind_long[wp_ind_long$time=="md",]
+wp_ind_md <- wp_ind_md %>% rename(md_mpa = mpa, date_md=date, md_sd.mpa = sd.mpa)
+
+wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
+wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
+
+wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+wp_ind <- left_join(wp_ind, latlon, by=c("tree"))
+
+
+# calculate delta Psi
+wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+
+# add in lat lon and utm
+wp_ind$lat_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),2]
+wp_ind$lon_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),1]
+
+#remove non-trees: 
+wp_ind_new <- wp_ind %>% 
+  drop_na(latitude, longitude) %>% 
+  mutate(time = case_when(
+    week < 17 ~ "early", 
+    week > 18 ~ "late"
+  ))
+
+write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
+```
+
+```{r}
+#### Lee's version which hopefully cuts down on replicate values
+wp_ind_long <- wp_ad %>%  #from data processing
+  group_by(tree, site, plot, species, week, date, time) %>% 
+  summarise(sd.mpa = sd(mpa), mpa = mean(mpa)) %>% 
+  mutate(tree = as.character(tree))
+
+# rename midday and predawn columns so I can combine them
+wp_ind_md <- wp_ind_long[wp_ind_long$time=="md",]
+wp_ind_md <- wp_ind_md %>% rename(md_mpa = mpa, date_md=date, md_sd.mpa = sd.mpa)
+
+wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
+wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
+
+wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+wp_ind <- left_join(wp_ind, latlon, by=c("tree"))
+
+
+# calculate delta Psi
+wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+
+# add in lat lon and utm
+wp_ind$lat_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),2]
+wp_ind$lon_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),1]
+
+#remove non-trees: 
+wp_ind_new <- wp_ind %>% 
+  drop_na(latitude, longitude) %>% 
+  mutate(time = case_when(
+    week < 17 ~ "early", 
+    week > 18 ~ "late"
+  ))
+
+write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
+```
+
+```{r}
+wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) 
+
+#### Lee's version which hopefully cuts down on replicate values
+wp_wc_ind_long <- wp_wc_ad %>%  #from data processing
+  group_by(tree, site, plot, species, week, time) %>% 
+  summarise(#sd.mpa = sd(mpa_mean, na.rm = T), 
+            mpa = mean(mpa_mean, na.rm = T), 
+            lwc = mean(lwc_mean, na.rm = T), 
+            #sd.lwc = sd(lwc_mean, na.rm = T
+                        ) %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+## rename midday and predawn columns so I can combine them
+wp_wc_ind_md <- wp_wc_ind_long[wp_wc_ind_long$time=="md",]
+wp_wc_ind_md <- wp_wc_ind_md %>% rename(md_mpa = mpa, 
+                                 # date_md=date, 
+                                  md_lwc= lwc
+                                 )
+
+wp_wc_ind_pd <- wp_wc_ind_long[wp_wc_ind_long$time=="pd",]
+wp_wc_ind_pd <- wp_wc_ind_pd %>% rename(pd_mpa = mpa, 
+                                        #date_pd=date, 
+                                        pd_lwc = lwc)
+
+wp_wc_ind <- full_join(wp_wc_ind_md %>% select(-time), wp_wc_ind_pd %>% select(-time))
+wp_wc_ind <- left_join(wp_wc_ind, latlon, by=c("tree"))
+
+
+# calculate delta Psi
+wp_wc_ind$e_drop <- wp_wc_ind$md_mpa-wp_ind$pd_mpa
+
+# add in lat lon and utm
+wp_wc_ind$lat_utm <- latlon.utm@coords[match( wp_wc_ind$tree,latlon.utm$tree),2]
+wp_wc_ind$lon_utm <- latlon.utm@coords[match( wp_wc_ind$tree,latlon.utm$tree),1]
+
+#remove non-trees: 
+wp_wc_ind_new <- wp_wc_ind %>% 
+  drop_na(latitude, longitude) %>% 
+  mutate(time = case_when(
+    week < 17 ~ "early", 
+    week > 18 ~ "late"
+  ))
+
+write_csv(wp_wc_ind_new, here("processed-data", "geospatial", "wp_wc_ind_new.csv"))
+```
+
+
+
+```{r}
+#With no water pots.
+#trees <- read_csv(here("processed-data", "geospatial", "trees_latlon.csv"), show_col_types = F) 
+
+#With water pots:
+trees <- read_csv(here("processed-data", "geospatial", "wp_wc_ind_new.csv"), show_col_types = F)
+
+# make a latlon and utm spatial data version
+latlon.ll <- SpatialPointsDataFrame(coords = data.frame(trees$longitude, trees$latitude),
+                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
+                                    data=trees)
+#make into the right projection: 
+#latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sedg_hillshade2))
+```
+
+#MPa
+
+####Early in season (first month)
+```{r}
+wk10_mds <- latlon.ll@data  %>% 
+  filter(week %in% c(10,11,12, 14)) %>% 
+  group_by(tree) %>% 
+  mutate(md_mpa = mean(md_mpa, na.rm = T)) %>% 
+  arrange(desc(md_mpa)) %>% 
+  drop_na(md_mpa)
+
+pal_md <- colorNumeric(c( "#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926"
+                                  ), domain = c(c(0,5.5)))
+
+early_mds <- leaflet(wk10_mds) %>% 
+  addTiles()  %>% 
+  # addPolygons(data=contours_shx, color = grey) %>% 
+  addCircleMarkers( radius = 5,
+    color = ~ pal_md(md_mpa),
+    stroke = FALSE, fillOpacity = 0.5) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>% 
+  addLegend("bottomright", pal = pal_md, values = ~md_mpa,
+    title = "MPa",
+    labFormat = labelFormat(prefix = "-"),
+    opacity = 1
+  )
+early_mds
+```
+
+####End of season (mean of last month)
+
+```{r}
+wk33_mds <- latlon.ll@data  %>% 
+  filter(week %in% c(29,33)) %>% 
+  group_by(tree) %>% 
+  mutate(md_mpa = mean(md_mpa, na.rm = T)) %>% 
+  arrange(desc(md_mpa)) %>% 
+  drop_na(md_mpa)
+
+pal_md <- colorNumeric(c( "#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926"
+                                  ), domain = c(c(0,5.5)))
+
+late_mds <- leaflet(wk33_mds) %>% 
+  addTiles() %>% 
+  addCircleMarkers( radius = 5,
+    color = ~ pal_md(md_mpa),
+    stroke = FALSE, fillOpacity = 0.5) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>% 
+  addLegend("bottomright", pal = pal_md, values = ~md_mpa,
+    title = "MPa",
+    labFormat = labelFormat(prefix = "-"),
+    opacity = 1
+  )
+late_mds
+```
+
+####Both maps together:
+
+```{r}
+sync_mpa <- leafsync::latticeView(early_mds, late_mds, ncol = 2, sync = list(c(1, 2)), 
+                     sync.cursor = FALSE, no.initial.sync = FALSE)
+sync_mpa
+
+# mapview::mapshot(sync_mpa, file = here("figures", "sync_mpa.png"),
+#           remove_controls = c("homeButton", "layersControl"))
+
+save_tags(sync_mpa, here("figures", "sync_mpa.html"), selfcontained=TRUE)
+
+#htmlwidgets::saveWidget(sync_mpa, file = here("figures", "sync_mpa.png"))
+```
+
+####Change over time: 
+
+```{r}
+chnge_wk10_to_wk33 <- latlon.ll@data%>% 
+  filter(week %in% c(10, 33)) %>% 
+  group_by(week, tree) %>% 
+  summarise(md_mpa = mean(md_mpa), 
+            pd_mpa = mean(pd_mpa)) %>% 
+  pivot_wider(names_from = week, 
+              values_from = c(pd_mpa, md_mpa)) %>% 
+  mutate(change_mpa_md = md_mpa_33 - md_mpa_10, 
+         change_mpa_pd = pd_mpa_33 - pd_mpa_10)
+
+chnge_early_to_late <- latlon.ll@data%>% 
+  #filter(week %in% c(10, 33)) %>% 
+  group_by(time, tree, latitude, longitude) %>% 
+  summarise(md_mpa = mean(md_mpa, na.rm = T), 
+            pd_mpa = mean(pd_mpa, na.rm = T)) %>% 
+  pivot_wider(names_from = time, 
+              values_from = c(pd_mpa, md_mpa)) %>% 
+  mutate(change_mpa_md = md_mpa_late - md_mpa_early, 
+         change_mpa_pd = pd_mpa_late - pd_mpa_early) %>% 
+  drop_na(change_mpa_md, change_mpa_pd)
+
+
+chnge_early_to_late <- SpatialPointsDataFrame(coords = data.frame(chnge_early_to_late$longitude, chnge_early_to_late$latitude),
+                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
+                                    data=chnge_early_to_late)
+
+pal <- colorNumeric(c("#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451"), domain = c(c(0,2)))
+
+map_change <- leaflet(chnge_early_to_late) %>% 
+  addTiles() %>% 
+  addCircleMarkers( radius = ~ change_mpa_md * 5,
+    color = ~ pal(change_mpa_md),
+    stroke = FALSE, fillOpacity = 0.5) %>% 
+   addProviderTiles("Esri.WorldTopoMap")%>% 
+  addLegend("bottomright", pal = pal, values = ~change_mpa_md,
+    title = "Change in MPa",
+    labFormat = labelFormat(prefix = " "),
+    opacity = 1
+  )
+map_change
+
+mapview::mapshot(map_change, file = here("figures", "change_over_time.png"),
+          remove_controls = c("homeButton", "layersControl"))
+```
+
+#LWC
+
+Early in season (first month)
+```{r}
+wk10_mds <- latlon.ll@data  %>% 
+  filter(week %in% c(10,11,12, 14)) %>% 
+  group_by(tree) %>% 
+  mutate(md_lwc = mean(md_lwc, na.rm = T)) %>% 
+  arrange(desc(md_lwc)) %>% 
+  drop_na(md_lwc)
+
+pal_lwc <- colorNumeric(c( "#ce4441", "#ee8577","#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451"
+                              
+                                  ), domain = c(c(.4,2)))
+
+early_lwc <- leaflet(wk10_mds) %>% 
+  addTiles() %>% 
+  addCircleMarkers( radius = 5,
+    color = ~ pal_lwc(md_lwc),
+    stroke = FALSE, fillOpacity = 0.5) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>% 
+  addLegend("bottomright", pal = pal_lwc, values = ~md_lwc,
+    title = "lwc",
+    labFormat = labelFormat(prefix = " "),
+    opacity = 1
+  )
+early_lwc
+```
+
+End of season (mean of last month)
+
+```{r}
+wk33_lwc <- latlon.ll@data  %>% 
+  filter(week %in% c(29,33)) %>% 
+  group_by(tree) %>% 
+  mutate(md_lwc = mean(md_lwc, na.rm = T)) %>% 
+  arrange(desc(md_lwc)) %>% 
+  drop_na(md_lwc)
+
+pal_lwc <- colorNumeric(c( "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451"
+                                  ), domain = c(c(.4,2)))
+
+late_lwc <- leaflet(wk33_lwc) %>% 
+  addTiles() %>% 
+  addCircleMarkers( radius = 5,
+    color = ~ pal_lwc(md_lwc),
+    stroke = FALSE, fillOpacity = 0.5) %>% 
+   addProviderTiles("Esri.WorldTopoMap") %>%
+  addLegend("bottomright", pal = pal_lwc, values = ~md_lwc,
+    title = "lwc",
+    labFormat = labelFormat(prefix = " "),
+    opacity = 1
+  )
+late_lwc
+```
+
+View both maps together:
+
+```{r}
+lwc_synced <- leafsync::latticeView(early_lwc, late_lwc, ncol = 2, sync = list(c(1, 2)), 
+                     sync.cursor = T, no.initial.sync = FALSE)
+```
+
+#ALL
+
+```{r}
+all_synced <- leafsync::latticeView(early_lwc, late_lwc, 
+                                    early_mds, late_mds,
+                                    ncol = 2, sync = list(c(1, 2,3,4)), 
+                     sync.cursor = T, no.initial.sync = FALSE)
+all_synced
+
+save_tags(all_synced, here("figures", "all_synced.html"))
+```
+
+
+
