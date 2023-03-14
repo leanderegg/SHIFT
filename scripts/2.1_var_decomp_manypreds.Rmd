@@ -35,16 +35,18 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 
 
-datver <- "11082022"
+datver <- "20230220"
 dataversion <- paste0("Data_", datver)
 ```
 
 
 ```{r}
 wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv"))) %>% 
+  mutate(lwc_mean = lwc_mean_combined) %>% 
   filter(lwc_mean > 0, 
          lwc_mean < 3)
 ```
+
 Before leafout: 
 
 ```{r}

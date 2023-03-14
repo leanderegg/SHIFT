@@ -36,7 +36,7 @@ save_tags <- function (tags, file, selfcontained = F, libdir = "./lib")
 
 ## Loading in vector data and reprojecting it with sf package
 
-Sedgwick tifs: 
+Sedgwick files from Open Topography -- too big to put all on GitHub, so will need to figure that out later if we actually want to use them. 
 
 ```{r}
 # sedg_hillshade1 <- raster(here("data", "geospatial", "viz", "viz.be_hillshade-color.tif"))
@@ -52,20 +52,14 @@ Sedgwick tifs:
 # 
 # sedg_hillshade4 <- raster(here("data", "geospatial", "viz", "viz.hh_hillshade-color.tif"))
 # plot(sedg_hillshade4)
-```
 
-#contours 
-
-```{r}
 # contours_shp  <- read_sf(here("data", "geospatial", "contour", "contourfile.shp")) %>% 
 #   st_transform(crs = 4326)
 # contours_shx  <- st_read(here("data", "geospatial", "contour", "contourfile.shx")) %>% 
 #   st_transform(crs = 4326)
 # 
 # contours_shp
-```
 
-```{r, include = T}
 # sedg_output_be <- raster(here("data", "geospatial", "rasters_CA20Brande", "output_be.tif"))
 # plot(sedg_output_be)
 # 
