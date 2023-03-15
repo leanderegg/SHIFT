@@ -40,7 +40,8 @@ alas_df <- alas_df_raw %>%
          branch = as.factor(branch), 
          date_alas = date, 
         # year_alas = year, 
-         week = week(date)
+         week = week(date),
+       # area_cm2 = area_scanned_cm
          ) %>% 
 #drop_na(alas) %>% 
   select(-date, 
@@ -50,20 +51,50 @@ alas_df <- alas_df_raw %>%
         # -branch
          )
 
-unique(alas_df$date_alas)
+
+##Just after July: 
+
+alas_post_july <- alas_df_raw %>% 
+  mutate(
+    tree_id = as.factor(tree_id), 
+    branch = as.factor(branch), 
+    date_alas = date, 
+    week = week(date),
+    area_cm2 = area_scanned_cm
+  ) %>% 
+  filter(week > 29) %>% 
+  #drop_na(alas) %>% 
+  select(-date, 
+         # -year,
+         -area_if_leaf_from_scan, 
+         -area_scanned_cm, 
+         # -branch
+  )
 
 #read in leaf areas: 
+
 alas_leaf_area_df <- read_csv(here("processed-data", paste0("leaf_area_alldates_",datver,".csv")), show_col_types = FALSE) %>% 
   mutate(#branch_leaf_area = as.factor(branch), 
          week = as.integer(week)) #%>% 
  # select(-branch)
-##Combine: 
 
-alas_leaf_area_df_week <- merge(alas_leaf_area_df, alas_df, by = c("tree_id", 
+
+##Combine wall without post-July: 
+
+alas_leaf_area_df_week_nopostjuly <- merge(alas_leaf_area_df, alas_df, by = c("tree_id", 
                                                                    "branch", 
                                                                    "species",
                                                                    "year",
-                                                                   "week")) 
+                                                                   "week"), 
+                                all = T) 
+
+
+##Add in July: 
+
+alas_leaf_area_df_week <- bind_rows(alas_leaf_area_df_week_nopostjuly, alas_post_july)
+
+
+
 alas_df_final <-alas_leaf_area_df_week %>% 
  # select() %>% 
   mutate(#area_cm2_total = ((area_cm2/sdm_g)*ldm_g), 
@@ -74,9 +105,10 @@ alas_df_final <-alas_leaf_area_df_week %>%
         # lma = (sdm_g + ldm_g)/area_cm2, 
          lma_g_cm2 = ldm_g/area_cm2,
          d_cm = d_mm/10,
+          r_mm = d_mm, 
          r_cm = d_cm/2,
-         area_stem_cm2 = (pi*((r_cm)^2)), 
-         alas = (area_cm2/area_stem_cm2), 
+         area_stem_mm2 = (pi*((r_mm)^2)), 
+         alas_cm2_per_mm2 = (area_cm2/area_stem_mm2), 
         # sla_mm_mg = area_mm2/(dm_mg),
         sla_cm_g = area_cm2/ldm_g)
 

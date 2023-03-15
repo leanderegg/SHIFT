@@ -167,25 +167,7 @@ ggplot(aes(y = area_cm2,
            color = species)) +
   geom_jitter()
 
-
-#####
-#Try bluebs!
-#####
-
-# txt_data <- read_delim(txt_files)  
-# 
-# hobo_files <- list.files(here("raw-data", "HOBOS_SEKI"),
-#                          pattern = ".csv$", recursive = TRUE, full.names = TRUE)
-
-# hobo_data <- read_csv(moisture_files, skip = 1,
-#                       id = "id") %>% 
-#   rename(date_time = `Date Time, GMT-07:00`) %>% 
-#   rename(temp_c = `Temp, °C (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
-#   rename(relative_humidity = `RH, % (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
-#   select(id, date_time, temp_c, relative_humidity) %>%
-#   mutate(id = str_remove(id,
-#                          "/Users/user/Desktop/github/SEKI_Data_Analysis_IB/raw-data/HOBOS_SEKI/"),
-#          id = str_remove(id, ".csv"))
+###All dates after July are in the SHIFT data collection folder and can be picked up there. 
 
 
 
