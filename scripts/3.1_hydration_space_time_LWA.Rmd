@@ -33,7 +33,7 @@ select = dplyr::select
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 #datver <- "01052023"
-dataversion <- paste0("Data_", datver)
+#dataversion <- paste0("Data_", datver)
 ```
 
 ```{r, echo=F}
@@ -73,8 +73,15 @@ wc_all_raw %>%
              color = as.factor(week)
              )) +
   geom_jitter() +
-  labs(title = "Alas")
+  color_very_many +
+  labs(title = "Al:As", 
+       y = "Al:As (cm2/mm2)", 
+       x = "Week", 
+       color = "Week")
+```
 
+
+```{r}
 wc_all_raw %>% 
   filter(species == "blue oak") %>% 
   filter(lma_g_cm2 < 0.05) %>% 
@@ -83,7 +90,11 @@ wc_all_raw %>%
              color = as.factor(week)
              )) +
   geom_jitter() +
-  labs(title = "LMA")
+  color_many +
+  labs(title = "Leaf Mass per Area", 
+       y = "LMA (g/cm2)", 
+       x = "Week", 
+       color = "Week")
 ```
 
 Week 17 looks like a goot cutoff:
@@ -144,43 +155,6 @@ wc_qudo_df %>%
   labs(y = "Water Potential (MPa)", 
        x = "lwa_g_cm2")
 ```
-What we want to do, but just with week 10: 
-```{r, include = F}
-wk10 <- wc_qudo_df %>% 
-  filter(week == 10)
-
-wk10_wide <- wk10 %>% 
-  pivot_wider(names_from=time, 
-              values_from = c(lwa_g_cm2, water_potential)) %>% 
-    dplyr::group_by(tree) %>%
-  fill(c(lwa_g_cm2_md, lwa_g_cm2_pd, water_potential_pd, water_potential_md, date_wp), .direction = "downup") %>%
-  dplyr::ungroup()%>% 
-  select(-date_wp) %>% 
-  distinct()
-
-wk10_long_lwa_g_cm2 <- wk10_wide %>% 
-  drop_na(lwa_g_cm2_pd, lwa_g_cm2_md, water_potential_md, water_potential_pd) %>% 
-  select(-water_potential_md, -water_potential_pd) %>% 
-  mutate(pd = lwa_g_cm2_pd, 
-         md = lwa_g_cm2_md) %>% 
-  pivot_longer(cols = c(pd, md), 
-               names_to = "time", 
-               values_to = "lwa_g_cm2") %>% 
-  select(-lwa_g_cm2_pd, -lwa_g_cm2_md)
-
-wk10_long_mpa <- wk10_wide %>% 
-  drop_na(lwa_g_cm2_pd, lwa_g_cm2_md, water_potential_md, water_potential_pd) %>% 
-  select(-lwa_g_cm2_md, -lwa_g_cm2_pd) %>% 
-  mutate(pd = water_potential_pd, 
-         md = water_potential_md) %>% 
-  pivot_longer(cols = c(pd, md), 
-               names_to = "time", 
-               values_to = "water_potential") %>% 
-  select(-water_potential_pd, -water_potential_md)
-
-wk10_long <- merge(wk10_long_mpa, wk10_long_lwa_g_cm2)
-```
-
 
 ```{r, warning = F}
 wk_all <- wc_qudo_df 
@@ -227,8 +201,8 @@ wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwa_g_cm2) %>%
 ###nice hyd
 ```{r, echo=FALSE, fig.height= 5, fig.width= 2}
 wk_figs <- wk_all_long %>% 
-  filter(week %in% c(10, 14, 17, 19, 21, 29, 33), 
-         lwa_g_cm2 < 6, 
+  filter(week %in% c(10, 14, 17, 19, 21, 29, 33, 37), 
+         lwa_g_cm2 < .02, 
          lwa_g_cm2 > 0
          ) %>% 
   mutate(week_nice = case_when(
@@ -238,12 +212,13 @@ wk_figs <- wk_all_long %>%
     week == 19 ~ "Week 19", 
     week == 21 ~ "Week 21", 
     week == 29 ~ "Week 29",
-    week == 33 ~ "Week 33"
+    week == 33 ~ "Week 33",
+    week == 37 ~ "Week 37"
   )) 
 
 wk_figs_labels <-
   data.frame(
-    label = c('10', '11', '17', '19', '21', '29', '33'),
+    label = c('10', '11', '17', '19', '21', '29', '33', '37'),
     week_nice = c(
       "Week 10",
       "Week 14",
@@ -251,7 +226,8 @@ wk_figs_labels <-
       "Week 19",
       "Week 21",
       "Week 29",
-      "Week 33"
+      "Week 33",
+      "Week 37"
     )
   )
 
@@ -351,8 +327,8 @@ ran_err_df <- as.data.frame(ran_err[['week']]) %>%
 week_ranerr <- nrow(ran_err_df)
 
 #Comment the below based on if we're combining weeks (e.g. week 13 and 14, or week 10 and 11)
-weeks <- tibble(1:4)
-weeks$week <- c(14, 17, 21, 29) 
+weeks <- tibble(1:5)
+weeks$week <- c(14, 17, 21, 29, 37) 
 
 #weeks <- tibble(1:11)
 #weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
@@ -392,7 +368,8 @@ hyd_slopes <- ran_df_week %>%
                    color = week))+
   labs(x = "Week", 
        color = "week", 
-       y = "Slope") +
+       y = "Slope",
+       title = "Predawn-Midday Slopes") +
    # facet_wrap(~y_var_name, scales = "free") + 
 theme(
   strip.background = element_blank(),
@@ -408,7 +385,7 @@ theme(
                       # seq(10, 30, by = 1)
                      ) +
   theme(legend.position = "none") +
-  color_grad
+  color_grad 
 hyd_slopes
 
 ggsave(here("figures", "nice_hydration_slopes"), hyd_slopes, device = "jpg", width = 5, height = 2.5, dpi = 300)
@@ -468,7 +445,8 @@ wc_wk_centered_df <- wk_all_long %>%
   group_by(week) %>% 
   mutate(mean_lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T)) %>% 
   ungroup() %>% 
-  mutate(lwa_g_cm2_centered = lwa_g_cm2 - mean_lwa_g_cm2)
+  mutate(lwa_g_cm2_centered = lwa_g_cm2 - mean_lwa_g_cm2) %>% 
+  distinct()
   # mutate(lwa_g_cm2_centered = scale(lwa_g_cm2,  scale=FALSE)) %>% 
   # filter(lwa_g_cm2_centered < 4)
 ```
@@ -477,26 +455,10 @@ wc_wk_centered_df <- wk_all_long %>%
 
 ####SPACE - fig: 
 
-```{r, warning = F, echo=FALSE, include = F}
-#not scaled
-wc_wk_centered_df %>% 
-  drop_na(site) %>% 
-  #filter(time == "md") %>% 
-  ggplot(aes(y = water_potential, 
-             x = lwa_g_cm2, 
-             #color = tree_factor
-             color = as.factor(week)
-             )) +
-  geom_point(alpha = .3, 
-             aes (shape = site)) +
-  geom_smooth(method = "lm", se = F)
-```
-
-
 ```{r, warning = F, echo=FALSE}
 #scaled
 space_nice <- wc_wk_centered_df %>% 
-  drop_na(site) %>% 
+ # drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2_centered, 
              #color = tree_factor
@@ -533,13 +495,14 @@ ggsave(here("figures", "nice_space_lwa"), space_nice, device = "jpg", width = 4,
 Do we need to include site here? 
 
 ```{r}
-space_df_nosite <- wc_wk_centered_df %>% 
-  drop_na(site)
+space_df_nosite <- wc_wk_centered_df 
+#%>% 
+  #drop_na(site)
 
 space_mod <- lmer(water_potential ~ lwa_g_cm2_centered + (lwa_g_cm2_centered|week) + (1|tree), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwa_g_cm2_centered  + (lwa_g_cm2_centered|week) + (1|tree) + (1|site), data = wc_wk_centered_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwa_g_cm2_centered  + (lwa_g_cm2_centered|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -861,7 +824,7 @@ wc_qudo_df %>%
 ```
 
 ```{r, echo=FALSE}
-time <- wc_qudo_df %>% 
+time_lwa <- wc_qudo_df %>% 
   drop_na(week) %>% 
   filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
@@ -892,15 +855,15 @@ time <- wc_qudo_df %>%
   geom_smooth(method = "lm", se = F) + 
  # geom_vline(xintercept = 0, linetype = "dotted") +
   labs(y= "Middays (MPa)", 
-       x = "Leaf Water Content (g)", 
+       x = "Leaf Water/Area (g/cm2)", 
        color = "Week", 
       # shape = "Site"
        ) +
   color_very_many +
   guides(color = guide_legend(nrow = 2))
-time 
+time_lwa
 
-ggsave(here("figures", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
+ggsave(here("figures", "nice_time_lwa"), time, device = "jpg", width = 4, height = 2, dpi = 300)
 ```
 
 
@@ -919,7 +882,8 @@ wc_qudo_df %>%
        y = "Water Potential") +
   facet_wrap(~time, ncol=1) +
   color_very_many +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  xlim(0.005, .035)
 ```
 
 ```{r, echo=FALSE}
@@ -945,7 +909,7 @@ wc_qudo_md_df <- wc_qudo_df %>%
   filter(time == "md")
   
 time_mod <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|week) + (1|tree), data = wc_qudo_md_df)
-summary(time_mod)
+#summary(time_mod)
 ```
 
 
@@ -970,11 +934,11 @@ ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>%
         # -lwa_g_cm2
          )
 
-inds<- data_frame(1:47)
+inds<- data_frame(1:54)
 inds$tree <- c(unique(wc_qudo_md_df$tree))
 
 ran_df_tree <- bind_cols(inds, tree_eff, ran_err_tree) %>% 
-  select(-`1:47`) %>% 
+ # select(-`1:47`) %>% 
   data_frame()
 
 ran_df_tree %>% 

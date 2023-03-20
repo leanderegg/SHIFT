@@ -23,7 +23,7 @@ alas_df_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.
 
 unique(alas_df_raw$date)
 
-alas_df <- alas_df_raw %>% 
+alas_noareas_df <- alas_df_raw %>% 
    mutate(
      #area_cm = ((area_scanned_cm/sdm_g)*ldm_g), 
   #        area_mm = area_cm/10,
@@ -81,7 +81,7 @@ alas_leaf_area_df <- read_csv(here("processed-data", paste0("leaf_area_alldates_
 
 ##Combine wall without post-July: 
 
-alas_leaf_area_df_week_nopostjuly <- merge(alas_leaf_area_df, alas_df, by = c("tree_id", 
+alas_leaf_area_df_week_nopostjuly <- merge(alas_leaf_area_df, alas_noareas_df, by = c("tree_id", 
                                                                    "branch", 
                                                                    "species",
                                                                    "year",

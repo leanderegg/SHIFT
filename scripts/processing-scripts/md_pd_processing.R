@@ -12,11 +12,6 @@ library(MetBrewer)
 
 #Read in water potential data: ####
 
-
-## Data file version (so it's not hard coded in every read_excel() call)
-#datver <- "10182022"
-#dataversion <- paste0("Data_", datver)
-
 ####### Water Potentials 
 #Date: 218 WP + LWC
 wpwc218 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="218-221 WP + LWC", skip=5, na = "NA") %>% clean_names() %>% 
@@ -117,9 +112,9 @@ wpwc719$Tag <- str_remove(wpwc719$tag,"\\.0")
 wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="818 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("08-18-2022")) 
 
-#Date: 912 WP (NOT ENTERED YET AS OF 2023-03-11)
-# wpwc818 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="912 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
-#   mutate(date = mdy("09-12-2022")) 
+#Date: 915 WP (Differenr format, will have to add at the bottom)
+wpwc912 <-read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="912 -915 WP", skip=0, na = "NA") %>% clean_names()  %>%
+  mutate(date = mdy("09-15-2022"))
 
 
 
@@ -713,34 +708,34 @@ wp_alldates_pd <- rbind(wp818pd,
 
 
 
-wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
-  group_by(date, tree, site, plot) %>% 
-  mutate(mean_md = mean(mpa), 
-         mpa_md = mpa) %>% 
-ungroup() %>% 
-  mutate(rep = str_sub(md, 3, -1), 
-         date_md = date) %>% 
-  select(-mpa, -md, -tag, -date)
-
-wp_alldates_pd_summary_premerge <- wp_alldates_pd %>% 
-  group_by(date, tag) %>% 
-  mutate(mean_pd = mean(mpa), 
-         mpa_pd = mpa) %>% 
-  ungroup() %>% 
-  mutate(rep = str_sub(pd, 3, -1), 
-         date_pd = date) %>% 
-  select(-mpa, -pd, -tag, -date) 
-
-# merge the predawn and midday. 
-
-wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, 
-                             by = c("site","plot","tree","week", "species", "rep"), 
-                     all = T) #%>% 
-#  select(-tag, -plot_number)
-
-# I made this append a data version date to the file, since otherwise it overwrites past versions
-write.csv(wp_alldates, here("processed-data", paste0("wp_alldates_",datver,".csv")))
-
+# wp_alldates_md_summary_premerge <- wp_alldates_md %>% 
+#   group_by(date, tree, site, plot) %>% 
+#   mutate(mean_md = mean(mpa), 
+#          mpa_md = mpa) %>% 
+# ungroup() %>% 
+#   mutate(rep = str_sub(md, 3, -1), 
+#          date_md = date) %>% 
+#   select(-mpa, -md, -tag, -date)
+# 
+# wp_alldates_pd_summary_premerge <- wp_alldates_pd %>% 
+#   group_by(date, tag) %>% 
+#   mutate(mean_pd = mean(mpa), 
+#          mpa_pd = mpa) %>% 
+#   ungroup() %>% 
+#   mutate(rep = str_sub(pd, 3, -1), 
+#          date_pd = date) %>% 
+#   select(-mpa, -pd, -tag, -date) 
+# 
+# # merge the predawn and midday. 
+# 
+# wp_alldates <- merge(wp_alldates_pd_summary_premerge, wp_alldates_md_summary_premerge, 
+#                              by = c("site","plot","tree","week", "species", "rep"), 
+#                      all = T) #%>% 
+# #  select(-tag, -plot_number)
+# 
+# # I made this append a data version date to the file, since otherwise it overwrites past versions
+# write.csv(wp_alldates, here("processed-data", paste0("wp_alldates_",datver,".csv")))
+# 
 
 
  ##########`
@@ -763,30 +758,55 @@ wp_ad_pd$time <- "pd"
 wp_ad_pd$rep <- as.numeric(str_remove(wp_ad_pd$pd, "pd"))
 wp_ad_pd <- wp_ad_pd %>% select(-pd)
 
-wp_ad <- rbind(wp_ad_md, wp_ad_pd) %>% 
+
+wp_ad_no915 <- rbind(wp_ad_md, wp_ad_pd) %>% 
+  mutate(tree = as.numeric(tree))
+
+##Deal with the new format of sept dates: 
+wpwc915_new <- wpwc912 %>% 
+  mutate(tag = as.character(tree_id), 
+         tree = as.numeric(tree_id), 
+         mpa = as.numeric(m_pa)) %>% 
+  select(-m_pa, -rep, - x6, -tree_id)
+  
+wp_ad <- bind_rows(wp_ad_no915, wpwc915_new) %>% 
+  group_by(tree) %>% 
+  fill(c(site, plot, plot_number, species), .direction = "downup") %>% 
   mutate(tree = case_when(
-  tree %in% c(#"ARCA_ch",
-                #"ARCA_CH", 
+  tag %in% c(#"ARCA_ch",
+                #"ARCA_CH",
+    "Chamise ARCA",
               "Chamise-ARCA") ~ 10, 
-  tree %in% c(#"ARCA",
+  tag %in% c(#"ARCA",
               #"ARCA near 2380", 
+    "LL ARCA" ,
+    "ARCA - LL",
+    "ARCA - CUCU" ,
               "LL-ARCA") ~ 11, 
-  tree %in% c(#"ARCA_cucu", 
+  tag %in% c("ARCA-CUCU", 
+              "ARCA - CUCU",
+              "CUCU ARCA" ,
               "Cucu-ARCA") ~ 12, 
-  tree %in% c(#"LEU_cucu",
-              #"LEU_CUCU", 
+  tag %in% c(#"LEU_cucu",
+    "CUCU LEU",
+    "LEU- CUCU",
+              "LEU-CUCU", 
               "Cucu-LEU") ~ 20, 
-  tree %in% c("LL-LEU") ~ 21, 
+  tag %in% c("LL-LEU",
+              "LEU - LL") ~ 21, 
  # tree %in% c("ATLE") ~ 30, 
  # tree %in% c("BAPI") ~ 40, 
  # tree %in% c("ARCA") ~ 40, 
-  TRUE ~ as.numeric(tree)))
+  TRUE ~ as.numeric(tree))) %>% 
+  mutate(week = week(date), 
+         time = tolower(time)) %>% 
+  select(-rep)
 
 write.csv(wp_ad, here("processed-data", paste0("wp_alldates_long_",datver,".csv")))
 
 dlookr::diagnose(wp_ad)
 
-
-
+unique(wp_ad$tag)
+unique(wp_ad$tree)
 
 

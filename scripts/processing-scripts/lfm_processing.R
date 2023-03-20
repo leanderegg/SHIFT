@@ -18,9 +18,6 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
 
-## Data file version (so it's not hard coded in every read_excel() call)
-#datver <- "10182022"
-#dataversion <- paste0("Data_", datver)
 
 lfm_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), 
                      sheet="LFM DATA", skip=0, na = "NA") %>%

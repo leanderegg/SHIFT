@@ -41,12 +41,12 @@ ewt_allen <- read_csv(here("data", "ewt_all_firstpass.csv"), show_col_types = F)
 
 #Attach to water pot. data: 
 
-ewt_lwc_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = F) %>% 
-  mutate(lwc_mean = lwc_mean_combined) %>% 
-  filter(lwc_mean > 0, 
-         lwc_mean < 3, 
-         time == "md") %>% 
-  select(tree, week, lfm_y0_percent, mpa_mean, lwc_mean, rwc_percent_y0)
+ewt_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+  mutate(lwc_mean = lwc_mean) %>% 
+  # filter(lwc_mean > 0, 
+  #        lwc_mean < 3, 
+  #        time == "md") %>% 
+  select(tree, week, mpa_mean, lwc_mean, lwa_g_cm2)
 
 #Combine: 
 
@@ -58,6 +58,16 @@ vizzz
 ```{r}
 ewt_lwc_df %>% 
   ggplot(aes(y = ewt, x = lwc_mean, color = species
+             )) +
+  geom_point()
+
+ewt_lwc_df %>% 
+  ggplot(aes(y = ewt, x = lwa_g_cm2, color = species
+             )) +
+  geom_point()
+
+ewt_lwc_df %>% 
+  ggplot(aes(y = ewt, x = mpa_mean, color = species
              )) +
   geom_point()
 ```

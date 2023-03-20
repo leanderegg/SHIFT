@@ -35,7 +35,7 @@ source(here::here("scripts","scripts_functions", "figure_info.R"))
 
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
-datver <- "20230220"
+datver <- "20230316"
 dataversion <- paste0("Data_", datver)
 
 
@@ -125,7 +125,7 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
 #WC + WP:
 
 wp_wc_df <- merge(wp_df, wc_df, 
-                  by = c("tree","plot", "site", "species", "time", "week", "rep"), 
+                  by = c("tree","plot", "site", "species", "time", "week"), 
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 

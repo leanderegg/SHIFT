@@ -8,9 +8,6 @@ library(gridExtra)
 library(MetBrewer)
 library(here)
 
-## Data file version (so it's not hard coded in every read_excel() call)
-#datver <- "10182022"
-#dataversion <- paste0("Data_", datver)
 
 # all csv files
 leaf_area_data_csv <- list.files(path = here("data", "leaf_area_scans"),  # Identify all CSV files
@@ -168,6 +165,9 @@ ggplot(aes(y = area_cm2,
   geom_jitter()
 
 ###All dates after July are in the SHIFT data collection folder and can be picked up there. 
+
+
+##MISSING: Leaf areas for March! Weeks 10-12.
 
 
 

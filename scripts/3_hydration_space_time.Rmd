@@ -144,43 +144,6 @@ wc_qudo_df %>%
   labs(y = "Water Potential (MPa)", 
        x = "LWC")
 ```
-What we want to do, but just with week 10: 
-```{r, include = F}
-wk10 <- wc_qudo_df %>% 
-  filter(week == 10)
-
-wk10_wide <- wk10 %>% 
-  pivot_wider(names_from=time, 
-              values_from = c(lwc, water_potential)) %>% 
-    dplyr::group_by(tree) %>%
-  fill(c(lwc_md, lwc_pd, water_potential_pd, water_potential_md, date_wp), .direction = "downup") %>%
-  dplyr::ungroup()%>% 
-  select(-date_wp) %>% 
-  distinct()
-
-wk10_long_lwc <- wk10_wide %>% 
-  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
-  select(-water_potential_md, -water_potential_pd) %>% 
-  mutate(pd = lwc_pd, 
-         md = lwc_md) %>% 
-  pivot_longer(cols = c(pd, md), 
-               names_to = "time", 
-               values_to = "lwc") %>% 
-  select(-lwc_pd, -lwc_md)
-
-wk10_long_mpa <- wk10_wide %>% 
-  drop_na(lwc_pd, lwc_md, water_potential_md, water_potential_pd) %>% 
-  select(-lwc_md, -lwc_pd) %>% 
-  mutate(pd = water_potential_pd, 
-         md = water_potential_md) %>% 
-  pivot_longer(cols = c(pd, md), 
-               names_to = "time", 
-               values_to = "water_potential") %>% 
-  select(-water_potential_pd, -water_potential_md)
-
-wk10_long <- merge(wk10_long_mpa, wk10_long_lwc)
-```
-
 
 ```{r, warning = F}
 wk_all <- wc_qudo_df 
@@ -225,9 +188,11 @@ wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwc) %>%
 ```
 
 ###nice hyd
+
+Tall: 
 ```{r, echo=FALSE, fig.height= 5, fig.width= 2}
 wk_figs <- wk_all_long %>% 
-  filter(week %in% c(10, 14, 17, 19, 21, 29, 33), 
+  filter(week %in% c(10, 14, 17, 19, 21, 29, 33, 37), 
          lwc < 6, 
          lwc > 0
          ) %>% 
@@ -238,12 +203,13 @@ wk_figs <- wk_all_long %>%
     week == 19 ~ "Week 19", 
     week == 21 ~ "Week 21", 
     week == 29 ~ "Week 29",
-    week == 33 ~ "Week 33"
+    week == 33 ~ "Week 33",
+    week == 37 ~ "Week 37"
   )) 
 
 wk_figs_labels <-
   data.frame(
-    label = c('10', '11', '17', '19', '21', '29', '33'),
+    label = c('10', '11', '17', '19', '21', '29', '33', '33'),
     week_nice = c(
       "Week 10",
       "Week 14",
@@ -251,7 +217,8 @@ wk_figs_labels <-
       "Week 19",
       "Week 21",
       "Week 29",
-      "Week 33"
+      "Week 33",
+      "Week 37"
     )
   )
 
@@ -299,8 +266,38 @@ nice_hyd
 ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpg", width = 3, height = 9, dpi = 300)
 ```
 
+Stacked: 
 
-```{r, echo=FALSE}
+```{r, eval = F, include = F}
+df <- df %>% mutate(color = case_when(
+  label == "a" ~ "blue",
+  TRUE ~ "gray"
+))
+
+# This groups together all the 'gray' values
+ggplot(df) + geom_line(aes(x=date,y=value, group = label, color=color)) + 
+  scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
+```
+
+
+```{r}
+df_grey_groups <- wk_figs %>% 
+  mutate(color = case_when(
+    week %in% c('10', '11', '17', '19', '21', '29', '33', '33') ~ "grey", 
+    week %in% c('10', '17', '29', '37') ~ "goldenrod", 
+    TRUE ~ "grey"
+  ))
+  
+  
+df_grey_groups %>% 
+  ggplot() +
+  geom_point(aes(x=water_potential,y= lwc, group = tree, color=color)) + 
+  geom_line(aes(x=water_potential,y= lwc, group = tree, color=color)) + 
+  scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
+```
+
+
+```{r, echo=FALSE, include = F}
 wk_all_long %>% 
   filter(week %in% c(19)) %>% 
   ggplot(aes(y = water_potential, 
@@ -403,8 +400,8 @@ ran_err_df <- as.data.frame(ran_err[['week']]) %>%
 week_ranerr <- nrow(ran_err_df)
 
 #Comment the below based on if we're combining weeks (e.g. week 13 and 14, or week 10 and 11)
-weeks <- tibble(1:9)
-weeks$week <- c(10, 14, 15, 17, 18, 19, 21, 29, 33) 
+weeks <- tibble(1:11)
+weeks$week <- c(9, 10, 14, 15, 17, 18, 19, 21, 29, 33, 39) 
 
 #weeks <- tibble(1:11)
 #weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
@@ -456,7 +453,7 @@ theme(
   legend.title = element_text(size = 18)
   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  scale_x_continuous(breaks = c(10, 14,15, 17, 18, 19, 21, 29, 33)
+  scale_x_continuous(breaks = c(10, 14,15, 17, 18, 19, 21, 29, 33, 39)
                       # seq(10, 30, by = 1)
                      ) +
   theme(legend.position = "none") +
@@ -502,7 +499,7 @@ theme(
   legend.title = element_text(size = 18)
   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  scale_x_continuous(breaks = c(10, 14,15, 17, 18, 19, 21, 29, 33, 39)+
   color_grad
 ```
 
@@ -550,7 +547,8 @@ wc_wk_centered_df %>%
 space_nice <- wc_wk_centered_df %>% 
   drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
-             x = lwc_centered, 
+            # x = lwc_centered, 
+            x = mean_lwc,
              #color = tree_factor
              color = as.factor(week)
              )) +
@@ -961,7 +959,7 @@ wc_qudo_df %>%
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
              x = lwc, 
-             color = as.factor(tree), 
+             color = as.factor(week), 
              show.legend = FALSE)) +
   geom_point(aes(size = week), 
              alpha = .3)+
