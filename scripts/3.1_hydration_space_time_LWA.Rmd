@@ -141,7 +141,7 @@ MPa ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (1|wk)
 ```{r, echo=FALSE}
 wc_qudo_df %>% 
   #filter(week %in% c(10, 13, 17, 21, 29)) %>% 
-  filter(lwa_g_cm2 < 5) %>% 
+  filter(lwa_g_cm2 < .03) %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2, 
              color = as.factor(tree)

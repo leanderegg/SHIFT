@@ -359,14 +359,30 @@ vdc2 <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>%
       TRUE ~ as.character(grp)
   ))
 
-vdc2 %>% ggplot(aes(x = dataset, 
+vdc2_plot <- vdc2 %>% ggplot(aes(x = dataset, 
                     y = percent_var,
                     fill = grp_new)) +
   geom_col(stat = "identity") +
   color_fill_vdc +
   labs(y = "", 
        x = "", 
-       fill = "Variable")
+       fill = "Variable") +
+  theme(
+    legend.position = "top",
+  strip.background = element_blank(),
+ # strip.text.y = element_blank(), 
+  axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+ # legend.title = element_text(size = 14), 
+  legend.title = element_blank(), 
+ legend.text= element_text(size = 12), 
+  ) 
+vdc2_plot
+
+ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5, height = 5, dpi = 300)
 ```
 
 
