@@ -8,6 +8,17 @@ ggplot <- function(...) { ggplot2::ggplot(...) +
           panel.grid.minor = element_blank())  # Hide minor gridlines
 }
 
+# library(RColorBrewer)
+# display.brewer.all(colorblindFriendly = T)
+# 
+# #palette using grey
+# greys <- brewer.pal(n=10,"Greys")
+# greys
+
+greys <- list(c("#FFFFFF", "#F0F0F0", "#D9D9D9", "#BDBDBD", "#969696", "#737373", "#525252", "#252525", "#000000"))
+
+
+
 Cross = list(c("#c969a1", "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451"), 
              c(4, 7, 1, 8, 2, 6, 3, 5, 9), 
              colorblind=FALSE)

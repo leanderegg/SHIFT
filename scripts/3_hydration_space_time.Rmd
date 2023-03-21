@@ -189,7 +189,7 @@ wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwc) %>%
 
 ###nice hyd
 
-Tall: 
+#####Tall: 
 ```{r, echo=FALSE, fig.height= 5, fig.width= 2}
 wk_figs <- wk_all_long %>% 
   filter(week %in% c(10, 14, 17, 19, 21, 29, 33, 37), 
@@ -266,34 +266,56 @@ nice_hyd
 ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpg", width = 3, height = 9, dpi = 300)
 ```
 
-Stacked: 
+#####Layered
 
-```{r, eval = F, include = F}
-df <- df %>% mutate(color = case_when(
-  label == "a" ~ "blue",
-  TRUE ~ "gray"
-))
+```{r, include = F, eval=F}
+# df_grey_groups %>% 
+#   ggplot() +
+#   geom_point(aes(y=water_potential,x= lwc, group = tree, color=color)) + 
+#   geom_line(aes(y=water_potential,x= lwc, group = tree, color=color)) + 
+#   scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
 
-# This groups together all the 'gray' values
-ggplot(df) + geom_line(aes(x=date,y=value, group = label, color=color)) + 
-  scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
+("#c969a1", "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451")
 ```
 
 
 ```{r}
-df_grey_groups <- wk_figs %>% 
-  mutate(color = case_when(
-    week %in% c('10', '11', '17', '19', '21', '29', '33', '33') ~ "grey", 
-    week %in% c('10', '17', '29', '37') ~ "goldenrod", 
-    TRUE ~ "grey"
-  ))
+df_all_groups <- wk_figs %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  )
   
+
+df_grey <- df_all_groups
+
+df_1 <- df_all_groups %>% 
+  filter(week %in% c('10'))
+
+df_2 <- df_all_groups %>% 
+  filter(week %in% c('17'))
+
+df_3 <- df_all_groups %>% 
+  filter(week %in% c('21'))
+
+df_4 <- df_all_groups %>% 
+  filter(week %in% c('33'))
+
+ggplot() +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_grey, color = "grey") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "grey", data = df_grey) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_1, color = "#004f63") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "#004f63", data = df_1) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_2, color = "#859b6c") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "#859b6c", data = df_2) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_3, color = "goldenrod") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "goldenrod", data = df_3) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_4, color = "#c969a1") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "#c969a1", data = df_4) +
+    labs(y = "Water Potential (MPa)", 
+       x = "Leaf Water Content (g)", 
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+   xlim(.5,2) #+
   
-df_grey_groups %>% 
-  ggplot() +
-  geom_point(aes(x=water_potential,y= lwc, group = tree, color=color)) + 
-  geom_line(aes(x=water_potential,y= lwc, group = tree, color=color)) + 
-  scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
 ```
 
 
@@ -499,7 +521,7 @@ theme(
   legend.title = element_text(size = 18)
   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  scale_x_continuous(breaks = c(10, 14,15, 17, 18, 19, 21, 29, 33, 39)+
+  scale_x_continuous(breaks = c(10, 14,15, 17, 18, 19, 21, 29, 33, 39))+
   color_grad
 ```
 
