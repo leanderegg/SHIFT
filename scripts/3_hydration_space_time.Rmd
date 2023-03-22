@@ -427,6 +427,7 @@ ran_df <- as.data.frame(ran_list2[['week']])%>%
   select(-`(Intercept)`)
 
 ran_err <- arm::se.ranef(m_wk_rand)
+
 ran_err_df <- as.data.frame(ran_err[['week']]) %>% 
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwc`)%>% 
@@ -1096,15 +1097,6 @@ ran_pd_df_week %>%
 
 #**Time
 
-
-#HERE: 
-
-To do: 
-
-- Color by the linear portion
-- 
-
-
 ```{r}
 wc_qudo_df %>% 
   filter(!week %in% c(9, 18, 19)) %>% 
@@ -1186,6 +1178,8 @@ wc_qudo_df %>%
 ```
 Midday slopes for each individual: 
 
+All dates: 
+
 ```{r}
 wc_qudo_md_df <- wc_qudo_df %>% 
   filter(time == "md")
@@ -1252,6 +1246,214 @@ theme(
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
+```
+
+Just linear: 
+```{r}
+wc_qudo_md_df <- wc_qudo_df %>% 
+  filter(time == "md") %>% 
+  filter(time_season == "after leafout")
+  
+  
+time_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = wc_qudo_md_df)
+summary(time_mod)
+
+ran_list <- coef(time_mod)
+
+tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
+  mutate(estimate = `(Intercept)`, 
+        # slope = `lwc`
+         ) %>%
+  select(-`(Intercept)`, 
+          -lwc)
+tree_eff
+
+ran_err_tree <- arm::se.ranef(time_mod)
+ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+        # std.error.slope = `lwc`
+         )%>% 
+  select(-`(Intercept)`, 
+        # -lwc
+         ) %>% 
+  tibble::rownames_to_column("tree") # Apply rownames_to_column
+
+ran_df_tree_after <- bind_cols(tree_eff, ran_err_tree) %>% 
+  #select(-`1:47`) %>% 
+  data_frame() %>% 
+  mutate(time_season = "After Leafout")
+
+ran_df_tree_after %>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc") %>% 
+  mutate(upr = estimate + (std.error/2), 
+         lwr = estimate - (std.error/2)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = estimate ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope, AFTER LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+```
+Before leafout: 
+```{r}
+wc_qudo_md_df <- wc_qudo_df %>% 
+  filter(time == "md") %>% 
+  filter(time_season == "before leafout")
+  
+  
+time_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = wc_qudo_md_df)
+summary(time_mod)
+
+ran_list <- coef(time_mod)
+
+tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
+  mutate(estimate = `(Intercept)`, 
+        # slope = `lwc`
+         ) %>%
+  select(-`(Intercept)`, 
+          -lwc)
+tree_eff
+
+ran_err_tree <- arm::se.ranef(time_mod)
+ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+        # std.error.slope = `lwc`
+         )%>% 
+  select(-`(Intercept)`, 
+        # -lwc
+         ) %>% 
+  tibble::rownames_to_column("tree") # Apply rownames_to_column
+
+ran_df_tree_before <- bind_cols(tree_eff, ran_err_tree) %>% 
+  #select(-`1:47`) %>% 
+  data_frame()%>% 
+  mutate(time_season = "Before Leafout")
+
+ran_df_tree_before %>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc") %>% 
+  mutate(upr = estimate + (std.error/2), 
+         lwr = estimate - (std.error/2)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = estimate ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope, BEFORE LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+```
+
+####SLOPES - combined
+
+```{r}
+ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
+
+ef <- ran_df_tree_before_vs_after %>% 
+  group_by(time_season) %>% 
+  mutate( sd = sd(estimate),
+    estimate = mean(estimate), 
+        # std.error = mean(std.error),
+         upr = estimate + sd, 
+         lwr = estimate - sd, 
+         time_season = as.factor(time_season)) %>% 
+  select(estimate, upr, lwr, time_season, sd)
+
+time_summary <- ef %>% 
+ggplot() + 
+  geom_point(aes(y = estimate, x = time_season), size =3) +
+    geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "Mean Slope +/- SD acrss all trees
+                 for each time frame", 
+       x = "Time")
+time_summary
+
+ggsave(here("figures", "time_summary_slopes"), time_summary, device = "jpg", width = 2.5, height = 3, dpi = 300)
+```
+
+
+```{r}
+ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
+
+ef <- ran_df_tree_before_vs_after %>% 
+ # group_by(time_season) %>% 
+  mutate( sd = sd(estimate),
+    estimate = mean(estimate), 
+        # std.error = mean(std.error),
+         upr = estimate + sd, 
+         lwr = estimate - sd, 
+         time_season = as.factor(time_season)) %>% 
+  select(estimate, upr, lwr, time_season, sd)
+
+time_summary_all <- ef %>% 
+ggplot() + 
+  geom_point(aes(y = estimate, x = time_season), size =3) +
+    geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "Mean Slope +/- SD acrss all trees
+                 for each time frame", 
+       x = "Time")
+time_summary_all
+
+ggsave(here("figures", "time_summary_slopes"), time_summary_all, device = "jpg", width = 2.5, height = 3, dpi = 300)
 ```
 
 Predawn slopes for each individual: 
