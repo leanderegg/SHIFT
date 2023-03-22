@@ -127,6 +127,80 @@ wc_qudo_df %>%
 ```
 A: week 17, 21, 29, 10
 
+#Timeline
+
+```{r, fig.height=.75, fig.width=6}
+wc_qudo_df %>% 
+  ggplot(aes(x = week, y = 0, color = week))+
+  geom_hline(yintercept = 0) +
+  geom_point(size = 5) +
+  color_grad +
+  ylim(-.25, +.25)  + 
+  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 18, 19, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) +
+  theme(legend.position = "none", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        )
+
+
+breaks = as.Date(c(
+#+
+  # theme_minimal() +
+  # scale_x_date(date_labels = '%b-%d',
+  #              breaks = as.Date("2022-03-08","2022-03-15", "2022-03-25", "2022-03-23", "2022-03-30", "2022-04-04", "2022-04-06", "2022-04-13", "2022-04-11", "2022-04-27", "2022-04-25", "2022-05-04" ,"2022-05-09", "2022-05-25", "2022-05-23", "2022-07-19", "2022-08-18","2022-09-15"))
+  
+  
+```
+```{r, fig.height=1, fig.width=12}
+timeline_df <- wc_qudo_df %>% 
+ # select(week, date_wp, time) %>% 
+  mutate(date_wp = as.character(date_wp)) %>% 
+  mutate(date_new = case_when(
+    date_wp %in% c("2022-03-23") ~ "2022-03-25",
+    date_wp %in% c("2022-03-30","2022-04-06") ~ "2022-04-04",
+    date_wp %in% c("2022-04-13") ~ "2022-04-11",
+    date_wp %in% c("2022-04-27") ~ "2022-04-25",
+    date_wp %in% c("2022-05-04") ~ "2022-05-09",
+    date_wp %in% c("2022-05-23") ~ "2022-05-25",
+    TRUE ~ as.character(date_wp)
+  )) %>% 
+  mutate(date_new = ymd(date_new)) %>% 
+  select(date_new, week) %>% 
+  distinct()
+
+
+timeline_plot <- timeline_df %>% 
+ # filter(time == "md") %>% 
+  ggplot(aes(x = date_new, y = 0, color = week))+
+  geom_hline(yintercept = 0) +
+  geom_point(size = 5) +
+  color_grad +
+  ylim(-.25, +.25)  + 
+  theme(legend.position = "none", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(angle = 20, vjust = 0.5, hjust=.5)
+        ) +
+scale_x_date(date_labels = '%b. %d',
+             breaks = as.Date(c("2022-03-08","2022-03-15", "2022-03-25", 
+                                #"2022-03-23", "2022-03-30", 
+                                "2022-04-04", #"2022-04-06","2022-04-13", 
+                                "2022-04-11", #"2022-04-27", 
+                                "2022-04-25", #"2022-05-04" ,
+                                "2022-05-09", "2022-05-25", 
+                                #"2022-05-23", 
+                                "2022-07-19", "2022-08-18","2022-09-15")))
+timeline_plot
+
+ggsave(here("figures", "timeline_plot"), timeline_plot, device = "jpg", width = 12, height = 1, dpi = 300)
+```
+
 
 #**Hydration per week: 
 
