@@ -98,3 +98,30 @@
 #                     all = T
 #                     ) 
 # #646 rows
+
+
+
+###For loop for plots: 
+# ```{r, include=F}
+# wc_lm_hyd_df <- wk_all
+# 
+# for (i in unique(wc_lm_hyd_df$week)) {
+#   
+#   df <- wc_lm_hyd_df %>%
+#     filter(week == i)
+#   
+#   p <- df %>%
+#     ggplot(aes(y = water_potential,
+#                x = lwc,
+#                color = as.factor(tree)
+#     )) +
+#     geom_point(aes(shape = time)) +
+#     geom_smooth(method = "lm",
+#                 se = F) +
+#     #theme(legend.position = "none") +
+#     labs(title = i)
+#   
+#   if (!is.null(p)) plot(p)
+#   
+# }
+# ```

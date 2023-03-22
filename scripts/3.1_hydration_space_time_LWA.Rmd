@@ -322,13 +322,14 @@ ran_err_df <- as.data.frame(ran_err[['week']]) %>%
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwa_g_cm2`)%>% 
   select(-`(Intercept)`, 
-         -lwa_g_cm2)
+         -lwa_g_cm2)  %>% 
+  tibble::rownames_to_column("week")
 
-week_ranerr <- nrow(ran_err_df)
-
-#Comment the below based on if we're combining weeks (e.g. week 13 and 14, or week 10 and 11)
-weeks <- tibble(1:5)
-weeks$week <- c(14, 17, 21, 29, 37) 
+# week_ranerr <- nrow(ran_err_df)
+# 
+# #Comment the below based on if we're combining weeks (e.g. week 13 and 14, or week 10 and 11)
+# weeks <- tibble(1:5)
+# weeks$week <- c(14, 17, 21, 29, 37) 
 
 #weeks <- tibble(1:11)
 #weeks$week <- c(9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 29) 
@@ -534,13 +535,14 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwa_g_cm2_centered`)%>% 
   select(-`(Intercept)`, 
-         -lwa_g_cm2_centered)
+         -lwa_g_cm2_centered)  %>% 
+  tibble::rownames_to_column("week")
 
-weeks_check <- list(unique(space_df$week)) #%>% as_data_frame() 
-weeks_check
-
-weeks <- data_frame(1:4)
-weeks$week <- c(14, 17, 21, 29) 
+# weeks_check <- list(unique(space_df$week)) #%>% as_data_frame() 
+# weeks_check
+# 
+# weeks <- data_frame(1:4)
+# weeks$week <- c(14, 17, 21, 29) 
 
 ran_df_week <- bind_cols(weeks, ran_df3, ran_err_df) %>% 
   #select(-`1:10`) %>% 
@@ -706,15 +708,16 @@ ran_err_pd_df <- as.data.frame(ran_err3[['week']]) %>%
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwa_g_cm2_centered`)%>% 
   select(-`(Intercept)`, 
-         -lwa_g_cm2_centered)
+         -lwa_g_cm2_centered)  %>% 
+  tibble::rownames_to_column("week")
 
-weeks_check <- unique(space_pd_df$week) %>% as_data_frame() 
-
-#weeks <- data_frame(1:9)
-#weeks$week <- c(9, 10, 11, 12, 14, 15, 17, 21, 29) 
-
-weeks <- tibble(1:8)
-weeks$week <- c(10, 14, 15, 17, 19, 21, 29, 33) 
+# weeks_check <- unique(space_pd_df$week) %>% as_data_frame() 
+# 
+# #weeks <- data_frame(1:9)
+# #weeks$week <- c(9, 10, 11, 12, 14, 15, 17, 21, 29) 
+# 
+# weeks <- tibble(1:8)
+# weeks$week <- c(10, 14, 15, 17, 19, 21, 29, 33) 
 
 ran_pd_df_week <- bind_cols(weeks, ran_pd_df, ran_err_pd_df) %>% 
  # select(-`1:9`) %>% 

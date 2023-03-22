@@ -144,9 +144,9 @@ wp_ind_new <- wp_ind %>%
   ))
 
 write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
-```
 
-```{r}
+
+
 wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) 
 
 #### Lee's version which hopefully cuts down on replicate values
@@ -190,13 +190,52 @@ wp_wc_ind_new <- wp_wc_ind %>%
     week < 17 ~ "early", 
     week > 18 ~ "late"
   )) %>% 
-  group_by(tree, time)
-  mutate(change_mpa = mean())
+  group_by(tree, time) 
 
 write_csv(wp_wc_ind_new, here("processed-data", "geospatial", "wp_wc_ind_new.csv"))
+
+boundary <- sf::st_read(here("processed-data", "geospatial", "boundary.kml" ))
 ```
 
+```{r}
+pds <- latlon.ll@data  %>% 
+  filter(week %in% c(17:37), 
+         species.x == "blue oak") %>% 
+  group_by(tree) %>% 
+  mutate(pd_mpa = mean(pd_mpa, na.rm = T)) %>% 
+  arrange(desc(pd_mpa)) %>% 
+  drop_na(pd_mpa)
 
+pal_md <- colorNumeric(c( "#122451",
+                                   "#004f63",
+                                  "#62929a",
+                                   "#859b6c",
+                                  "#ffbb44",
+                                  "#eb7926"
+                                  ), domain = c(c(1,3)))
+
+whole_map <- leaflet(pds) %>% 
+  addTiles()  %>% 
+  addPolygons(data=boundary, 
+              stroke = TRUE, 
+              fillOpacity = 0, 
+              smoothFactor = 0.2,
+    color = "black", 
+    opacity = 1,
+    weight = 2) %>% 
+  addCircleMarkers(radius = 10,
+    color = ~ pal_md(pd_mpa),
+    stroke = FALSE, 
+    fillOpacity = 0.5) %>% 
+    addProviderTiles("Esri.WorldTopoMap") %>%
+  addLegend("bottomright", pal = pal_md, values = ~pd_mpa,
+    title = "MPa",
+    labFormat = labelFormat(prefix = "-"),
+    opacity = 1
+  ) 
+
+whole_map
+```
 
 ```{r}
 #With no water pots.
@@ -234,7 +273,12 @@ pal_md <- colorNumeric(c( "#122451",
 
 early_mds <- leaflet(wk10_mds) %>% 
   addTiles()  %>% 
-  # addPolygons(data=contours_shx, color = grey) %>% 
+  addPolygons(data=boundary, 
+              stroke = TRUE, 
+              fillOpacity = 0.5, 
+              smoothFactor = 0.2,
+    color = "black", 
+    opacity = .6,) %>% 
   addCircleMarkers( radius = 5,
     color = ~ pal_md(md_mpa),
     stroke = FALSE, fillOpacity = 0.5) %>% 

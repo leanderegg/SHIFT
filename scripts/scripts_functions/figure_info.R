@@ -81,6 +81,5 @@ color_two <- scale_color_manual(values = met.brewer("Cross", 4))
 
 color_fill <- scale_fill_manual(values = met.brewer("Cross"), 4) #direction = -1
 
-color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1)
-                                                      )
+color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1))
 
