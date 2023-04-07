@@ -1,4 +1,9 @@
 
+```{r}
+library(cowplot)
+library(grid)
+library(gridExtra)
+```
 
 Scatterplots:
 
@@ -64,19 +69,20 @@ nice_hydration_layered_1 <- ggplot() +
   #strip.text.y = element_blank(), 
   #strip.text.x = element_text(size = 16), 
   # axis.text.y = element_text(size = 12), 
-  # axis.text.x = element_text(size = 12), 
+   axis.text.x = element_text(size = 12), 
    axis.text.y = element_text(size = 12),
-     axis.text.x  = element_blank(),
+    # axis.text.x  = element_blank(),
   #axis.ticks.y = element_blank(), 
-  axis.title.y = element_text(size = 15), 
+  #axis.title.y = element_blank()
   axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
   legend.title = element_text(size = 14), 
   legend.text = element_text(size = 14), 
 # legend.position = "none"
   ) +
    ylim(-5,0)+
    xlim(.5,2) #+
-#nice_hydration_layered_1
+nice_hydration_layered_1
 
 ```
 #Space
@@ -101,10 +107,11 @@ space_nice_1 <- wc_wk_centered_df %>%
       plot.title = element_text(size=13),
      # axis.title = element_text(size = 16),
      axis.text.y = element_text(size = 12),
-     axis.text.x  = element_blank(),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
      legend.key=element_blank(), 
       axis.title.x = element_blank(),
-     axis.title.y = element_text(size = 15), 
+     axis.title.y = element_blank(),
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
      legend.margin=margin(0,0,0,0),
@@ -121,7 +128,7 @@ space_nice_1 <- wc_wk_centered_df %>%
   xlim(.5,2) +
   ylim(-5,0)+
   guides(color = guide_legend(nrow = 2))
-#space_nice_1
+space_nice_1
 
 
 ```
@@ -155,11 +162,14 @@ time_1 <- wc_qudo_df %>%
      # strip.text.x = element_text(size = 12),
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
-      axis.title = element_text(size = 15),
+      #axis.title = element_text(size = 15),
+     axis.title = element_blank(),
      axis.text = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
+     #legend.title = element_blank(),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
@@ -174,7 +184,7 @@ time_1 <- wc_qudo_df %>%
   ylim(-5,0)+
   color_two_grey
 
-#time_1 
+time_1 
 ```
 
 ##COMBINE:
@@ -195,8 +205,8 @@ legend_plot <- wc_wk_centered_df %>%
      # axis.title = element_text(size = 16),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
-      axis.title.x = element_blank(),
-     axis.title.y = element_text(size = 15), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
      legend.margin=margin(0,0,0,0),
@@ -253,12 +263,14 @@ hyd_slopes <- ran_df_week %>%
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 15),
-      axis.title.x = element_text(size = 15),
+      #axis.title.y = element_text(size = 15),
+      #axis.title.x = element_text(size = 15),
+      axis.title = element_blank(),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
+    # legend.title = element_text(size = 16),
+     legend.title = element_blank(),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
@@ -268,10 +280,13 @@ hyd_slopes <- ran_df_week %>%
                      ) +
   theme(legend.position = "none") +
   #xlim(0, 40) +
-  color_grad 
+  color_grad  +
+  ylim(-1, 6)
 hyd_slopes
+```
 
 
+```{r}
 space_slope <- ran_df_week_4 %>% 
   mutate(week = as.numeric(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
@@ -301,7 +316,8 @@ space_slope <- ran_df_week_4 %>%
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
@@ -310,9 +326,13 @@ space_slope <- ran_df_week_4 %>%
                      ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
   color_grad +
-  guides(color = guide_legend(nrow = 2))
+  guides(color = guide_legend(nrow = 2)) +
+  ylim(-1, 6)
 space_slope
+```
 
+
+```{r}
 #Time
 
 ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
@@ -338,7 +358,7 @@ ggplot(aes(color = time_season)) +
                    x = time_season, 
                    xend = time_season)) +
   scale_x_discrete(limits = c("Before Leafout", "After Leafout"),
-                   labels = c("Before", "After")) +
+                   labels = c("Before Leafout", "After Leafout")) +
   labs(#y = "Mean Slope +/- SD acrss all trees
                  #for each time frame", 
    y = "",
@@ -350,18 +370,22 @@ ggplot(aes(color = time_season)) +
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
       axis.title.y = element_text(size = 15),
-      axis.title.x = element_text(size = 13),
+      #axis.title.x = element_text(size = 13),
+      axis.title.x = element_blank(),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
-    ) 
+    ) +
+  ylim(-1, 6)
   
 time_summary
+```
 
 
+```{r}
 stacked_slopes_nice <- cowplot::plot_grid(space_slope, hyd_slopes, time_summary, 
                                    nrow = 3, rel_heights = c(.9, 1, .7), rel_widths = c(1, 1, .7)) 
 
@@ -370,7 +394,6 @@ stacked_slopes_nice <- cowplot::plot_grid(space_slope, hyd_slopes, time_summary,
 final_slopes<- cowplot::plot_grid(legend_scatterplots, stacked_slopes_nice, nrow = 2, rel_heights  = c(.25, 4))
 #final_slopes
 
-
 combined <- cowplot::plot_grid(stacked_nice, stacked_slopes_nice, ncol = 2, rel_widths = c(1, 1))
 #combined
 
@@ -378,5 +401,60 @@ combined_legend <- cowplot::plot_grid(legend_scatterplots, combined, nrow = 2, r
 combined_legend
 
 ggsave(here("figures", "combined_legend"), combined_legend, device = "jpg", width = 13, height = 10, dpi = 300)
+```
+
+
+```{r}
+y.grob1 <- textGrob("Slope", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15), rot=90)
+
+x.grob1 <- textGrob("Time", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15))
+
+
+combined_slopes_wide <- cowplot::plot_grid(space_slope, hyd_slopes, time_summary, 
+                                   nrow = 1, rel_heights = c(.15, 1, .3), 
+                                   rel_widths = c(1, 1, 1)
+                                   ) 
+
+combined_slopes_wide
+
+combined_slopes_wide_labels <- grid.arrange(arrangeGrob(combined_slopes_wide, left = y.grob1, bottom = x.grob1))
+
+######
+```
+
+
+```{r}
+y.grob2 <- textGrob("Water Potential (MPa)", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15), rot=90)
+
+x.grob2 <- textGrob("Leaf Water Content (g)", 
+                   gp=gpar(fontface="bold", #col="blue",
+                           fontsize=15))
+
+
+combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, nice_hydration_layered_1, time_1, 
+                                   nrow = 1, rel_heights = c(.15, 1, .3), 
+                                   rel_widths = c(1, 1, 1)
+                                   ) 
+combined_plots_wide_nolegend
+
+combined_plots_wide <- cowplot::plot_grid(legend_scatterplots, combined_plots_wide_nolegend,
+                                          nrow = 2, rel_heights = c(.25, 1))
+
+combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_plots_wide, left = y.grob2, bottom = x.grob2))
+```
+
+
+```{r}
+combined_plots_all <- cowplot::plot_grid(combined_plots_wide_labels, combined_slopes_wide_labels, 
+                                         nrow = 2)
+combined_plots_all
+
+ggsave(here("figures", "combined_plots_all"), combined_plots_all, device = "jpg", width = 14, height = 7, dpi = 300)
 ```
 
