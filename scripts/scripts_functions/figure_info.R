@@ -71,7 +71,9 @@ color_many_2 <- scale_color_manual(values = c("#122451", "#165E6F", "#528791",  
                                               "#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E",  
                                               "#CC5265", "#C969A1"))
 
-color_many <- scale_color_manual(values = c(Cross_more))
+color_two_grey <-scale_color_manual(values =c("#525252", "#969696"))
+
+color_many <- scale_color_manual(values = c(Cross_rev))
 
 cross_discrete =  MetBrewer::met.brewer(name="Cross", type="discrete")
 

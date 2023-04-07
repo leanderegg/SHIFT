@@ -26,6 +26,7 @@ select = dplyr::select
 library('variancePartition')
 source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
 datver <- "20230220"
 dataversion <- paste0("Data_", datver)
 ```

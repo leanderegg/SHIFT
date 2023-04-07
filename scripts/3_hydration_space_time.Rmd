@@ -145,15 +145,6 @@ wc_qudo_df %>%
         axis.text.y = element_blank(),
         axis.ticks = element_blank(), 
         )
-
-
-breaks = as.Date(c(
-#+
-  # theme_minimal() +
-  # scale_x_date(date_labels = '%b-%d',
-  #              breaks = as.Date("2022-03-08","2022-03-15", "2022-03-25", "2022-03-23", "2022-03-30", "2022-04-04", "2022-04-06", "2022-04-13", "2022-04-11", "2022-04-27", "2022-04-25", "2022-05-04" ,"2022-05-09", "2022-05-25", "2022-05-23", "2022-07-19", "2022-08-18","2022-09-15"))
-  
-  
 ```
 ```{r, fig.height=1, fig.width=12}
 timeline_df <- wc_qudo_df %>% 
@@ -177,7 +168,7 @@ timeline_plot <- timeline_df %>%
  # filter(time == "md") %>% 
   ggplot(aes(x = date_new, y = 0, color = week))+
   geom_hline(yintercept = 0) +
-  geom_point(size = 5) +
+  geom_point(size = 10) +
   color_grad +
   ylim(-.25, +.25)  + 
   theme(legend.position = "none", 
@@ -185,7 +176,7 @@ timeline_plot <- timeline_df %>%
         axis.title.x = element_blank(), 
         axis.text.y = element_blank(),
         axis.ticks = element_blank(), 
-        axis.text.x = element_text(angle = 20, vjust = 0.5, hjust=.5)
+        axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5, size= 14)
         ) +
 scale_x_date(date_labels = '%b. %d',
              breaks = as.Date(c("2022-03-08","2022-03-15", "2022-03-25", 
@@ -198,7 +189,7 @@ scale_x_date(date_labels = '%b. %d',
                                 "2022-07-19", "2022-08-18","2022-09-15")))
 timeline_plot
 
-ggsave(here("figures", "timeline_plot"), timeline_plot, device = "jpg", width = 12, height = 1, dpi = 300)
+ggsave(here("figures", "timeline_plot"), timeline_plot, device = "jpg", width = 12, height = 1.5, dpi = 300)
 ```
 
 
@@ -345,7 +336,7 @@ nice_hyd
 ggsave(here("figures", "nice_hydration"), nice_hyd, device = "jpg", width = 3, height = 9, dpi = 300)
 ```
 
-#####Layered
+#####****Layered
 
 ```{r, include = F, eval=F}
 # df_grey_groups %>% 
@@ -416,14 +407,16 @@ nice_hydration_layered <- ggplot() +
        #caption = "triangles = predawn, circles = midday"
        ) +
   theme(
-    legend.position = c(.9, .35),
+    #legend.position = c(.9, .35),
+    legend.position = "none",
   #strip.background = element_blank(),
   #strip.text.y = element_blank(), 
   #strip.text.x = element_text(size = 16), 
   axis.text.y = element_text(size = 12), 
   axis.text.x = element_text(size = 12), 
   #axis.ticks.y = element_blank(), 
-  axis.title = element_text(size = 14), 
+  axis.title.y = element_text(size = 20), 
+  axis.title.x = element_blank(),
   legend.title = element_text(size = 14), 
   legend.text = element_text(size = 14), 
 # legend.position = "none"
@@ -529,7 +522,7 @@ hyd_slopes <- ran_df_week %>%
                    x = week, 
                    xend = week, 
                    color = week))+
-  labs(x = "Week", 
+  labs(#x = "Week", 
        color = "week", 
        y = "Slope") +
    # facet_wrap(~y_var_name, scales = "free") + 
@@ -539,7 +532,8 @@ theme(
   strip.text.x = element_text(size = 16), 
  # axis.text.y = element_blank(), 
   #axis.ticks.y = element_blank(), 
-  axis.title = element_text(size = 20), 
+ axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
   legend.title = element_text(size = 18), 
  legend.position = "none"
   ) +
@@ -622,7 +616,7 @@ wc_wk_centered_df <- wk_all_long %>%
   # filter(lwc_centered < 4)
 ```
 
-####SPACE - fig: 
+####***SPACE - fig: 
 ```{r, warning = F, echo=FALSE}
 #scaled
 space_nice <- wc_wk_centered_df %>% 
@@ -636,14 +630,16 @@ space_nice <- wc_wk_centered_df %>%
   geom_point(alpha = .5, 
             # aes (shape = site)
              ) +
-  theme(#legend.position="top",
-        legend.position= c(.7, .2),
+  theme(legend.position="none",
+       # legend.position= c(.7, .2),
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
-      axis.title = element_text(size = 16),
+     # axis.title = element_text(size = 16),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 20), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
      legend.margin=margin(0,0,0,0),
@@ -699,6 +695,7 @@ space_nice_centered <- wc_wk_centered_df %>%
   color_many_2 +
   #color_week_all +
   guides(color = guide_legend(nrow = 2))
+
 space_nice_centered
 
 ggsave(here("figures", "nice_space_centered"), space_nice_centered, device = "jpg", width = 6, height = 4, dpi = 300)
@@ -712,10 +709,10 @@ Centered LWC:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data = space_df, REML = T)
+space_mod <- lmer(water_potential ~ lwc_centered + (lwc_centered|week) + (1|tree), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tree) + (1|site), data = space_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwc_centered  + (lwc_centered|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -729,10 +726,10 @@ LWC uncentered:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree), data = space_df, REML = T)
+space_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwc  + (lwc|week) + (1|tree) + (1|site), data = space_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwc  + (lwc|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -783,9 +780,7 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
 ran_df_week <- bind_cols(ran_df3, ran_err_df) %>% 
   #select(-`1:10`) %>% 
   data_frame()
-```
 
-```{r, echo=FALSE}
 ran_df_week %>% 
  # mutate(week = as.factor(week)) %>% 
   mutate(week = as.numeric(week)) %>% 
@@ -812,7 +807,8 @@ ran_df_week %>%
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
       axis.title = element_text(size = 16),
-     axis.text = element_text(size = 12),
+      axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
@@ -827,7 +823,7 @@ ran_df_week %>%
    # color_many_2 +
   guides(color = guide_legend(nrow = 2))
 ```
-
+Intercepts - centered
 
 ```{r, echo=FALSE}
 ran_df_week %>% 
@@ -870,7 +866,7 @@ ran_df_week %>%
   guides(color = guide_legend(nrow = 2))
 ```
 
-#NOT Centered
+#****NOT Centered
 
 Get slopes from random effects: 
 
@@ -904,10 +900,8 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
 ran_df_week <- bind_cols(ran_df3, ran_err_df) %>% 
   #select(-`1:10`) %>% 
   data_frame()
-```
 
-```{r, echo=FALSE}
-ran_df_week %>% 
+space_slope <- ran_df_week %>% 
   mutate(week = as.factor(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
@@ -926,12 +920,13 @@ ran_df_week %>%
                    color = week))+
   labs(x = "Week", 
        color = "Week", 
-       y = "Slope") +
-  theme(legend.position="top",
+       y = "Slope - space") +
+  theme(legend.position="none",
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
-      axis.title = element_text(size = 16),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
@@ -942,8 +937,9 @@ ran_df_week %>%
   geom_hline(yintercept = 0, linetype="dotted") + 
     color_many_2 +
   guides(color = guide_legend(nrow = 2))
+space_slope
 ```
-
+Intercept - not centered
 
 ```{r, echo=FALSE}
 ran_df_week %>% 
@@ -1109,7 +1105,8 @@ ran_pd_df_week %>%
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
       axis.title = element_text(size = 16),
-     axis.text = element_text(size = 12),
+      axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
      legend.key=element_blank(), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
@@ -1190,13 +1187,13 @@ time <- wc_qudo_df %>%
              size = week,
              shape = as.factor(tree),
              show.legend = FALSE)) +
-  geom_point(#aes(size = week), 
+  geom_point(size = 1,
              alpha = .3)+
   geom_smooth(method = "lm", se = F) +
  # theme(legend.position = "none") +
   labs(x = "LWC", 
        y = "Midday MPa") +
-  color_two +
+  #color_two_grey +
   theme(
       legend.position="none",
       strip.background = element_blank(),
@@ -1217,7 +1214,8 @@ time <- wc_qudo_df %>%
        color = "Week", 
        ) +
   guides(color = guide_legend(nrow = 2)) +
-  facet_wrap(~time, nrow = 2)
+  facet_wrap(~time, nrow = 2) +
+  color_two_grey
 time 
 
 ggsave(here("figures", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
@@ -1531,4 +1529,17 @@ time_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree), data = wc_qudo_p
 summary(time_mod)
 ```
 
+##COMBINE:
+
+1) Get legend: 
+```{r}
+legend_scatterplots <- cowplot::get_legend(nice_hyd)
+legend_scatterplots
+```
+
+
+```{r}
+cowplot::plot_grid(nice_hydration_layered, space_nice, nrow = 2) +
+  legend_scatterplots
+```
 

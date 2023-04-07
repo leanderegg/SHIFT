@@ -213,9 +213,11 @@ lma = g dry/g are
 alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")), show_col_types = F) %>% 
   mutate(tree = tree_id) %>% 
   select(tree, week, branch, year, lwm_g, ldm_g, l_cm, d_cm, area_cm2, lma_g_cm2, alas_cm2_per_mm2, sla_cm_g) %>% 
-  group_by(tree, week, year) %>% 
+  group_by(tree, week, year, branch) %>% 
   summarise_all(mean) %>% 
-  filter(year == 0)
+  filter(year == 0) #%>% 
+ # filter()
+
 
 wp_wc_rwc_alas_df <- merge(wp_wc_rwc_df, alas_df_raw, by = c("week", "tree"), all = T) %>% 
   mutate(lwa_g_cm2 = lwc_mean * lma_g_cm2) %>% 

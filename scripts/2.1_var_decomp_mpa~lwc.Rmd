@@ -52,6 +52,9 @@ qudo_wc_all <- wc_all_raw %>%
   group_by(tree, week, time, lwc_mean, site) %>% 
   mutate(water_potential = mean(mpa_mean), 
          lwc = lwc_mean) 
+
+qudo_wc_linear <- qudo_wc_all %>% 
+  filter(week > 17)
 ```
 
 ```{r}
@@ -317,11 +320,12 @@ sum(wc_all_vest_df$vcov)
 mvar_lin <- lmer(water_potential ~ lwc + (1|site/tree) + (1|week), data=qudo_wc_linear)
 
 r2m <- r.squaredGLMM(mvar_lin)[1] # plust the marginal R2 of lwc
-#r2m 
+ 
+r2m #0.107
 
-var(qudo_wc_linear$water_potential, na.rm=T) # 1.18
+var(qudo_wc_linear$water_potential, na.rm=T) # 1.0239
 vest_lin <- data.frame(VarCorr(mvar_lin))
-#sum(vest$vcov) + 0.09 #1.001
+sum(vest$vcov) + 0.09 #1.001
 
 wc_linear_vest_df <- vest_lin %>% 
   add_row(vcov = r2m, 
@@ -382,7 +386,7 @@ vdc2_plot <- vdc2 %>% ggplot(aes(x = dataset,
   ) 
 vdc2_plot
 
-ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5, height = 5, dpi = 300)
+ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5, height = 7, dpi = 300)
 ```
 
 
