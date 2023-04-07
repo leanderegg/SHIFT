@@ -777,11 +777,11 @@ ran_err_df <- as.data.frame(ran_err3[['week']]) %>%
 # weeks <- data_frame(1:10)
 # weeks$week <- c(9, 10, 14, 15, 17, 18, 19, 21, 29, 33) 
 
-ran_df_week <- bind_cols(ran_df3, ran_err_df) %>% 
+ran_df_week_3 <- bind_cols(ran_df3, ran_err_df) %>% 
   #select(-`1:10`) %>% 
   data_frame()
 
-ran_df_week %>% 
+ran_df_week_3 %>% 
  # mutate(week = as.factor(week)) %>% 
   mutate(week = as.numeric(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
@@ -826,7 +826,7 @@ ran_df_week %>%
 Intercepts - centered
 
 ```{r, echo=FALSE}
-ran_df_week %>% 
+ran_df_week_3 %>% 
    mutate(week = as.numeric(week)) %>% 
  # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
@@ -873,35 +873,35 @@ Get slopes from random effects:
 NOTE: this includes site random effect, which the centered version does not need. 
 
 ```{r, echo=FALSE}
-space_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
+space_mod_4 <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
 
-space_mod_df <- broom.mixed::tidy(space_mod)
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
 #space_mod_df
 
-ran_list3 <- coef(space_mod)
+ran_list3 <- coef(space_mod_4)
 
 #ran_list2 <- coef(m_wk_rand)
 
-ran_df3 <- as.data.frame(ran_list3[['week']])%>% 
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
   mutate(estimate = `(Intercept)`, 
          slope = `lwc`, 
          -lwc) %>%
   select(-`(Intercept)`)
 
-ran_err3 <- arm::se.ranef(space_mod)
+ran_err_4 <- arm::se.ranef(space_mod_4)
 
-ran_err_df <- as.data.frame(ran_err3[['week']]) %>% 
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwc`)%>% 
   select(-`(Intercept)`, 
          -lwc) %>% 
   tibble::rownames_to_column("week")
 
-ran_df_week <- bind_cols(ran_df3, ran_err_df) %>% 
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
   #select(-`1:10`) %>% 
   data_frame()
 
-space_slope <- ran_df_week %>% 
+space_slope <- ran_df_week_4 %>% 
   mutate(week = as.factor(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
@@ -1248,36 +1248,37 @@ wc_qudo_md_df <- wc_qudo_df %>%
   filter(time == "md")
   
 time_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = wc_qudo_md_df)
+#time_mod <- lmer(water_potential ~ lwc + (lwc|tree), data = wc_qudo_md_df)
+
 summary(time_mod)
 
 ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-        # slope = `lwc`
+         slope = lwc
          ) %>%
   select(-`(Intercept)`, 
           -lwc)
 tree_eff
 
-ran_err_tree <- arm::se.ranef(time_mod)
-ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
+ran_err_tree1 <- arm::se.ranef(time_mod)
+
+ran_err_tree2 <- as.data.frame(ran_err_tree1[['tree']]) %>% 
   mutate(std.error = `(Intercept)`, 
-        # std.error.slope = `lwc`
+         std.error.slope = `lwc`
          )%>% 
   select(-`(Intercept)`, 
         # -lwc
          ) %>% 
   tibble::rownames_to_column("tree") # Apply rownames_to_column
 
-ran_df_tree <- bind_cols(tree_eff, ran_err_tree) %>% 
+ran_df_tree <- bind_cols(tree_eff, ran_err_tree2) %>% 
   #select(-`1:47`) %>% 
   data_frame()
 
 ran_df_tree %>% 
   mutate(tree = as.factor(tree)) %>% 
- # filter(tree %in% c(14, 17, 21, 29)) %>% 
- # filter(term == "lwc") %>% 
   mutate(upr = estimate + (std.error/2), 
          lwr = estimate - (std.error/2)) %>% 
   ggplot(aes(color= tree)
@@ -1285,7 +1286,6 @@ ran_df_tree %>%
   geom_point(aes(y = estimate ,x = tree), size =3) +
     geom_point(aes(y = upr, x = tree), size = 1) +
   geom_point(aes(y = lwr, x = tree), size = 1) +
-  #geom_line(aes(group = tree, y = tree, x = upr)) +
   geom_segment(aes(y= lwr, 
                    yend = upr, 
                    x = tree, 
@@ -1294,7 +1294,6 @@ ran_df_tree %>%
   labs(x = "Tree", 
        color = "Tree", 
        y = "Slope (Midday MPa ~ LWC)") +
-   # facet_wrap(~y_var_name, scales = "free") + 
 theme(
   strip.background = element_blank(),
   strip.text.y = element_blank(), 
@@ -1304,8 +1303,37 @@ theme(
   axis.title = element_text(size = 20), 
   legend.title = element_text(size = 18)
   ) +
- # geom_hline(yintercept = 0, linetype="dotted") + 
- # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+
+
+ran_df_tree %>% 
+  mutate(tree = as.factor(tree)) %>% 
+  mutate(upr = slope + (std.error/2), 
+         lwr = slope - (std.error/2)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = slope ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope (Midday MPa ~ LWC)") +
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
@@ -1325,7 +1353,7 @@ ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-        # slope = `lwc`
+         slope = `lwc`
          ) %>%
   select(-`(Intercept)`, 
           -lwc)
@@ -1334,7 +1362,7 @@ tree_eff
 ran_err_tree <- arm::se.ranef(time_mod)
 ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
   mutate(std.error = `(Intercept)`, 
-        # std.error.slope = `lwc`
+         std.error.slope = `lwc`
          )%>% 
   select(-`(Intercept)`, 
         # -lwc
@@ -1381,6 +1409,43 @@ theme(
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
+
+
+ran_df_tree_after %>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc") %>% 
+  mutate(upr = slope + (std.error/2), 
+         lwr = slope - (std.error/2)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = slope ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope, AFTER LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
 ```
 Before leafout: 
 ```{r}
@@ -1396,7 +1461,7 @@ ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-        # slope = `lwc`
+         slope = `lwc`
          ) %>%
   select(-`(Intercept)`, 
           -lwc)
@@ -1405,10 +1470,10 @@ tree_eff
 ran_err_tree <- arm::se.ranef(time_mod)
 ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
   mutate(std.error = `(Intercept)`, 
-        # std.error.slope = `lwc`
+         std.error.slope = `lwc`
          )%>% 
   select(-`(Intercept)`, 
-        # -lwc
+         -lwc
          ) %>% 
   tibble::rownames_to_column("tree") # Apply rownames_to_column
 
@@ -1421,11 +1486,11 @@ ran_df_tree_before %>%
   mutate(tree = as.factor(tree)) %>% 
  # filter(tree %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc") %>% 
-  mutate(upr = estimate + (std.error/2), 
-         lwr = estimate - (std.error/2)) %>% 
+  mutate(upr = slope + (std.error/2), 
+         lwr = slope - (std.error/2)) %>% 
   ggplot(aes(color= tree)
     ) + 
-  geom_point(aes(y = estimate ,x = tree), size =3) +
+  geom_point(aes(y = slope ,x = tree), size =3) +
     geom_point(aes(y = upr, x = tree), size = 1) +
   geom_point(aes(y = lwr, x = tree), size = 1) +
   #geom_line(aes(group = tree, y = tree, x = upr)) +
@@ -1461,17 +1526,17 @@ ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
 
 ef <- ran_df_tree_before_vs_after %>% 
   group_by(time_season) %>% 
-  mutate( sd = sd(estimate),
-    estimate = mean(estimate), 
+  mutate( sd = sd(slope),
+    slope = mean(slope), 
         # std.error = mean(std.error),
-         upr = estimate + sd, 
-         lwr = estimate - sd, 
+         upr = slope + sd, 
+         lwr = slope - sd, 
          time_season = as.factor(time_season)) %>% 
-  select(estimate, upr, lwr, time_season, sd)
+  select(slope, upr, lwr, time_season, sd)
 
 time_summary <- ef %>% 
 ggplot() + 
-  geom_point(aes(y = estimate, x = time_season), size =3) +
+  geom_point(aes(y = slope, x = time_season), size =3) +
     geom_point(aes(y = upr, x = time_season), size = 1) +
   geom_point(aes(y = lwr, x = time_season), size = 1) +
   #geom_line(aes(group = tree, y = tree, x = upr)) +
@@ -1492,8 +1557,8 @@ ggsave(here("figures", "time_summary_slopes"), time_summary, device = "jpg", wid
 ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
 
 ef <- ran_df_tree_before_vs_after %>% 
- # group_by(time_season) %>% 
-  mutate( sd = sd(estimate),
+  group_by(time_season) %>% 
+  mutate(sd = sd(estimate),
     estimate = mean(estimate), 
         # std.error = mean(std.error),
          upr = estimate + sd, 
@@ -1529,17 +1594,5 @@ time_mod <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree), data = wc_qudo_p
 summary(time_mod)
 ```
 
-##COMBINE:
 
-1) Get legend: 
-```{r}
-legend_scatterplots <- cowplot::get_legend(nice_hyd)
-legend_scatterplots
-```
-
-
-```{r}
-cowplot::plot_grid(nice_hydration_layered, space_nice, nrow = 2) +
-  legend_scatterplots
-```
 
