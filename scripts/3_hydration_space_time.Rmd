@@ -1545,7 +1545,7 @@ ggplot() +
                    x = time_season, 
                    xend = time_season)) +
   labs(y = "Mean Slope +/- SD acrss all trees
-                 for each time frame", 
+            for each time frame", 
        x = "Time")
 time_summary
 
