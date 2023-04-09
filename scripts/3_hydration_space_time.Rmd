@@ -1353,7 +1353,8 @@ ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-         slope = `lwc`
+         slope = `lwc`,
+         sd = sd(slope)
          ) %>%
   select(-`(Intercept)`, 
           -lwc)
@@ -1461,13 +1462,15 @@ ran_list <- coef(time_mod)
 
 tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
   mutate(estimate = `(Intercept)`, 
-         slope = `lwc`
+         slope = `lwc`, 
+         sd = sd(slope)
          ) %>%
   select(-`(Intercept)`, 
           -lwc)
 tree_eff
 
 ran_err_tree <- arm::se.ranef(time_mod)
+
 ran_err_tree <- as.data.frame(ran_err_tree[['tree']]) %>% 
   mutate(std.error = `(Intercept)`, 
          std.error.slope = `lwc`
@@ -1526,11 +1529,14 @@ ran_df_tree_before_vs_after <- bind_rows(ran_df_tree_before, ran_df_tree_after)
 
 ef <- ran_df_tree_before_vs_after %>% 
   group_by(time_season) %>% 
-  mutate( sd = sd(slope),
-    slope = mean(slope), 
+  mutate(sd = sd(slope),
+         slope = mean(slope), 
+         mean_se = mean(std.error.slope),
         # std.error = mean(std.error),
-         upr = slope + sd, 
-         lwr = slope - sd, 
+         # upr = slope + sd, 
+         # lwr = slope - sd, 
+        upr = slope + mean_se, 
+         lwr = slope - mean_se, 
          time_season = as.factor(time_season)) %>% 
   select(slope, upr, lwr, time_season, sd)
 

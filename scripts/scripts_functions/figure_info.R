@@ -18,6 +18,15 @@ Cross = list(c("#c969a1", "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c",
 
 Cross_rev = c("#122451", "#063E5C", "#165E6F", "#528791", "#729684", "#8E9D68", "#D9B150", "#F8A63A" ,"#EC7E28", "#EC7F51", "#E97B6E", "#D5534D", "#CC5265", "#C969A1")
 
+#My colors: 
+color_many_2 <- scale_color_manual(values = c("#122451", "#165E6F", "#528791",  "#8E9D68", "#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E", "#CC5265", "#C969A1"))
+
+
+color_two_grey <-scale_color_manual(values =c("#525252", "#969696"))
+
+color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1))
+
+color_grad_new <- scale_colour_stepsn(colors = c("#122451", "#165E6F", "#528791", "#8E9D68","#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E", "#CC5265", "#C969A1"))
 
 #Many colors: 
 
@@ -67,11 +76,7 @@ pal.10 <- met.brewer("Cross")
 mycolors.10 <- colorRampPalette(pal)(nb.cols.10)
 mycolors.10
 
-color_many_2 <- scale_color_manual(values = c("#122451", "#165E6F", "#528791",  "#8E9D68",
-                                              "#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E",  
-                                              "#CC5265", "#C969A1"))
 
-color_two_grey <-scale_color_manual(values =c("#525252", "#969696"))
 
 color_many <- scale_color_manual(values = c(Cross_rev))
 
