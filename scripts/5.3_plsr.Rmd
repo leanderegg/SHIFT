@@ -1,0 +1,81 @@
+---
+title: "pls"
+author: "Indra Boving"
+date: "2023-04-19"
+output: html_document
+---
+https://www.statology.org/partial-least-squares-in-r/  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install pls package (if not already installed)
+install.packages("pls")
+
+#load pls package
+library(pls)
+```
+
+```{r}
+ewt_lwc_df
+
+#make this example reproducible
+set.seed(1)
+
+#fit PCR model
+model <- plsr(ewt ~ mpa_mean + lwc_mean + lwa_g_cm2, data=ewt_lwc_df, scale=TRUE, validation="CV")
+```
+
+1. VALIDATION: RMSEP
+
+This table tells us the test RMSE calculated by the k-fold cross validation. We can see the following:
+
+    If we only use the intercept term in the model, the test RMSE is 69.66.
+    If we add in the first PLS component, the test RMSE drops to 40.57.
+    If we add in the second PLS component, the test RMSE drops to 35.48.
+
+We can see that adding additional PLS components actually leads to an increase in test RMSE. Thus, it appears that it would be optimal to only use two PLS components in the final model.
+
+2. TRAINING: % variance explained
+
+This table tells us the percentage of the variance in the response variable explained by the PLS components. We can see the following:
+
+    By using just the first PLS component, we can explain 68.66% of the variation in the response variable.
+    By adding in the second PLS component, we can explain 89.27% of the variation in the response variable.
+
+Note that we’ll always be able to explain more variance by using more PLS components, but we can see that adding in more than two PLS components doesn’t actually increase the percentage of explained variance by much.
+```{r}
+summary(model)
+```
+1 component is the ideal number, explaining 96% of the variation.
+
+```{r}
+validationplot(model)
+validationplot(model, val.type="MSEP")
+validationplot(model, val.type="R2")
+```
+MPa does the best job. 
+
+```{r}
+ewt_lwc_df_nonas <- ewt_lwc_df %>% 
+  drop_na("ewt", "mpa_mean", "lwc_mean", "lwa_g_cm2")
+#define training and testing sets
+train1 <- ewt_lwc_df_nonas[1:25, c("ewt", "mpa_mean", "lwc_mean", "lwa_g_cm2")]
+
+train <- train1 %>%  drop_na("mpa_mean", "lwc_mean")
+
+y_test <- ewt_lwc_df_nonas[26:nrow(ewt_lwc_df_nonas), c("ewt")] 
+                  
+test1 <- ewt_lwc_df_nonas[26:nrow(ewt_lwc_df_nonas), c("mpa_mean", "lwc_mean", "lwa_g_cm2")]
+test <- drop_na(test1)
+    
+#use model to make predictions on a test set
+model <- plsr(ewt ~ mpa_mean + lwc_mean + lwa_g_cm2, data=train, scale=TRUE, validation="CV")
+pcr_pred <- predict(model, test, ncomp=2)
+
+
+#calculate RMSE
+sqrt(mean((pcr_pred - y_test)^2))
+```
+
+

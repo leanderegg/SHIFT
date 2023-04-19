@@ -1,0 +1,141 @@
+---
+title: "Adding in CWC from Phil analysis!"
+author: "Indra Boving"
+date: "3/14/2023"
+output: html_document
+---
+
+##setup
+```{r setup, include=FALSE}
+#install.packages("MuMIn")
+#devtools::install_github("an-bui/calecopal")
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+library(cowplot)
+#install.packages("ggcorrplot")
+library(ggcorrplot)
+select = dplyr::select
+library('variancePartition')
+source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
+datver <- "20230316"
+dataversion <- paste0("Data_", datver)
+```
+
+```{r}
+cwc_raw <- read_csv(here(dataversion,"cwc-alldates.csv"), show_col_types = F) %>% 
+  clean_names() %>% 
+  mutate(tree = la_tree_id) %>% 
+  pivot_longer(cols = (6:17),
+              names_to = "date", 
+               values_to = "cwc") %>% 
+  mutate(date = gsub("x", "", date, fixed = TRUE), 
+         date = ymd(date), 
+         week = week(date), 
+         tree = as.character(tree)) %>% 
+  group_by(tree, week) %>% 
+  mutate(cwc = mean(cwc))
+
+cwc_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+  mutate(lwc_mean = lwc_mean) %>% 
+   filter(year == 0) %>% 
+  filter(!(week == 29 & lwa_g_cm2 > 1)) %>% 
+  group_by(tree, week, time) %>% 
+  mutate(lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T),
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T),
+         water_potential = mean(mpa_mean), 
+         tree_factor = as.factor(tree)) %>% 
+  ungroup() %>% 
+  mutate(week = case_when(
+    week %in% c(13) ~ 14,
+    week %in% c(11) ~ 10,
+    week %in% c(16) ~ 17,
+    TRUE ~ week
+  )) %>%
+ # select(week, time, lwa_g_cm2, water_potential, date_wp,
+       #  tree, tree_factor, plot, site, species,lma_g_cm2, alas_cm2_per_mm2) %>% 
+  distinct() %>% 
+  filter(!week == 9, 
+         time == 'md') %>% 
+  mutate(time_season = case_when(
+    week <= 17 ~ "before leafout", 
+    week > 17 ~ "after leafout", 
+    TRUE ~ as.character("none")
+  )) %>% 
+  mutate(water_potential = -1*water_potential) 
+ # filter(lwa_g_cm2 < 0.025) %>% 
+  # filter(lwc_mean > 0, 
+  #        lwc_mean < 3, 
+  #        time == "md") %
+
+#Combine: 
+unique(cwc_raw$week)
+
+unique(cwc_lwc_df$week)
+
+unique(cwc_raw$tree)
+
+unique(cwc_lwc_df$tree)
+
+cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all.y = T) %>% 
+  distinct() %>% 
+  # filter(cwc > -1, 
+  #        #species == "blue oak"
+  #        ) %>% 
+  select(tree, week, date, cwc, site, time, mpa_mean, lwc_mean, lma_g_cm2, lwa_g_cm2, water_potential, time_season) %>% 
+  distinct() %>% 
+  filter(cwc > -100)
+```
+
+
+#Initial viz:
+
+```{r}
+mpa_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = mpa_mean, x = cwc, color = site)) +
+  geom_point() +
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F)
+
+lwc_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lwc_mean, x = cwc, color = site)) +
+  geom_point()+
+  theme(legend.position = "none")+
+  geom_smooth(method = "lm", se = F)
+
+lwa_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lwa_g_cm2, x = cwc, color = site)) +
+  geom_point()+
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F)
+
+lma_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lma_g_cm2, x = cwc, color = site)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = F)
+
+
+all_cwc <- cowplot::plot_grid(mpa_cwc, lwc_cwc, lwa_cwc, lma_cwc, nrow = 2)
+
+all_cwc
+```
+
+```{r}
+cwc_lwc_df %>% 
+  ggplot(aes(y = mpa_mean, x = cwc, color = time_season)) +
+  geom_point()+
+  geom_line(method = "lm", se = F) 
+```
+
+

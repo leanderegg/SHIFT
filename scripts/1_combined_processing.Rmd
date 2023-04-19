@@ -425,6 +425,19 @@ all_water_df_alas <- alas_all_water_df %>%
   filter(tree > 1000)
 ```
 
+Look at LWC and LFM
+```{r}
+# all_water_df_alas %>% 
+#   mutate(lwc_lfm = (lwm_g - ldm_g)/ldm_g*100) %>% 
+#   filter(lwc_lfm < 300, lwc_lfm > 0) %>% 
+#   ggplot(aes(y = lfm_y1_percent, x = lwc_lfm, color = species)) +
+#   geom_point() +
+#   geom_abline() +
+#   coord_equal()
+#   
+```
+
+
 #FINAL: write.csv
 
 ```{r}
