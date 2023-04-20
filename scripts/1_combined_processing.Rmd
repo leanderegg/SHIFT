@@ -420,7 +420,7 @@ all_water_df_alas <- alas_all_water_df %>%
   filter(type == "leaf", 
          #year == 0
          ) %>% 
-  select(week, tree, time, plot, site, species, mpa_mean, lwc_mean, mean_swc_per_dry_g_y0, mean_swc_g_y0, lfm_y0_percent, lfm_y1_percent, lfm_both_percent, rwc_percent_y0, lwm_g, ldm_g, area_cm2, lma_g_cm2, alas_cm2_per_mm2, sla_cm_g, lwa_g_cm2) %>% 
+  select(week, tree, time, plot, site, species, mpa_mean, lwc_mean, mean_swc_per_dry_g_y0, mean_swc_g_y0, lfm_y0_percent, lfm_y1_percent, lfm_both_percent, rwc_percent_y0, lwm_g, ldm_g, area_cm2, lma_g_cm2, alas_cm2_per_mm2, sla_cm_g, lwa_g_cm2, date_wp) %>% 
   distinct() %>% 
   filter(tree > 1000)
 ```
@@ -442,6 +442,37 @@ Look at LWC and LFM
 
 ```{r}
 write.csv(all_water_df_alas, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
+```
+
+#For Sedgwick dataset: 
+
+```{r}
+sedgwick <- all_water_df_alas %>% 
+  select(-lwm_g, -ldm_g, -area_cm2) %>% 
+  group_by(tree, date_wp, time) %>% 
+  mutate(date = date_wp, 
+         lfm_y0_percent = mean(lfm_y0_percent, na.rm = T),
+         lfm_y1_percent = mean(lfm_y1_percent, na.rm = T),
+         lfm_both_percent = mean(lfm_both_percent, na.rm = T),
+         rwc_y0_percent = mean(rwc_percent_y0, na.rm = T),
+         rwc_y0_percent = mean(rwc_percent_y0, na.rm = T),
+          lwa_g_cm2 = mean( lwa_g_cm2, na.rm = T),
+          sla_cm_g = mean( sla_cm_g, na.rm = T),
+          alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T),
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         ) %>% 
+  distinct() %>% 
+  ungroup() %>% 
+  select(-rwc_percent_y0, -date_wp) %>% 
+  select(date, week, tree, time, plot, site, species, 7:19)
+
+write.csv(sedgwick, here("processed-data", paste0("SHIFT_summary",datver,".csv")))
+```
+
+```{r}
+head(sedgwick)
+
+unique(sedgwick$date_wp)
 ```
 
 for Anna's student: 

@@ -103,25 +103,25 @@ cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all.y = T) %>%
 
 ```{r}
 mpa_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = mpa_mean, x = cwc, color = site)) +
+  ggplot(aes(y = mpa_mean, x = cwc, color = as.factor(week))) +
   geom_point() +
   theme(legend.position = "none") +
   geom_smooth(method = "lm", se = F)
 
 lwc_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = lwc_mean, x = cwc, color = site)) +
+  ggplot(aes(y = lwc_mean, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none")+
   geom_smooth(method = "lm", se = F)
 
 lwa_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = lwa_g_cm2, x = cwc, color = site)) +
+  ggplot(aes(y = lwa_g_cm2, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none") +
   geom_smooth(method = "lm", se = F)
 
 lma_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = lma_g_cm2, x = cwc, color = site)) +
+  ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
   geom_point()+
   geom_smooth(method = "lm", se = F)
 
@@ -133,9 +133,10 @@ all_cwc
 
 ```{r}
 cwc_lwc_df %>% 
-  ggplot(aes(y = mpa_mean, x = cwc, color = time_season)) +
-  geom_point()+
-  geom_line(method = "lm", se = F) 
+  ggplot(aes(y = mpa_mean, x = cwc, color = as.factor(week)
+             )) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) 
 ```
 
 
