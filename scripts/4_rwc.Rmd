@@ -82,12 +82,14 @@ rwc_df  %>%
 
 ```{r, echo=F}
 rwc_df %>% 
-  filter(rwc_percent < 100) %>% 
+  #filter(rwc_percent < 100) %>% 
   ggplot(aes(y = rwc_percent, 
              x= mpa_mean, 
-             color = as.factor(week))) +
+             #color = as.factor(week)
+             )) +
   geom_point() +
-  facet_wrap(~time)
+  facet_wrap(~time) +
+  geom_smooth(method= "lm", se = F)
 ```
 
 ```{r, echo=F}
