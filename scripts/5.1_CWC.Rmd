@@ -49,7 +49,7 @@ cwc_raw <- read_csv(here(dataversion,"cwc-alldates.csv"), show_col_types = F) %>
 
 cwc_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
   mutate(lwc_mean = lwc_mean) %>% 
-   filter(year == 0) %>% 
+  # filter(year == 0) %>% 
   filter(!(week == 29 & lwa_g_cm2 > 1)) %>% 
   group_by(tree, week, time) %>% 
   mutate(lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T),
@@ -88,7 +88,7 @@ unique(cwc_raw$tree)
 
 unique(cwc_lwc_df$tree)
 
-cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all.y = T) %>% 
+cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all = T) %>% 
   distinct() %>% 
   # filter(cwc > -1, 
   #        #species == "blue oak"
@@ -123,12 +123,19 @@ lwa_cwc <- cwc_lwc_df %>%
 lma_cwc <- cwc_lwc_df %>% 
   ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
   geom_point()+
+  theme(legend.position = "none") +
   geom_smooth(method = "lm", se = F)
 
+legend <- cowplot::get_legend(cwc_lwc_df %>% 
+  ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
+  geom_point()+
+  geom_smooth(method = "lm", se = F))
 
-all_cwc <- cowplot::plot_grid(mpa_cwc, lwc_cwc, lwa_cwc, lma_cwc, nrow = 2)
+all_cwc_noleg <- cowplot::plot_grid(mpa_cwc, lwc_cwc, lwa_cwc, lma_cwc, nrow = 2)
 
-all_cwc
+all_cwc_plot <- cowplot::plot_grid(all_cwc_noleg, legend, ncol = 2, rel_widths = c(1, .2))
+
+all_cwc_plot
 ```
 
 ```{r}

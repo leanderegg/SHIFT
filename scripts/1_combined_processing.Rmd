@@ -207,7 +207,7 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
 
 lwc = g water/g dry
 
-lma = g dry/g are
+lma = g dry/area cm2
 
 ```{r}
 alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")), show_col_types = F) %>% 
@@ -227,7 +227,10 @@ wp_wc_rwc_alas_df <- merge(wp_wc_rwc_df, alas_df_raw, by = c("week", "tree"), al
 
 #FINAL: What is CWC df
 ```{r}
-write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv")))
+write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
+
+unique(wp_wc_rwc_alas_df$date_rwc
+       )
 ```
 
 
@@ -392,11 +395,7 @@ wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df,
                                by = c("tree", "week", "time"), 
                                all = T) %>% 
   distinct() 
-```
 
-
-
-```{r}
 #make a shorter name because the long one will be a pain to write out!
 all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_leaves, wp_wc_rwc_lfm_df_wide_stem) %>% 
   mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 

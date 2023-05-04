@@ -28,14 +28,14 @@ select = dplyr::select
 
 source(here::here("scripts", "figure_info.R"))
 
-datver <- "11082022"
+datver <- "20230316"
 dataversion <- paste0("Data_", datver)
 ```
 
 ```{r, echo=F}
 wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
   filter(species == "blue oak", 
-         lwc_bulk < 5)
+         lwc_mean < 5)
 
 wc_qudo_df <- wc_all_raw %>% 
    filter(#week > 15, 
@@ -52,41 +52,71 @@ wc_qudo_df <- wc_all_raw %>%
     week %in% c(13) ~ 14, 
     TRUE ~ week
   )) %>% 
-  select(week, time, lwc, water_potential, rwc_percent,
-         tree, tree_factor, plot, site, species, date_wc, date_wp, mean_swc_per_dry_g
+  select(week, time, lwc, water_potential, rwc_percent_y0,
+         tree, tree_factor, plot, site, species, date_wp, mean_swc_per_dry_g_y0
         # swc_per_dry_g
          ) %>% 
   unique()
 ```
 
+```{r}
+rwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")),show_col_types = FALSE)
+
+rwc_df <-  rwc_raw %>% 
+  dplyr::select(week, tree, plot, species, time, date_wp, mpa_mean, lwc_mean, mean_swc_per_dry_g_y0, mean_swc_g_y0, date_rwc) %>% 
+  mutate(rwc_percent = (lwc_mean/mean_swc_per_dry_g_y0)*100) %>% 
+  drop_na(time)
+                    
+```
+
+
 #RWC vs. LWC
 ```{r, echo=F}
-wc_qudo_df %>% 
+rwc_df  %>% 
   ggplot(aes(y = rwc_percent, 
-             x= lwc, 
-             color = week)) +
-  geom_point()
-
-wc_qudo_df%>% 
-  ggplot(aes(y = rwc_percent, 
-             x= water_potential, 
+             x= lwc_mean, 
              color = as.factor(week))) +
   geom_point()
-
-wc_qudo_df %>% 
-  ggplot(aes(y = lwc, 
-             x= water_potential, 
-             color = week)) +
-  geom_point()
-
 ```
+
+
+```{r, echo=F}
+rwc_df %>% 
+  filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x= mpa_mean, 
+             color = as.factor(week))) +
+  geom_point() +
+  facet_wrap(~time)
+```
+
+```{r, echo=F}
+rwc_df %>% 
+  filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x= lwc_mean, 
+             color = as.factor(week))) +
+  geom_point() +
+  facet_wrap(~time)
+```
+
+
+```{r, echo=F}
+rwc_df%>% 
+  ggplot(aes(y = rwc_percent, 
+             x= week,
+             color = as.factor(week))) +
+  ggbeeswarm::geom_beeswarm()
+```
+
+
 ```{r}
 wc_qudo_df %>% 
   filter(year %in% c(0,1), 
         mean_swc_per_dry_g < 5, 
         # swc_percent < 300
          ) %>% 
-  ggplot(aes(y = mean_swc_per_dry_g, 
+  ggplot(aes(y = mean_swc_per_dry_g_y0, 
              x = as.factor(week), 
              color = as.factor(type))) +
   geom_boxplot() +
