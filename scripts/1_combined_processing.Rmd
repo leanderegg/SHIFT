@@ -161,8 +161,11 @@ wp_wc_df <- merge(wp_df, wc_df,
 #tree info
 
 trees_sites_df <- wp_wc_df %>% 
+  ungroup() %>% 
   select(tree, plot, site, species) %>% 
   distinct()
+
+write_csv(trees_sites_df, here("processed-data", "trees_sites.csv"))
 ```
 
 #####RWC:

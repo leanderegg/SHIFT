@@ -73,7 +73,8 @@ cwc_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"
     week > 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>% 
-  mutate(water_potential = -1*water_potential) 
+  mutate(water_potential = -1*water_potential) %>% 
+  mutate(rwc_percent = (lwc_mean/mean_swc_per_dry_g_y0)*100)
  # filter(lwa_g_cm2 < 0.025) %>% 
   # filter(lwc_mean > 0, 
   #        lwc_mean < 3, 
@@ -93,7 +94,7 @@ cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all = T) %>%
   # filter(cwc > -1, 
   #        #species == "blue oak"
   #        ) %>% 
-  select(tree, week, date, cwc, site, time, mpa_mean, lwc_mean, lma_g_cm2, lwa_g_cm2, water_potential, time_season) %>% 
+  select(tree, week, date, cwc, site, time, mpa_mean, lwc_mean, lma_g_cm2, lwa_g_cm2, water_potential, time_season, rwc_percent) %>% 
   distinct() %>% 
   filter(cwc > -100)
 ```
@@ -124,7 +125,14 @@ lma_cwc <- cwc_lwc_df %>%
   ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F)\
+
+rwc_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = rwc_percent, x = cwc, color = as.factor(week))) +
+  geom_point()+
+  theme(legend.position = "none") +
   geom_smooth(method = "lm", se = F)
+rwc_cwc
 
 legend <- cowplot::get_legend(cwc_lwc_df %>% 
   ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
