@@ -107,8 +107,11 @@ leaf_area_data_txt33 <- leaf_area_data_txt3 %>%
 #Combine: 
 
 leaf_area_df0 <- rbind(leaf_area_data_txt2, leaf_area_data_txt33, leaf_area_data_csv2) %>% 
-  separate(id, sep = c("-", "_"),
-           into = c("spp", "tree", "date", "branch", "year", "extra_info", "more_info")) 
+  mutate(id = gsub(pattern="_", replacement="-", id, fixed = TRUE)) %>% 
+  separate_wider_delim(id, delim = c("-"),
+           names = c("spp", "tree", "date", "branch", "year", "extra_info", "more_info"),
+           too_few = "align_start")
+
 
 leaf_area_df1 <- leaf_area_df0 %>% 
  # filter(!id == "2354337") %>% 
@@ -143,26 +146,56 @@ leaf_area_df1 <- leaf_area_df0 %>%
          year_leaf_area = year,
          week = week(date)
          ) %>% 
-  select(-date_new, -extra_info, -more_info, -tree, -area, -spp, -date, 
+  select(#date_new, 
+    -extra_info, -more_info, -tree, -area, -spp, -more_notes_leaf_area,
         # -year, 
-         -date_old
+         -date_old, -date
          )
 
+#dates_alas <- leaf_area_df1 %>% select(date_old, date)
+  
+  
 unique(leaf_area_df1$branch)
 unique(leaf_area_df1$year)
 
 date_weird <- leaf_area_df1 %>% 
   filter(is.na(date))
-  
 
-write.csv(leaf_area_df1, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
+####
+
+#New leaf area scans: dry mass scans
+
+leaf_area_dry_scans <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="ALAS DATA", skip=0, na = "NA") %>% 
+  clean_names() %>% 
+  mutate(date = ymd(date), 
+         day = day(date), 
+         week = week(date), 
+         file = "from dry", 
+         branch = as.character(branch), 
+         tree_id = as.factor(tree_id)) %>% 
+ drop_na(dry_scan) %>% 
+  rename(area_cm2 = dry_scan, 
+         date_leaf_area = date,
+         year_leaf_area = year, 
+         notes_leaf_area = notes) %>% 
+  select(-lwm_g, -ldm_g, -swm_g, -sdm_g, -l_cm, -d_mm, -area_if_leaf_from_scan_fresh_weight_scan, -length_new_cm) %>% 
+  mutate(year_leaf_area = as.factor(year_leaf_area))
+         
+
+leaf_area_df2 <- bind_rows(leaf_area_df1, leaf_area_dry_scans)
+
+dates_alas <- leaf_area_df2 %>% select(date_new, date_leaf_area)
+
+  
+######
+write.csv(leaf_area_df2, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
 
 #####
-leaf_area_df1 %>% 
+leaf_area_df2 %>% 
 ggplot(aes(y = area_cm2, 
            x= week, 
            color = species)) +
-  geom_jitter()
+  geom_jitter(alpha= .3)
 
 ###All dates after July are in the SHIFT data collection folder and can be picked up there. 
 

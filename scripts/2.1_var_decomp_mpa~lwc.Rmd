@@ -23,11 +23,12 @@ library(vars)
 library(MuMIn)
 library(lme4) #for mixed effects models
 library(cowplot)
-
 select = dplyr::select
+#if (!require("BiocManager", quietly = TRUE))
+   # install.packages("BiocManager")
+#BiocManager::install("variancePartition")
 
 library('variancePartition')
-
 
 source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
 
@@ -37,6 +38,13 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 #read in data: 
 ```{r}
 wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
+ # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
+  filter(lwc_mean > 0, 
+         lwc_mean < 3)
+
+
+wc_all_raw2 <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
+ # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
   filter(lwc_mean > 0, 
          lwc_mean < 3)
 
@@ -428,7 +436,7 @@ lma_plot <- wc_all_lma  %>%
                      ) 
 ```
 
-```{r, fig.height=4, fig.width=6}
+```{r}
 vardecomp_lma_plot <- cowplot::plot_grid(vdc2_plot, lma_plot, 
                                    nrow = 1, rel_heights = c(1, 1), 
                                    rel_widths = c(1, 1)

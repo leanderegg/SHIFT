@@ -29,8 +29,8 @@ library('variancePartition')
 source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "20230316"
-dataversion <- paste0("Data_", datver)
+#datver <- "20230525" #Just change this in the 1_combined_processing.Rmd
+#dataversion <- paste0("Data_", datver)
 ```
 
 ```{r}
