@@ -8,7 +8,7 @@ library(gridExtra)
 library(MetBrewer)
 library(here)
 
-
+####-----------------------
 # all csv files
 leaf_area_data_csv <- list.files(path = here("data", "leaf_area_scans"),  # Identify all CSV files
                          pattern = "*.csv", full.names = TRUE, include.dirs = T) %>% 
@@ -25,9 +25,9 @@ leaf_area_data_csv2 <- leaf_area_data_csv %>%                                   
          id = gsub(pattern=".b", replacement="-b", id, fixed = TRUE)) %>% 
   select(id, area, file) 
 
-####
+####-----------------------
 # all txt files with just AREA
-####
+
 leaf_area_data_files_txt <- list.files(path = here("data", "leaf_area_scans"),  # Identify all txt files
                          pattern = "*.txt", full.names = TRUE, include.dirs = T)
 
@@ -65,9 +65,11 @@ leaf_area_data_txt2 <- leaf_area_data_txt %>%
   group_by(id, file) %>% 
   summarise(area = sum(area))
 
-####
+####-----------------------
+
 # all txt files with just TOTAL AREA
-####
+
+
 leaf_area_data_files_txt3 <- list.files(path = here("data", "leaf_area_scans", "scans_with_total_area"),  # Identify all txt files
                                        pattern = "*.txt", full.names = TRUE, include.dirs = T)
 
@@ -102,7 +104,7 @@ leaf_area_data_txt33 <- leaf_area_data_txt3 %>%
   select(id, area, file) %>% 
   mutate(area = as.double(area))
 
-
+####-----------------------
 
 #Combine: 
 
@@ -114,7 +116,6 @@ leaf_area_df0 <- rbind(leaf_area_data_txt2, leaf_area_data_txt33, leaf_area_data
 
 
 leaf_area_df1 <- leaf_area_df0 %>% 
- # filter(!id == "2354337") %>% 
   mutate(date_new = mdy(date), 
          week = week(date_new), 
          day = day(date_new), 
@@ -152,18 +153,15 @@ leaf_area_df1 <- leaf_area_df0 %>%
          -date_old, -date
          )
 
-#dates_alas <- leaf_area_df1 %>% select(date_old, date)
-  
-  
 unique(leaf_area_df1$branch)
 unique(leaf_area_df1$year)
 
 date_weird <- leaf_area_df1 %>% 
   filter(is.na(date))
 
-####
+####-----------------------
 
-#New leaf area scans: dry mass scans
+#Leaf area scans: dry mass scans from march and earlier: 
 
 leaf_area_dry_scans <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="ALAS DATA", skip=0, na = "NA") %>% 
   clean_names() %>% 
@@ -186,18 +184,19 @@ leaf_area_df2 <- bind_rows(leaf_area_df1, leaf_area_dry_scans)
 
 dates_alas <- leaf_area_df2 %>% select(date_new, date_leaf_area)
 
-  
-######
+####-----------------------
+
 write.csv(leaf_area_df2, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
 
-#####
+####-----------------------
 leaf_area_df2 %>% 
 ggplot(aes(y = area_cm2, 
            x= week, 
            color = species)) +
   geom_jitter(alpha= .3)
 
-###All dates after July are in the SHIFT data collection folder and can be picked up there. 
+
+###All leaf areas from dates after July are in the SHIFT data collection folder and can be picked up there. 
 
 
 ##MISSING: Leaf areas for March! Weeks 10-12.
