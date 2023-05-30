@@ -26,22 +26,22 @@ library(arm)
 
 select = dplyr::select
 
-source(here::here("scripts", "figure_info.R"))
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "20230316"
-dataversion <- paste0("Data_", datver)
+#datver <- "20230316"
+#dataversion <- paste0("Data_", datver)
 ```
 
 ```{r, echo=F}
-wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(species == "blue oak", 
-         lwc_mean < 5)
+rwc_all_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")), show_col_types = FALSE) 
 
-wc_qudo_df <- wc_all_raw %>% 
-   filter(#week > 15, 
-         species == "blue oak", 
-          lwc_mean < 5, 
-         lwc_mean > 0
+unique(rwc_all_raw$type)
+
+rwc_df <- rwc_all_raw %>% 
+   filter(
+      rwc_lfm_percent < 500,
+      rwc_lfm_percent > 0,
+          !year == 3
          ) %>% 
   mutate(lwc = lwc_mean) %>% 
   group_by(tree, week, time) %>% 
@@ -52,95 +52,142 @@ wc_qudo_df <- wc_all_raw %>%
     week %in% c(13) ~ 14, 
     TRUE ~ week
   )) %>% 
-  select(week, time, lwc, water_potential, rwc_percent_y0,
-         tree, tree_factor, plot, site, species, date_wp, mean_swc_per_dry_g_y0
-        # swc_per_dry_g
-         ) %>% 
-  unique()
+  select(week, time, lwc, water_potential, rwc_lwc_percent, rwc_lfm_percent, year, type, tree, tree_factor, plot, site, species, date_wp, mean_swc_per_dry_g, week_rwc_link) %>% 
+  distinct() %>% 
+  drop_na(type)
+
+unique(rwc_df$type)
+
+rwc_qudo_df <- rwc_df %>% 
+   filter(species == "blue oak")
+
+rwc_long_df <- rwc_df %>% 
+  pivot_longer(cols = c(rwc_lfm_percent, rwc_lwc_percent),
+               names_to = "collection_type", 
+               values_to = "rwc_percent") %>% 
+  mutate(collection_type = case_when(
+    collection_type %in% c("rwc_lfm_percent") ~ "lfm",
+    collection_type  %in% c("rwc_lwc_percent") ~ "lwc",
+    TRUE ~ as.character(collection_type)
+  )) %>% 
+  distinct() %>% 
+  filter(!is.na(rwc_percent))
 ```
 
 ```{r}
-rwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")),show_col_types = FALSE)
-
-rwc_df <-  rwc_raw %>% 
-  dplyr::select(week, tree, plot, species, time, date_wp, mpa_mean, lwc_mean, mean_swc_per_dry_g_y0, mean_swc_g_y0, date_rwc) %>% 
-  mutate(rwc_percent = (lwc_mean/mean_swc_per_dry_g_y0)*100) %>% 
-  drop_na(time)
-                    
+rwc_long_df %>% 
+  filter(#year == 0, 
+         species == "blue oak", 
+         type == "leaf") %>% 
+ggplot(aes(y = rwc_percent, x = water_potential, color = as.factor(week_rwc_link))) +
+  geom_jitter(alpha = .5) +
+  facet_wrap(~time) +
+  geom_smooth(method = "lm")
 ```
 
+
+```{r}
+rwc_long_df %>% 
+  filter(rwc_percent < 200, 
+         species == "blue oak", 
+         type == "leaf") %>% 
+ggplot(aes(y = rwc_percent, x = date_wp, color = type)) +
+  geom_jitter(alpha = .3) +
+  facet_wrap(~time)
+```
 
 #RWC vs. LWC
 ```{r, echo=F}
 rwc_df  %>% 
-  ggplot(aes(y = rwc_percent, 
-             x= lwc_mean, 
-             color = as.factor(week))) +
-  geom_point()
-```
-
-
-```{r, echo=F}
-rwc_df %>% 
-  #filter(rwc_percent < 100) %>% 
-  ggplot(aes(y = rwc_percent, 
-             x= mpa_mean, 
-             #color = as.factor(week)
-             )) +
+  ggplot(aes(y = rwc_lwc_percent, 
+             x= lwc, 
+             color = species)) +
   geom_point() +
-  facet_wrap(~time) +
-  geom_smooth(method= "lm", se = F)
+  facet_wrap(~year)
 ```
+
+
+```{r, echo=F}
+rwc_df  %>% 
+  ggplot(aes(y = rwc_lfm_percent, 
+             x= lwc, 
+             color = as.factor(week), 
+             shape = type)) +
+  geom_point() +
+  facet_wrap(~year)
+```
+```{r}
+rwc_df %>% 
+  ggplot(aes(y = rwc_lfm_percent, x = rwc_lwc_percent, color = type)) +
+  geom_point() +
+  geom_abline()
+```
+
 
 ```{r, echo=F}
 rwc_df %>% 
-  filter(rwc_percent < 100) %>% 
-  ggplot(aes(y = rwc_percent, 
-             x= lwc_mean, 
-             color = as.factor(week))) +
+ # filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_lwc_percent, 
+             x= water_potential, 
+             color = species,
+             )) +
+  geom_smooth(method = "lm") +
   geom_point() +
   facet_wrap(~time)
-```
 
-
-```{r, echo=F}
-rwc_df%>% 
-  ggplot(aes(y = rwc_percent, 
-             x= week,
-             color = as.factor(week))) +
-  ggbeeswarm::geom_beeswarm()
+rwc_df %>% 
+ # filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_lfm_percent, 
+             x= water_potential, 
+             color = type,
+             )) +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  facet_wrap(~time*species)
 ```
 
 
 ```{r}
-wc_qudo_df %>% 
+rwc_df %>% 
+  filter(species == "blue oak", 
+         year == 0) %>% 
   filter(year %in% c(0,1), 
-        mean_swc_per_dry_g < 5, 
+         mean_swc_per_dry_g < 5, 
         # swc_percent < 300
          ) %>% 
-  ggplot(aes(y = mean_swc_per_dry_g_y0, 
-             x = as.factor(week), 
-             color = as.factor(type))) +
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
   geom_boxplot() +
-  facet_wrap(~year) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_two
+
+
+rwc_df %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         type == "leaf") %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+         #swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_boxplot() +
+  #facet_wrap(~year, scales = "free") +
   labs(x = "Week", 
        y = "SWC (g water/g dry)", 
        color = "Type") +
   color_two
 ```
 
-```{r, fig.height=3, fig.width=3}
-wc_qudo_df %>% 
-  ggplot(aes(y = lwc, 
-             x = lwc)) +
-  geom_point(aes(color = tree)) +
-  geom_abline()+
-  xlim(0,4) +
-  ylim(0,4)+
-  theme(legend.position = "none")+
-  labs(y = "CWC", 
-       x = "LWA")
 
-
-```
 

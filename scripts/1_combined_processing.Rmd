@@ -157,8 +157,22 @@ wp_wc_df <- merge(wp_df, wc_df,
   group_by(tree, plot, site, species, time, week) %>% 
   mutate(lwc_mean = mean(c_across(c('lwc_leaf_mean', 'lwc_bulk_mean')), na.rm=TRUE)) %>% 
   select(-date_wc, -lwc_leaf_mean, -lwc_bulk_mean) %>% 
-    distinct()
+    distinct() %>% 
+  mutate(week_rwc_link = case_when(
+    week %in% c(9, 10, 11) ~ 11, 
+    week %in% c(12, 13) ~ 13, 
+    week %in% c(14, 15, 16) ~ 15, 
+    week %in% c(17, 18) ~ 18, 
+    week %in% c(19) ~ 19, 
+    week %in% c(20, 21) ~ 21, 
+    week %in% c(22) ~ 22, 
+    week %in% c(29, 30) ~ 30, 
+    week %in% c(33) ~ 37, 
+    TRUE ~ as.numeric(week)
+  ))
 
+unique(wp_wc_df$week_rwc_link)
+unique(rwc_df$week)
 #wp_tmp <- wp_wc_df %>% 
  # dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
 #
@@ -175,39 +189,61 @@ write_csv(trees_sites_df, here("processed-data", "trees_sites.csv"))
 #####RWC:
 
 ```{r}
-rwc_df <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv")))
+rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) %>% 
+  select(week, tree, type, year, wee )
 
-rwc_df_spp <- merge(rwc_df, trees_sites_df, all = T)
+unique(rwc_df_raw$week)
+unique(wp_ad$week)
 
-rwc_df_leaves_y0 <- rwc_df %>% 
-  filter(type == "leaf", 
-         year %in% c(0, "NA")) %>% 
-  group_by(tree, date) %>% 
-  mutate(mean_swc_per_dry_g_y0 = mean(swc_per_dry_g)
-         , mean_swc_g_y0 = mean(swc_g), 
-         swc_ww_g_y0 = swc_ww_g, 
-       swc_dw_g_y0 = swc_ww_g) %>% 
+rwc_df_spp <- merge(rwc_df_raw, trees_sites_df, all = T) 
+
+rwc_noyears <- rwc_df_spp %>% 
+  filter(is.na(year)) %>% 
+  drop_na(swc_percent) 
+
+rwc_df <- rwc_df_raw %>% 
+  mutate(year = case_when(
+    year %in% c(NA_real_) ~ 0, 
+    TRUE ~ as.numeric(year)
+  )) %>% 
+  mutate(week_rwc_link = week) %>% 
+  group_by(tree, date, type, year) %>% 
+  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
+         , mean_swc_g = mean(swc_g), 
+         swc_ww_g = swc_ww_g, 
+       swc_dw_g = swc_ww_g) %>% 
   ungroup() %>% 
   mutate(date_rwc = date, 
          week = as.numeric(week)) %>% 
   select(-date) %>% 
   distinct() %>% 
-  select(mean_swc_per_dry_g_y0, mean_swc_g_y0, tree, week, date_rwc, 
+  select(mean_swc_per_dry_g, mean_swc_g, tree, date_rwc, year,type, week_rwc_link,
          #swc_dw_g_y0, swc_ww_g_y0
          ) %>% 
   as.data.frame()
 
+unique(rwc_df$week)
+
 #RWC + WC + WP:
 
-wp_wc_rwc_df <- merge(wp_wc_df, rwc_df_leaves_y0,
+wp_wc_rwc_df <- merge(wp_wc_df, rwc_df,
                     by = c("tree",
-                           "week"
-                          # "rep"
+                           "week_rwc_link"
                            ),
-                    #all.x = T,
-                    all.x = T
+                    all = T
                     ) %>% 
+  mutate(type = case_when(
+    type %in% c("leeaf") ~ "leaf", 
+    type %in% c("setm") ~ "stem", 
+    TRUE ~ as.character(type)
+  )) %>% 
   distinct()
+
+wp_wc_rwc_df %>% 
+  filter(mean_swc_per_dry_g< 3) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, x = mpa_mean, color = type)) +
+  geom_jitter(alpha = .3) +
+  facet_wrap(~year)
 ```
 
 ###AL:AS: 
@@ -219,10 +255,8 @@ lma = g dry/area cm2
 ```{r}
 alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")), show_col_types = F) %>% 
   mutate(tree = tree_id) %>% 
-  select(tree, week, branch, year, lwm_g, ldm_g, l_cm, d_cm, area_cm2, lma_g_cm2, alas_cm2_per_mm2, sla_cm_g) %>% 
-  group_by(tree, week, year, branch) %>% 
- # summarise_all(mean) %>% 
-  filter(year == 0) #%>% 
+  select(tree, week, date,branch, year, lwm_g, ldm_g, l_cm, d_cm, area_cm2, lma_g_cm2, alas_cm2_per_mm2, sla_cm_g) %>% 
+  group_by(tree, week, year, branch) 
  # filter()
 
 leaf_number <- read_csv(here(here("Data_20230316","alas_leaf_number.csv")), show_col_types = FALSE) %>% 
@@ -234,21 +268,63 @@ leaf_number <- read_csv(here(here("Data_20230316","alas_leaf_number.csv")), show
 
 alas_df <- merge(alas_df_raw, leaf_number, by = c("week", "tree", "branch", "year"))
 
-wp_wc_rwc_alas_df <- merge(wp_wc_rwc_df, alas_df, by = c("week", "tree"), all = T) %>% 
-  mutate(lwa_g_cm2 = lwc_mean * lma_g_cm2) %>% 
-  select(-timing) %>% 
-  distinct()
+alas_df %>% 
+  filter(lma_g_cm2 < .04) %>% 
+  ggplot(aes(y = alas_cm2_per_mm2, x = leaf_count, color = week)) +
+  geom_jitter() +
+  geom_smooth(method = "lm")
+
+wp_wc_rwc_alas_df1 <- merge(wp_wc_rwc_df, alas_df, by = c("week", "tree", "year"), 
+  all = T) %>% 
+  mutate(lwa_g_cm2 = lwc_mean * lma_g_cm2, 
+         ldmc = ldm_g/(ldm_g + mean_swc_per_dry_g)) %>% 
+  mutate(tree = case_when(
+    tree %in% c(2048) ~ 2348,
+     tree %in% c(2049) ~ 2349,
+     tree %in% c(2050) ~ 2354,
+     tree %in% c(2051) ~ 2351,
+     tree %in% c(2052) ~ 2352,
+     tree %in% c(2078) ~ 2378,
+     tree %in% c(2080) ~ 2380,
+     tree %in% c(2081) ~ 2381,
+     tree %in% c(2082) ~ 2382,
+    tree %in% c(2083) ~ 2383,
+    tree %in% c(2393) ~ 2093,
+    tree %in% c(2350) ~ 2354,
+    tree %in% c(2303) ~ 2330,
+    tree %in% c(2434) ~ 2343,
+    TRUE ~ as.numeric(tree)
+  )) %>% 
+  select(-timing, -species, -plot, -site) %>% 
+  distinct() 
+  
+
+wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, by = c("tree"), all = T) %>% 
+  dplyr::group_by(tree, time, week) %>%
+  fill(c(date_wp, mpa_mean, lwc_mean), .direction = "downup") %>%
+  dplyr::ungroup() %>% 
+  group_by(tree) %>% 
+  fill(c(species, site, plot), .direction = "downup") %>% 
+  ungroup()
+
+no_spp <- wp_wc_rwc_alas_df %>%  #Need to track down what these are/if they're entered wrong or whent
+  filter(is.na(species))
+
+wp_wc_rwc_alas_df %>% 
+  select(lma_g_cm2, leaf_count, alas_cm2_per_mm2, week, species) %>% 
+  distinct() %>% 
+  filter(lma_g_cm2 < .04, 
+         #time == "pd"
+         ) %>% 
+  ggplot(aes(y = alas_cm2_per_mm2, x = leaf_count, color = species)) +
+  geom_point() +
+ # facet_wrap(~time) +
+  geom_smooth(method = "lm")
 ```
 
-#FINAL: What is CWC df
+#FINAL 1: What is CWC df
 ```{r}
 write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
-
-unique(wp_wc_rwc_alas_df$date_rwc
-       )
-
-unique(wp_wc_rwc_alas_df$week
-       )
 ```
 
 
@@ -302,9 +378,48 @@ rwc_df_spp %>%
   color_two
 ```
 
-#####LFM:
+#####LFM + RWC + ALAS + WC + WP
 
 Here we are splitting the LFM into different categories: stem vs. leaves, and y1 vs. y0. 
+
+```{r}
+lfm_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  mutate(tree = case_when(
+    tree %in% c(9382) ~ 2382,
+    tree %in% c(3480) ~ 2380,
+    tree %in% c(1472) ~ 1478,
+    TRUE ~ as.numeric(tree)
+  )) 
+
+lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df, 
+                               by = c("tree", "week", "time", "type", "year"), 
+                               all = T) %>% 
+  filter(tree > 100) %>% 
+  distinct()  %>% 
+  dplyr::group_by(tree, time, week) %>%
+  fill(c(date_wp, mpa_mean, lwc_mean), .direction = "downup") %>%
+  dplyr::ungroup() %>% 
+  group_by(tree) %>% 
+  fill(c(species, site, plot), .direction = "downup") %>% 
+  ungroup() %>% 
+  mutate(rwc_lfm_percent = ((lfm_wet_wt_g-lfm_dry_wt_g)/lfm_dry_wt_g)/mean_swc_per_dry_g * 100,
+         rwc_lwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100)) %>% 
+  mutate(rwc_lwc_percent = case_when(
+    type %in% c("stem") ~ NA_real_, 
+    TRUE ~ as.numeric(rwc_lwc_percent))) %>% 
+  distinct()
+  #filter(!is.na(rwc_lwc_percent))
+```
+
+#*****FINAL (NEW): write.csv
+
+```{r}
+write.csv(lfm_rwc_alas_wp_wc_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
+```
+
+#--------------------------------
+
+#OLD BELOW:
 
 ```{r}
 lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
@@ -394,8 +509,6 @@ lfm_stem_both_df <- merge(lfm_stem_df, lfm_stem_both_df,
 
 ```
 
-
-
 #####LFM + RWC + WC + WP (wide):
 
 ######RWC calc.
@@ -416,11 +529,11 @@ wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df,
 
 #make a shorter name because the long one will be a pain to write out!
 all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_leaves, wp_wc_rwc_lfm_df_wide_stem) %>% 
-  mutate(rwc_percent_y0 = ((lwc_mean/mean_swc_per_dry_g_y0)*100), 
+  mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100), 
         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
          ) %>% 
   filter(!species %in% c("leaf")) %>% 
-  distinct() 
+  distinct()
 ```
 
 ###AL:AS, add to LFM + RWC + WC + WP: 
@@ -430,32 +543,14 @@ alas_all_water_df <- merge(all_water_df, alas_df, by = c("week", "tree"), all = 
   mutate(lwa_g_cm2 = lwc_mean * lma_g_cm2)
 ```
 
-This dataset is just for the what is CWC story, i.e., removed a lot of extra rows with the LFM data (i.e. stems, different years, etc)
-
 ```{r}
 all_water_df_alas <- alas_all_water_df %>% 
-  filter(type == "leaf", 
-         #year == 0
-         ) %>% 
-  select(week, tree, time, plot, site, species, mpa_mean, lwc_mean, mean_swc_per_dry_g_y0, mean_swc_g_y0, lfm_y0_percent, lfm_y1_percent, lfm_both_percent, rwc_percent_y0, lwm_g, ldm_g, area_cm2, lma_g_cm2, alas_cm2_per_mm2, leaf_count, sla_cm_g, lwa_g_cm2, date_wp) %>% 
+  select(week, tree, time, plot, site, species, mpa_mean, lwc_mean, type, mean_swc_per_dry_g, mean_swc_g, lfm_y0_percent, lfm_y1_percent, lfm_both_percent, rwc_percent, lwm_g, ldm_g, area_cm2, lma_g_cm2, alas_cm2_per_mm2, leaf_count, sla_cm_g, lwa_g_cm2, date_wp) %>% 
   distinct() %>% 
   filter(tree > 1000)
 ```
 
-Look at LWC and LFM
-```{r}
-# all_water_df_alas %>% 
-#   mutate(lwc_lfm = (lwm_g - ldm_g)/ldm_g*100) %>% 
-#   filter(lwc_lfm < 300, lwc_lfm > 0) %>% 
-#   ggplot(aes(y = lfm_y1_percent, x = lwc_lfm, color = species)) +
-#   geom_point() +
-#   geom_abline() +
-#   coord_equal()
-#   
-```
-
-
-#FINAL: write.csv
+#FINAL (OLD): write.csv
 
 ```{r}
 write.csv(all_water_df_alas, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))

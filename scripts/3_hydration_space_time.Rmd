@@ -41,7 +41,8 @@ dataversion <- paste0("Data_", datver)
 ```{r, echo=F}
 #wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
 wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(species == "blue oak") 
+  filter(species == "blue oak", 
+         !is.na(time))
 
 wc_qudo_df <- wc_all_raw %>% 
    filter(#week > 15, 
@@ -1163,7 +1164,7 @@ ran_pd_df_week %>%
 
 ```{r}
 wc_qudo_df %>% 
-  filter(!week %in% c(9, 18, 19)) %>% 
+  #filter(!week %in% c(9, 18, 19)) %>% 
   drop_na(week) %>% 
   ggplot(aes(y = lwc, 
              x = as.factor(week), 
@@ -1251,10 +1252,13 @@ All dates:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = space_df_nosite, REML = T)
+space_mod <- lmer(water_potential ~ lwc + (1|week) + (lwc|tree), data = space_df_nosite, REML = F)
 #summary(space_mod)
+AIC(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwc  + (1|week) + (lwc|tree) + (1|site), data = space_df_nosite,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwc  + (1|week) + (lwc|tree) + (1|site), data = space_df_nosite,  REML = F)
+
+AIC(space_mod_site)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -1325,6 +1329,10 @@ theme(
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
 
+ran_df_tree %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
 
 ran_df_tree %>% 
   mutate(tree = as.factor(tree)) %>% 
@@ -1470,6 +1478,11 @@ theme(
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
+
+ran_df_tree_after %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
 ```
 Before leafout: 
 
@@ -1545,6 +1558,11 @@ theme(
   theme(legend.position = "none")+
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
+
+ran_df_tree_before %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
 ```
 
 ####SLOPES - combined
