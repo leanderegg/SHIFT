@@ -45,21 +45,21 @@ rwc_df <- rwc_all_raw %>%
          ) %>% 
   mutate(lwc = lwc_mean) %>% 
   group_by(tree, week, time) %>% 
-  mutate(water_potential = mean(mpa_mean), 
-         tree_factor = as.factor(tree)) %>% 
+  mutate(water_potential = mean(mpa_mean)) %>% 
   ungroup() %>% 
-  mutate(week = case_when(
-    week %in% c(13) ~ 14, 
-    TRUE ~ week
-  )) %>% 
-  select(week, time, lwc, water_potential, rwc_lwc_percent, rwc_lfm_percent, year, type, tree, tree_factor, plot, site, species, date_wp, mean_swc_per_dry_g, week_rwc_link) %>% 
+  # mutate(week = case_when(
+  #   week %in% c(13) ~ 14, 
+  #   TRUE ~ week
+  # )) %>% 
+  select(week, time, lwc, lfm_wet_per_dry_g, water_potential, rwc_lwc_percent, rwc_lfm_percent, year, type, tree, plot, site, species, date_wp, mean_swc_per_dry_g, week_rwc_link) %>% 
   distinct() %>% 
-  drop_na(type)
+  drop_na(type) %>% 
+  mutate(rwc_week = case_when(
+    week == week_rwc_link ~ "yes", 
+    TRUE ~ as.character("no")
+  ))
 
 unique(rwc_df$type)
-
-rwc_qudo_df <- rwc_df %>% 
-   filter(species == "blue oak")
 
 rwc_long_df <- rwc_df %>% 
   pivot_longer(cols = c(rwc_lfm_percent, rwc_lwc_percent),
@@ -71,15 +71,30 @@ rwc_long_df <- rwc_df %>%
     TRUE ~ as.character(collection_type)
   )) %>% 
   distinct() %>% 
-  filter(!is.na(rwc_percent))
+  filter(!is.na(rwc_percent)) %>% 
+  group_by(tree) %>% 
+  mutate(max_swc_per_dry_g = max(mean_swc_per_dry_g), 
+         rwc_max_percent = (lwc/max_swc_per_dry_g)*100)
+
+unique(rwc_long_df$week_rwc_link)
 ```
 
 ```{r}
+yes <- rwc_long_df %>% 
+  filter(#year == 0, 
+         rwc_week == "yes",
+         collection_type == "lwc",
+         species == "blue oak", 
+         type == "leaf")
+
 rwc_long_df %>% 
   filter(#year == 0, 
+         rwc_week == "yes",
+         collection_type == "lwc",
          species == "blue oak", 
          type == "leaf") %>% 
-ggplot(aes(y = rwc_percent, x = water_potential, color = as.factor(week_rwc_link))) +
+ggplot(aes(y = rwc_percent, x = water_potential, color = as.factor(week_rwc_link)
+           )) +
   geom_jitter(alpha = .5) +
   facet_wrap(~time) +
   geom_smooth(method = "lm")
@@ -88,7 +103,7 @@ ggplot(aes(y = rwc_percent, x = water_potential, color = as.factor(week_rwc_link
 
 ```{r}
 rwc_long_df %>% 
-  filter(rwc_percent < 200, 
+  filter(rwc_percent < 100, 
          species == "blue oak", 
          type == "leaf") %>% 
 ggplot(aes(y = rwc_percent, x = date_wp, color = type)) +

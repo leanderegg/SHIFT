@@ -45,32 +45,82 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc-alldates.csv"), show_col_types = F
          week = week(date), 
          tree = as.character(tree)) %>% 
   group_by(tree, week) %>% 
-  mutate(cwc = mean(cwc))
+  mutate(cwc = mean(cwc)) %>% 
+  rename(week_cwc_link = week)
+
+unique(cwc_raw$week)
+unique(cwc_lwc_raw$week)
 
 cwc_lwc_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")), show_col_types = F) %>% 
   filter(type == "leaf",
-         !week == 9, 
-         time == 'md') %>% 
+        # !week == 9, 
+        # time == 'md'
+        ) %>% 
   mutate(time_season = case_when(
     week <= 17 ~ "before leafout", 
     week > 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>% 
-  mutate(water_potential = -1*mpa_mean) 
+  mutate(water_potential = -1*mpa_mean) %>% 
+  rename(date_alas = date) %>% 
+  select(-X, -'...1') %>% 
+  mutate(week_cwc_link = case_when( #so that the weeks of overlights overlap with the weeks of sample collection
+    week %in% c(8, 9) ~ 9, 
+    week %in% c(14, 13) ~ 14, 
+    week %in% c(17) ~ 16, 
+    week %in% c(21) ~ 20,
+    TRUE ~ as.numeric(week)
+  )) %>% 
+  filter(week_cwc_link < 22)
 
 #Combine: 
-unique(cwc_raw$week)
-unique(cwc_lwc_df$week)
+unique(cwc_raw$week) #cwc weeks
+unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
+
 unique(cwc_raw$tree)
 unique(cwc_lwc_df$tree)
 
-cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all = T) %>% 
+cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
   distinct() %>% 
-  filter(cwc > -100)
+  filter(cwc > -100) %>% 
+  drop_na(site, species) %>% 
+ # select(-x1, -"...1") %>% 
+  group_by(tree, time, week) %>% 
+  mutate(alas_cm2_per_mm2 = case_when(
+    alas_cm2_per_mm2 > 20 ~ NA_real_, 
+    TRUE ~ as.numeric(alas_cm2_per_mm2)
+  )) %>% 
+  mutate(alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
+         sla_mean = mean(sla_cm_g,na.rm = T), 
+         lma_mean = mean(lma_g_cm2,na.rm = T),
+         leaf_count_mean = mean(leaf_count, na.rm = T),
+         leaf_area_mean = mean(area_cm2, na.rm = T), 
+         ldmc_mean = mean(ldmc, na.rm = T),
+         date_shift = date) %>% 
+  select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, leaf_count_mean, leaf_area_mean) %>% 
+   distinct() %>% 
+  drop_na(time)
 ```
 
 
 #Initial viz:
+
+```{r}
+cwc_lwc_df %>% 
+  ggplot(aes(y = lfm_percent, x = cwc, color = mpa_mean)) +
+  geom_point() +
+ # facet_wrap(~time) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+cwc_lwc_df %>% 
+  ggplot(aes(y = alas_mean, x = cwc, color = mpa_mean)) +
+  geom_point() +
+ # facet_wrap(~time) +
+  geom_smooth(method = "lm")
+```
+
 
 ```{r}
 mpa_cwc <- cwc_lwc_df %>% 

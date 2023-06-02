@@ -172,7 +172,8 @@ wp_wc_df <- merge(wp_df, wc_df,
   ))
 
 unique(wp_wc_df$week_rwc_link)
-unique(rwc_df$week)
+unique(wp_wc_df$week)
+
 #wp_tmp <- wp_wc_df %>% 
  # dplyr::select(tree, plot, site, species, time, mpa, date_wp, date_wc, week)
 #
@@ -189,17 +190,9 @@ write_csv(trees_sites_df, here("processed-data", "trees_sites.csv"))
 #####RWC:
 
 ```{r}
-rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) %>% 
-  select(week, tree, type, year, wee )
-
-unique(rwc_df_raw$week)
-unique(wp_ad$week)
+rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) 
 
 rwc_df_spp <- merge(rwc_df_raw, trees_sites_df, all = T) 
-
-rwc_noyears <- rwc_df_spp %>% 
-  filter(is.na(year)) %>% 
-  drop_na(swc_percent) 
 
 rwc_df <- rwc_df_raw %>% 
   mutate(year = case_when(
@@ -208,10 +201,14 @@ rwc_df <- rwc_df_raw %>%
   )) %>% 
   mutate(week_rwc_link = week) %>% 
   group_by(tree, date, type, year) %>% 
-  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g)
-         , mean_swc_g = mean(swc_g), 
+  mutate(swc_per_dry_g = case_when(
+    swc_per_dry_g > 5 ~ NA_real_, 
+    TRUE ~ as.numeric(swc_per_dry_g)
+  )) %>% 
+  mutate(mean_swc_per_dry_g = mean(swc_per_dry_g, na.rm = T)
+         , mean_swc_g = mean(swc_g,na.rm = T), 
          swc_ww_g = swc_ww_g, 
-       swc_dw_g = swc_ww_g) %>% 
+       swc_dw_g = swc_dw_g) %>% 
   ungroup() %>% 
   mutate(date_rwc = date, 
          week = as.numeric(week)) %>% 
@@ -240,7 +237,8 @@ wp_wc_rwc_df <- merge(wp_wc_df, rwc_df,
   distinct()
 
 wp_wc_rwc_df %>% 
-  filter(mean_swc_per_dry_g< 3) %>% 
+  filter(mean_swc_per_dry_g < 3, 
+         !year == 3) %>% 
   ggplot(aes(y = mean_swc_per_dry_g, x = mpa_mean, color = type)) +
   geom_jitter(alpha = .3) +
   facet_wrap(~year)
@@ -322,65 +320,22 @@ wp_wc_rwc_alas_df %>%
   geom_smooth(method = "lm")
 ```
 
-#FINAL 1: What is CWC df
+
 ```{r}
 write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
 ```
 
-
 ```{r}
-# wp_wc_rwc_summary_df <- wp_wc_rwc_df %>% 
- #   group_by(week, tree) %>% 
- #   summarise(mean_md = mean(mpa_md), 
- #             mean_pd = mean(mpa_pd), 
- #             mean_lwc_md_bulk = mean(lwc_md_bulk), 
- #             mean_lwc_pd_bulk = mean(lwc_pd_bulk), 
- #             mean_swc_g = mean(mean_swc_g), 
- #             mean_swc_per_dry_g = mean(mean_swc_per_dry_g))
-
-
-rwc_df_spp %>% 
-  filter(species == "blue oak", 
-         year == 0) %>% 
-  filter(year %in% c(0,1), 
-         swc_per_dry_g < 5, 
-         swc_percent < 300) %>% 
-  ggplot(aes(y = swc_per_dry_g, 
-             x = as.factor(week), 
-             color = as.factor(type), 
-             #fill = species
-             )) +
-  geom_boxplot() +
-  #facet_wrap(~year, scales = "free") +
-  labs(x = "Week", 
-       y = "SWC (g water/g dry)", 
-       color = "Type") +
-  color_two
-
-
-rwc_df_spp %>% 
-  filter(species == "blue oak", 
-         year == 0, 
-         type == "leaf") %>% 
-  filter(year %in% c(0,1), 
-         swc_per_dry_g < 5, 
-         swc_percent < 300) %>% 
-  ggplot(aes(y = swc_per_dry_g, 
-             x = as.factor(week), 
-             color = as.factor(type), 
-             #fill = species
-             )) +
-  geom_boxplot() +
-  #facet_wrap(~year, scales = "free") +
-  labs(x = "Week", 
-       y = "SWC (g water/g dry)", 
-       color = "Type") +
-  color_two
+wp_wc_rwc_alas_df %>% 
+  filter(time == "pd", 
+         lma_g_cm2 < .04) %>% 
+  ggplot(aes(x = mpa_mean, y = lma_g_cm2, color = species)) +
+  geom_point()
 ```
 
 #####LFM + RWC + ALAS + WC + WP
 
-Here we are splitting the LFM into different categories: stem vs. leaves, and y1 vs. y0. 
+LFM is split into different into different categories: stem vs. leaves (type column), and y1 vs. y0 (year column)
 
 ```{r}
 lfm_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
@@ -411,12 +366,14 @@ lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df,
   #filter(!is.na(rwc_lwc_percent))
 ```
 
-#*****FINAL (NEW): write.csv
+#*FINAL (NEW): write.csv
 
 ```{r}
 write.csv(lfm_rwc_alas_wp_wc_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
 ```
 
+#--------------------------------
+#--------------------------------
 #--------------------------------
 
 #OLD BELOW:
@@ -1022,7 +979,47 @@ LFM year 1 vs. year 0
 #   color_two
 ```
 
+RWC boxplots: 
 
+```{r}
+# rwc_df_spp %>% 
+#   filter(species == "blue oak", 
+#          year == 0) %>% 
+#   filter(year %in% c(0,1), 
+#          swc_per_dry_g < 5, 
+#          swc_percent < 300) %>% 
+#   ggplot(aes(y = swc_per_dry_g, 
+#              x = as.factor(week), 
+#              color = as.factor(type), 
+#              #fill = species
+#              )) +
+#   geom_boxplot() +
+#   #facet_wrap(~year, scales = "free") +
+#   labs(x = "Week", 
+#        y = "SWC (g water/g dry)", 
+#        color = "Type") +
+#   color_two
+# 
+# 
+# rwc_df_spp %>% 
+#   filter(species == "blue oak", 
+#          year == 0, 
+#          type == "leaf") %>% 
+#   filter(year %in% c(0,1), 
+#          swc_per_dry_g < 5, 
+#          swc_percent < 300) %>% 
+#   ggplot(aes(y = swc_per_dry_g, 
+#              x = as.factor(week), 
+#              color = as.factor(type), 
+#              #fill = species
+#              )) +
+#   geom_boxplot() +
+#   #facet_wrap(~year, scales = "free") +
+#   labs(x = "Week", 
+#        y = "SWC (g water/g dry)", 
+#        color = "Type") +
+#   color_two
+# ```
 
 #---------------
 
