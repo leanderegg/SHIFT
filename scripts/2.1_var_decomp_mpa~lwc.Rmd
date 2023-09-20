@@ -43,10 +43,10 @@ wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")
          lwc_mean < 3)
 
 
-wc_all_raw2 <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
- # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
-  filter(lwc_mean > 0, 
-         lwc_mean < 3)
+# wc_all_raw2 <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
+#  # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
+#   filter(lwc_mean > 0, 
+#          lwc_mean < 3)
 
 wc_all_lma <- wc_all_raw %>% 
   filter( #week > 15, 
@@ -86,7 +86,8 @@ full_nice <- qudo_wc_all %>%
   labs(y = "MPa",
        x = "LWC", 
        color = "Week") +
-  theme(legend.position = c(0.9, 0.78)) 
+  theme(legend.position = c(0.1, 0.78)) +
+  scale_x_reverse()
 full_nice
 ```
 
@@ -358,7 +359,7 @@ wc_linear_vest_df <- vest_lin %>%
 color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
                                                "Site" = "#252525",
                                                 "Tree" =  "#525252",
-                                               "LWC" = "#969696" ,
+                                               "LWC" = "#C969A1" ,
                                                 "Week" = "#62929a"))
 
 #greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))
@@ -398,7 +399,9 @@ vdc2_plot <- vdc2 %>% ggplot(aes(x = dataset,
  # legend.title = element_text(size = 14), 
   legend.title = element_blank(), 
  legend.text= element_text(size = 12), 
-  ) 
+  ) +
+    scale_x_discrete(limits=rev)
+  
 vdc2_plot
 
 ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5, height = 7, dpi = 300)

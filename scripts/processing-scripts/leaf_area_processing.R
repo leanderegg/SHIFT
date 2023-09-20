@@ -184,12 +184,44 @@ leaf_area_df2 <- bind_rows(leaf_area_df1, leaf_area_dry_scans)
 
 dates_alas <- leaf_area_df2 %>% select(date_new, date_leaf_area)
 
+####----------
+
+#Conversion factor from dry scans to wet scans: 
+
+dry_to_wet_conversion <- leaf_area_df2 %>% 
+  filter(date_leaf_area == "2022-04-04") %>% 
+  group_by(tree_id, branch, sub_branch, file) %>% 
+  mutate(area_cm2 = mean(area_cm2)) %>% 
+  ungroup() %>% 
+  #distinct() %>% 
+  select(branch, year_leaf_area, file, tree_id, area_cm2) %>% 
+  pivot_wider(names_from = file, values_from = area_cm2, values_fn = mean 
+              ) %>% 
+  rename(from_dry = 'from dry') %>% 
+  mutate(conversion = (txt/from_dry)) %>% 
+  mutate(test = from_dry * conversion) %>% 
+  filter(conversion < 2) %>% #only use realistic conversion (likly lost some leaves between wet and dry scanning)
+  summarise( mean = mean(conversion)) %>% 
+  pull()
+
+##Convert dry to wet for all using conversion factor from above
+leaf_area_df3 <- leaf_area_df2 %>% 
+  filter(!(date_leaf_area %in% c("2022-04-04") & file %in% c("from dry"))) %>% 
+  mutate(leaf_area_new = case_when(
+    file %in% c("from dry") ~ area_cm2*dry_to_wet_conversion, 
+    TRUE ~ as.numeric(area_cm2)
+  )) %>% 
+  select(-area_cm2) %>% 
+  rename(area_cm2 = leaf_area_new)
+  
+
 ####-----------------------
 
-write.csv(leaf_area_df2, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
+write.csv(leaf_area_df3, here("processed-data", paste0("leaf_area_alldates_",datver,".csv")))
 
 ####-----------------------
-leaf_area_df2 %>% 
+leaf_area_df3 %>% 
+  filter(area_cm2 <100) %>% 
 ggplot(aes(y = area_cm2, 
            x= week, 
            color = species)) +
@@ -199,7 +231,6 @@ ggplot(aes(y = area_cm2,
 ###All leaf areas from dates after July are in the SHIFT data collection folder and can be picked up there. 
 
 
-##MISSING: Leaf areas for March! Weeks 10-12.
 
 
 

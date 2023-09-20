@@ -1,0 +1,1203 @@
+---
+title: "Establishing relationships between cwc and MPa, Part 2"
+author: "Indra Boving"
+date: "11/9022"
+output:
+  html_document: default
+  word_document: default
+---
+
+#Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+#install.packages("")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+library(arm)
+library(nlme)
+select = dplyr::select
+
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
+#datver <- "01052023"
+dataversion <- paste0("Data_", datver)
+```
+
+#Data wrangling: 
+```{r}
+datver_cwc <- "05042022" #Just change this in the 1_combined_processing.Rmd
+dataversion_cwc <- paste0("Data_", datver_cwc)
+
+cwc_raw <- read_csv(here(dataversion_cwc,"cwc-alldates.csv"), show_col_types = F) %>% 
+  clean_names() %>% 
+  mutate(tree = la_tree_id) %>% 
+  pivot_longer(cols = (6:17),
+              names_to = "date", 
+               values_to = "cwc") %>% 
+  mutate(date = gsub("x", "", date, fixed = TRUE), 
+         date = ymd(date), 
+         week = week(date), 
+         tree = as.character(tree)) %>% 
+  group_by(tree, week) %>% 
+  mutate(cwc = mean(cwc)) %>% 
+  rename(week_cwc_link = week)
+
+unique(cwc_raw$week_cwc_link)
+unique(cwc_lwc_raw$week)
+
+cwc_lwc_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")), show_col_types = F) %>% 
+  filter(type == "leaf",
+        # !week == 9, 
+        # time == 'md'
+        ) %>% 
+  mutate(time_season = case_when(
+    week <= 17 ~ "before leafout", 
+    week > 17 ~ "after leafout", 
+    TRUE ~ as.character("none")
+  )) %>% 
+  mutate(water_potential = -1*mpa_mean) %>% 
+  rename(date_alas = date) %>% 
+  select(-X, -'...1') %>% 
+  mutate(week_cwc_link = case_when( #so that the weeks of overlights overlap with the weeks of sample collection
+    week %in% c(8, 9) ~ 9, 
+    week %in% c(14, 13) ~ 14, 
+    week %in% c(17) ~ 16, 
+    week %in% c(21) ~ 20,
+    TRUE ~ as.numeric(week)
+  )) %>% 
+  filter(week_cwc_link < 22)
+
+#Combine: 
+unique(cwc_raw$week_cwc_link) #cwc weeks
+unique(cwc_raw$date) #cwc weeks
+unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
+unique(cwc_lwc_raw$date_wp)
+
+unique(cwc_raw$tree)
+unique(cwc_lwc_df$tree)
+
+cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
+  distinct() %>% 
+  filter(cwc > -100) %>% 
+  drop_na(site, species) %>% 
+ # select(-x1, -"...1") %>% 
+  group_by(tree, time, week) %>% 
+  mutate(alas_cm2_per_mm2 = case_when(
+    alas_cm2_per_mm2 > 20 ~ NA_real_, 
+    TRUE ~ as.numeric(alas_cm2_per_mm2)
+  )) %>% 
+  mutate(alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
+         sla_mean = mean(sla_cm_g,na.rm = T), 
+         lma_mean = mean(lma_g_cm2,na.rm = T),
+         lwa_mean = mean(lwa_g_cm2,na.rm = T),
+         leaf_count_mean = mean(leaf_count, na.rm = T),
+         leaf_area_mean = mean(area_cm2, na.rm = T), 
+         ldmc_mean = mean(ldmc, na.rm = T),
+         date_shift = date) %>% 
+  # select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, lma_mean, lwa_mean, leaf_count_mean, leaf_area_mean) %>% 
+   distinct() %>% 
+  drop_na(time) %>% 
+  ungroup() %>% 
+  group_by(tree, week, time, type) %>% 
+  mutate(rwc_percent = case_when(
+    rwc_lfm_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+    rwc_lwc_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+    rwc_lfm_percent > 0 ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)), 
+    TRUE~ as.numeric(rwc_lwc_percent)
+  ))
+
+cwc_df_cwc <-  cwc_lwc_all_df %>% 
+  select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, lma_mean, lwa_mean, leaf_count_mean, leaf_area_mean, week_cwc_link, water_potential) %>%
+   distinct() %>% 
+  drop_na(time) 
+```
+
+
+
+What is the linear portion? 
+
+
+Week 17 looks like a good cutoff:
+```{r, echo=F}
+wc_lm_df_cwc <- cwc_df_cwc %>% 
+  filter(week > 17)
+```
+
+From what weeks do we have the most trees?
+```{r, echo=F}
+cwc_df_cwc %>% 
+  select(week, time, tree, cwc) %>% 
+  drop_na(cwc) %>% 
+  unique() %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  ggplot(aes(x = week, y = n, fill = time)) +
+  geom_col(stat = "identity") + 
+  scale_x_continuous(breaks = seq(9, 40, by = 1))+
+  labs(y = "cwc counts") +
+  color_fill
+```
+
+```{r, echo=F}
+cwc_df_cwc %>% 
+    select(week, time, tree, water_potential) %>% 
+  drop_na(water_potential) %>% 
+ # unique() %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  ggplot(aes(x = week, y = n, fill = time)) +
+  geom_col(stat = "identity") +
+  scale_x_continuous(breaks = seq(9, 40, by = 1))+
+  labs(y = "MPa counts") +
+  color_fill
+```
+A: week 17, 21, 29, 10
+
+#Timeline
+
+```{r, fig.height=.75, fig.width=6}
+cwc_df_cwc %>% 
+  filter(time == "md", 
+         week < 38,
+        # !week %in% c(18)
+         ) %>% 
+  #ggplot(aes(x = week, y = 0, color = mean(water_potential, na.rm = T)))+
+  ggplot(aes(x = week, y = 0, color = as.character(week)))+
+  geom_hline(yintercept = 0) +
+  geom_point(size = 5) +
+  color_week_assigned +
+  ylim(-.25, +.25)  + 
+  scale_x_continuous(breaks = c(9, 10, 11, 12, 13, 14,15, 16, 17, 18, 19, 20, 21)
+                      # seq(10, 30, by = 1)
+                     ) +
+  theme(legend.position = "none", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        )
+```
+```{r, fig.height=1, fig.width=12}
+timeline_df_cwc <- cwc_df_cwc %>% 
+ # select(week, date_wp, time) %>% 
+  mutate(date_wp = as.character(date_wp)) %>% 
+  mutate(date_new = case_when(
+    date_wp %in% c("2022-03-23") ~ "2022-03-25",
+    date_wp %in% c("2022-03-30","2022-04-06") ~ "2022-04-04",
+    date_wp %in% c("2022-04-13") ~ "2022-04-11",
+    date_wp %in% c("2022-04-27") ~ "2022-04-25",
+    date_wp %in% c("2022-05-04") ~ "2022-05-09",
+    date_wp %in% c("2022-05-23") ~ "2022-05-25",
+    TRUE ~ as.character(date_wp)
+  )) %>% 
+  mutate(date_new = ymd(date_new)) %>% 
+  select(date_new, week) %>% 
+  distinct()
+
+
+timeline_plot <- timeline_df_cwc %>% 
+ # filter(time == "md") %>% 
+  ggplot(aes(x = date_new, y = 0, color = as.character(week)))+
+  geom_hline(yintercept = 0) +
+  geom_point(size = 10) +
+  color_week_assigned +
+  ylim(-.25, +.25)  + 
+  theme(legend.position = "none", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5, size= 20)
+        ) +
+scale_x_date(date_labels = '%b. %d',
+             breaks = as.Date(c("2022-03-08","2022-03-15", "2022-03-25", 
+                                #"2022-03-23", "2022-03-30", 
+                                "2022-04-04", #"2022-04-06","2022-04-13", 
+                                "2022-04-11", #"2022-04-27", 
+                                "2022-04-25", #"2022-05-04" ,
+                                "2022-05-09", "2022-05-25", 
+                                #"2022-05-23", 
+                                "2022-07-19", "2022-08-18","2022-09-15")))
+timeline_plot
+
+ggsave(here("figures", "timeline_plot_cwc"), timeline_plot, device = "jpg", width = 12, height = 2, dpi = 300)
+```
+
+#View: 
+
+```{r, echo=FALSE}
+cwc_df_cwc %>% 
+  #filter(week %in% c(10, 13, 17, 21, 29)) %>% 
+  filter(cwc < 5) %>% 
+  ggplot(aes(y = water_potential, 
+             x = cwc, 
+             color = as.factor(tree),
+             shape = time
+             )) +
+  geom_point(aes(shape = time)) + 
+  geom_smooth(method = "lm",
+              se = F) +
+  facet_wrap(~week_cwc_link, scales = "free") +
+ # theme(legend.position = "none") +
+  color_very_many +
+  labs(y = "Water Potential (MPa)", 
+       x = "cwc")
+```
+
+```{r, warning = F}
+wk_all <- cwc_df_cwc 
+
+wk_all_wide <- wk_all %>% 
+  drop_na(date_wp) %>% 
+  pivot_wider(names_from=time, 
+              values_from = c(cwc, water_potential)) %>% 
+    dplyr::group_by(tree, week) %>%
+  fill(c(cwc_md, cwc_pd, water_potential_pd, water_potential_md), .direction = "downup") %>%
+  dplyr::ungroup()%>% 
+  select(-date_wp) %>% 
+  distinct()
+
+wk_all_long_cwc <- wk_all_wide %>% 
+  drop_na(cwc_pd, cwc_md, water_potential_md, water_potential_pd) %>% 
+  select(-water_potential_md, -water_potential_pd) %>% 
+  mutate(pd = cwc_pd, 
+         md = cwc_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "cwc") %>% 
+  select(-cwc_pd, -cwc_md)
+
+wk_all_long_mpa <- wk_all_wide %>% 
+  drop_na(cwc_pd, cwc_md, water_potential_md, water_potential_pd) %>% 
+  select(-cwc_md, -cwc_pd) %>% 
+  mutate(pd = water_potential_pd, 
+         md = water_potential_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "water_potential") %>% 
+  select(-water_potential_pd, -water_potential_md)
+
+wk_all_long <- merge(wk_all_long_mpa, wk_all_long_cwc) %>% 
+  distinct() %>% 
+ # select(-cwc_NA, -water_potential_NA) %>% 
+  group_by(tree, week, time) %>% 
+  summarise(cwc = mean(cwc, na.rm = T), 
+            water_potential = mean(water_potential, na.rm = T))
+```
+
+
+#####****Layered
+
+```{r, include = F, eval=F}
+# df_grey_groups %>% 
+#   ggplot() +
+#   geom_point(aes(y=water_potential,x= cwc, group = tree, color=color)) + 
+#   geom_line(aes(y=water_potential,x= cwc, group = tree, color=color)) + 
+#   scale_color_identity(labels = c(blue = "a",gray = "Other"),guide = "legend")
+
+("#c969a1", "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c", "#62929a", "#004f63", "#122451")
+```
+
+
+```{r}
+df_all_groups <- wk_all_long  %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential)
+  
+
+df_grey <- df_all_groups
+
+df_1 <- df_all_groups %>% 
+  filter(week %in% c('10'))
+
+df_2 <- df_all_groups %>% 
+  filter(week %in% c('17'))
+
+df_3 <- df_all_groups %>% 
+  filter(week %in% c('21'))
+
+df_4 <- df_all_groups %>% 
+  filter(week %in% c('37'))
+
+nice_hydration_layered <- ggplot() +
+    geom_point(aes(y = water_potential, x = cwc, shape = time), data = df_grey, color = "grey") +
+    geom_line(aes(y = water_potential, x = cwc, group = tree_week), color = "grey", data = df_grey) +
+    geom_point(aes(y = water_potential, x = cwc, shape = time, color = "df_1"), 
+               data = df_1 ) +
+    geom_line(aes(y = water_potential, x = cwc, group = tree_week, color = "df_1"), 
+              data = df_1) +
+    geom_point(aes(y = water_potential, x = cwc, shape = time, color = "df_2"), 
+               data = df_2) +
+    geom_line(aes(y = water_potential, x = cwc, group = tree_week, color = "df_2"), 
+              data = df_2) +
+    # geom_point(aes(y = water_potential, x = cwc, shape = time, color = "df_3"), 
+    #            data = df_3) +
+    # geom_line(aes(y = water_potential, x = cwc, group = tree_week, color = "df_3"), 
+    #           data = df_3) +
+    geom_point(aes(y = water_potential, x = cwc, shape = time, color = "df_4"), 
+               data = df_4) +
+    geom_line(aes(y = water_potential, x = cwc, group = tree_week, color = "df_4"), 
+              data = df_4
+              ) +
+    scale_colour_manual(name = 'Week', 
+         values =c("df_1" ="#122451", 
+                   "df_2"="#62929a",
+                  # "df_3"="#EC7E28",
+                   "df_4"="#c969a8"
+                   ), 
+         labels = c('10',
+                    '17',
+                  #  '21',
+                    '33')) +
+    labs(y = "Water Potential (MPa)", 
+       x = "Leaf Water Content (g)", 
+       color= "Week", 
+       shape = "Time"
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+  theme(
+    #legend.position = c(.9, .35),
+   # legend.position = "none",
+     legend.position = "right",
+  #strip.background = element_blank(),
+  #strip.text.y = element_blank(), 
+  #strip.text.x = element_text(size = 16), 
+  axis.text.y = element_text(size = 12), 
+  axis.text.x = element_text(size = 12), 
+  #axis.ticks.y = element_blank(), 
+  axis.title.y = element_text(size = 20), 
+  axis.title.x = element_text(size = 20), 
+ # axis.title.x = element_blank(),
+  legend.title = element_text(size = 14), 
+  legend.text = element_text(size = 14), 
+# legend.position = "none"
+  ) +
+   xlim(.5,2) +
+  scale_x_reverse()
+nice_hydration_layered
+  
+ggsave(here("figures", "nice_hydration_layered_cwc"), nice_hydration_layered, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+
+Slopes of the formula: 
+
+```{r, warning=T}
+m_wk_rand <- lmer(water_potential ~ cwc + (cwc|tree) + (cwc|week), data = wk_all )
+```
+
+
+#**Space
+
+1. Center and scale by week
+2. Plot all midday grand slopes
+
+###Midday: 
+
+```{r, warning = F}
+wc_wk_centered_df_cwc <- wk_all_long %>% 
+  #filter(!week %in% c(9)) %>% 
+  mutate(water_potential = water_potential) %>% 
+  filter(time == "md") %>% 
+  group_by(week) %>% 
+  mutate(mean_cwc = mean(cwc, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(cwc_centered = cwc - mean_cwc)
+  # mutate(cwc_centered = scale(cwc,  scale=FALSE)) %>% 
+  # filter(cwc_centered < 4)
+
+#scaled
+space_nice <- wc_wk_centered_df_cwc %>% 
+  #drop_na(site) %>% 
+  ggplot(aes(y = water_potential, 
+            # x = cwc_centered, 
+            x = cwc_centered,
+             #color = tree_factor
+             color = as.factor(week)
+             )) +
+  geom_point(#alpha = .5, 
+            # aes (shape = site)
+             ) +
+  theme(#legend.position="none",
+        legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+      axis.title.x = element_text(size = 20),
+     axis.title.y = element_text(size = 20), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(y= "Middays (MPa)", 
+       x = "Centered Canopy Water Content", 
+       color = "Week") +
+  color_week_assigned +
+  #color_week_all +
+  guides(color = guide_legend(nrow = 1))
+space_nice
+
+wc_wk_centered_df_cwc$week
+
+ggsave(here("figures", "nice_space_cwc"), space_nice, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+
+###SLOPES - space
+
+
+##Covatiation bw LMA, MPa, SWC, LWA
+
+#####Centered
+Get slopes from random effects: 
+
+```{r, echo=FALSE}
+space_mod_cwc <- lmer(water_potential ~ cwc_centered + (cwc_centered|week) + (1|tree), data =  wc_wk_centered_df_cwc, REML = T)
+
+space_mod_df_cwc_cwc <- broom.mixed::tidy(space_mod_cwc)
+#space_mod_df_cwc
+
+ran_list3_cwc <- coef(space_mod_cwc)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_cwc3_cwc <- as.data.frame(ran_list3_cwc[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `cwc_centered`, 
+         -cwc_centered) %>%
+  select(-`(Intercept)`)
+
+ran_err3_cwc <- arm::se.ranef(space_mod_cwc)
+
+ran_err_df_cwc_cwc <- as.data.frame(ran_err3_cwc[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `cwc_centered`)%>% 
+  select(-`(Intercept)`, 
+         -cwc_centered) %>% 
+  tibble::rownames_to_column("week") %>% 
+  mutate(week = as.numeric(week))
+
+# weeks_check <- list(unique(space_df_cwc$week)) #%>% as_data_frame() 
+# weeks_check
+
+# weeks <- data_frame(1:10)
+# weeks$week <- c(9, 10, 14, 15, 17, 18, 19, 21, 29, 33) 
+
+ran_df_cwc_week_3_cwc <- bind_cols(ran_df_cwc3_cwc, ran_err_df_cwc_cwc) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+ran_df_cwc_week_3_cwc %>% 
+ # mutate(week = as.factor(week)) %>% 
+  mutate(week = as.numeric(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= as.character(week))
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = as.character(week)))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope") +
+  theme(legend.position="top",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+      axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = c(9, 10, 11, 12, 14,15, 16, 18, 19, 20, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) +
+  color_week_assigned +
+   # color_many_2 +
+  guides(color = guide_legend(nrow = 1))
+```
+
+Intercepts - centered
+
+```{r, echo=FALSE}
+ran_df_cwc_week_3 %>% 
+   mutate(week = as.numeric(week)) %>% 
+ # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = estimate + (std.error), 
+         lwr = estimate - (std.error)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = estimate,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "week", 
+       y = "Intercept") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) +
+    color_grad +
+  guides(color = guide_legend(nrow = 2))
+```
+
+
+
+
+####SLOPES
+
+Visualize: 
+
+```{r, echo=FALSE}
+ran_pd_df_cwc_week %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope")  +
+  theme(legend.position="top",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+      axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many +
+  guides(color = guide_legend(nrow = 1))
+```
+
+
+```{r, echo=FALSE}
+ran_pd_df_cwc_week %>% 
+   mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = estimate + (std.error), 
+         lwr = estimate - (std.error)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = estimate,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "week", 
+       y = "Intercept")  +
+  theme(legend.position="top",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many +
+  guides(color = guide_legend(nrow = 1))
+```
+
+#**Time
+
+```{r}
+cwc_df_cwc %>% 
+  #filter(!week %in% c(9, 18, 19)) %>% 
+  drop_na(week) %>% 
+  ggplot(aes(y = cwc, 
+             x = as.factor(week), 
+             #x = date,
+            # color = as.factor(week), 
+             fill = time)) +
+  geom_boxplot() +
+ # facet_wrap(~time) +
+  color_many +
+  color_fill +
+  labs(y = "cwc", 
+       x = "Week", 
+       fill = "Time")
+```
+
+```{r, echo=FALSE, warning = F}
+time_cwc_df_cwc <- cwc_df_cwc %>% 
+  mutate(time_season = case_when(
+    week < 17 ~ "Before Leafout", 
+    week >= 18 ~ "After Leafout", 
+    TRUE ~ as.character(week)
+  ))
+
+time <- time_cwc_df_cwc %>% 
+  drop_na(week) %>% 
+  filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = cwc, 
+             color = time_season, 
+             size = week,
+             shape = as.factor(tree),
+             show.legend = FALSE)) +
+  geom_point(size = 1,
+             alpha = .3)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "cwc", 
+       y = "Midday MPa") +
+  #color_two_grey +
+  theme(
+      legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(y= "Middays (MPa)", 
+       x = "Leaf Water Content (g)", 
+       color = "Week", 
+       ) +
+  guides(color = guide_legend(nrow = 2)) +
+ # facet_wrap(~time, nrow = 2) +
+  color_two_grey
+time_cwc 
+
+ggsave(here("figures", "nice_time_cwc"), time_cwc, device = "jpg", width = 4, height = 2, dpi = 300)
+```
+
+```{r, echo=FALSE}
+cwc_df_cwc %>% 
+  filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = cwc, 
+             color = as.factor(tree), 
+             show.legend = FALSE)) +
+  geom_point(#aes(size = week), 
+             alpha = .2)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "Canopy Water Content", 
+       y = "Midday MPa") +
+  color_very_many +
+  theme(legend.position = "none")
+```
+
+```{r, echo=FALSE}
+cwc_df_cwc %>% 
+  filter(time == "pd") %>% 
+  ggplot(aes(y = water_potential, 
+             x = cwc, 
+             color = as.factor(tree), 
+             show.legend = FALSE)) +
+  geom_point(#aes(size = week), 
+             alpha = .2)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "Canopy Water Content", 
+       y = "Predawn MPa") +
+  color_very_many +
+  theme(legend.position = "none")
+```
+Midday slopes for each individual: 
+
+All dates: 
+
+# Include site?
+
+```{r}
+space_df_cwc_nosite <- cwc_df_cwc %>% 
+  drop_na(site)
+
+space_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree), data = space_df_cwc_nosite, REML = F)
+#summary(space_mod)
+AIC(space_mod)
+
+space_mod_site <- lmer(water_potential ~ cwc  + (1|week) + (cwc|tree) + (1|site), data = space_df_cwc_nosite,  REML = F)
+
+AIC(space_mod_site)
+#summary(space_mod_site)
+
+anova(space_mod, space_mod_site)
+```
+
+
+```{r}
+wc_qudo_md_df_cwc <- cwc_df_cwc %>% 
+  filter(time == "md")
+  
+time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = wc_qudo_md_df_cwc)
+#time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_qudo_md_df_cwc)
+
+summary(time_mod)
+
+ran_list <- coef(time_mod)
+
+tree_eff <- as.data.frame(ran_list[['tree']]) %>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = cwc
+         ) %>%
+  select(-`(Intercept)`, 
+          -cwc)
+tree_eff
+
+ran_err_tree1 <- arm::se.ranef(time_mod)
+
+ran_err_tree2 <- as.data.frame(ran_err_tree1[['tree']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `cwc`
+         )%>% 
+  select(-`(Intercept)`, 
+        # -cwc
+         ) %>% 
+  tibble::rownames_to_column("tree") # Apply rownames_to_column
+
+ran_df_cwc_tree <- bind_cols(tree_eff, ran_err_tree2) %>% 
+  #select(-`1:47`) %>% 
+  data_frame()
+
+ran_df_cwc_tree %>% 
+  mutate(tree = as.factor(tree)) %>% 
+  mutate(upr = estimate + (std.error), 
+         lwr = estimate - (std.error)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = estimate ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope (Midday MPa ~ cwc)") +
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+
+ran_df_cwc_tree %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
+
+ran_df_cwc_tree %>% 
+  mutate(tree = as.factor(tree)) %>% 
+  mutate(upr = slope + (std.error), 
+         lwr = slope - (std.error)) %>% 
+  ggplot(aes(color= estimate)
+    ) + 
+  geom_point(aes(y = slope ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = estimate))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope (Midday MPa ~ cwc)") +
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+  theme(legend.position = "none", 
+        axis.text.x = element_blank())#+
+  #theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+```
+
+Just linear: 
+```{r}
+lin_wc_qudo_md_df_cwc <- time_cwc_df_cwc %>% 
+  filter(time == "md") %>% 
+  filter(week > 17) %>% 
+  drop_na(site)
+  
+  
+lin_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = lin_wc_qudo_md_df_cwc)
+summary(lin_time_mod)
+
+lin_ran_list <- coef(lin_time_mod)
+lin_ran_list
+
+lin_tree_eff <- as.data.frame(lin_ran_list[['tree']]) %>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `cwc`,
+         sd = sd(slope)
+         ) %>%
+  select(-`(Intercept)`, 
+          -cwc)
+lin_tree_eff
+
+lin_ran_err_tree <- arm::se.ranef(lin_time_mod)
+
+lin_ran_err_tree <- as.data.frame(lin_ran_err_tree[['tree']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `cwc`
+         )%>% 
+  select(-`(Intercept)`, 
+        # -cwc
+         ) %>% 
+  tibble::rownames_to_column("tree") # Apply rownames_to_column
+
+lin_ran_df_cwc_tree_after <- bind_cols(lin_tree_eff, lin_ran_err_tree) %>% 
+  #select(-`1:47`) %>% 
+  data_frame() %>% 
+  mutate(time_season = "After Leafout")
+
+#With standard errors around estimates:
+
+#intercetps 
+lin_ran_df_cwc_tree_after%>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = estimate + (std.error), 
+         lwr = estimate - (std.error)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = estimate ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Intercepts, AFTER LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+
+
+ran_df_cwc_tree_after %>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = slope ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope, AFTER LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+
+ran_df_cwc_tree_after %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
+```
+Before leafout: 
+
+```{r}
+bef_wc_qudo_md_df_cwc <- cwc_df_cwc %>% 
+  filter(time == "md") %>% 
+  filter(week < 17) %>% 
+  drop_na(site)
+  
+  
+bef_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = bef_wc_qudo_md_df_cwc, REML = T)
+summary(bef_time_mod)
+
+bef_ran_list <- coef(bef_time_mod)
+
+bef_tree_eff <- as.data.frame(bef_ran_list[['tree']]) %>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `cwc`, 
+         sd = sd(slope)
+         ) %>%
+  select(-`(Intercept)`, 
+          -cwc)
+bef_tree_eff
+
+bef_ran_err_tree <- arm::se.ranef(bef_time_mod)
+
+bef_ran_err_tree <- as.data.frame(bef_ran_err_tree[['tree']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `cwc`
+         )%>% 
+  select(-`(Intercept)`, 
+         -cwc
+         ) %>% 
+  tibble::rownames_to_column("tree") # Apply rownames_to_column
+
+bef_ran_df_cwc_tree_before <- bind_cols(bef_tree_eff, bef_ran_err_tree) %>% 
+  #select(-`1:47`) %>% 
+  data_frame()%>% 
+  mutate(time_season = "Before Leafout")
+
+bef_ran_df_cwc_tree_before %>% 
+  mutate(tree = as.factor(tree)) %>% 
+ # filter(tree %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= tree)
+    ) + 
+  geom_point(aes(y = slope ,x = tree), size =3) +
+    geom_point(aes(y = upr, x = tree), size = 1) +
+  geom_point(aes(y = lwr, x = tree), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = tree, 
+                   xend = tree, 
+                   color = tree))+
+  labs(x = "Tree", 
+       color = "Tree", 
+       y = "Slope, BEFORE LEAFOUT") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 18), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18)
+  ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+ # scale_x_continuous(breaks = seq(9, 30, by = 1)) +
+  theme(legend.position = "none")+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
+  color_very_many 
+
+ran_df_cwc_tree_before %>% 
+  ggplot(aes(x = slope))+
+  #geom_histogram() +
+  geom_density()
+```
+
+####SLOPES - combined
+
+```{r}
+ran_df_cwc_tree_before_vs_after <- bind_rows(bef_ran_df_cwc_tree_before, lin_ran_df_cwc_tree_after)
+
+ef <- ran_df_cwc_tree_before_vs_after %>% 
+  group_by(time_season) %>% 
+  mutate(sd = sd(slope),
+         slope = mean(slope), 
+         mean_se = mean(std.error.slope),
+        mean_std.error = mean(std.error),
+        upr_sd = slope + mean_std.error,
+        lwr_sd = slope - mean_std.error,
+         upr = slope + mean_se,
+         lwr = slope - mean_se,
+         time_season = as.factor(time_season)) 
+# %>% 
+#   select(slope, upr, lwr, time_season, sd)
+
+time_summary <- ef %>% 
+ggplot() + 
+  geom_point(aes(y = slope, x = time_season), size =3) +
+    geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "Mean Slope +/- SE acrss all trees
+            for each time frame", 
+       x = "Time")
+time_summary
+
+time_summary_sd <- ef %>% 
+ggplot() + 
+  geom_point(aes(y = slope, x = time_season), size =3) +
+    geom_point(aes(y = upr_sd, x = time_season), size = 1) +
+  geom_point(aes(y = lwr_sd, x = time_season), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr_sd, 
+                   yend = upr_sd, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "Mean Slope +/- SD acrss all trees
+            for each time frame", 
+       x = "Time")
+time_summary_sd
+
+ggsave(here("figures", "time_summary_slopes"), time_summary, device = "jpg", width = 2.5, height = 3, dpi = 300)
+```
+
+
+```{r}
+ran_df_cwc_tree_before_vs_after <- bind_rows(ran_df_cwc_tree_before, ran_df_cwc_tree_after)
+
+ef <- ran_df_cwc_tree_before_vs_after %>% 
+  group_by(time_season) %>% 
+  mutate(sd = sd(estimate),
+    estimate = mean(estimate), 
+        # std.error = mean(std.error),
+         upr = estimate + sd, 
+         lwr = estimate - sd, 
+         time_season = as.factor(time_season)) %>% 
+  select(estimate, upr, lwr, time_season, sd)
+
+time_summary_all <- ef %>% 
+ggplot() + 
+  geom_point(aes(y = estimate, x = time_season), size =3) +
+    geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  #geom_line(aes(group = tree, y = tree, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "Mean Slope +/- SD acrss all trees
+                 for each time frame", 
+       x = "Time")
+time_summary_all
+
+ggsave(here("figures", "time_summary_slopes"), time_summary_all, device = "jpg", width = 2.5, height = 3, dpi = 300)
+```
+
+Predawn slopes for each individual: 
+
+```{r, echo=FALSE}
+wc_qudo_pd_df_cwc <- cwc_df_cwc %>% 
+  filter(time == "pd")
+
+time_mod <- lmer(water_potential ~ cwc + (cwc|week) + (1|tree), data = wc_qudo_pd_df_cwc)
+summary(time_mod)
+```
+
+
+

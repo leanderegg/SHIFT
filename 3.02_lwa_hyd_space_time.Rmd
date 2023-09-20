@@ -638,7 +638,7 @@ space_nice <- wc_wk_centered_lwa_df %>%
      # axis.title = element_text(size = 16),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
-      axis.title.x = element_blank(),
+      axis.title.x = element_text(size = 20),
      axis.title.y = element_text(size = 20), 
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
@@ -647,7 +647,7 @@ space_nice <- wc_wk_centered_lwa_df %>%
     ) +
   geom_smooth(method = "lm", se = F) + 
  # geom_vline(xintercept = 0, linetype = "dotted") +
-  labs(y= "Middays (MPa)", 
+  labs(y= "Predawns (MPa)", 
        x = "Leaf Water Per Area", 
        color = "Week", 
        shape = "Site") +
@@ -688,13 +688,13 @@ space_nice_centered <- wc_wk_centered_lwa_df %>%
     ) +
   geom_smooth(method = "lm", se = F) + 
  # geom_vline(xintercept = 0, linetype = "dotted") +
-  labs(y= "Middays (MPa)", 
-       x = "Centered Leaf Water Per Area", 
+  labs(y= "Midday (MPa)", 
+       x = "Centered EWT (g/cm2)", 
        color = "Week", 
        shape = "Site") +
-  color_many_2 +
+  color_week_assigned +
   #color_week_all +
-  guides(color = guide_legend(nrow = 2))
+  guides(color = guide_legend(nrow = 1))
 
 space_nice_centered
 
@@ -788,7 +788,7 @@ ran_lwa_df_week_3 %>%
  # filter(term == "lwa_g_cm2") %>% 
   mutate(upr = slope + (std.error.slope), 
          lwr = slope - (std.error.slope)) %>% 
-  ggplot(aes(color= week)
+  ggplot(aes(color= as.character(week))
     ) + 
   geom_point(aes(y = slope ,x = week), size =2) +
     geom_point(aes(y = upr, x = week), size = 1) +
@@ -798,7 +798,7 @@ ran_lwa_df_week_3 %>%
                    yend = upr, 
                    x = week, 
                    xend = week, 
-                   color = week))+
+                   color = as.character(week)))+
   labs(x = "Week", 
        color = "Week", 
        y = "Slope") +
@@ -819,7 +819,7 @@ ran_lwa_df_week_3 %>%
   scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
                       # seq(10, 30, by = 1)
                      ) +
-  color_grad +
+  color_week_assigned +
    # color_many_2 +
   guides(color = guide_legend(nrow = 2))
 ```
@@ -1174,7 +1174,7 @@ wc_qudo_lwa_df %>%
 ```{r, echo=FALSE, warning = F}
 time <- wc_qudo_lwa_df %>% 
   drop_na(week) %>% 
- # filter(time == "md") %>% 
+  filter(time == "pd") %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2, 
              color = time_season, 
@@ -1203,8 +1203,50 @@ time <- wc_qudo_lwa_df %>%
     ) +
   geom_smooth(method = "lm", se = F) + 
  # geom_vline(xintercept = 0, linetype = "dotted") +
-  labs(y= "Middays (MPa)", 
+  labs(y= "Predawns (MPa)", 
        x = "Leaf Water Per Area (g)", 
+       color = "Week", 
+       ) +
+  guides(color = guide_legend(nrow = 2)) +
+  facet_wrap(~time, nrow = 2) +
+  color_two_grey
+time 
+
+ggsave(here("figures", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
+
+time <- wc_qudo_lwa_df %>% 
+  drop_na(week) %>% 
+  filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2, 
+             color = time_season, 
+             size = week,
+             shape = as.factor(tree),
+             show.legend = FALSE)) +
+  geom_point(size = 1,
+             alpha = .3)+
+  geom_smooth(method = "lm", se = F) +
+ # theme(legend.position = "none") +
+  labs(x = "lwa_g_cm2", 
+       y = "Midday MPa") +
+  #color_two_grey +
+  theme(
+      legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(y= "Midday (MPa)", 
+       x = "EWT (g/cm2)", 
        color = "Week", 
        ) +
   guides(color = guide_legend(nrow = 2)) +
@@ -1255,7 +1297,7 @@ NO
 
 ```{r}
 wc_qudo_md_lwa_df <- wc_qudo_lwa_df %>% 
-  filter(time == "md")
+  filter(time == "pd")
   
 time_mod <- lmer(water_potential ~ lwa_g_cm2 + (1|week) + (lwa_g_cm2|tree) + (1|site), data = wc_qudo_md_lwa_df)
 #time_mod <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|tree), data = wc_qudo_md_lwa_df)
@@ -1352,7 +1394,7 @@ theme(
 Just linear: 
 ```{r}
 lin_wc_qudo_md_lwa_df <- wc_qudo_lwa_df %>% 
-  filter(time == "md") %>% 
+  filter(time == "pd") %>% 
   filter(time_season == "after leafout")
   
   
@@ -1467,7 +1509,7 @@ Before leafout:
 
 ```{r}
 bef_wc_qudo_md_lwa_df <- wc_qudo_lwa_df %>% 
-  filter(time == "md") %>% 
+  filter(time == "pd") %>% 
   filter(time_season == "before leafout") %>% 
   drop_na(site)
   

@@ -5,7 +5,11 @@ library(MetBrewer)
 ggplot <- function(...) { ggplot2::ggplot(...) + 
     theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
           panel.grid.major = element_blank(),  # Hide major gridlines
-          panel.grid.minor = element_blank())  # Hide minor gridlines
+          panel.grid.minor = element_blank(), # Hide minor gridlines
+          strip.background =element_rect(fill="white"),
+          strip.text = element_text(colour = 'black'),
+          panel.border = element_rect(colour = "black", fill = NA)
+          )
 }
 
 
@@ -19,12 +23,59 @@ Cross = list(c("#c969a1", "#ce4441", "#ee8577", "#eb7926", "#ffbb44", "#859b6c",
 Cross_rev = c("#122451", "#063E5C", "#165E6F", "#528791", "#729684", "#8E9D68", "#D9B150", "#F8A63A" ,"#EC7E28", "#EC7F51", "#E97B6E", "#D5534D", "#CC5265", "#C969A1")
 
 #My colors: 
-color_many_2 <- scale_color_manual(values = c("#122451", "#165E6F", "#528791",  "#8E9D68", "#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E", "#CC5265", "#C969A1"))
+color_many_2 <- scale_color_manual(values = c("#122451", "#165E6F", "#528791", "#729684", "#8E9D68", "#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E", "#CC5265", "#C969A1"))
+
+color_week_assigned <- scale_color_manual(values = c("9" ="#122241",
+                                                     "10" = "#48578E",
+                                                     "11" = "#122451", 
+                                                     "12" = "#165E6F", 
+                                                     "14" = "#528791", 
+                                                     "15" = "#729684", 
+                                                     "16" = "#8E9D68", 
+                                                     "17" = "#8E9D30",
+                                                     "18" = "#D7B110",
+                                                     "19" = "#D9C000",
+                                                     "20" = "#F8A63A" ,
+                                                    # "21" = "#F8A63A" ,
+                                                     "21" = "#EC7E28", 
+                                                     "29" = "#CC5210", 
+                                                     "33" = "#E97B6E", 
+                                                    # "37" = "#b33b72",
+                                                     "37" = "#CC5265", 
+                                                     "39" = "#862d46" 
+                                                    # "39" = "#C969A1"
+                                                   #  "37" = "#b33b72",
+                                                   #  "39" = "#893843"
+                                                    ))
+
+color_dates_assigned <- scale_color_manual(values = c("2022-03-08" = "#48578E",
+                                
+                                                      "2022-03-15"= "#122451", 
+                                "2022-03-25" = "#122451",
+                                #"2022-03-23", "2022-03-30", 
+                                "2022-04-04"= "#528791",  #"2022-04-06","2022-04-13", 
+                                "2022-04-11"= "#729684",   #"2022-04-27", 
+                                "2022-04-25" = "#8E9D30",  #"2022-05-04" ,
+                                "2022-05-09"= "#D7B110",
+                                "2022-05-25"= "#F8A63A", 
+                                #"2022-05-23", 
+                                "2022-07-19" = "#EC7E28",  
+                                "2022-08-18" = "#CC5210",  
+                                "2022-09-15" = "#CC5265"))
+
+
+
 
 
 color_two_grey <-scale_color_manual(values =c("#525252", "#969696"))
 
+color_before_after <-scale_color_manual(values =c("#CC5210","#165E6F"))
+
+color_leaves_stems <- scale_color_manual(values =c("#8E9D30","#252525"))
+
 color_grad <- scale_color_gradientn(colors=met.brewer("Cross", direction = -1))
+
+color_grad_rev <- scale_color_gradientn(colors=met.brewer("Cross", direction = 1))
 
 color_grad_new <- scale_colour_stepsn(colors = c("#122451", "#165E6F", "#528791", "#8E9D68","#D9B150", "#F8A63A" ,"#EC7E28", "#E97B6E", "#CC5265", "#C969A1"))
 

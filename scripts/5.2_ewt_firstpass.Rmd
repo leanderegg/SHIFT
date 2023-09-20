@@ -27,8 +27,8 @@ library('variancePartition')
 source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "20230220"
-dataversion <- paste0("Data_", datver)
+datver_ewt <- "20230220"
+dataversion_ewt  <- paste0("Data_", datver_ewt)
 ```
 
 ```{r}
@@ -42,7 +42,7 @@ ewt_allen <- read_csv(here("data", "ewt_all_firstpass.csv"), show_col_types = F)
 
 #Attach to water pot. data: 
 
-ewt_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+ewt_lwc_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver_ewt ,".csv")), show_col_types = F) %>% 
   mutate(lwc_mean = lwc_mean) %>% 
   # filter(lwc_mean > 0, 
   #        lwc_mean < 3, 

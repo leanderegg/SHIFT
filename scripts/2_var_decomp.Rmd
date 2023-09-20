@@ -27,15 +27,15 @@ select = dplyr::select
  
 #source("http://goo.gl/UUyEzD") #outlier KD (original function)
 
-source(here::here("scripts", "figure_info.R"))
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
-datver <- "11082022"
+datver <- "20230724"
 dataversion <- paste0("Data_", datver)
 ```
 
 
 ```{r}
-wc_all_raw <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv"))) 
+wc_all_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
 ```
 
 Before leafout: 

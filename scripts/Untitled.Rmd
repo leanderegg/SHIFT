@@ -82,8 +82,7 @@ nice_hydration_layered_1 <- ggplot() +
   ) +
    ylim(-5,0)+
    xlim(.5,2) +
-  scale_x_reverse() +
-scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+  scale_x_reverse()
 nice_hydration_layered_1
 
 ```
@@ -130,8 +129,7 @@ space_nice_1 <- wc_wk_centered_df %>%
   xlim(.5,2) +
   ylim(-5,0)+
   guides(color = guide_legend(nrow = 2)) +
-  scale_x_reverse() +
-scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+  scale_x_reverse()
 space_nice_1
 
 
@@ -187,10 +185,78 @@ time_1 <- wc_qudo_df %>%
    xlim(.5,2) +
   ylim(-5,0)+
   scale_x_reverse()+
-  color_two_grey +
-scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+  color_two_grey
 
 time_1 
+```
+
+```{r}
+time_ESA <- wc_qudo_df %>% 
+  mutate(time = case_when(
+    time == "md" ~ "Midday", 
+    time == "pd" ~ "Predawn"
+  )) %>% 
+  filter(time == "Midday") %>% 
+  drop_na(week) %>% 
+ # filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc, 
+             color = time_season, 
+             size = week,
+             shape = as.factor(tree),
+             show.legend = FALSE)) +
+  geom_point(size = 1,
+             alpha = .1)+
+  geom_smooth(method = "lm", se = F, size = .5, alpha = .4) +
+ # theme(legend.position = "none") +
+  labs(x = "LWC", 
+       y = "Midday MPa") +
+  #color_two_grey +
+  # theme(
+  #     legend.position="none",
+  #     strip.background = element_blank(),
+  #    # strip.text.x = element_text(size = 12),
+  #     strip.text.x = element_text(size = 12),
+  #     plot.title = element_text(size=13),
+  #     #axis.title = element_text(size = 15),
+  #    axis.title = element_blank(),
+  #    axis.text = element_text(size = 12),
+  #    axis.text.x = element_text(size = 12),
+  #    legend.key=element_blank(), 
+  #    legend.text = element_text(size = 13), 
+  #    legend.title = element_text(size = 16),
+  #    #legend.title = element_blank(),
+  #    legend.margin=margin(0,0,0,0),
+  #     legend.box.margin=margin(-5,-8,-8,-8)
+  #   ) +
+    theme(legend.position="none",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+      axis.title.x = element_text(size = 20), 
+     axis.title.y = element_text(size = 20), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     #legend.margin=margin(0,0,0,0),
+     # legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(#y= "Water Potential (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Water Content (g)", 
+       color = "Week", 
+       ) +
+  guides(color = guide_legend(nrow = 2)) +
+ # facet_wrap(~time, nrow = 2) +
+   xlim(.5,2) +
+  ylim(-5,0)+
+  scale_x_reverse()+
+  color_two_grey
+
+time_ESA
 ```
 
 ####COMBINE:
@@ -285,14 +351,15 @@ hyd_slopes <- ran_df_week %>%
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-   scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-                     #breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+   scale_x_reverse(#breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                     breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
                       # seq(10, 30, by = 1)
                      ) +
   theme(legend.position = "none") +
   #xlim(0, 40) +
  color_grad  +
-  ylim(-2, 7) 
+  ylim(-2, 7) +
+  scale_x_reverse() 
 hyd_slopes
 ```
 
@@ -333,15 +400,16 @@ space_slope <- ran_df_week_4 %>%
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
-  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+  scale_x_reverse(#breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                     breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
                       # seq(10, 30, by = 1)
                      ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
   color_grad_new +
  # color_many_2 +
   guides(color = guide_legend(nrow = 2)) +
-  ylim(-2, 7) 
+  ylim(-2, 7) +
+  scale_x_reverse()
  # scale_x_reverse()
 space_slope
 ```
@@ -433,7 +501,7 @@ x.grob1 <- textGrob("Time",
                            fontsize=15))
 
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope, time_summary, hyd_slopes, 
+combined_slopes_wide <- cowplot::plot_grid(time_summary, space_slope, hyd_slopes, 
                                    nrow = 1, rel_heights = c(.15, 1, .3), 
                                    rel_widths = c(1, 1, 1)
                                    ) 
@@ -456,7 +524,7 @@ x.grob2 <- textGrob("Leaf Water Content (g)",
                            fontsize=15))
 
 
-combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, time_1, nice_hydration_layered_1,
+combined_plots_wide_nolegend <- cowplot::plot_grid(time_1, space_nice_1, nice_hydration_layered_1,
                                    nrow = 1, rel_heights = c(.15, 1, .3), 
                                    rel_widths = c(1, 1, 1)
                                    ) 
@@ -466,29 +534,6 @@ combined_plots_wide <- cowplot::plot_grid(legend_scatterplots, combined_plots_wi
                                           nrow = 2, rel_heights = c(.25, 1))
 
 combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_plots_wide, left = y.grob2, bottom = x.grob2))
-```
-```{r}
-library(patchwork)
-
-combined_scatter_wide_patch <- space_nice_1 + 
-  time_1 +
-  nice_hydration_layered_1 +
-  plot_layout(ncol = 3, heights = c(1, 1, 1), widths = c(1, 1, 1))
-combined_scatter_wide
-combined_scatter_wide_patch <- as_grob(combined_scatter_wide_patch)
-
-combined_slopes_wide_patch <- space_slope+ 
-  time_summary+
- hyd_slopes +
-  plot_layout(ncol = 3, heights = c(1, 1, 1), widths = c(1, 1, 1))
-combined_slopes_wide
-combined_slopes_wide_patch <- as_grob(combined_slopes_wide_patch)
-
-plot_legend.sz.mem <- cowplot::plot_grid(legend_scatterplots, combined_scatter_wide_patch, combined_slopes_wide_patch, ncol = 1, rel_heights = c(.7,1, 1))
-plot_legend.sz.mem
-
-plot.sz.mem <- as_grob(plot.sz.mem)
-
 ```
 
 

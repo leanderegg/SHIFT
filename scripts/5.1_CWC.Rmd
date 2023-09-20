@@ -48,7 +48,7 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc-alldates.csv"), show_col_types = F
   mutate(cwc = mean(cwc)) %>% 
   rename(week_cwc_link = week)
 
-unique(cwc_raw$week)
+unique(cwc_raw$week_cwc_link)
 unique(cwc_lwc_raw$week)
 
 cwc_lwc_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")), show_col_types = F) %>% 
@@ -74,13 +74,15 @@ cwc_lwc_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",da
   filter(week_cwc_link < 22)
 
 #Combine: 
-unique(cwc_raw$week) #cwc weeks
+unique(cwc_raw$week_cwc_link) #cwc weeks
+unique(cwc_raw$date) #cwc weeks
 unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
+unique(cwc_lwc_raw$date_wp)
 
 unique(cwc_raw$tree)
 unique(cwc_lwc_df$tree)
 
-cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
+cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
   distinct() %>% 
   filter(cwc > -100) %>% 
   drop_na(site, species) %>% 
@@ -93,13 +95,27 @@ cwc_lwc_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all =
   mutate(alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
          sla_mean = mean(sla_cm_g,na.rm = T), 
          lma_mean = mean(lma_g_cm2,na.rm = T),
+         lwa_mean = mean(lwa_g_cm2,na.rm = T),
          leaf_count_mean = mean(leaf_count, na.rm = T),
          leaf_area_mean = mean(area_cm2, na.rm = T), 
          ldmc_mean = mean(ldmc, na.rm = T),
          date_shift = date) %>% 
-  select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, leaf_count_mean, leaf_area_mean) %>% 
+  # select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, lma_mean, lwa_mean, leaf_count_mean, leaf_area_mean) %>% 
    distinct() %>% 
-  drop_na(time)
+  drop_na(time) %>% 
+  ungroup() %>% 
+  group_by(tree, week, time, type) %>% 
+  mutate(rwc_percent = case_when(
+    rwc_lfm_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+    rwc_lwc_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+    rwc_lfm_percent > 0 ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)), 
+    TRUE~ as.numeric(rwc_lwc_percent)
+  ))
+
+cwc_lwc_df <-  cwc_lwc_all_df %>% 
+  select(tree, shift_id, species, week, lat, lon, time, type, date_shift, date_rwc, date_alas, date_wp, cwc, mpa_mean, lwc_mean, mean_swc_per_dry_g, mean_swc_g, rwc_lfm_percent, rwc_lwc_percent, lfm_percent, alas_mean, sla_mean, lma_mean, lwa_mean, leaf_count_mean, leaf_area_mean) %>%
+   distinct() %>% 
+  drop_na(time) 
 ```
 
 
@@ -111,6 +127,14 @@ cwc_lwc_df %>%
   geom_point() +
  # facet_wrap(~time) +
   geom_smooth(method = "lm")
+
+rwc_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = date_shift, x =  date_wp, #color = as.factor(tree)
+             )) +
+  geom_point()+
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F) 
+rwc_cwc
 ```
 
 ```{r}
@@ -124,42 +148,57 @@ cwc_lwc_df %>%
 
 ```{r}
 mpa_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = mpa_mean, x = cwc, color = as.factor(week))) +
+  ggplot(aes(y = -1*mpa_mean, x = cwc, color = as.factor(week))) +
   geom_point() +
   theme(legend.position = "none") +
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F) +
+  color_many_2 
+mpa_cwc
 
 lwc_cwc <- cwc_lwc_df %>% 
   ggplot(aes(y = lwc_mean, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none")+
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~species)
+  color_many_2 
+lwc_cwc
+
 
 lwa_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = lwa_g_cm2, x = cwc, color = as.factor(week))) +
+  ggplot(aes(y = lwa_mean, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none") +
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F)+
+  color_many_2 
+lwa_cwc
 
 lma_cwc <- cwc_lwc_df %>% 
-  ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
+  ggplot(aes(y = lma_mean, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none") +
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F)+
+  color_many_2 
+lma_cwc
 
 rwc_cwc <- cwc_lwc_df %>% 
   ggplot(aes(y = rwc_percent, x = cwc, color = as.factor(week))) +
   geom_point()+
   theme(legend.position = "none") +
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F) +
+  ylim(40, 200)+
+  color_many_2 
 rwc_cwc
 
 legend <- cowplot::get_legend(cwc_lwc_df %>% 
-  ggplot(aes(y = lma_g_cm2, x = cwc, color = as.factor(week))) +
-  geom_point()+
-  geom_smooth(method = "lm", se = F))
+  ggplot(aes(y = -1*mpa_mean, x = cwc, color = as.factor(week))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)+
+  theme(legend.title = element_text(size = 14)) +
+  labs(color = "Week") +
+  color_many_2)
 
-all_cwc_noleg <- cowplot::plot_grid(mpa_cwc, lwc_cwc, lwa_cwc, lma_cwc, nrow = 2)
+all_cwc_noleg <- cowplot::plot_grid(mpa_cwc, rwc_cwc,  lwc_cwc, lwa_cwc, nrow = 2)
 
 all_cwc_plot <- cowplot::plot_grid(all_cwc_noleg, legend, ncol = 2, rel_widths = c(1, .2))
 
@@ -167,11 +206,56 @@ all_cwc_plot
 ```
 
 ```{r}
-cwc_lwc_df %>% 
-  ggplot(aes(y = mpa_mean, x = cwc, color = as.factor(week)
-             )) +
+mpa_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = -1*mpa_mean, x = cwc, color = as.factor(tree))) +
   geom_point() +
+  theme(legend.position = "none") +
   geom_smooth(method = "lm", se = F) 
+mpa_cwc
+
+lwc_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lwc_mean, x = cwc, color = as.factor(tree))) +
+  geom_point()+
+  theme(legend.position = "none")+
+  geom_smooth(method = "lm", se = F) 
+lwc_cwc
+
+
+lwa_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lwa_mean, x = cwc, color = as.factor(tree))) +
+  geom_point()+
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F)
+lwa_cwc
+
+lma_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = lma_mean, x = cwc, color = as.factor(tree))) +
+  geom_point()+
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F)
+lma_cwc
+
+rwc_cwc <- cwc_lwc_df %>% 
+  ggplot(aes(y = rwc_percent, x = cwc, color = as.factor(tree))) +
+  geom_point()+
+  theme(legend.position = "none") +
+  geom_smooth(method = "lm", se = F) +
+  ylim(40, 200)
+rwc_cwc
+
+legend <- cowplot::get_legend(cwc_lwc_df %>% 
+  ggplot(aes(y = -1*mpa_mean, x = cwc, color = as.factor(tree))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)+
+  theme(legend.title = element_text(size = 14)) +
+  labs(color = "Tree") )
+
+all_cwc_noleg <- cowplot::plot_grid(mpa_cwc, rwc_cwc,  lwc_cwc, lwa_cwc, nrow = 2)
+all_cwc_noleg
+
+all_cwc_tree_plot <- cowplot::plot_grid(all_cwc_noleg, legend, ncol = 2, rel_widths = c(1, .2))
+
+all_cwc_tree_plot
 ```
 
 
