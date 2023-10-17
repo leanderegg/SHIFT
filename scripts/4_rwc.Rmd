@@ -387,6 +387,273 @@ rwc_long_df %>%
        color = "Type") +
   color_two
 ```
+#FIGURE: 
+```{r}
+swc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "md"
+         ) %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems +
+   theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+swc_scatter
+
+rwc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 200
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Midday Water Potential", 
+       y = "RWC (%)", 
+       color = "Type") +
+  color_leaves_stems +
+  theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_text(size = 13), 
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+rwc_scatter
+
+
+legend_plot <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time== "md"
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Type") +
+ color_leaves_stems +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+
+stacked_nice <- cowplot::plot_grid(swc_scatter, 
+                                   rwc_scatter,
+                                   nrow = 2, 
+                                   rel_heights = c(1,1)) 
+
+stacked_nice
+
+final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
+final
+
+ggsave(here("figures", "nice_rwc_swc_md"), final, device = "jpg", width = 6, height = 6, dpi = 300)
+```
+
+
+```{r}
+swc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "pd"
+         ) %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems +
+   theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+swc_scatter
+
+rwc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "pd"
+         ) %>% 
+  distinct() %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 200
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "RWC (%)", 
+       color = "Type") +
+  color_leaves_stems +
+  theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_text(size = 13), 
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+rwc_scatter
+
+
+legend_plot <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time== "md"
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Type") +
+ color_leaves_stems +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+
+stacked_nice <- cowplot::plot_grid(swc_scatter, 
+                                   rwc_scatter,
+                                   nrow = 2, 
+                                   rel_heights = c(1,1)) 
+
+stacked_nice
+
+final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
+final
+
+ggsave(here("figures", "nice_rwc_swc_pd"), final, device = "jpg", width = 6, height = 6, dpi = 300)
+```
 
 #-----
 

@@ -568,7 +568,6 @@ all_synced <- leafsync::latticeView(change_md_lwc, change_md_mpa,
 all_synced
 ```
 
-
 #PDS:
 
 ```{r}

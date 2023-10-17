@@ -64,8 +64,8 @@ wc_qudo_lwa_df<- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".cs
     week > 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>% 
-  mutate(water_potential = -1*water_potential) %>% 
-  filter(lwa_g_cm2 < 0.025)
+  mutate(water_potential = -1*water_potential) %>%
+filter(lwa_g_cm2 < 0.025)
 ```
 
 What is the linear portion? 
@@ -1177,7 +1177,7 @@ time <- wc_qudo_lwa_df %>%
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2, 
-             color = time_season, 
+             #color = time_season, 
              size = week,
              shape = as.factor(tree),
              show.legend = FALSE)) +

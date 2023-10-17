@@ -374,7 +374,7 @@ nice_hydration_layered <- ggplot() +
        x = "Leaf Water Content (g)", 
        color= "Week", 
        shape = "Time"
-       #caption = "triangles = predawn, circles = midday"
+       #caption = "triangles = predawn, circles = Predawn"
        ) +
   theme(
     #legend.position = c(.9, .35),
@@ -410,9 +410,9 @@ m_wk_rand <- lmer(water_potential ~ cwc + (cwc|tree) + (cwc|week), data = wk_all
 #**Space
 
 1. Center and scale by week
-2. Plot all midday grand slopes
+2. Plot all Predawn grand slopes
 
-###Midday: 
+###Predawn: 
 
 ```{r, warning = F}
 wc_wk_centered_df_cwc <- wk_all_long %>% 
@@ -708,7 +708,7 @@ cwc_df_cwc %>%
 time_cwc_df_cwc <- cwc_df_cwc %>% 
   mutate(time_season = case_when(
     week < 17 ~ "Before Leafout", 
-    week >= 18 ~ "After Leafout", 
+    week >= 17 ~ "After Leafout", 
     TRUE ~ as.character(week)
   ))
 
@@ -762,7 +762,7 @@ cwc_df_cwc %>%
   geom_smooth(method = "lm", se = F) +
  # theme(legend.position = "none") +
   labs(x = "Canopy Water Content", 
-       y = "Midday MPa") +
+       y = "Predawn MPa") +
   color_very_many +
   theme(legend.position = "none")
 ```
@@ -783,14 +783,11 @@ cwc_df_cwc %>%
   color_very_many +
   theme(legend.position = "none")
 ```
-Midday slopes for each individual: 
 
-All dates: 
-
-# Include site?
+###Include site? - YES
 
 ```{r}
-space_df_cwc_nosite <- cwc_df_cwc %>% 
+space_df_cwc_nosite <- cwc_df %>% 
   drop_na(site)
 
 space_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree), data = space_df_cwc_nosite, REML = F)
@@ -804,14 +801,17 @@ AIC(space_mod_site)
 
 anova(space_mod, space_mod_site)
 ```
+Yes, include site.
 
+###Predawn
 
+- All dates:
 ```{r}
-wc_qudo_md_df_cwc <- cwc_df_cwc %>% 
+wc_qudo_pd_df_cwc <- cwc_df %>% 
   filter(time == "pd")
   
-time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = wc_qudo_md_df_cwc)
-#time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_qudo_md_df_cwc)
+time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = wc_qudo_pd_df_cwc)
+#time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_qudo_pd_df_cwc)
 
 summary(time_mod)
 
@@ -856,7 +856,7 @@ ran_df_cwc_tree %>%
                    color = tree))+
   labs(x = "Tree", 
        color = "Tree", 
-       y = "Slope (Midday MPa ~ cwc)") +
+       y = "Slope (Predawn MPa ~ cwc)") +
 theme(
   strip.background = element_blank(),
   strip.text.y = element_blank(), 
@@ -891,7 +891,7 @@ ran_df_cwc_tree %>%
                    color = estimate))+
   labs(x = "Tree", 
        color = "Tree", 
-       y = "Slope (Midday MPa ~ cwc)") +
+       y = "Slope (Predawn MPa ~ cwc)") +
 theme(
   strip.background = element_blank(),
   strip.text.y = element_blank(), 
@@ -906,15 +906,14 @@ theme(
   #theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 ```
 
-Just linear: 
+####Just after leafout: 
 ```{r}
-lin_wc_qudo_md_df_cwc <- time_cwc_df_cwc %>% 
+lin_wc_qudo_pd_df_cwc <- time_cwc_df %>% 
   filter(time == "pd") %>% 
-  filter(week > 17) %>% 
+  filter(week >= 17) %>% 
   drop_na(site)
   
-  
-lin_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = lin_wc_qudo_md_df_cwc)
+lin_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = lin_wc_qudo_pd_df_cwc)
 summary(lin_time_mod)
 
 lin_ran_list <- coef(lin_time_mod)
@@ -985,7 +984,7 @@ theme(
   color_very_many 
 
 
-ran_df_cwc_tree_after %>% 
+lin_ran_df_cwc_tree_after %>% 
   mutate(tree = as.factor(tree)) %>% 
  # filter(tree %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "cwc") %>% 
@@ -1021,21 +1020,21 @@ theme(
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
 
-ran_df_cwc_tree_after %>% 
+lin_ran_df_cwc_tree_after %>% 
   ggplot(aes(x = slope))+
   #geom_histogram() +
   geom_density()
 ```
-Before leafout: 
+####Before leafout: 
 
 ```{r}
-bef_wc_qudo_md_df_cwc <- cwc_df_cwc %>% 
-  filter(time == "pd") %>% 
+bef_wc_qudo_pd_df_cwc <- time_cwc_df %>% 
+  filter(!time == "pd") %>% 
   filter(week < 17) %>% 
   drop_na(site)
   
   
-bef_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = bef_wc_qudo_md_df_cwc, REML = T)
+bef_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = bef_wc_qudo_pd_df_cwc, REML = T)
 summary(bef_time_mod)
 
 bef_ran_list <- coef(bef_time_mod)
@@ -1101,13 +1100,13 @@ theme(
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1)) +
   color_very_many 
 
-ran_df_cwc_tree_before %>% 
+bef_ran_df_cwc_tree_before%>% 
   ggplot(aes(x = slope))+
   #geom_histogram() +
   geom_density()
 ```
 
-####SLOPES - combined
+####Combined SLOPEs fig
 
 ```{r}
 ran_df_cwc_tree_before_vs_after <- bind_rows(bef_ran_df_cwc_tree_before, lin_ran_df_cwc_tree_after)

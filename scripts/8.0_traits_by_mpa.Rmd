@@ -39,34 +39,139 @@ dataversion <- paste0("Data_", datver)
 wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) %>% 
   filter(species == "blue oak") 
 
-wc_qudo_df <- wc_all_raw %>% 
+wc_qudo_df0 <- wc_all_raw %>% 
    filter(#week > 15, 
         # lwa_g_cm2_mean < 5, 
          #lwa_g_cm2_mean > 0
          ) %>% 
-  filter(!(week == 29 & lwc_mean > 1)) %>% 
-  mutate(lwa_g_cm2 = lwa_g_cm2) %>% 
-  group_by(tree, week, time) %>% 
-  mutate(water_potential = mean(mpa_mean), 
-         tree_factor = as.factor(tree)) %>% 
-  ungroup() %>% 
+  filter(!(week == 29 & lwc_mean > 1))  %>% 
   mutate(week = case_when(
     week %in% c(13) ~ 14,
     week %in% c(11) ~ 10,
     TRUE ~ week
   )) %>%
-  select(week, time, lwa_g_cm2, lwc_mean, water_potential, date_wp,
-         tree, tree_factor, plot, site, species) %>% 
+  mutate(tree = as.character(tree))  %>% 
+  group_by(tree, week, time) %>% #combine years
+  mutate(water_potential = mean(mpa_mean, na.rm = T), 
+         ldmc_mean = mean(ldmc, na.rm = T),
+         lma_g_cm2= mean(lma_g_cm2, na.rm = T),
+         mpa_mean = mean(mpa_mean, na.rm = T), 
+         tree_factor = as.factor(tree), 
+         lwc_mean = mean(lwc_mean),
+         alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T), 
+         lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T)) %>% 
+  ungroup() %>% 
+  select(week, time, lwa_g_cm2 , lwc_mean, mpa_mean, lma_g_cm2, alas_cm2_per_mm2, date_wp, tree, tree_factor, plot, site, species) %>% 
+  dplyr::distinct() %>% 
+  filter(!week == 9)%>% 
+  group_by(tree, week) %>% 
+  fill(alas_cm2_per_mm2,date_wp, .direction = "downup") %>% 
+  ungroup() %>% 
   distinct() %>% 
-  filter(!week == 9)
+  drop_na(time)
+```
+
+
+```{r, echo=F}
+early_pd <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week == min(week), 
+         time == "pd") %>%
+  select(tree, early_week_mpa = mpa_mean) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree))
+
+late_alas <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week == max(week)) %>%
+  select(tree, last_week_alas = alas_cm2_per_mm2) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+late_alas_means <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week %in% c(33, 37)) %>%
+  mutate(last_week_alas = mean(alas_cm2_per_mm2, na.rm = T)) %>% 
+  select(tree, last_week_alas) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+results0 <- left_join(early_pd, late_alas, by = "tree")
+
+late_lma <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week == max(week)) %>%
+  mutate(last_week_lma = mean(lma_g_cm2, na.rm = T)) %>% 
+  select(tree, last_week_lma) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+results1 <- left_join(results0, late_lma, by = "tree")
+
+late_lwc <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week == max(week)) %>%
+  select(tree, last_week_lwc = lwc_mean) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+late_lwc <- wc_qudo_df0 %>%
+  group_by(tree) %>%
+  filter(week == max(week)) %>%
+  mutate(last_week_lwc = mean(lwc_mean, na.rm = T)) %>% 
+  select(tree, last_week_lwc) %>%
+  ungroup() %>% 
+  mutate(tree = as.character(tree)) %>% 
+  distinct()
+
+results2 <- left_join(results1, late_lwc, by = "tree")
+
+# Join the result back to the original data frame
+wc_qudo_df <- left_join(wc_qudo_df0, results2, by = "tree") %>% 
+  group_by(tree, week) %>% 
+  fill(alas_cm2_per_mm2, lwa_g_cm2, last_week_lwc, last_week_lma, last_week_alas, 
+       .direction = "downup") %>% 
+  ungroup() %>% 
+  select(-tree_factor) %>% 
+  dplyr::distinct() %>% 
+  drop_na(time)
 ```
 
 
 ```{r}
 wc_qudo_df %>% 
-  filter(time == "pd") %>% 
-  ggplot(aes(y = mpa_mean, 
-             x = alas_cm2_per_mm2, 
+  #filter(time == "pd") %>% 
+  ggplot(aes(y = early_week_mpa, 
+             x = last_week_alas, 
+             color = site)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = F)
+
+lma_df <- wc_qudo_df %>% 
+  select(tree, last_week_lma, last_week_alas, early_week_mpa) %>% 
+  distinct()
+
+wc_qudo_df %>% 
+  #filter(time == "pd") %>% 
+  filter(last_week_lma < .03) %>% 
+  ggplot(aes(y = -1*early_week_mpa, 
+             x = last_week_lma, 
+             color = site)) +
+  geom_jitter()
+
+lwc_df <- wc_qudo_df %>% 
+  select(tree, site, last_week_lma, last_week_lwc, last_week_alas, early_week_mpa) %>% 
+  distinct()
+
+lwc_df %>% 
+  #filter(time == "pd") %>% 
+  filter(last_week_lwc < 1.5) %>% 
+  ggplot(aes(y = -1*early_week_mpa, 
+             x = last_week_lwc, 
              color = site)) +
   geom_jitter()
 ```
@@ -79,4 +184,109 @@ wc_qudo_df %>%
              color = site)) +
   geom_jitter()
 ```
+#LMA x LWC x MPa: 
 
+```{r, fig.height= 5, fig.width=8}
+mass_area_df <- wc_qudo_df %>% 
+  select(week, tree, time, lwa_g_cm2, lwc_mean, mpa_mean, lma_g_cm2, alas_cm2_per_mm2) %>% 
+  filter(lma_g_cm2 < .025, 
+         lwa_g_cm2 < 0.04,
+         ) %>% 
+  distinct() %>% 
+  pivot_longer(cols = c(lwc_mean, lma_g_cm2, lwa_g_cm2, alas_cm2_per_mm2), 
+               names_to = "trait", 
+               values_to = "value")
+
+
+mass_area_df %>% 
+  filter(time == "pd") %>% 
+  ggplot(aes(y = mpa_mean, x = value, color = as.factor(week))) +
+  geom_point()+
+  facet_wrap(~trait, scales = "free") +
+  geom_smooth(method = "lm", se = F)
+
+mass_area_df %>% 
+  filter(time == "md", 
+         !(trait == "lwa_g_cm2")) %>% 
+  ggplot(aes(y = mpa_mean, x = value, color = as.factor(week))) +
+  geom_point()+
+  facet_wrap(~trait, scales = "free") +
+  geom_smooth(method = "lm", se = F)
+```
+
+
+```{r, fig.height= 5, fig.width=8}
+md_df <-  mass_area_df %>% 
+  filter(#week<17,
+    time == "md", 
+    #!(trait == "lwa_g_cm2")
+    ) 
+
+md_df %>% 
+  ggplot() +
+  geom_point(aes(y = mpa_mean, x = value, 
+             color = as.factor(tree)
+             ))+
+  facet_wrap(~trait, scales = "free") +
+  geom_smooth(aes(y = mpa_mean, x = value,color = as.factor(tree)),
+             method = "lm", se = F)  +
+   geom_smooth(aes(y = mpa_mean, x = value),
+             method = "lm", se = F, color = "black", size = 2) +
+  color_very_many +
+  theme(legend.position="none",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(y = "Middays")
+```
+```{r, fig.height= 5, fig.width=8}
+pd_df <-  mass_area_df %>% 
+  filter(#week<17,
+    time == "md", 
+    #!(trait == "lwa_g_cm2")
+    ) 
+
+pd_df %>% 
+  filter(week > 17) %>% 
+  ggplot() +
+  geom_point(aes(y = mpa_mean, x = value, 
+             color = as.factor(tree)
+             ))+
+  facet_wrap(~trait, scales = "free") +
+  geom_smooth(aes(y = mpa_mean, x = value,color = as.factor(tree)),
+             method = "lm", se = F)  +
+   geom_smooth(aes(y = mpa_mean, x = value),
+             method = "lm", se = F, color = "black", size = 2) +
+  color_very_many +
+  theme(legend.position="none",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(y = "Predawns")
+```
