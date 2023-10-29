@@ -1,5 +1,5 @@
 ---
-title: "Establishing relationships between LWC and MPa"
+title: "Establishing relationships between lwa_g_cm2 and MPa"
 author: "Indra Boving"
 date: "11/8/2022"
 output: html_document
@@ -37,36 +37,14 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 #read in data: 
 ```{r}
-wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
- # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
-  filter(lwc_mean > 0, 
-         lwc_mean < 3)
-
-
-# wc_all_raw2 <- read_csv(here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")), show_col_types = F) %>%   #mutate(lwc_mean = lwc_mean_combined) %>% 
-#  # here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
-#   filter(lwc_mean > 0, 
-#          lwc_mean < 3)
-
-wc_all_lma <- wc_all_raw %>% 
-  filter( #week > 15, 
-         species == "blue oak", 
-         lwc_mean < 10) %>% 
-  group_by(tree, week, time, lwc_mean, site) %>% 
-  mutate(lma = mean(lma_g_cm2, na.rm = T)) 
-  
+wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) %>% 
+  filter(lwa_g_cm2 < 0.02)
 ```
 
 Before leafout: 
 
 ```{r}
-qudo_wc_all <- wc_all_raw %>% 
-  filter( #week > 15, 
-         species == "blue oak", 
-         lwc_mean < 10) %>% 
-  group_by(tree, week, time, lwc_mean, site) %>% 
-  mutate(water_potential = mean(mpa_mean), 
-         lwc = lwc_mean) 
+qudo_wc_all <- wc_all_raw 
 
 qudo_wc_linear <- qudo_wc_all %>% 
   filter(week > 17)
@@ -75,7 +53,7 @@ qudo_wc_linear <- qudo_wc_all %>%
 ```{r}
 full_nice <- qudo_wc_all %>% 
   ggplot(aes(y = water_potential, 
-             x = lwc, 
+             x = lwa_g_cm2, 
              color = week)) +
   geom_point() +
  # geom_smooth(method = "lm", 
@@ -84,7 +62,7 @@ full_nice <- qudo_wc_all %>%
   color_grad +
   #color_many +
   labs(y = "MPa",
-       x = "LWC", 
+       x = "lwa_g_cm2", 
        color = "Week") +
   theme(legend.position = c(0.1, 0.78)) +
   scale_x_reverse()
@@ -96,7 +74,7 @@ Making models of each variable of interest:
 Use al:as or lma to pick inflection point (currently just using week):
 
 Variance decomposition, build 3-4 models:
-LWC ~ null
+lwa_g_cm2 ~ null
 ~time
 ~mpa
 ~mpa + time
@@ -107,8 +85,8 @@ Look at marginal R^2, decompose add them together, overlap should be greater tha
 ```{r}
 m0 <- lmer(water_potential ~ 1 + (1|tree), data = qudo_wc_all)
 m1 <- lmer(water_potential ~ week + (1|tree), data = qudo_wc_all)
-m2 <- lmer(water_potential ~ lwc + (1|tree), data = qudo_wc_all)
-m3 <- lmer(water_potential ~ week + lwc + (1|tree), data = qudo_wc_all)
+m2 <- lmer(water_potential ~ lwa_g_cm2 + (1|tree), data = qudo_wc_all)
+m3 <- lmer(water_potential ~ week + lwa_g_cm2 + (1|tree), data = qudo_wc_all)
 
 #try using r.squaredGLMM:
 mods_list <- list(m0, m1, m2, m3)
@@ -125,23 +103,23 @@ mod_all_df_full <- mod_all_df1_full %>%
   pivot_wider(names_from = mods, 
               values_from = r2m) %>% 
   mutate(
-    #other_effects =  m3 - week_effect - lwc_effect,
+    #other_effects =  m3 - week_effect - lwa_g_cm2_effect,
     week_effect = m3 - m2, #week + mpa mod - mpa mod
-         lwc_effect = m3 - m1, #week + mpa mod - week mod
-         week_lwc_effect = m3, #week + mpa mod 
-    other_effects =  m3 - week_effect - lwc_effect,
+         lwa_g_cm2_effect = m3 - m1, #week + mpa mod - week mod
+         week_lwa_g_cm2_effect = m3, #week + mpa mod 
+    other_effects =  m3 - week_effect - lwa_g_cm2_effect,
          ) #full minus the effects of mpa and week alone
 mod_all_df_full
 
 #for plotting (maybe?)
 mod_all_long_full <- mod_all_df_full %>% 
-  select(week_effect, lwc_effect, week_lwc_effect, other_effects) %>% 
-  pivot_longer(cols = c(week_effect, lwc_effect, week_lwc_effect, other_effects), 
+  select(week_effect, lwa_g_cm2_effect, week_lwa_g_cm2_effect, other_effects) %>% 
+  pivot_longer(cols = c(week_effect, lwa_g_cm2_effect, week_lwa_g_cm2_effect, other_effects), 
     names_to = "effect") %>% 
   distinct() %>% 
   mutate(analysis = case_when(
-    effect %in% c("week_effect", "lwc_effect", "other_effects") ~ "Var. Decomp", 
-    effect %in% c("week_lwc_effect") ~ "Full Mod.", 
+    effect %in% c("week_effect", "lwa_g_cm2_effect", "other_effects") ~ "Var. Decomp", 
+    effect %in% c("week_lwa_g_cm2_effect") ~ "Full Mod.", 
     TRUE ~ as.character(effect)), 
     decomp = "Full Date Range")
 mod_all_long_full
@@ -168,23 +146,18 @@ Once leafout finishes, then things get linear:
 qudo_wc_full <- wc_all_raw %>% 
    filter(#week > 15, 
          species == "blue oak", 
-         lwc_mean < 10) %>% 
-  group_by(tree, week, time, lwc_mean) %>% 
-  mutate(water_potential = mean(mpa_mean), 
-         lwc = lwc_mean) %>% 
+         lwa_g_cm2 < 10) %>% 
+  group_by(tree, week, time, lwa_g_cm2) %>%  
   mutate(section = "full") %>% 
-  select(section, species, week, water_potential, lwc, site)
-
+  select(section, species, week, water_potential, lwa_g_cm2, site)
 
 qudo_wc_linear <- wc_all_raw %>% 
-  filter(week > 18, 
+  filter(week > 17, 
          species == "blue oak", 
-         lwc_mean < 10) %>% 
-  group_by(tree, week, time, lwc_mean) %>% 
-  mutate(water_potential = mean(mpa_mean), 
-         lwc = lwc_mean) %>% 
+         lwa_g_cm2 < 10) %>% 
+  group_by(tree, week, time, lwa_g_cm2) %>% 
   mutate(section = "linear")%>% 
-  select(section, species, week, water_potential, lwc, site)
+  select(section, species, week, water_potential, lwa_g_cm2, site)
 
 qudo_wc_all <- bind_rows(qudo_wc_linear, qudo_wc_full) %>% 
   distinct
@@ -194,14 +167,14 @@ qudo_wc_all <- bind_rows(qudo_wc_linear, qudo_wc_full) %>%
 ```{r}
 nice_all <- qudo_wc_all %>% 
    ggplot(aes(y = water_potential, 
-             x = lwc, 
+             x = lwa_g_cm2, 
              color = week)) +
   geom_point() +
 #  geom_smooth(method = "lm", se = F, color = "black") +
   facet_wrap(~section, scales = "free") +
   color_grad +
   labs(y = "Water Potential", 
-       x = "LWC", 
+       x = "lwa_g_cm2", 
        color = "Week") +
   theme(legend.position = "none") 
 nice_all
@@ -210,7 +183,7 @@ nice_all
 ```{r}
 lin_nice <- qudo_wc_linear %>% 
   ggplot(aes(y = water_potential, 
-             x = lwc, 
+             x = lwa_g_cm2, 
              color = week)) +
   geom_point() +
   geom_smooth(method = "lm", 
@@ -232,78 +205,7 @@ together <- cowplot::plot_grid( full_nice,
 together
 ```
 
-```{r}
-m0 <- lmer(water_potential ~ 1 + (1|tree), data = qudo_wc_linear)
-m1 <- lmer(water_potential ~ week + (1|tree), data = qudo_wc_linear)
-m2 <- lmer(water_potential ~ lwc + (1|tree), data = qudo_wc_linear)
-m3 <- lmer(water_potential ~ week + lwc + (1|tree), data = qudo_wc_linear)
 
-#try using r.squaredGLMM:
-mods_list <- list(m0, m1, m2, m3)
-
-r2 <- lapply(mods_list, r.squaredGLMM)
-r2
-
-r2m <- c(r2[[1]][1], r2[[2]][1], r2[[3]][1], r2[[4]][1]) #vector of r2s
-mods <- c("m0", "m1", "m2", "m3")
-
-mod_all_df1 <-  data.frame(mods, r2m)
-
-mod_all_df <- mod_all_df1 %>% 
-  pivot_wider(names_from = mods, 
-              values_from = r2m) %>% 
-  mutate(
-    #other_effects =  m3 - week_effect - lwc_effect,
-    week_effect = m3 - m2, #week + mpa mod - mpa mod
-         lwc_effect = m3 - m1, #week + mpa mod - week mod
-         week_lwc_effect = m3, #week + mpa mod
-    other_effects =  m3 - week_effect - lwc_effect
-         ) #full minus the effects of mpa and week alone
-
-mod_all_df
-
-#for plotting (maybe?)
-mod_all_long <- mod_all_df %>% 
-  select(week_effect, lwc_effect, week_lwc_effect, other_effects) %>% 
-  pivot_longer(cols = c(week_effect, lwc_effect, week_lwc_effect, other_effects), 
-    names_to = "effect") %>% 
-  distinct() %>% 
-  mutate(analysis = case_when(
-    effect %in% c("week_effect", "lwc_effect", "other_effects") ~ "Var. Decomp", 
-    effect %in% c("week_lwc_effect") ~ "Full Mod.", 
-    TRUE ~ as.character(effect)), 
-    decomp = "After Leafout")
-mod_all_long
-
-mod_all_long %>% 
-  ggplot(aes(x = analysis, 
-             y = value, 
-         fill = effect)) +
-  geom_col(stat = "identity") +
- # geom_text(aes(label = value)) +
-  color_many +
-  labs(y = "R squared", 
-       x = "Predictor") +
-  color_fill
-```
-
-```{r}
-mod_both_df_long <- bind_rows(mod_all_long_full, mod_all_long) %>% 
-  filter(!effect %in% c("week_lwc_effect"))
-
-mod_both_df_long %>% 
-  ggplot(aes(x = decomp, 
-             y = value, 
-         fill = effect)) +
-  geom_col(stat = "identity") +
- # geom_text(aes(label = value)) +
-  color_many +
-  labs(y = "R squared", 
-       x = "Data", 
-       fill = "Effect") +
-  scale_fill_manual(labels = c("LWC", "LWC & Week", "Week"), 
-                    values = met.brewer("Cross", direction = -1))
-```
 
 #LEEs example: (use this)
 
@@ -311,9 +213,9 @@ mod_both_df_long %>%
 ```{r}
 #alternative method with random effects
 
-mvar <- lmer(water_potential ~ lwc + (1|site/tree) + (1|week), data=qudo_wc_full)
+mvar <- lmer(water_potential ~ lwa_g_cm2 + (1|site/tree) + (1|week), data=qudo_wc_full)
 
-r2m <- r.squaredGLMM(mvar)[1] # plust the marginal R2 of lwc
+r2m <- r.squaredGLMM(mvar)[1] # plust the marginal R2 of lwa_g_cm2
 #r2m 
 
 var(qudo_wc_full$water_potential, na.rm=T) # 1.18
@@ -333,9 +235,9 @@ sum(wc_all_vest_df$vcov)
 ```{r}
 #alternative method with random effects
 
-mvar_lin <- lmer(water_potential ~ lwc + (1|site/tree) + (1|week), data=qudo_wc_linear)
+mvar_lin <- lmer(water_potential ~ lwa_g_cm2 + (1|site/tree) + (1|week), data=qudo_wc_linear)
 
-r2m <- r.squaredGLMM(mvar_lin)[1] # plust the marginal R2 of lwc
+r2m <- r.squaredGLMM(mvar_lin)[1] # plust the marginal R2 of lwa_g_cm2
  
 r2m #0.107
 
@@ -359,7 +261,7 @@ wc_linear_vest_df <- vest_lin %>%
 color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
                                                "Site" = "#252525",
                                                 "Tree" =  "#525252",
-                                               "LWC" = "#C969A1" ,
+                                               "LWA (g/cm2)" = "#C969A1" ,
                                                 "Week" = "#62929a"))
 
 #greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))
@@ -371,7 +273,7 @@ vdc2 <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>%
   ungroup() %>% 
   mutate(percent_var = vcov/total) %>% 
   mutate(grp_new = case_when(
-    grp %in% c("marginal_r2") ~ "LWC", 
+    grp %in% c("marginal_r2") ~ "LWA (g/cm2)", 
     grp %in% c("Residual") ~ "Residuals",
     grp %in% c("site") ~ "Site",
       grp %in% c("tree:site") ~ "Tree", 
@@ -404,14 +306,13 @@ vdc2_plot <- vdc2 %>% ggplot(aes(x = dataset,
   
 vdc2_plot
 
-ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5, height = 7, dpi = 300)
+ggsave(here("figures", "vdc2_plot"), vdc2_plot, device = "jpg", width = 5.5, height = 7, dpi = 300)
 ```
 
 #****LMA over time: 
 
 ```{r}
-lma_plot <- wc_all_lma  %>% 
-  filter(lma_g_cm2 < .025) %>% 
+lma_plot <- wc_all_raw %>% 
   group_by(week, species) %>% 
   mutate(mean_lma = mean(lma_g_cm2, na.rm = T)) %>% 
   ggplot(aes(y = mean_lma, x = week )) +

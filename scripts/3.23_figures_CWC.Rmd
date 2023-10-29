@@ -1,0 +1,491 @@
+
+```{r}
+library(cowplot)
+library(grid)
+library(gridExtra)
+```
+
+#Data: 
+
+```{r}
+final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_cwc.csv"))
+```
+
+#Scatterplots:
+
+
+#####Space
+
+```{r}
+#scaled
+space_nice_1 <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  ggplot(aes(y = water_potential, 
+            x = cwc,
+             color = as.factor(week)
+             )) +
+  geom_point(alpha = .5, 
+            # aes (shape = site)
+             ) +
+  theme(legend.position="none",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F,size = .5) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(#y= "Middays (MPa)", 
+       y = " ",
+       x = "Leaf Water/Area", 
+       color = "Week", 
+       shape = "Site") +
+  #color_many_2 +
+  color_week_assigned +
+  guides(color = guide_legend(nrow = 2)) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1))+
+  ylim(-4,-1)
+space_nice_1
+
+
+```
+#####Time:
+
+```{r}
+time_1 <- wc_qudo_df %>% 
+  mutate(time = case_when(
+    time == "md" ~ "Midday", 
+    time == "pd" ~ "Predawn"
+  )) %>% 
+  filter(time == "Midday") %>% 
+  drop_na(week) %>% 
+ # filter(time == "md") %>% 
+  ggplot(aes(y = water_potential, 
+             x = cwc, 
+             color = time_season, 
+             size = week,
+             shape = as.factor(tree),
+             show.legend = FALSE)) +
+  geom_point(size = 1,
+             alpha = .1)+
+  geom_smooth(method = "lm", se = F, size = .5, alpha = .4) +
+ # theme(legend.position = "none") +
+  labs(x = "cwc", 
+       y = "Midday MPa") +
+  #color_two_grey +
+  theme(
+      legend.position="none",
+      strip.background = element_blank(),
+     # strip.text.x = element_text(size = 12),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      #axis.title = element_text(size = 15),
+     axis.title = element_blank(),
+     axis.text = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+     legend.key=element_blank(),
+     legend.text = element_text(size = 13),
+     legend.title = element_text(size = 16),
+     #legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(#y= "Water Potential (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Water/Area (g)", 
+       color = "Week", 
+       ) +
+  guides(color = guide_legend(nrow = 2)) +
+  color_two_grey +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
+  ylim(-4,-1)
+
+time_1 
+```
+
+####COMBINE:
+
+######Legend:
+
+```{r}
+legend_plot <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(time = case_when(
+    time %in% c("md") ~ "Midday",
+    time %in% c("pd") ~ "Predawn"
+  )) %>% 
+  ggplot(aes(y = water_potential,
+             x = cwc,
+             color = as.factor(week), 
+             #shape = as.factor(time),
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Week") +
+  color_week_assigned +
+ # ylim(0,2) +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+
+
+stacked_nice <- cowplot::plot_grid(space_nice_1, time_1, 
+                                   nrow = 2, rel_heights = c(2, 2)) 
+
+stacked_nice
+
+final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
+final
+
+ggsave(here("figures", "nice_all_cwc"), final, device = "jpg", width = 6, height = 10, dpi = 300)
+```
+
+#Slopes: 
+
+####Space
+
+Boostratpped: 
+
+```{r}
+space_slope <-  final_df_all %>% 
+   filter(!week %in% c(9)) %>% 
+  filter(analysis == "space") %>% 
+ # mutate(week = as.numeric(week)) %>% 
+   ggplot(aes(color= as.factor(week))
+    ) + 
+  geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
+    geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
+  geom_point(aes(y = lwr, x = as.factor(week)), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = as.factor(week), 
+                   xend = as.factor(week), 
+                   color = as.factor(week)))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = " ") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 15),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+  #                   ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  color_week_assigned+
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+ # scale_x_reverse()
+space_slope
+
+```
+
+
+SE: 
+
+```{r, eval = F}
+space_slope <- ran_df_week_4 %>% 
+  mutate(week = as.numeric(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "cwc") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = " ") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 15),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+                     ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  color_grad_new +
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2)) 
+space_slope
+```
+####Time
+
+BS:
+
+```{r}
+time_summary <- final_df_all %>% 
+   filter(!week %in% c(9)) %>% 
+  filter(analysis == "time, ind. tree") %>% 
+   mutate(week = as.factor(week), 
+          time_season = case_when(
+            time_season %in% c("before leafout") ~ "Before Leafout", 
+             time_season %in% c("after leafout") ~ "After Leafout", 
+            
+          )) %>% 
+ggplot(aes(color = time_season)) + 
+  geom_point(aes(y = slope, x = time_season), size =3) +
+  geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+  labs(y = "",
+       x = "Time") +
+  color_two_grey +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 15),
+      #axis.title.x = element_text(size = 13),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    )
+  
+time_summary
+```
+
+SD
+
+```{r, eval = FALSE}
+#Time
+ran_df_tree_before_vs_after <- bind_rows(bef_ran_df_tree_before, lin_ran_df_tree_after)
+
+ef <- ran_df_tree_before_vs_after %>% 
+  group_by(time_season) %>% 
+  mutate(sd = sd(slope),
+         slope = mean(slope), 
+         mean_se = mean(std.error.slope),
+        mean_std.error = mean(std.error),
+        upr_sd = slope + mean_std.error,
+        lwr_sd = slope - mean_std.error,
+         upr = slope + mean_se,
+         lwr = slope - mean_se,
+         time_season = as.factor(time_season)) 
+
+time_summary <- ef %>% 
+ggplot(aes(color = time_season)) + 
+  geom_point(aes(y = slope, x = time_season), size =2) +
+    geom_point(aes(y = upr, x = time_season), size = 1) +
+  geom_point(aes(y = lwr, x = time_season), size = 1) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = time_season, 
+                   xend = time_season)) +
+
+  labs(
+   y = "",
+       x = "Time") +
+  color_two_grey +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 15),
+      #axis.title.x = element_text(size = 13),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+    scale_x_discrete(limits=rev)
+  
+time_summary
+```
+
+
+```{r}
+stacked_slopes_nice <- cowplot::plot_grid(space_slope, time_summary, 
+                                   nrow = 3, 
+                                   rel_heights = c(.9, .7),
+                                   rel_widths = c(1, 1)) 
+
+#stacked_slopes_nice
+
+final_slopes<- cowplot::plot_grid(legend_scatterplots, stacked_slopes_nice, 
+                                  nrow = 2, 
+                                  rel_heights  = c(.25, 4))
+#final_slopes
+
+combined <- cowplot::plot_grid(stacked_nice, stacked_slopes_nice, 
+                               ncol = 2, 
+                               rel_widths = c(1, 1))
+#combined
+
+combined_legend <- cowplot::plot_grid(legend_scatterplots, combined, 
+                                      nrow = 2, 
+                                      rel_heights = c(.25, 4))
+combined_legend
+
+ggsave(here("figures", "combined_legend_cwc"), combined_legend, device = "jpg", width = 13, height = 10, dpi = 300)
+```
+
+
+```{r}
+y.grob1 <- textGrob("Slope", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15), rot=90)
+
+x.grob1 <- textGrob("Time", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15))
+
+
+combined_slopes_wide <- cowplot::plot_grid(space_slope, 
+                                           time_summary, 
+                                   nrow = 1, 
+                                   rel_heights = c(.15, 1), 
+                                   rel_widths = c(1, 1)
+                                   ) 
+
+#combined_slopes_wide
+
+combined_slopes_wide_labels <- grid.arrange(arrangeGrob(
+  combined_slopes_wide, 
+  left = y.grob1, 
+  bottom = x.grob1))
+
+y.grob2 <- textGrob("Water Potential (MPa)", 
+                   gp=gpar(fontface="bold", #col="blue", 
+                           fontsize=15), rot=90)
+
+x.grob2 <- textGrob("Canopy Water Content (g/cm2)", 
+                   gp=gpar(fontface="bold", #col="blue",
+                           fontsize=15))
+
+
+combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, 
+                                                   time_1,
+                                   nrow = 1, 
+                                   rel_heights = c(.15, 1), 
+                                   rel_widths = c(1, 1)
+                                   ) 
+#combined_plots_wide_nolegend
+
+combined_plots_wide <- cowplot::plot_grid(legend_scatterplots,
+                                          combined_plots_wide_nolegend,
+                                          nrow = 2, 
+                                          rel_heights = c(.25, 1))
+
+combined_plots_wide_labels <- grid.arrange(arrangeGrob(
+  combined_plots_wide, 
+  left = y.grob2, 
+  bottom = x.grob2))
+combined_plots_wide_labels
+```
+
+
+```{r}
+library(patchwork)
+
+combined_scatter_wide_patch <- 
+  space_nice_1 + 
+  time_1 +
+  plot_layout(ncol = 2, 
+              heights = c(1, 1), 
+              widths = c(1, 1))
+
+combined_scatter_wide_patch <- as_grob(combined_scatter_wide_patch)
+
+combined_slopes_wide_patch <- 
+  space_slope + 
+  plot_spacer() +
+  time_summary +
+  plot_layout(ncol = 3, 
+              heights = c(1, 1),
+              widths = c(1, -.1, 1),
+              guides = "collect")
+combined_slopes_wide_patch
+
+combined_slopes_wide_patch <- as_grob(combined_slopes_wide_patch)
+
+plot_legend.sz.mem <- cowplot::plot_grid(legend_scatterplots,
+                                         combined_scatter_wide_patch,
+                                         combined_slopes_wide_patch, 
+                                         ncol = 1, 
+                                         rel_heights = c(.7,1, 1))
+plot_legend.sz.mem
+
+plot.sz.mem <- as_grob(plot_legend.sz.mem)
+
+combined_plots_all <- cowplot::plot_grid(combined_plots_wide_labels,
+                                         combined_slopes_wide_labels, 
+                                         nrow = 2)
+#combined_plots_all
+
+ggsave(here("figures", "combined_plots_all_cwc"), combined_plots_all, device = "jpg", width = 8, height = 5, dpi = 300)
+```
+
+

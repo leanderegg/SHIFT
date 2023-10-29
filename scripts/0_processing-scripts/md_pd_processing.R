@@ -809,4 +809,73 @@ dlookr::diagnose(wp_ad)
 unique(wp_ad$tag)
 unique(wp_ad$tree)
 
+####### Phenology ######
+
+pheno_218 <- wpwc218 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_228 <- wpwc228 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_315 <- wpwc315 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_325 <- wpwc325 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_46 <- wpwc46 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_413 <- wpwc413 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_425 <- wpwc425 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_504 <- wpwc504 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_525 <- wpwc525 %>%
+  as.data.frame() %>% 
+  filter(!is.na(tag)) %>% 
+  select(tag, date, new_leaves_0_10) %>% 
+  clean_names() %>% 
+  mutate(new_pheno = new_leaves_0_10)
+
+pheno_alldates <- rbind(pheno_218, pheno_228, pheno_315, pheno_325, pheno_413, pheno_46, pheno_425, pheno_504, pheno_525) %>% 
+  mutate(tree = as.numeric(tag)) 
+
+write.csv(pheno_alldates, here("processed-data", paste0("phenology",datver,".csv")))
 

@@ -33,116 +33,124 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 #datver <- "01052023"
 dataversion <- paste0("Data_", datver)
 ```
-
+#Data
 ```{r, echo=F}
-#wc_all_raw <- read_csv(here("processed-data", paste0("lwa_g_cm2_LFM_WP_dates",datver,".csv")), show_col_types = FALSE) %>% 
-wc_all_raw <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(species == "blue oak") 
 
-wc_qudo_df0 <- wc_all_raw %>% 
-   filter(#week > 15, 
-        # lwa_g_cm2_mean < 5, 
-         #lwa_g_cm2_mean > 0
-         ) %>% 
-  filter(!(week == 29 & lwc_mean > 1))  %>% 
-  mutate(week = case_when(
-    week %in% c(13) ~ 14,
-    week %in% c(11) ~ 10,
-    TRUE ~ week
-  )) %>%
-  mutate(tree = as.character(tree))  %>% 
-  group_by(tree, week, time) %>% #combine years
-  mutate(water_potential = mean(mpa_mean, na.rm = T), 
-         ldmc_mean = mean(ldmc, na.rm = T),
-         lma_g_cm2= mean(lma_g_cm2, na.rm = T),
-         mpa_mean = mean(mpa_mean, na.rm = T), 
-         tree_factor = as.factor(tree), 
-         lwc_mean = mean(lwc_mean),
-         alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T), 
-         lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T)) %>% 
-  ungroup() %>% 
-  select(week, time, lwa_g_cm2 , lwc_mean, mpa_mean, lma_g_cm2, alas_cm2_per_mm2, date_wp, tree, tree_factor, plot, site, species) %>% 
-  dplyr::distinct() %>% 
-  filter(!week == 9)%>% 
-  group_by(tree, week) %>% 
-  fill(alas_cm2_per_mm2,date_wp, .direction = "downup") %>% 
-  ungroup() %>% 
-  distinct() %>% 
-  drop_na(time)
+# traits_df <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = FALSE) %>%
+#   select(-'...1')
+
+
+traits_df <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = FALSE) %>%
+  select(-'...1')
+```
+
+#Modeling: 
+
+```{r}
+all_mods <- bind_rows(read_csv(here::here("processed-data", "cwc_mods.csv")),
+                  read_csv(here::here("processed-data", "lwc_mods.csv")),
+                  read_csv(here::here("processed-data", "lwa_mods.csv"))) %>% 
+   group_by(var, mod) %>% 
+   fill(c(9:20), .direction = "downup")
+
+space_stats <- all_mods %>% 
+  filter(mod == "space", 
+         effect == "fixed", 
+         !(term == "(Intercept)")) %>% 
+  select(var, df, AIC, R2m, R2c) %>% 
+  distinct()
+
+time_stats <- all_mods %>% 
+  filter(mod == "time", 
+         effect == "fixed", 
+         !(term == "(Intercept)")) %>% 
+  select(var, df, AIC, R2m, R2c) %>% 
+  distinct()
+
+hyd_stats <- all_mods %>% 
+  filter(mod == "hyd", 
+         effect == "fixed", 
+         !(term == "(Intercept)")) %>% 
+  select(var, df, AIC, R2m, R2c) %>% 
+  distinct()
+view(hyd_stats)
+
+all_stats <- bind_rows(space_stats, 
+                       time_stats, 
+                       hyd_stats) %>% 
+  write_csv(here::here("processed-data", 
+                       "model_stats.csv"))
+
+all_stats
+
 ```
 
 
+
+
+#Does early predict late? 
+
 ```{r, echo=F}
-early_pd <- wc_qudo_df0 %>%
+early_pd <- traits_df %>%
   group_by(tree) %>%
   filter(week == min(week), 
          time == "pd") %>%
-  select(tree, early_week_mpa = mpa_mean) %>%
-  ungroup() %>% 
-  mutate(tree = as.character(tree))
+  select(tree, early_week_mpa = water_potential) %>%
+  ungroup()
 
-late_alas <- wc_qudo_df0 %>%
+late_alas <- traits_df %>%
   group_by(tree) %>%
   filter(week == max(week)) %>%
   select(tree, last_week_alas = alas_cm2_per_mm2) %>%
   ungroup() %>% 
-  mutate(tree = as.character(tree)) %>% 
   distinct()
 
-late_alas_means <- wc_qudo_df0 %>%
+late_alas_means <- traits_df %>%
   group_by(tree) %>%
   filter(week %in% c(33, 37)) %>%
   mutate(last_week_alas = mean(alas_cm2_per_mm2, na.rm = T)) %>% 
   select(tree, last_week_alas) %>%
   ungroup() %>% 
-  mutate(tree = as.character(tree)) %>% 
   distinct()
 
 results0 <- left_join(early_pd, late_alas, by = "tree")
 
-late_lma <- wc_qudo_df0 %>%
+late_lma <- traits_df %>%
   group_by(tree) %>%
   filter(week == max(week)) %>%
   mutate(last_week_lma = mean(lma_g_cm2, na.rm = T)) %>% 
   select(tree, last_week_lma) %>%
   ungroup() %>% 
-  mutate(tree = as.character(tree)) %>% 
   distinct()
 
 results1 <- left_join(results0, late_lma, by = "tree")
 
-late_lwc <- wc_qudo_df0 %>%
+late_lwc <- traits_df %>%
   group_by(tree) %>%
   filter(week == max(week)) %>%
   select(tree, last_week_lwc = lwc_mean) %>%
   ungroup() %>% 
-  mutate(tree = as.character(tree)) %>% 
   distinct()
 
-late_lwc <- wc_qudo_df0 %>%
+late_lwc <- traits_df %>%
   group_by(tree) %>%
   filter(week == max(week)) %>%
   mutate(last_week_lwc = mean(lwc_mean, na.rm = T)) %>% 
   select(tree, last_week_lwc) %>%
   ungroup() %>% 
-  mutate(tree = as.character(tree)) %>% 
   distinct()
 
 results2 <- left_join(results1, late_lwc, by = "tree")
 
 # Join the result back to the original data frame
-wc_qudo_df <- left_join(wc_qudo_df0, results2, by = "tree") %>% 
+wc_qudo_df <- left_join(traits_df, results2, by = "tree") %>% 
   group_by(tree, week) %>% 
   fill(alas_cm2_per_mm2, lwa_g_cm2, last_week_lwc, last_week_lma, last_week_alas, 
        .direction = "downup") %>% 
   ungroup() %>% 
-  select(-tree_factor) %>% 
   dplyr::distinct() %>% 
   drop_na(time)
-```
 
-
-```{r}
 wc_qudo_df %>% 
   #filter(time == "pd") %>% 
   ggplot(aes(y = early_week_mpa, 
@@ -179,7 +187,7 @@ lwc_df %>%
 ```{r}
 wc_qudo_df %>% 
   filter(time == "pd") %>% 
-  ggplot(aes(y = mpa_mean, 
+  ggplot(aes(y = water_potential, 
              x = lwc_mean, 
              color = site)) +
   geom_jitter()
@@ -188,19 +196,30 @@ wc_qudo_df %>%
 
 ```{r, fig.height= 5, fig.width=8}
 mass_area_df <- wc_qudo_df %>% 
-  select(week, tree, time, lwa_g_cm2, lwc_mean, mpa_mean, lma_g_cm2, alas_cm2_per_mm2) %>% 
+  select(week, tree, time, lwa_g_cm2, lwc_mean, water_potential, lma_g_cm2, alas_cm2_per_mm2, cwc) %>% 
   filter(lma_g_cm2 < .025, 
          lwa_g_cm2 < 0.04,
          ) %>% 
   distinct() %>% 
-  pivot_longer(cols = c(lwc_mean, lma_g_cm2, lwa_g_cm2, alas_cm2_per_mm2), 
+  pivot_longer(cols = c(lwc_mean, lma_g_cm2, lwa_g_cm2, alas_cm2_per_mm2, cwc), 
                names_to = "trait", 
-               values_to = "value")
+               values_to = "value") %>% 
+  mutate(trait_nice = case_when(
+    trait %in% c("lwc_mean") ~ "LWC (g)",
+    trait %in% c("lma_g_cm2") ~ "LMA (g/cm2)",
+    trait %in% c("lwa_g_cm2") ~ "LWA (g/cm2)",
+    trait %in% c("alas_cm2_per_mm2") ~ "Al:As (cm2/mm2)",
+     trait %in% c("cwc") ~ "CWC (g/cm2)"
+  )) %>% 
+  mutate(time_season = case_when(
+    week <= 17 ~ "Before Leafout",
+             week > 17 ~ "After Leafout"
+           ))
 
 
 mass_area_df %>% 
   filter(time == "pd") %>% 
-  ggplot(aes(y = mpa_mean, x = value, color = as.factor(week))) +
+  ggplot(aes(y = water_potential, x = value, color = as.factor(week))) +
   geom_point()+
   facet_wrap(~trait, scales = "free") +
   geom_smooth(method = "lm", se = F)
@@ -208,29 +227,127 @@ mass_area_df %>%
 mass_area_df %>% 
   filter(time == "md", 
          !(trait == "lwa_g_cm2")) %>% 
-  ggplot(aes(y = mpa_mean, x = value, color = as.factor(week))) +
+  ggplot(aes(y = water_potential, x = value, color = as.factor(week))) +
   geom_point()+
-  facet_wrap(~trait, scales = "free") +
+  facet_wrap(~trait_nice, scales = "free") +
   geom_smooth(method = "lm", se = F)
 ```
+#Middays
 
+```{r, fig.height= 12, fig.width=8, warning = F}
+md_df <-  mass_area_df %>% 
+  filter(time == "md")
+```
+
+```{r, fig.height= 12, fig.width=8, warning = F}
+lm_eqn <- function(df, x, y){
+    m <- lm(y ~ x, df);
+    eq <- substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+         list(a = format(unname(coef(m)[1]), digits = 2),
+              b = format(unname(coef(m)[2]), digits = 2),
+             r2 = format(summary(m)$r.squared, digits = 3)))
+    as.character(as.expression(eq));
+}
+
+lm_eqn(md_df, md_df$value, md_df$water_potential)
+
+md_df %>% 
+  filter(!(trait == "alas_cm2_per_mm2")) %>% 
+  ggplot() +
+  geom_point(
+    aes(y = water_potential, 
+             x = value, 
+             #shape = as.factor(tree),
+             color = time_season
+             )
+    )+
+  facet_wrap(~trait_nice, 
+             #scales = "free",
+             scales = "free_x",
+             ncol = 2) +
+  geom_smooth(aes(y = water_potential, 
+                  x = value,
+                 # color = as.factor(tree)),
+              color = time_season),
+              method = "lm", se = F)  +
+   geom_smooth(aes(y = water_potential, 
+                   x = value),
+               method = "lm", se = F, 
+               color = "black", size = 2) +
+  #color_very_many +
+ # geom_text(x = 7, y = -1, label = lm_eqn(md_df, md_df$value, md_df$water_potential), parse = TRUE) +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(y = "Midday Water Potential (MPa)")
+```
+```{r, fig.height= 5, fig.width=8}
+pd_df <-  mass_area_df %>% 
+  filter(time == "pd",
+         week<17) 
+
+pd_df %>% 
+  ggplot(aes(y = water_potential, x = value, 
+             color = as.factor(tree)
+             )) +
+  geom_point(
+    # aes(y = water_potential, x = value, 
+    #          color = as.factor(tree)
+    #          )
+    )+
+  facet_wrap(~trait_nice, scales = "free") +
+  geom_smooth(aes(y = water_potential, x = value,color =    as.factor(tree)),method = "lm", se = F)  +
+   geom_smooth(aes(y = water_potential, x = value),method = "lm", se = F, color = "black", size = 2) +
+  color_very_many +
+ # geom_text(x = 7, y = -1, label = lm_eqn(md_df, md_df$value, md_df$water_potential), parse = TRUE) +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  labs(y = "Predawn Water Potential (MPa)")
+```
 
 ```{r, fig.height= 5, fig.width=8}
 md_df <-  mass_area_df %>% 
   filter(#week<17,
-    time == "md", 
-    #!(trait == "lwa_g_cm2")
+    time == "md"
     ) 
+
+#install.packages("ggpmisc")
+library(ggpmisc)
 
 md_df %>% 
   ggplot() +
-  geom_point(aes(y = mpa_mean, x = value, 
+  geom_point(aes(y = water_potential, x = value), 
              color = as.factor(tree)
-             ))+
+             )+
   facet_wrap(~trait, scales = "free") +
-  geom_smooth(aes(y = mpa_mean, x = value,color = as.factor(tree)),
+  stat_poly_line(formula = x ~ y) +
+  stat_poly_eq() +
+  geom_smooth(aes(y = water_potential, x = value,color = as.factor(tree)),
              method = "lm", se = F)  +
-   geom_smooth(aes(y = mpa_mean, x = value),
+   geom_smooth(aes(y = water_potential, x = value),
              method = "lm", se = F, color = "black", size = 2) +
   color_very_many +
   theme(legend.position="none",
@@ -252,23 +369,25 @@ md_df %>%
     ) +
   labs(y = "Middays")
 ```
+
+
 ```{r, fig.height= 5, fig.width=8}
 pd_df <-  mass_area_df %>% 
   filter(#week<17,
-    time == "md", 
+    time == "pd", 
     #!(trait == "lwa_g_cm2")
     ) 
 
 pd_df %>% 
   filter(week > 17) %>% 
   ggplot() +
-  geom_point(aes(y = mpa_mean, x = value, 
+  geom_point(aes(y = water_potential, x = value, 
              color = as.factor(tree)
              ))+
   facet_wrap(~trait, scales = "free") +
-  geom_smooth(aes(y = mpa_mean, x = value,color = as.factor(tree)),
+  geom_smooth(aes(y = water_potential, x = value,color = as.factor(tree)),
              method = "lm", se = F)  +
-   geom_smooth(aes(y = mpa_mean, x = value),
+   geom_smooth(aes(y = water_potential, x = value),
              method = "lm", se = F, color = "black", size = 2) +
   color_very_many +
   theme(legend.position="none",
