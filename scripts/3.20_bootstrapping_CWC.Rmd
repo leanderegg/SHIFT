@@ -107,7 +107,8 @@ Pull 40 trees, get mean slope for those 40, do 1000x.
 ###Before leafout: 
 ```{r}
 data <- filtered_data  %>% 
-  filter(time_season == "before leafout") %>% 
+  filter(time_season == "before leafout", 
+         !(week == 9)) %>% 
   distinct() %>% 
   drop_na(water_potential, cwc) %>% 
   filter(!tree %in% c(2012, 2011)) %>% 

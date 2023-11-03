@@ -339,12 +339,12 @@ library(ggpmisc)
 
 md_df %>% 
   ggplot() +
-  geom_point(aes(y = water_potential, x = value), 
-             color = as.factor(tree)
+  geom_point(aes(y = water_potential, x = value,color = as.factor(tree)), 
+             
              )+
   facet_wrap(~trait, scales = "free") +
-  stat_poly_line(formula = x ~ y) +
-  stat_poly_eq() +
+  #stat_poly_line(formula = x ~ y) +
+ # stat_poly_eq() +
   geom_smooth(aes(y = water_potential, x = value,color = as.factor(tree)),
              method = "lm", se = F)  +
    geom_smooth(aes(y = water_potential, x = value),
@@ -409,3 +409,126 @@ pd_df %>%
     ) +
   labs(y = "Predawns")
 ```
+
+#Hydroscape for funsies
+
+```{r}
+long_mpa <- traits_df %>% 
+  filter(!(week %in% c(17, 19))) %>% 
+  pivot_wider(names_from = time, 
+              values_from = water_potential) %>% 
+  select(tree, week, time_season, md, pd) %>% 
+  group_by(tree, week) %>% 
+  fill(c(md, pd), .direction = "downup") %>% 
+  distinct() 
+
+m1 <- lm(md ~ pd + time_season, data = long_mpa)
+summary(m1)
+
+lm_eqn <- function(df){
+    m <- lm(pd ~ md, df);
+    eq <- substitute(italic(md) == a + b %.% italic(pd)*","~~italic(r)^2~"="~r2, 
+         list(a = format(unname(coef(m)[1]), digits = 2),
+              b = format(unname(coef(m)[2]), digits = 2),
+             r2 = format(summary(m)$r.squared, digits = 3)))
+    as.character(as.expression(eq));
+}
+
+
+long_mpa %>% 
+  ggplot(aes(y = md, x = pd)) +
+  geom_point(aes(color = as.factor(week))) +
+  geom_abline() +
+  ylim(-5, 0) +
+  xlim(-5, 0) +
+  geom_smooth(method = "lm", se = F, color = "black") +
+  color_week_assigned +
+  labs(y = "Midday (MPa)", 
+       x = "Predawn (MPa", 
+       color = "Week") +
+  guides(color = guide_legend(ncol = 2)) +
+  geom_text(x = -3.5, y = -.75, 
+            label = lm_eqn(long_mpa), 
+            parse = TRUE, 
+            size = 3)
+  
+#Differences Predawn - Midday, before vs. after leafout
+
+diff_mpa_means <- long_mpa %>% 
+  group_by(time_season) %>% 
+  mutate(diff_mpa = (mean(pd, na.rm = T) - mean(md, na.rm = T))) %>%
+  select(time_season, diff_mpa) %>% 
+  distinct()
+
+diff_mpa_means
+  
+
+diff_mpa <- long_mpa %>% 
+  mutate(diff_mpa = pd - md) %>%
+  select(time_season, diff_mpa) %>% 
+  distinct()
+
+diff_mpa
+
+print(summary(lm(diff_mpa~ time_season, data = diff_mpa)))
+```
+
+```{r}
+long_lwc <- traits_df %>% 
+  filter(!(week %in% c(17, 19))) %>% 
+  pivot_wider(names_from = time, 
+              values_from = lwc_mean) %>% 
+  select(tree, week, time_season, md, pd) %>% 
+  group_by(tree, week) %>% 
+  fill(c(md, pd), .direction = "downup") %>% 
+  distinct() 
+
+m1 <- lm(md ~ pd + time_season, data = long_lwc)
+summary(m1)
+
+lm_eqn <- function(df){
+    m <- lm(pd ~ md, df);
+    eq <- substitute(italic(md) == a + b %.% italic(pd)*","~~italic(r)^2~"="~r2, 
+         list(a = format(unname(coef(m)[1]), digits = 2),
+              b = format(unname(coef(m)[2]), digits = 2),
+             r2 = format(summary(m)$r.squared, digits = 3)))
+    as.character(as.expression(eq));
+}
+
+
+long_lwc %>% 
+  ggplot(aes(y = md, x = pd)) +
+  geom_point(aes(color = as.factor(week))) +
+  geom_abline() +
+ # ylim(-5, 0) +
+ # xlim(-5, 0) +
+  geom_smooth(method = "lm", se = F, color = "black") +
+  color_week_assigned +
+  labs(y = "Midday LWC (g)", 
+       x = "Predawn LWC (g)", 
+       color = "Week") +
+  guides(color = guide_legend(ncol = 2)) +
+  geom_text(x = 1.0, y = 2, 
+            label = lm_eqn(long_lwc), 
+            parse = TRUE, 
+            size = 3)
+  
+#Differences Predawn - Midday, before vs. after leafout
+
+diff_lwc_means <- long_lwc %>%
+  group_by(time_season) %>%
+  mutate(diff_lwc = (mean(pd, na.rm = T) - mean(md, na.rm = T))) %>%
+  select(time_season, diff_lwc) %>%
+  distinct()
+diff_lwc_means
+
+diff_lwc <- long_lwc %>% 
+  mutate(diff_lwc = pd - md) %>%
+  select(time_season, diff_lwc) %>% 
+  distinct()
+
+diff_lwc
+
+summary(lm(diff_lwc ~ time_season, data = diff_lwc))
+```
+

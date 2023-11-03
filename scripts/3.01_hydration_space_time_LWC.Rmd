@@ -61,7 +61,7 @@ wc_all_raw %>%
 
 wc_all_raw %>% 
   filter(species == "blue oak") %>% 
-  filter(lma_g_cm2 < 0.05) %>% 
+  #filter(lma_g_cm2 < 0.05) %>% 
   ggplot(aes(y = water_potential, 
              x = date_wp, 
              color = as.factor(week)
@@ -629,7 +629,7 @@ ggsave(here("figures", "nice_hydration_slopes_bs_inds"), hyd_slopes_bs_inds, dev
 ```{r, warning = F}
 wc_wk_centered_df <- wk_all_long %>% 
   filter(!week %in% c(9)) %>% 
-  filter(lwc_mean > .44) %>% 
+  #filter(lwc_mean > .44) %>% 
   mutate(water_potential = water_potential) %>% 
   filter(time == "md") %>% 
   group_by(week) %>% 

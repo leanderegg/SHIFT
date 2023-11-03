@@ -547,7 +547,7 @@ ggplot(aes(color = time_season)) +
   
 time_summary
 ```
-
+#COMBINE
 
 ```{r}
 stacked_slopes_nice <- cowplot::plot_grid(space_slope, hyd_slopes, time_summary, 

@@ -39,8 +39,7 @@ dataversion <- paste0("Data_", datver)
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(lwa_g_cm2 < 0.025)
+wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = FALSE) 
 
 wc_qudo_df <- wc_all_raw
 
@@ -91,6 +90,356 @@ wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwa_g_cm2) %>%
 Run: here::here("scripts", "3.10_bootstrapping_LWA.Rmd")
 ```{r}
 final_df_all_lwa <- read_csv(here::here("processed-data", "bootstrapped_df_lwa.csv"))
+```
+#HYDRATION
+
+MPa ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (1|wk)
+
+```{r, warning = F}
+wk_all <- wc_qudo_df 
+
+wk_all_wide <- wk_all %>% 
+  drop_na(date_wp) %>% 
+  pivot_wider(names_from=time, 
+              values_from = c(lwa_g_cm2, water_potential)) %>% 
+    dplyr::group_by(tree, week) %>%
+  fill(c(lwa_g_cm2_md, lwa_g_cm2_pd, water_potential_pd, water_potential_md), .direction = "downup") %>%
+  dplyr::ungroup()%>% 
+  select(-date_wp) %>% 
+  distinct()
+
+wk_all_long_lwa_g_cm2 <- wk_all_wide %>% 
+  drop_na(lwa_g_cm2_pd, lwa_g_cm2_md, water_potential_md, water_potential_pd) %>% 
+  select(-water_potential_md, -water_potential_pd) %>% 
+  mutate(pd = lwa_g_cm2_pd, 
+         md = lwa_g_cm2_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "lwa_g_cm2") %>% 
+  select(-lwa_g_cm2_pd, -lwa_g_cm2_md)
+
+wk_all_long_mpa <- wk_all_wide %>% 
+  drop_na(lwa_g_cm2_pd, lwa_g_cm2_md, water_potential_md, water_potential_pd) %>% 
+  select(-lwa_g_cm2_md, -lwa_g_cm2_pd) %>% 
+  mutate(pd = water_potential_pd, 
+         md = water_potential_md) %>% 
+  pivot_longer(cols = c(pd, md), 
+               names_to = "time", 
+               values_to = "water_potential") %>% 
+  select(-water_potential_pd, -water_potential_md)
+
+wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwa_g_cm2) %>% 
+  distinct() %>% 
+ # select(-lwa_g_cm2_NA, -water_potential_NA) %>% 
+  group_by(tree, week, time) %>% 
+  summarise(lwa_g_cm2 = mean(lwa_g_cm2, na.rm = T), 
+            water_potential = mean(water_potential, na.rm = T), 
+            site = site)
+```
+
+#####Layered
+
+```{r, echo=FALSE, fig.height= 5, fig.width= 10}
+wk_figs <- wk_all_long %>% 
+  filter(week %in% c(10, 14, 17, 19, 21, 29, 33, 37), 
+         #lwa_g_cm2 < 6, 
+        # lwa_g_cm2 > 0
+         ) %>% 
+  mutate(week_nice = case_when(
+    week == 10 ~ "Week 10", 
+    week == 14 ~ "Week 14", 
+    week == 17 ~ "Week 17", 
+    week == 19 ~ "Week 19", 
+    week == 21 ~ "Week 21", 
+    week == 29 ~ "Week 29",
+    week == 33 ~ "Week 33",
+    week == 37 ~ "Week 37"
+  )) 
+
+wk_figs_labels <-
+  data.frame(
+    label = c('10', '11', '17', '19', '21', '29', '33', '33'),
+    week_nice = c(
+      "Week 10",
+      "Week 14",
+      "Week 17",
+      "Week 19",
+      "Week 21",
+      "Week 29",
+      "Week 33",
+      "Week 37"
+    )
+  )
+
+df_all_groups <- wk_figs %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential)
+  
+
+df_grey <- df_all_groups
+
+df_1 <- df_all_groups %>% 
+  filter(week %in% c('14'))
+
+df_2 <- df_all_groups %>% 
+  filter(week %in% c('17'))
+
+df_3 <- df_all_groups %>% 
+  filter(week %in% c('21'))
+
+df_4 <- df_all_groups %>% 
+  filter(week %in% c('37'))
+
+nice_hydration_layered <- ggplot() +
+    geom_point(aes(y = water_potential, x = lwa_g_cm2, shape = time), data = df_grey, color = "grey") +
+    geom_line(aes(y = water_potential, x = lwa_g_cm2, group = tree_week), color = "grey", data = df_grey) +
+    geom_point(aes(y = water_potential, x = lwa_g_cm2, shape = time, color = "df_1"), 
+               data = df_1 ) +
+    geom_line(aes(y = water_potential, x = lwa_g_cm2, group = tree_week, color = "df_1"), 
+              data = df_1) +
+    geom_point(aes(y = water_potential, x = lwa_g_cm2, shape = time, color = "df_2"), 
+               data = df_2) +
+    geom_line(aes(y = water_potential, x = lwa_g_cm2, group = tree_week, color = "df_2"), 
+              data = df_2) +
+    # geom_point(aes(y = water_potential, x = lwa_g_cm2, shape = time, color = "df_3"), 
+    #            data = df_3) +
+    # geom_line(aes(y = water_potential, x = lwa_g_cm2, group = tree_week, color = "df_3"), 
+    #           data = df_3) +
+    geom_point(aes(y = water_potential, x = lwa_g_cm2, shape = time, color = "df_4"), 
+               data = df_4) +
+    geom_line(aes(y = water_potential, x = lwa_g_cm2, group = tree_week, color = "df_4"), 
+              data = df_4
+              ) +
+    scale_colour_manual(name = 'Week', 
+         values =c("df_1" ="#528791", 
+                   "df_2"="#8E9D30",
+                  # "df_3"="#EC7E28",
+                   "df_4"="#CC5265"
+                   ), 
+         labels = c('14',
+                    '17',
+                  #  '21',
+                    '33')) +
+    labs(y = "Water Potential (MPa)", 
+       x = "Leaf Water/Area (g/cm2)", 
+       color= "Week", 
+       shape = "Time"
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+  theme(
+    #legend.position = c(.9, .35),
+   # legend.position = "none",
+     legend.position = "right",
+  #strip.background = element_blank(),
+  #strip.text.y = element_blank(), 
+  #strip.text.x = element_text(size = 16), 
+  axis.text.y = element_text(size = 12), 
+  axis.text.x = element_text(size = 12), 
+  #axis.ticks.y = element_blank(), 
+  axis.title.y = element_text(size = 20), 
+  axis.title.x = element_text(size = 20), 
+ # axis.title.x = element_blank(),
+  legend.title = element_text(size = 14), 
+  legend.text = element_text(size = 14), 
+# legend.position = "none"
+  ) +
+   xlim(.5,2) +
+  scale_x_reverse()
+nice_hydration_layered
+  
+ggsave(here("figures", "nice_hydration_layered"), nice_hydration_layered, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+
+Slopes of the formula: 
+
+```{r, warning=T}
+m_wk_rand <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (lwa_g_cm2|week), data = wk_all )
+```
+
+Should we include site? 
+
+```{r, include = F}
+wk_all_sites <- wk_all %>% mutate(site = as.factor(site)) %>% 
+  drop_na(site)
+
+m_wk_rand_nosite <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (lwa_g_cm2|week), data = wk_all_sites, REML = T)
+#m_wk_rand_nosite
+
+m_wk_rand_site <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (lwa_g_cm2|week) + (1|site), data = wk_all_sites, REML = T)
+#m_wk_rand_site
+
+anova(m_wk_rand_nosite, m_wk_rand_site)
+
+summary(m_wk_rand_nosite)
+```
+
+...NO, we do not need to include site. (p > .05)
+
+What is the slope?
+
+```{r, echo=FALSE}
+#get estimates for each week: 
+
+ran_list2 <- coef(m_wk_rand)
+
+hyd_mod_df <- broom::tidy(m_wk_rand)
+
+
+ran_df_hyd  <- as.data.frame(ran_list2[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwa_g_cm2`, 
+         -lwa_g_cm2) %>%
+  select(-`(Intercept)`)
+
+#random error of each week: 
+
+ran_err <- arm::se.ranef(m_wk_rand)
+
+ran_err_df_hyd  <- as.data.frame(ran_err[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwa_g_cm2`)%>% 
+  select(-`(Intercept)`, 
+         -lwa_g_cm2) %>% 
+  tibble::rownames_to_column("week") %>% 
+  mutate(week = as.numeric(week))
+
+#combine error with estimates: 
+
+ran_df_week_hyd  <- bind_cols(ran_df_hyd , ran_err_df_hyd ) %>% 
+  data_frame()
+```
+
+####Slopes, SE
+```{r, echo=FALSE}
+hyd_slopes <- ran_df_week_hyd %>%
+  filter(!week %in% c(9)) %>%
+ # filter(week %in% c(14, 17, 21, 29)) %>%
+ # filter(term == "lwa_g_cm2") %>%
+  mutate(upr = slope + (std.error.slope),
+         lwr = slope - (std.error.slope)) %>%
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(#x = "Week", 
+       color = "week", 
+       y = "Slope") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 16), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+ axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
+  legend.title = element_text(size = 18), 
+ legend.position = "none"
+  ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 18, 19, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) +
+  theme(legend.position = "none") +
+  #xlim(0, 40) +
+  color_grad 
+hyd_slopes
+
+ggsave(here("figures", "nice_hydration_slopes"), hyd_slopes, device = "jpg", width = 5, height = 2.5, dpi = 300)
+```
+
+Random *intercepts* of each week:
+```{r, echo=FALSE}
+hyd_ints <- ran_df_week_hyd %>% 
+  filter(!week %in% c(9)) %>% 
+ # filter(week %in% c(14, 15, 17, 21, 29)) %>% 
+ # filter(term == "lwa_g_cm2") %>% 
+  mutate(upr = estimate + (std.error), 
+         lwr = estimate - (std.error)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = estimate,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Intercept") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 16), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+  legend.title = element_text(size = 18), 
+ legend.position = "none"
+  ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = c(10,12, 14,15, 17, 18, 19, 21, 29, 33, 37))+
+  color_grad
+hyd_ints
+
+ggsave(here("figures", "nice_hydration_lwa_ints"), hyd_ints, device = "jpg", width = 5, height = 2.5, dpi = 300)
+```
+
+
+####Slopes, bootstrapping
+
+```{r}
+hyd_slopes_bs_inds <- final_df_all %>% 
+   filter(!week %in% c(9)) %>% 
+  filter(analysis == "hydration, ind. trees") %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =3) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(#x = "Week", 
+       color = "week", 
+       y = "Slope") +
+   # facet_wrap(~y_var_name, scales = "free") + 
+theme(
+  strip.background = element_blank(),
+  strip.text.y = element_blank(), 
+  strip.text.x = element_text(size = 16), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+ axis.title.x = element_blank(),
+  axis.title.y = element_text(size = 20), 
+  legend.title = element_text(size = 18), 
+ legend.position = "none"
+  ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 18, 19, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) +
+  theme(legend.position = "none") +
+  #xlim(0, 40) +
+  color_grad 
+hyd_slopes_bs_inds
+
+ggsave(here("figures", "nice_hydration_slopes_bs_lwa_inds"), hyd_slopes_bs_inds, device = "jpg", width = 5, height = 2.5, dpi = 300)
 ```
 
 #SPACE:
@@ -1023,7 +1372,7 @@ bef_wc_qudo_md_df <- wc_qudo_df %>%
   drop_na(site)
   
   
-bef_time_mod <- lmer(water_potential ~ lwa_g_cm2 + (1|week) + (lwa_g_cm2|tree), data = bef_wc_qudo_md_df, REML = T)
+bef_time_mod <- lmer(water_potential ~ lwa_g_cm2 + (1|week) + (lwa_g_cm2|tree), data = bef_wc_qudo_md_df, REML = F)
 summary(bef_time_mod)
 
 

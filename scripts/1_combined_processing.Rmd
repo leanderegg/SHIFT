@@ -414,7 +414,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, by = c("tree"), a
   dplyr::distinct() %>% 
   #filter(!week == 9)%>% 
   group_by(tree, week) %>% 
-  fill(alas_cm2_per_mm2, date_wp, leaf_count,.direction = "downup") %>% 
+  fill(alas_cm2_per_mm2, date_wp, lma_g_cm2_mean, ldmc_mean, leaf_count,.direction = "downup") %>% 
   ungroup() %>% 
   distinct() %>% 
   drop_na(time) 
@@ -449,25 +449,79 @@ analysis_df <- wp_wc_rwc_alas_df %>%
          water_potential = mpa_mean, 
          rwc = rwc_mean) %>% 
   group_by(tree, time, week) %>% 
-  mutate(alas_cm2_per_mm2 = case_when(
-    alas_cm2_per_mm2 > 60 ~ NA_real_, #remove alas outliers
-    TRUE ~ as.numeric(alas_cm2_per_mm2)
-  )) %>% 
+  # mutate(alas_cm2_per_mm2 = case_when(
+  #   alas_cm2_per_mm2 > 100 ~ NA_real_, #remove alas outliers
+  #   TRUE ~ as.numeric(alas_cm2_per_mm2)
+  # )) %>% 
    mutate(tree = as.character(tree),
-          tree_week = paste(tree, week, sep = "_"),
+          #tree_week = paste(tree, week, sep = "_"),
           time_season = case_when(
-    week = 17 ~ "before leafout", 
-    week >= 17 ~ "after leafout", 
+    week <= 17 ~ "before leafout", 
+    week > 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>%  
   filter(!(week == 29 & lwc_mean < .451), 
          !(week == 15 & lwc_mean < .7), 
          !(week == 33 & tree == 2347), 
-         !(week == 18)) %>% #seems off
+         !(week == 18), #seems off
+         #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
+  ) %>%
   mutate(water_potential = -1*water_potential, 
          lwc = lwc_mean) 
   
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
+```
+
+Whats up with week 17? 
+
+```{r, warning=F}
+analysis_df %>% 
+  filter(week == '17', 
+         site %in% c("LL"), 
+         tree %in% c(2378, 2370, 2382, 2379, 2010)
+        ) %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential) %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2, 
+             color =    as.factor(tree)
+             #shape = as.factor(site)
+             )
+         ) +
+    geom_point(aes(shape = time)) +
+  geom_smooth(method = "lm") +
+    facet_wrap(~site)
+
+bad_df <- analysis_df %>% 
+  filter(week == '17', 
+         site %in% c("LL"), 
+         tree %in% c(2378, 2370, 2382, 2379, 2010)
+        ) 
+
+analysis_df %>% 
+  filter(week == '17', 
+        # site %in% c("LL"), 
+        # tree %in% c(2378, 2370, 2382, 2379, 2010)
+        ) %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential) %>% 
+  ggplot(aes(y = lwc_mean, 
+             x = lwa_g_cm2, 
+             color =    as.factor(tree)
+             #shape = as.factor(site)
+             )
+         ) +
+    geom_point(aes(shape = time)
+               ) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+analysis_df %>% 
+  ggplot(aes(y = lma_g_cm2, x = lwc_mean )) +
+  geom_point()
 ```
 
 #---------------------
