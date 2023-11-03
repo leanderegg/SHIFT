@@ -58,30 +58,9 @@ trees_sites_df <- wp_wc_df %>%
 write_csv(trees_sites_df, here("processed-data", "trees_sites.csv"))
 ```
 
-LFM data, to be used as write-in LWC when missing: 
-```{r}
-lfm_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-  mutate(tree = case_when(
-    tree %in% c(9382) ~ 2382,
-    tree %in% c(3480) ~ 2380,
-    tree %in% c(1472) ~ 1478,
-    TRUE ~ as.numeric(tree)
-  )) 
-
-lfm_merge_lwc <- lfm_df %>% 
-  filter(type == "leaf") %>% 
-  select(tree, week, lfm_wet_per_dry_g, time) %>% 
-  group_by(tree, week, time) %>% 
-  mutate(lfm = mean(lfm_wet_per_dry_g, na.rm = T)) %>% 
-  select(tree, lfm, time, week) %>% 
-  distinct()
-```
-
 #Combine DFs: 
 
 #####WC:
-
-%in% c(21:40)
 
 Water content data looks like this: 
 
@@ -103,7 +82,7 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), 
      TRUE ~"NA"
    ), 
    tree = case_when(
-     tree == 2127 ~ 2327, #weird tree
+     tree == 2127 ~ 2327, #weird trees
      tree == 2309 ~ 2379, 
      TRUE ~ tree
    ), 
@@ -121,7 +100,7 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
   select(-...1) %>% 
   mutate(tree = as.numeric(tree), 
          tree = case_when(
-     tree == 2127 ~ 2327, #weird tree
+     tree == 2127 ~ 2327, #weird trees
      tree == 2309 ~ 2379, 
      TRUE ~ tree),
   date_wp = date) %>% 
@@ -136,7 +115,7 @@ wp_wc_df <- merge(wp_df, wc_df,
   filter(species != "ARCA", 
          species != "LEU") %>% 
   distinct() %>% 
-#remove weird values before we combine leaves and bulk:
+#remove weird values before we combine leaves and bulk so that the combined represents the non-weird values
   mutate(lwc_bulk = case_when( 
     lwc_bulk > 2.5 ~ NA_real_, 
     TRUE ~ as.numeric(lwc_bulk)
@@ -154,11 +133,12 @@ wp_wc_df <- merge(wp_df, wc_df,
   mutate(mpa_mean = mean(mpa, na.rm = T), 
          lwc_leaf_mean = mean(lwc_leaf, na.rm=T), 
          lwc_bulk_mean = mean(lwc_bulk, na.rm=T), 
-        lwc_bulk_leaf_diff = lwc_leaf_mean-lwc_bulk_mean) %>%
+        lwc_bulk_leaf_diff = lwc_leaf_mean-lwc_bulk_mean) %>% #see if there are any huge differences between leaves and bulk
   ungroup() %>% 
   dplyr::select(-rep) %>%
   distinct() %>% 
   group_by(tree, plot, site, species, time, week) %>% 
+#when there are bigish differences, replace the combined bulk+leaf with just the bulk; otherwise take the mean of both. 
   mutate(lwc_mean = case_when(
     lwc_bulk_leaf_diff < -.3 ~ lwc_bulk_mean, 
     lwc_bulk_leaf_diff > .32 ~ lwc_leaf_mean,
@@ -167,7 +147,7 @@ wp_wc_df <- merge(wp_df, wc_df,
     )) %>% 
    select(-date_wc, -lwc_leaf_mean, -lwc_bulk_mean) %>% 
   distinct() %>% 
-#since we didn't collect RWC every week, create a column we can use to link RWC to all of the closest LWC weeks: 
+#since we didn't collect RWC every week, create a column we can use to link RWC to all of the closest LWC weeks (should probably linearly interpolate at some point)
   mutate(week_rwc_link = case_when(
     week %in% c(9, 10, 11) ~ 11, 
     week %in% c(12, 13) ~ 13, 
@@ -180,7 +160,7 @@ wp_wc_df <- merge(wp_df, wc_df,
     week %in% c(33) ~ 37, 
     TRUE ~ as.numeric(week)
   ),
-#since we didn't collect alas every week, create a column we can use to link LMA to all of the closest LWC weeks: 
+#since we didn't collect alas every week, create a column we can use to link LMA to all of the closest LWC weeks (should probably linearly interpolate at some point):
   week_alas_link = case_when(
     week %in% c(9, 10) ~ 10, 
     week %in% c(11) ~ 11, 
@@ -193,14 +173,14 @@ wp_wc_df <- merge(wp_df, wc_df,
     week %in% c(33) ~ 40, 
     TRUE ~ as.numeric(week)
   )) %>% 
-  mutate(timing = case_when(
+  mutate(timing = case_when( #define early and late seasons as before and after week 17 (April end week)
     week %in% c(9, 10, 11, 12, 13, 14, 15, 16) ~ "early", 
     week %in% c(17, 18, 19, 20, 21, 29, 33, 37, 38, 40) ~ "late"
   )) %>% 
   filter(!if_all(c(mpa_mean,lwc_mean), is.na)) %>% 
   select(-lwc_leaf, -lwc_bulk, - lwc_bulk_leaf_diff) %>% 
   distinct() %>% 
-  mutate(type = "leaf") 
+  mutate(type = "leaf") #call these all leaves, becuase they are
 
 write.csv(wp_wc_df, here::here("processed-data", "wp_wc_df.csv"))
 ```
@@ -214,14 +194,14 @@ rwc_df_spp <- merge(rwc_df_raw, trees_sites_df, all = T)
 
 rwc_df <- rwc_df_raw %>% 
   mutate(year = case_when(
-    year %in% c(NA_real_) ~ 0, 
+    year %in% c(NA_real_) ~ 0, #assume no year listed is year 0
     TRUE ~ as.numeric(year)
   )) %>% 
   mutate(week_rwc_link = case_when(
-    week %in% c(22) ~ 21, 
+    week %in% c(22) ~ 21, #no mpas for week 22 (prob becuase of week split in week function), so make that 21
     TRUE ~ as.numeric(week))) %>% 
   group_by(tree, date, type, year) %>% 
-#remove absurd values -- issue with wet leaves? 
+#remove absurd values -- issue with wet leaves having drops on them? 
   mutate(swc_per_dry_g = case_when(
     swc_per_dry_g > 5 ~ NA_real_, 
     TRUE ~ as.numeric(swc_per_dry_g)
@@ -285,7 +265,6 @@ wp_wc_rwc_df %>%
   labs(y = "Saturated WC (g wet/g dry)", 
        x = "Water Potential (-MPa)")
 ```
-
 ###AL:AS: 
 
 lwc = g water/g dry
@@ -294,7 +273,7 @@ lma = g dry/area cm2
 ```{r}
 alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")), show_col_types = F) %>% 
   rename(tree = tree_id) %>% 
-  mutate(tree = case_when(
+  mutate(tree = case_when( #weird trees, misentered
     tree %in% c(2048) ~ 2348,
      tree %in% c(2049) ~ 2349,
      tree %in% c(2050) ~ 2354,
@@ -306,7 +285,7 @@ alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_w
      tree %in% c(2082) ~ 2382,
     tree %in% c(2083) ~ 2383,
     tree %in% c(2393) ~ 2093,
-    tree %in% c(2350) ~ 2354,
+    tree %in% c(2350) ~ 2354, # I remember doing this a lot :( 
     tree %in% c(2303) ~ 2330,
     tree %in% c(2434) ~ 2343,
     TRUE ~ as.numeric(tree)
@@ -435,7 +414,7 @@ This has only leaves, with one row per week/tree/time/year:
 analysis_df <- wp_wc_rwc_alas_df %>% 
   filter(species == "blue oak", 
          type == "leaf",
-         #lwa_g_cm2 < 0.025, #some weirdly high values
+         #lwa_g_cm2 < 0.025, #some weirdly high values?
          !(week == 29 & lwc_mean > 1)
          )  %>% #one weird value in week 29)
   select(week, time, tree, plot, site, species, 
@@ -456,14 +435,14 @@ analysis_df <- wp_wc_rwc_alas_df %>%
    mutate(tree = as.character(tree),
           #tree_week = paste(tree, week, sep = "_"),
           time_season = case_when(
-    week <= 17 ~ "before leafout", 
-    week > 17 ~ "after leafout", 
+    week < 17 ~ "before leafout", 
+    week >= 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>%  
-  filter(!(week == 29 & lwc_mean < .451), 
+  filter(!(week == 29 & lwc_mean < .451), #weird values, remove for now?
          !(week == 15 & lwc_mean < .7), 
          !(week == 33 & tree == 2347), 
-         !(week == 18), #seems off
+        # !(week == 18), #seems off
          #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
   ) %>%
   mutate(water_potential = -1*water_potential, 
@@ -471,6 +450,72 @@ analysis_df <- wp_wc_rwc_alas_df %>%
   
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
 ```
+
+#Sample size/week
+
+- What are the counts per week?
+- How often did we measure both pd and md for same tree?
+```{r}
+lwc_counts <- analysis_df %>% 
+  drop_na(lwc_mean) %>% 
+  select(lwc_mean, tree, time) %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  rename(n_lwc = n)
+
+lwa_counts <- analysis_df %>% 
+  select(lwa_g_cm2, tree, time) %>% 
+  drop_na(lwa_g_cm2) %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  rename(n_lwa = n)
+
+counts <- merge(lwa_counts, lwc_counts, 
+                by = c("week","time")) %>% 
+  mutate(paired_or_all = "all trees")
+
+ #only paired samples: 
+
+lwc_counts_paired <- analysis_df %>% 
+  drop_na(lwc_mean) %>% 
+  select(lwc_mean, tree, time) %>% 
+  group_by(tree, week) %>% 
+  filter(all(c("pd", "md") %in% time)) %>%
+  ungroup() %>% 
+  distinct() %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  rename(n_lwc = n) %>% 
+  filter(time == "md") %>% 
+  select(-time)
+
+lwa_counts_paired <- analysis_df %>% 
+  drop_na(lwa_g_cm2) %>% 
+  select(lwa_g_cm2, tree, time) %>% 
+  group_by(tree, week) %>% 
+  filter(all(c("pd", "md") %in% time)) %>%
+  ungroup() %>% 
+  distinct() %>% 
+  group_by(week, time) %>% 
+  count() %>% 
+  rename(n_lwa = n)%>% 
+  filter(time == "md") %>% 
+  select(-time)
+
+counts_paired <- merge(lwa_counts_paired, lwc_counts_paired, 
+                by = c("week", "time")) %>% 
+  mutate(paired_or_all = "paired", 
+         time = "measured both") 
+
+counts_all <- bind_rows(counts_paired, 
+                        counts) %>% 
+  select(-paired_or_all) %>% 
+  arrange(week)
+
+write.csv(counts_all, here("processed-data", 
+               "counts.csv"))
+```
+
 
 Whats up with week 17? 
 
@@ -484,7 +529,7 @@ analysis_df %>%
   ) %>% 
   mutate(water_potential = water_potential) %>% 
   ggplot(aes(y = water_potential, 
-             x = lwa_g_cm2, 
+             x = -1*lwa_g_cm2, 
              color =    as.factor(tree)
              #shape = as.factor(site)
              )
@@ -508,7 +553,7 @@ analysis_df %>%
   ) %>% 
   mutate(water_potential = water_potential) %>% 
   ggplot(aes(y = lwc_mean, 
-             x = lwa_g_cm2, 
+             x = -1*lwa_g_cm2, 
              color =    as.factor(tree)
              #shape = as.factor(site)
              )
