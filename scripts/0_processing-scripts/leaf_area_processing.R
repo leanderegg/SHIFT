@@ -45,9 +45,11 @@ leaf_area_data_txt <- leaf_area_data_txt0 %>% #this will bind columns of differe
   mutate(area = V2) %>% 
   select(-V2)
 
+
 leaf_area_data_txt2 <- leaf_area_data_txt %>% 
   clean_names() %>% 
-  mutate(id = str_remove(source,"/Users/user/Desktop/github/SHIFT/data/leaf_area_scans/"),
+  mutate(id = str_remove(source, ".*\\/"), # make this a regex to remove everything before
+         id = str_remove(id, "/"),
          id = str_remove(id, ".txt"),
          id = gsub(pattern="_", replacement="-", id, fixed = TRUE),
          id = gsub(pattern=".b", replacement="-b", id, fixed = TRUE),
@@ -89,7 +91,7 @@ leaf_area_data_txt3 <- leaf_area_data_txt03 %>% #this will bind columns of diffe
 
 leaf_area_data_txt33 <- leaf_area_data_txt3 %>% 
   clean_names() %>% 
-  mutate(id = str_remove(source,"/Users/user/Desktop/github/SHIFT/data/leaf_area_scans/scans_with_total_area/"),
+  mutate(id = str_remove(source,".*\\/"),
          id = str_remove(id, ".txt"),
          id = gsub(pattern="_", replacement="-", id, fixed = TRUE),
          id = gsub(pattern=".b", replacement="-b", id, fixed = TRUE),
