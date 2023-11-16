@@ -90,24 +90,33 @@ alas_leaf_area_df_week_nopostjuly <- merge(alas_leaf_area_fromscans_df, alas_noa
 
 alas_leaf_area_df <- bind_rows(alas_leaf_area_df_week_nopostjuly, alas_post_july) %>% 
   group_by(tree_id, branch, sub_branch, year, week) %>% 
-  fill(c(6:21),.direction = "downup") %>% 
+  fill(c(6:18),.direction = "downup") %>%  ### WHAT DOES THIS ACTUALLY DO? (was 6:21 but no columns past 18)
   mutate(area_mm2 = area_cm2*100,
          lma_g_cm2 = ldm_g/area_cm2,
          d_cm = d_mm/10, #diameter is in mm, convert to cm
          r_mm = d_mm/2, #turn diameter (mm) into radius
          r_cm = d_cm/2, #do same, but with cm.
          area_stem_mm2 = (pi*((r_mm)^2)), #calculate area of stem in mm2.
-         alas_cm2_per_mm2 = (area_cm2/area_stem_mm2)) %>% 
+         #alas_cm2_per_mm2 = (area_cm2/area_stem_mm2) # instead calculate this after area correction
+         ) %>% 
   select(-dry_scan) %>% 
   distinct() %>% 
   select(species, tree_id, branch, sub_branch, year, week, area_cm2, 
-         area_stem_mm2, alas_cm2_per_mm2, sla_cm_g, lma_g_cm2, ldm_g) %>% 
-  #deal with weird values of LMA that seem to be due to scaling issue with some LMA values: 
+         area_stem_mm2, lma_g_cm2, ldm_g) %>% # removed sla_cm_g cause not in there yet
+  #deal with weird values of LMA that seem to be due to scaling issue with some LMA values:
+    # - LMA values > 0.63 seem to have leaf areas off by 0.1 - these are also weird Al:As values
+    # - SLA values > 400 also seem to have leaf areas of by a factor of 10x. But they're not weird Al:As values.
   mutate(lma_old = lma_g_cm2, 
          lma_g_cm2 = case_when(
-    lma_old > 0.04 ~ lma_old/10, 
+    lma_old > 0.063 ~ lma_old/10, # chanaged the cutoff to 0.63 because two reasonable values around there (0.4-0.6)
     TRUE ~ as.numeric(lma_old)),
-    sla_cm_g = area_cm2/ldm_g)
+    area_old = area_cm2,
+    area_cm2 = case_when(
+      lma_old > 0.063 ~ area_old*10,
+      TRUE ~ as.numeric(area_old)),
+    sla_cm_g = area_cm2/ldm_g,
+    alas_cm2_per_mm2 = (area_cm2/area_stem_mm2)
+    )
 
 alas_leaf_area_df %>% 
   ggplot(aes(x = ldm_g, y = area_cm2)) +
