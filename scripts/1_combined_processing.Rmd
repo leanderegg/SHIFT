@@ -264,6 +264,29 @@ wp_wc_rwc_df %>%
   color_leaves_stems +
   labs(y = "Saturated WC (g wet/g dry)", 
        x = "Water Potential (-MPa)")
+
+wp_wc_rwc_df %>% 
+  filter(mean_swc_per_dry_g < 3, 
+         mean_swc_per_dry_g > .3, 
+         !year == 3, 
+         year == 0, 
+         type_rwc == "leaf") %>% 
+  drop_na(week) %>% 
+  # mutate(growth_words = case_when(
+  #   year == 0 ~ "new growth",
+  #   year == 1 ~ "previous year growth", 
+  #   year %in% c(2, 3) ~ "old growth", 
+  #   TRUE ~ as.character(year)
+  # )) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, x = mpa_mean, color = as.factor(week))) +
+  geom_jitter(alpha = .3) +
+ # facet_wrap(~growth_words) +
+  #geom_smooth(method = "lm", se = F)+
+  color_many +
+  #color_leaves_stems +
+  labs(y = "Saturated WC (g wet/g dry)", 
+       x = "Water Potential (-MPa)", 
+       color = "Week")
 ```
 ###AL:AS: 
 
