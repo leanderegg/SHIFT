@@ -255,6 +255,8 @@ Slopes of the formula:
 
 ```{r, warning=T}
 m_wk_rand <- lmer(water_potential ~ lwa_g_cm2 + (lwa_g_cm2|tree) + (lwa_g_cm2|week), data = wk_all )
+
+MuMIn::r.squaredGLMM(m_wk_rand)
 ```
 
 Should we include site? 

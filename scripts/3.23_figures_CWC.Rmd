@@ -279,8 +279,8 @@ time_summary <- final_df_all %>%
   filter(analysis == "time, ind. tree") %>% 
    mutate(week = as.factor(week), 
           time_season = case_when(
-            time_season %in% c("before leafout") ~ "Before Leafout", 
-             time_season %in% c("after leafout") ~ "After Leafout", 
+            time_season %in% c("before leafout") ~ "During", 
+             time_season %in% c("after leafout") ~ "After", 
             
           )) %>% 
 ggplot(aes(color = time_season)) + 
@@ -316,53 +316,53 @@ time_summary
 SD
 
 ```{r, eval = FALSE}
-#Time
-ran_df_tree_before_vs_after <- bind_rows(bef_ran_df_tree_before, lin_ran_df_tree_after)
-
-ef <- ran_df_tree_before_vs_after %>% 
-  group_by(time_season) %>% 
-  mutate(sd = sd(slope),
-         slope = mean(slope), 
-         mean_se = mean(std.error.slope),
-        mean_std.error = mean(std.error),
-        upr_sd = slope + mean_std.error,
-        lwr_sd = slope - mean_std.error,
-         upr = slope + mean_se,
-         lwr = slope - mean_se,
-         time_season = as.factor(time_season)) 
-
-time_summary <- ef %>% 
-ggplot(aes(color = time_season)) + 
-  geom_point(aes(y = slope, x = time_season), size =2) +
-    geom_point(aes(y = upr, x = time_season), size = 1) +
-  geom_point(aes(y = lwr, x = time_season), size = 1) +
-  geom_segment(aes(y= lwr, 
-                   yend = upr, 
-                   x = time_season, 
-                   xend = time_season)) +
-
-  labs(
-   y = "",
-       x = "Time") +
-  color_two_grey +
-  geom_hline(yintercept = 0, linetype="dotted") + 
-  theme(legend.position="none",
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 15),
-      #axis.title.x = element_text(size = 13),
-      axis.title.x = element_blank(),
-     axis.text = element_text(size = 12),
-     legend.key=element_blank(), 
-     legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
-     legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8)
-    ) +
-    scale_x_discrete(limits=rev)
-  
-time_summary
+# #Time
+# ran_df_tree_before_vs_after <- bind_rows(bef_ran_df_tree_before, lin_ran_df_tree_after)
+# 
+# ef <- ran_df_tree_before_vs_after %>% 
+#   group_by(time_season) %>% 
+#   mutate(sd = sd(slope),
+#          slope = mean(slope), 
+#          mean_se = mean(std.error.slope),
+#         mean_std.error = mean(std.error),
+#         upr_sd = slope + mean_std.error,
+#         lwr_sd = slope - mean_std.error,
+#          upr = slope + mean_se,
+#          lwr = slope - mean_se,
+#          time_season = as.factor(time_season)) 
+# 
+# time_summary <- ef %>% 
+# ggplot(aes(color = time_season)) + 
+#   geom_point(aes(y = slope, x = time_season), size =2) +
+#     geom_point(aes(y = upr, x = time_season), size = 1) +
+#   geom_point(aes(y = lwr, x = time_season), size = 1) +
+#   geom_segment(aes(y= lwr, 
+#                    yend = upr, 
+#                    x = time_season, 
+#                    xend = time_season)) +
+# 
+#   labs(
+#    y = "",
+#        x = "Time") +
+#   color_two_grey +
+#   geom_hline(yintercept = 0, linetype="dotted") + 
+#   theme(legend.position="none",
+#       strip.background = element_blank(),
+#       strip.text.x = element_text(size = 12),
+#       plot.title = element_text(size=13),
+#       axis.title.y = element_text(size = 15),
+#       #axis.title.x = element_text(size = 13),
+#       axis.title.x = element_blank(),
+#      axis.text = element_text(size = 12),
+#      legend.key=element_blank(), 
+#      legend.text = element_text(size = 13), 
+#      legend.title = element_text(size = 16),
+#      legend.margin=margin(0,0,0,0),
+#       legend.box.margin=margin(-5,-8,-8,-8)
+#     ) +
+#     scale_x_discrete(limits=rev)
+#   
+# time_summary
 ```
 
 

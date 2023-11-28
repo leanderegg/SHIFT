@@ -261,7 +261,7 @@ wc_linear_vest_df <- vest_lin %>%
 color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
                                                "Site" = "#252525",
                                                 "Tree" =  "#525252",
-                                               "LWA (g/cm2)" = "#C969A1" ,
+                                               "LWA (g/cm2)" = "#D7B110" ,
                                                 "Week" = "#62929a"))
 
 #greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))

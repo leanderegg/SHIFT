@@ -461,8 +461,8 @@ time_summary <- final_df_all %>%
   filter(analysis == "time, ind. tree") %>% 
    mutate(week = as.factor(week), 
           time_season = case_when(
-            time_season %in% c("before leafout") ~ "Before Leafout", 
-             time_season %in% c("after leafout") ~ "After Leafout", 
+            time_season %in% c("before leafout") ~ "During", 
+             time_season %in% c("after leafout") ~ "After", 
             
           )) %>% 
 ggplot(aes(color = time_season)) + 

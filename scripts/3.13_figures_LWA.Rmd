@@ -8,7 +8,7 @@ library(gridExtra)
 #Data: 
 
 ```{r}
-final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwa.csv"))
+final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwa.csv")) 
 ```
 #Scatterplots:
 
@@ -94,6 +94,7 @@ nice_hydration_layered_1
 ```{r}
 #scaled
 space_nice_1 <- wc_wk_centered_df %>% 
+  filter(lwa_g_cm2 < 0.02) %>% 
   drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
             x = lwa_g_cm2,
@@ -396,8 +397,8 @@ time_summary <- final_df_all %>%
   filter(analysis == "time, ind. tree") %>% 
    mutate(week = as.factor(week), 
           time_season = case_when(
-            time_season %in% c("before leafout") ~ "Before Leafout", 
-             time_season %in% c("after leafout") ~ "After Leafout", 
+            time_season %in% c("before leafout") ~ "During", 
+             time_season %in% c("after leafout") ~ "After", 
             
           )) %>% 
 ggplot(aes(color = time_season)) + 
