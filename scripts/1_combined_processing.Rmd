@@ -597,33 +597,87 @@ analysis_df %>%
 #Add in CWC: 
 
 ```{r}
-datver_cwc <- "05042022" #Just change this in the 1_combined_processing.Rmd
+datver_cwc <- "20231128" #Just change this in the 1_combined_processing.Rmd
 dataversion_cwc <- paste0("Data_", datver_cwc)
 
-cwc_raw <- read_csv(here(dataversion_cwc,"cwc-alldates.csv"), show_col_types = F) %>% 
-  clean_names() %>% 
-  mutate(tree = la_tree_id) %>% 
-  pivot_longer(cols = (6:17),
-              names_to = "date", 
+cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F) %>% 
+  clean_names() %>%
+  pivot_longer(cols = c(5:17),
+    names_to = "date_x", 
                values_to = "cwc") %>% 
-  mutate(date = gsub("x", "", date, fixed = TRUE), 
-         date = ymd(date), 
-         week = week(date), 
-         tree = as.character(tree)) %>% 
+  mutate(date = gsub("x", "", date_x, fixed = TRUE),
+         date = mdy(date), 
+          week = week(date), 
+         tree = as.character(comment)
+         ) %>% 
+ # select() %>% 
   group_by(tree, week) %>% 
   mutate(cwc = mean(cwc)) %>% 
   rename(week_cwc_link = week) %>% 
-    filter(cwc > -100) 
-  
+  filter(cwc > -100) %>% 
+  select(-site, -species, - date_x, -comment, -source)%>% 
+  mutate(week_cwc_link = case_when( #dates of overflight and water potential
+    date %in% c("2022-02-24", "2022-02-28") ~ "1",
+    date %in% c("2022-03-08", "2022-03-03") ~ "2",
+    date %in% c("2022-03-16", "2022-03-15") ~ "3",
+    date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
+    date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
+    date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
+    date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
+    date %in% c("2022-05-03", "2022-05-04") ~ "8",
+    date %in% c("2022-05-11", "2022-05-09") ~ "9",
+    date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
+    date %in% c("2022-09-14", "2022-09-15") ~ "11", 
+    date %in% c("2022-08-18", "2022-07-19") ~ "extra"
+  )) %>% 
+  mutate(date_shift = date)
 
+unique(cwc_raw$week_cwc_link)
+unique(analysis_df$week)
+unique(analysis_df$date_wp)
+```
+```{r}
+cwc_raw %>% 
+  ggplot(aes(y = cwc, 
+             x = date, 
+             color = as.factor(date))) +
+  geom_point()
+
+
+analysis_df %>% 
+  ggplot(aes(y = water_potential, 
+             x = date_wp, 
+             color = as.factor(date_wp))) +
+  geom_point()
+
+```
+
+
+```{r}
 cwc_lwc_raw <- analysis_df %>% 
-  mutate(week_cwc_link = case_when( #so that the weeks of overlights overlap with the weeks of sample collection
+  mutate(week_cwc_link = case_when( #so that the weeks of overflights overlap with the weeks of sample collection
     week %in% c(8, 9) ~ 9, 
     week %in% c(14, 13) ~ 14, 
-    week %in% c(17) ~ 16, 
+    #week %in% c(17) ~ 16, 
     week %in% c(21) ~ 20,
     TRUE ~ as.numeric(week)
-  )) 
+  )) %>% 
+  mutate(date = date_wp) %>% 
+  mutate(week_cwc_link = case_when( #dates of overflight and water potential
+    date %in% c("2022-02-24", "2022-02-28") ~ "1",
+    date %in% c("2022-03-08", "2022-03-03") ~ "2",
+    date %in% c("2022-03-16", "2022-03-15") ~ "3",
+    date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
+    date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
+    date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
+    date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
+    date %in% c("2022-05-03", "2022-05-04") ~ "8",
+    date %in% c("2022-05-11", "2022-05-09") ~ "9",
+    date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
+    date %in% c("2022-09-14", "2022-09-15") ~ "11", 
+    date %in% c("2022-08-18", "2022-07-19") ~ "extra"
+  )) %>% 
+  select(-date)
 
 #Combine: 
 unique(cwc_raw$week_cwc_link) #cwc weeks
@@ -634,7 +688,7 @@ unique(cwc_lwc_raw$date_wp)
 cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
   distinct() %>% 
   #drop_na(site, species) %>% 
-  select(-x1, -shift_id, -la_tree_id) %>% 
+ # select(-shift_id, -la_tree_id) %>% 
    mutate(
      #alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
   #        sla_mean = mean(sla_cm_g,na.rm = T), 
@@ -644,7 +698,7 @@ cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), a
          #leaf_area_mean = mean(area_cm2, na.rm = T), 
          #ldmc_mean = mean(ldmc, na.rm = T),
    ) %>% 
-    rename(date_shift = date) %>% 
+    #rename(date_shift = date) %>% 
    distinct() %>% 
   #drop_na(time) %>% 
   ungroup() #%>% 
@@ -657,12 +711,12 @@ cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), a
   # ))
 
 cwc_analysis_df <-  cwc_lwc_all_df %>% 
-   select(tree, site, species, week, lat, lon, time, date_shift,date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, leaf_count, week_cwc_link, water_potential, time_season) %>%
+   select(tree, site, species, week, 
+          #lat, 
+          #lon, 
+          time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, leaf_count, week_cwc_link, water_potential, time_season) %>%
    distinct() %>% 
-  mutate(week = case_when(
-             week %in% NA_real_ ~ week_cwc_link, 
-             TRUE ~ as.numeric(week)
-           ))%>% 
+  mutate(week = week(date_shift))%>% 
   group_by(tree, week) %>% 
   mutate(cwc = mean(cwc)) %>% 
   ungroup() %>% 
@@ -674,6 +728,16 @@ cwc_analysis_df <-  cwc_lwc_all_df %>%
   )) 
 
 write.csv(cwc_analysis_df, here("processed-data", paste0("cwc_analysis",datver,".csv"))) 
+```
+
+For Jean: 
+```{r}
+jean_df <- cwc_analysis_df %>% 
+  select(tree, species, time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, lwa_g_cm2, water_potential) %>% 
+  group_by(tree) %>% 
+  fill(c(species), .direction = "downup")
+
+write.csv(jean_df, here("processed-data", "jean_lwa.csv")) 
 ```
 
 #---------

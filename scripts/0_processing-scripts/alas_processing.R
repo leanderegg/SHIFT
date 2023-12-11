@@ -89,7 +89,7 @@ alas_leaf_area_df_week_nopostjuly <- merge(alas_leaf_area_fromscans_df, alas_noa
 ##Add in July: 
 
 alas_leaf_area_df <- bind_rows(alas_leaf_area_df_week_nopostjuly, alas_post_july) %>% 
-  group_by(tree_id, branch, sub_branch, year, week) %>% 
+  group_by(tree_id, branch, sub_branch, year, week, date) %>% 
   fill(c(6:18),.direction = "downup") %>%  ### WHAT DOES THIS ACTUALLY DO? (was 6:21 but no columns past 18)
   mutate(area_mm2 = area_cm2*100,
          lma_g_cm2 = ldm_g/area_cm2,
@@ -101,7 +101,7 @@ alas_leaf_area_df <- bind_rows(alas_leaf_area_df_week_nopostjuly, alas_post_july
          ) %>% 
   select(-dry_scan) %>% 
   distinct() %>% 
-  select(species, tree_id, branch, sub_branch, year, week, area_cm2, 
+  select(species, tree_id, branch, sub_branch, year, week, area_cm2, date,
          area_stem_mm2, lma_g_cm2, ldm_g) %>% # removed sla_cm_g cause not in there yet
   #deal with weird values of LMA that seem to be due to scaling issue with some LMA values:
     # - LMA values > 0.63 seem to have leaf areas off by 0.1 - these are also weird Al:As values

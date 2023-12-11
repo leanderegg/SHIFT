@@ -25,11 +25,14 @@ df_grey <- df_all_groups
 df_1 <- df_all_groups %>% 
   filter(week %in% c('14'))
 
-df_2 <- df_all_groups %>% 
-  filter(week %in% c('17'))
+# df_2 <- df_all_groups %>% 
+#   filter(week %in% c('17'))
 
-df_3 <- df_all_groups %>% 
+df_2 <- df_all_groups %>% 
   filter(week %in% c('21'))
+
+# df_3 <- df_all_groups %>% 
+#   filter(week %in% c('21'))
 
 df_4 <- df_all_groups %>% 
   filter(week %in% c('37'))
@@ -52,8 +55,9 @@ nice_hydration_layered_1 <- ggplot() +
               )  +
     scale_colour_manual(name = 'Week', 
          values =c("df_1" ="#528791", 
-                   "df_2"="#8E9D30",
-                  # "df_3"="#EC7E28",
+                   #"df_2"="#8E9D30",
+                   "df_2"="#EC7E28",
+                   #"df_3"="#EC7E28",
                    "df_4"="#CC5265"
                    ), 
          labels = c('14',
@@ -87,7 +91,6 @@ nice_hydration_layered_1 <- ggplot() +
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 nice_hydration_layered_1
-
 ```
 #####Space
 
@@ -192,59 +195,6 @@ scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 time_1 
 ```
 
-####COMBINE:
-
-######Legend:
-
-```{r}
-legend_plot <- wc_wk_centered_df %>% 
-  drop_na(site) %>% 
-  mutate(time = case_when(
-    time %in% c("md") ~ "Midday",
-    time %in% c("pd") ~ "Predawn"
-  )) %>% 
-  ggplot(aes(y = water_potential,
-             x = lwa_g_cm2,
-             color = as.factor(week), 
-             #shape = as.factor(time),
-             )) +
-  geom_point(alpha = .5) +
-  theme(legend.position="top",
-       # legend.position= c(.7, .2),
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-     # axis.title = element_text(size = 16),
-     axis.text = element_text(size = 12),
-     legend.key=element_blank(), 
-     axis.title.x = element_blank(),
-     axis.title.y = element_blank(),
-     legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
-     legend.margin=margin(0,0,0,0),
-    legend.box.margin=margin(-5,-8,-8,-8)
-    ) +
-  geom_smooth(method = "lm", se = F, size = .5) + 
-  labs(color = "Week") +
-  color_week_assigned +
- # ylim(0,2) +
-  guides(color = guide_legend(nrow = 1))
-legend_plot
-
-legend_scatterplots <- cowplot::get_legend(legend_plot)
-legend_scatterplots
-
-
-stacked_nice <- cowplot::plot_grid(space_nice_1, time_1, 
-                                   nrow = 2, rel_heights = c(2, 2)) 
-
-stacked_nice
-
-final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
-final
-
-ggsave(here("figures", "nice_all_lwa"), final, device = "jpg", width = 6, height = 10, dpi = 300)
-```
 
 #Slopes: 
 
@@ -254,7 +204,7 @@ Bootstrapped:
 
 ```{r}
 hyd_slopes <- final_df_all %>% 
-   filter(!week %in% c(9)) %>% 
+   filter(!week %in% c(9, 17)) %>% 
   filter(analysis == "hydration, ind. trees") %>% 
   ggplot(aes(color= as.factor(week))
     ) + 
@@ -284,7 +234,7 @@ hyd_slopes <- final_df_all %>%
   geom_hline(yintercept = 0, linetype="dotted") + 
    #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)) +
   theme(legend.position = "none") +
-  color_week_assigned 
+  color_week_assigned
 
 hyd_slopes
 ```
@@ -426,7 +376,8 @@ ggplot(aes(color = time_season)) +
      legend.title = element_text(size = 16),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
-    )
+    ) +
+  scale_x_discrete(limits = rev)
   
 time_summary
 ```
@@ -483,25 +434,110 @@ ggplot(aes(color = time_season)) +
 time_summary
 ```
 
-#Combine
+##PV curves
 
-```{r}
-stacked_slopes_nice <- cowplot::plot_grid(space_slope, hyd_slopes, time_summary, 
-                                   nrow = 3, rel_heights = c(.9, 1, .7), rel_widths = c(1, 1, .7)) 
+```{r, fig.width=2, fig.height=2}
+mean_slope_all <- read_csv(here::here("processed-data", "pv_lwa_slopes.csv"))
 
-#stacked_slopes_nice
+pv_boot_df <- mean_slope_all %>% 
+  select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
+  distinct() %>% 
+  mutate(analysis = "pv curves") %>% 
+  mutate(slope = mean_slope, 
+         upr = as.numeric(upper_bound), 
+         lwr = as.numeric(lower_bound))
 
-final_slopes<- cowplot::plot_grid(legend_scatterplots, stacked_slopes_nice, nrow = 2, rel_heights  = c(.25, 4))
-#final_slopes
 
-combined <- cowplot::plot_grid(stacked_nice, stacked_slopes_nice, ncol = 2, rel_widths = c(1, 1))
-#combined
+pv_slope <-  pv_boot_df %>% 
+   #filter(!pre_post %in% c(9)) %>% 
+  #filter(analysis == "space") %>% 
+ # mutate(pre_post = as.numeric(pre_post)) %>% 
+   ggplot(aes(color= as.factor(pre_post))
+    ) + 
+  geom_point(aes(y = slope ,x = as.factor(pre_post)), size =2) +
+    geom_point(aes(y = upr, x = as.factor(pre_post)), size = 1) +
+  geom_point(aes(y = lwr, x = as.factor(pre_post)), size = 1) +
+  #geom_line(aes(group = pre_post, y = pre_post, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = as.factor(pre_post), 
+                   xend = as.factor(pre_post), 
+                   color = as.factor(pre_post)))+
+  labs(x = "PV", 
+       color = "pre_post", 
+       y = "Slope") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      axis.text.x = element_blank(),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 15),
+      axis.title.x = element_text(size = 15),
+     # axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") +
+ # color_pre_post_assigned+
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2)) +
+ scale_color_manual(values = c("darkgrey", "darkgrey")) +
+  ylim(-2500, 2000)
+ # scale_x_reverse()
+pv_slope
 
-combined_legend <- cowplot::plot_grid(legend_scatterplots, combined, nrow = 2, rel_heights = c(.25, 4))
-
-ggsave(here("figures", "combined_legend_lwa"), combined_legend, device = "jpg", width = 13, height = 10, dpi = 300)
+ggsave(here("figures", "pv_slope_lwa_plot"), pv_slope, device = "jpg", width = 2, height = 3, dpi = 300)
 ```
 
+
+
+#Combine
+
+######Legend:
+
+```{r}
+legend_plot <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(time = case_when(
+    time %in% c("md") ~ "Midday",
+    time %in% c("pd") ~ "Predawn"
+  )) %>% 
+  ggplot(aes(y = water_potential,
+             x = lwa_g_cm2,
+             color = as.factor(week), 
+             #shape = as.factor(time),
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Week") +
+  color_week_assigned +
+ # ylim(0,2) +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+```
 
 ```{r}
 #labels of slopes: 
@@ -562,7 +598,7 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here("figures", "combined_plots_all_lwa"), combined_plots_all, device = "jpg", width = 10, height = 5, dpi = 300)
+ggsave(here("figures", "combined_plots_all_lwa"), combined_plots_all, device = "jpg", width = 10, height = 9, dpi = 300)
 ```
 
 #----

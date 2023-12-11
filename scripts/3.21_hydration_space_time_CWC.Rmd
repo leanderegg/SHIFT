@@ -30,7 +30,7 @@ library(arm)
 library(nlme)
 select = dplyr::select
 
-source(here::here("scripts", "scripts_functions", "figure_info.R"))
+#source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 #datver <- "20230724"
 dataversion <- paste0("Data_", datver)
@@ -42,6 +42,12 @@ dataversion <- paste0("Data_", datver)
 wc_all_raw <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>% 
   drop_na(time)
 
+unique(wc_all_raw$week)
+unique(wk_all_long$week)
+```
+
+
+```{r, echo=F}
 wc_qudo_df <- wc_all_raw
 
 wc_lm_df <- wc_qudo_df %>% 
@@ -626,7 +632,12 @@ wc_qudo_md_df <- wc_qudo_df %>%
 time_season_mod <- lmer(water_potential ~ cwc + time_season + (1|week) + (cwc|tree), data = wc_qudo_md_df)
 
 time_season_mod_df <- broom::tidy(time_season_mod)
-  
+
+#with separate periods: 
+time_season_mod_int <- lmer(water_potential ~ cwc*time_season + (1|week) + (cwc|tree), data = wc_qudo_md_df)
+
+time_season_mod_int_df <- broom::tidy(time_season_mod)
+
 time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree), data = wc_qudo_md_df)
 #time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_qudo_md_df)
  
@@ -1019,10 +1030,14 @@ glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod)
                        %>% mutate(mod = "space"),
                        time_glance <- broom.mixed::glance(time_season_mod)
                        %>% mutate(mod = "time"),
+                       time_glance <- broom.mixed::glance(time_season_mod_int)
+                       %>% mutate(mod = "interaction"),
                        as_data_frame(r.squaredGLMM(space_mod)) 
                        %>% mutate(mod = "space"),
                        as_data_frame(r.squaredGLMM(time_season_mod)) 
-                       %>% mutate(mod = "time")) %>% 
+                       %>% mutate(mod = "time"),
+                       as_data_frame(r.squaredGLMM(time_season_mod_int)) 
+                       %>% mutate(mod = "interaction")) %>% 
   group_by(mod) %>% 
   fill(c(R2m, R2c), .direction = "downup") %>% 
   distinct() %>% 
@@ -1033,12 +1048,13 @@ glance_df
 
 ```{r}
 cwc_mods <- bind_rows(space_mod_df <- space_mod_df %>% mutate(mod = "space"),
-                      time_season_mod_df <- hyd_mod_df %>% mutate(mod= "time")) %>% 
+                      time_season_mod_df <- hyd_mod_df %>% mutate(mod= "time"),
+  time_season_mod_df <- time_season_mod_int_df %>% mutate(mod= "interaction")) %>% 
   bind_rows(glance_df) %>% 
   mutate(var = "cwc")
 
 cwc_mods
-view(cwc_mods)
+
 
 write_csv(cwc_mods, here::here("processed-data", "cwc_mods.csv"))
 ```

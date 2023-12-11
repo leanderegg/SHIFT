@@ -8,7 +8,7 @@ library(tidyverse)
 library(sf)
 library(raster)
 library(leaflet)
-library(spdplyr)
+#library(spdplyr)
 library(rgdal)
 library(leafsync)
 ```
@@ -72,14 +72,44 @@ Sedgwick files from Open Topography -- too big to put all on GitHub, so will nee
 # sedg_output_chm <- raster(here("data", "geospatial", "CHM", "output.dtm.tif"))
 # plot(sedg_output_chm)
 ```
+latlon data
+
+```{r}
+###### Sedgwick DEM
+sdem <- raster::raster(here("Data_05042022", "geospatial", "DEM_sedgwick_3m.tif"))
+#sdemll <- st_transform(sdem, crs= 4326)
+#sdemll <- raster::projectRaster(sdem)
+# make a df for plotting with ggplot
+sdem_gg <- sdem %>%
+  rasterToPoints() %>%
+  data.frame()
+
+
+latlon <- read_csv(here("processed-data", "geospatial", "trees_latlon.csv"))
+
+# make a latlon and utm spatial data version
+latlon.ll <- SpatialPointsDataFrame(coords = data.frame(latlon$longitude, latlon$latitude),
+                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
+                                    data=latlon)
+latlon.ll
+latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sdem))
+
+latlon.utm
+```
+
 
 #Our trees: 
 ```{r}
+wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) %>% 
+  mutate(date = date_wp)
+
+
 #### Lee's version which hopefully cuts down on replicate values
-wp_ind_long <- wp_ad %>%  #from data processing
+wp_ind_long <- wp_wc_ad %>%  #from data processing
   group_by(tree, site, plot, species, week, date, time) %>% 
   summarise(sd.mpa = sd(mpa), mpa = mean(mpa)) %>% 
   mutate(tree = as.character(tree))
+
 
 # rename midday and predawn columns so I can combine them
 wp_ind_md <- wp_ind_long[wp_ind_long$time=="md",]
@@ -88,12 +118,14 @@ wp_ind_md <- wp_ind_md %>% rename(md_mpa = mpa, date_md=date, md_sd.mpa = sd.mpa
 wp_ind_pd <- wp_ind_long[wp_ind_long$time=="pd",]
 wp_ind_pd <- wp_ind_pd %>% rename(pd_mpa = mpa, date_pd=date, pd_sd.mpa = sd.mpa)
 
-wp_ind <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
-wp_ind <- left_join(wp_ind, latlon, by=c("tree"))
+wp_ind1 <- full_join(wp_ind_md %>% select(-time), wp_ind_pd %>% select(-time))
+
+wp_ind <- left_join(wp_ind1, latlon, by=c("tree"))
 
 
 # calculate delta Psi
 wp_ind$e_drop <- wp_ind$md_mpa-wp_ind$pd_mpa
+
 
 # add in lat lon and utm
 wp_ind$lat_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),2]
@@ -102,15 +134,23 @@ wp_ind$lon_utm <- latlon.utm@coords[match( wp_ind$tree,latlon.utm$tree),1]
 #remove non-trees: 
 wp_ind_new <- wp_ind %>% 
   drop_na(latitude, longitude) %>% 
+  rename(species = species.x) %>% 
+  select(-species.y) %>% 
   mutate(time = case_when(
     week < 17 ~ "early", 
     week > 18 ~ "late"
   ))
 
 write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
+
+boundary <- sf::st_read(here("processed-data", "geospatial", "boundary.kml" ))
 ```
 
-```{r}
+```{r, eval=FALSE}
+wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) 
+
+#### Lee's version which hopefully cuts down on replicate values
+wp_wc_ind_long <- wp_wc_ad %>%  #from data processing
 #### Lee's version which hopefully cuts down on replicate values
 wp_ind_long <- wp_ad %>%  #from data processing
   group_by(tree, site, plot, species, week, date, time) %>% 
@@ -144,7 +184,6 @@ wp_ind_new <- wp_ind %>%
   ))
 
 write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
-
 
 
 wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) 
@@ -200,7 +239,7 @@ boundary <- sf::st_read(here("processed-data", "geospatial", "boundary.kml" ))
 ```{r}
 pds <- latlon.ll@data  %>% 
   filter(week %in% c(17:37), 
-         species.x == "blue oak") %>% 
+         species == "blue oak") %>% 
   group_by(tree) %>% 
   mutate(pd_mpa = mean(pd_mpa, na.rm = T)) %>% 
   arrange(desc(pd_mpa)) %>% 

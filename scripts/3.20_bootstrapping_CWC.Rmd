@@ -127,7 +127,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 37  # Adjust as needed
+n_sample_trees <- 33  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -209,6 +209,9 @@ data <- common_trees_data %>%
   filter(!(COUNT == 1)) %>% 
   select(-COUNT)
 
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
 # Assuming your dataset is called 'data'
 # Make sure 'data' is properly loaded before proceeding
 
@@ -216,7 +219,7 @@ data <- common_trees_data %>%
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 37  # Adjust as needed
+n_sample_trees <- 33  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()

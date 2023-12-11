@@ -30,7 +30,7 @@ library(arm)
 library(nlme)
 select = dplyr::select
 
-source(here::here("scripts", "scripts_functions", "figure_info.R"))
+#source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 #datver <- "20230724"
 dataversion <- paste0("Data_", datver)
@@ -868,7 +868,7 @@ space_slopes
 ###Predawn, centered
 
 
-```{r, warning = F}
+```{r, warning = F, eval = F}
 wc_wk_centered_pd_df <- wc_qudo_df %>% 
   filter(time == "pd") %>% 
   group_by(week) %>% 
@@ -1081,7 +1081,7 @@ time <- wc_qudo_df %>%
   geom_smooth(method = "lm", se = F) + 
  # geom_vline(xintercept = 0, linetype = "dotted") +
   labs(y= "Middays (MPa)", 
-       x = "Leaf Water Content (g)", 
+       x = "Leaf Water per Area (g)", 
        color = "Week", 
        ) +
   guides(color = guide_legend(nrow = 2)) +
@@ -1141,6 +1141,15 @@ wc_qudo_md_df <- wc_qudo_df %>%
 #with separate periods: 
 time_season_mod <- lmer(water_potential ~ lwa_g_cm2 + time_season + (1|week) + (lwa_g_cm2|tree), data = wc_qudo_md_df)
 
+time_season_mod_int <- lmer(water_potential ~ lwa_g_cm2*time_season + (1|week) + (lwa_g_cm2|tree), data = wc_qudo_md_df)
+
+time_mod <- lmer(water_potential ~ lwa_g_cm2 + (1|week) + (lwa_g_cm2|tree), data = wc_qudo_md_df)
+time_mod
+AIC(time_mod)
+```
+
+
+```{r}
 time_season_mod_df <- broom::tidy(time_season_mod)
   
 time_mod <- lmer(water_potential ~ lwa_g_cm2 + (1|week) + (lwa_g_cm2|tree), data = wc_qudo_md_df)
@@ -1530,17 +1539,32 @@ ggsave(here("figures", "time_summary_slopes_boot_tree"), time_summary_bs_tree, d
 
 #Models
 
+```{r}
+time_season_mod
+time_season_mod_int
+
+```
+
 glanced mods
 
 ```{r}
 glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod) 
                        %>% mutate(mod = "space"),
-                       time_glance <- broom.mixed::glance(time_season_mod)
+                       hyd_glance <-  broom.mixed::glance(m_wk_rand) 
+                       %>% mutate(mod = "hyd"),
+                       time_glance <- broom.mixed::glance(time_season_mod_int)
                        %>% mutate(mod = "time"),
+                       time_glance <- broom.mixed::glance(time_season_mod)
+                       %>% mutate(mod = "interaction"),
                        as_data_frame(r.squaredGLMM(space_mod)) 
                        %>% mutate(mod = "space"),
+                       as_data_frame(r.squaredGLMM(m_wk_rand)) 
+                       %>% mutate(mod = "hyd"),
                        as_data_frame(r.squaredGLMM(time_season_mod)) 
-                       %>% mutate(mod = "time")) %>% 
+                       %>% mutate(mod = "time"),
+                       as_data_frame(r.squaredGLMM(time_season_mod_int)) 
+                       %>% mutate(mod = "interaction")
+                       ) %>% 
   group_by(mod) %>% 
   fill(c(R2m, R2c), .direction = "downup") %>% 
   distinct() %>% 

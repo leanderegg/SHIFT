@@ -1325,6 +1325,8 @@ time_mod <- lmer(water_potential ~ lwc_mean + (1|week) + (lwc_mean|tree), data =
 #with separate periods: 
 time_season_mod <- lmer(water_potential ~ lwc_mean + time_season + (1|week) + (lwc_mean|tree), data = wc_qudo_md_df)
 
+time_season_mod_int <- lmer(water_potential ~ lwc_mean*time_season + (1|week) + (lwc_mean|tree), data = wc_qudo_md_df)
+
 time_season_mod_df <- broom::tidy(time_season_mod)
 
 MuMIn::r.squaredGLMM(time_mod)
@@ -1715,18 +1717,30 @@ ggsave(here("figures", "time_summary_slopes_boot_tree"), time_summary_bs_tree, d
 glanced mods
 
 ```{r}
+space_mod
+
+AIC(time_season_mod_int)
+AIC(time_season_mod)
+```
+
+```{r}
 glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod) 
                        %>% mutate(mod = "space"),
                        hyd_glance <-  broom.mixed::glance(m_wk_rand) 
                        %>% mutate(mod = "hyd"),
-                       time_glance <- broom.mixed::glance(time_season_mod)
+                       time_glance <- broom.mixed::glance(time_season_mod_int)
                        %>% mutate(mod = "time"),
+                       time_glance <- broom.mixed::glance(time_season_mod)
+                       %>% mutate(mod = "interaction"),
                        as_data_frame(r.squaredGLMM(space_mod)) 
                        %>% mutate(mod = "space"),
                        as_data_frame(r.squaredGLMM(m_wk_rand)) 
                        %>% mutate(mod = "hyd"),
                        as_data_frame(r.squaredGLMM(time_season_mod)) 
-                       %>% mutate(mod = "time")) %>% 
+                       %>% mutate(mod = "time"),
+                       as_data_frame(r.squaredGLMM(time_season_mod_int)) 
+                       %>% mutate(mod = "interaction")
+                       ) %>% 
   group_by(mod) %>% 
   fill(c(R2m, R2c), .direction = "downup") %>% 
   distinct() %>% 

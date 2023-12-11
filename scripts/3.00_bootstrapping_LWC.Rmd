@@ -534,7 +534,7 @@ ci_values <- bootstrapped_slopes_df %>%
       summary_df_hyd <- ci_values 
       
 # Print the updated dataframe with CI values
-print(tbootstrapped_slopes_df_hyd)
+print(bootstrapped_slopes_df_hyd)
 ```
 
 
