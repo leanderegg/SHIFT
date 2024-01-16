@@ -1,0 +1,578 @@
+---
+title: "Establishing relationships between LWC and MPa, Part 2"
+author: "Indra Boving"
+date: "11/9022"
+output:
+  html_document: default
+  word_document: default
+---
+
+#Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+library(tidyverse)
+library(boot)
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+```
+
+```{r}
+data_og <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
+  filter(species == "live oak")  %>% 
+  select(tree, week, water_potential, lwc, time_season, time, species) %>% 
+  distinct()
+```
+
+
+#TIME:
+```{r}
+data_all <- data_og %>% 
+  filter(time == "md") 
+
+# Filter for trees measured "before leafout"
+before_leafout_data <- data_all %>%
+  filter(time_season == "before leafout")
+
+# Filter for trees measured "after leafout"
+after_leafout_data <- data_all %>%
+  filter(time_season == "after leafout")
+
+# Find the common set of trees that appear in both datasets
+common_trees <- intersect(before_leafout_data$tree, after_leafout_data$tree)
+
+# Filter the original dataset to include only the common trees
+common_trees_data <- data_all %>%
+  filter(tree %in% common_trees)
+
+# Assuming you have the 'common_trees_data' dataframe
+
+# Get the unique tree IDs in 'common_trees_data'
+unique_tree_ids <- unique(common_trees_data$tree)
+
+# Count the number of unique tree IDs
+num_unique_tree_ids <- length(unique_tree_ids)
+
+# Print the number of unique tree IDs
+cat("Number of unique tree IDs in common_trees_data:", num_unique_tree_ids, "\n")
+
+# Filter the original dataset to include only the common tree IDs
+filtered_data <- data_all[data_all$tree %in% common_trees, ] 
+```
+
+Pull 14 trees, get mean slope for those 40, do 1000x. 
+
+
+###Before leafout: 
+```{r}
+data <- filtered_data  %>% 
+  filter(time_season == "before leafout") %>% 
+  distinct() %>% 
+  drop_na(water_potential, lwc) 
+
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded before proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 1000
+
+# Number of random trees to sample
+n_sample_trees <- 14  # Adjust as needed
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(water_potential ~ lwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_before <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_before)
+
+summary(tbootstrapped_slopes_df_before)
+
+mean_slope_before = tbootstrapped_slopes_df_before %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "before leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_before
+```
+
+###After leafout: 
+```{r}
+data <- common_trees_data %>% 
+  filter(time_season == "after leafout") %>% 
+  select(tree, week, water_potential, lwc) %>% 
+  distinct() %>% 
+  drop_na(water_potential, lwc)
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded before proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 1000
+
+# Number of random trees to sample
+n_sample_trees <- 14  # Adjust as needed
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(water_potential ~ lwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_after <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_after)
+
+summary(tbootstrapped_slopes_df_after)
+
+mean_slope_after = tbootstrapped_slopes_df_after %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "after leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_after
+```
+
+```{r}
+#Combining before and after: 
+time_boot_df <- bind_rows(mean_slope_before, mean_slope_after) %>% 
+  select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
+  distinct() %>% 
+  mutate(analysis = "time, ind. tree")
+```
+
+```{r}
+time_boot_df %>% 
+  group_by(pre_post) %>% 
+  mutate(tree_mean = mean(mean_slope, na.rm = T)) %>% 
+  ggplot() +
+  geom_point(aes(y = tree_mean, 
+             x = pre_post)) +
+  geom_point(aes(y = upper_bound, 
+                 x= pre_post), color = "blue")  +
+  geom_point(aes(y = lower_bound, 
+                 x= pre_post), color = "pink")  +
+  theme_minimal()
+```
+
+#SPACE: 
+
+```{r}
+data <- data_og %>% 
+  filter(time == "md") %>% 
+  select(tree, week, water_potential, lwc) %>% 
+  distinct() %>% 
+  drop_na(lwc, water_potential)
+
+head(data)
+
+data %>% 
+ggplot(aes(y = water_potential, 
+           x = lwc, 
+           color = as.factor(week))) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", se = F)
+```
+Cant actually filter by trees that were in all weeks, because none were actually sampled in all weeks. Maybe just ignore? 
+
+```{r}
+# Define the number of bootstrap iterations
+n_iterations <- 1000
+
+# Create an empty dataframe to store results
+final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
+
+# Get unique weeks in your dataset
+unique_weeks <- unique(data$week)
+
+# Iterate through each week
+for (x in unique_weeks) {
+  # Step 1: Filter data for the current week
+  week_data <- data %>%
+    filter(week == x)
+  
+  # Step 2: Initialize a container to store bootstrapped slopes
+  slopes <- vector("double", length = n_iterations)
+  
+  # Step 3: Perform bootstrapping to estimate slopes
+  for (i in 1:n_iterations) {
+    # Randomly sample rows with replacement
+    boot_indices <- sample(nrow(week_data), replace = TRUE)
+    boot_sample <- week_data[boot_indices, ]
+    
+    # Calculate the slope for the bootstrapped sample
+    model <- lm(water_potential ~ lwc, data = boot_sample)
+    slopes[i] <- coef(model)[2]
+  }
+  
+  # Step 4: Calculate the mean slope and 95% CI
+  mean_slope <- mean(slopes)
+  lower_bound <- quantile(slopes, 0.025)
+  upper_bound <- quantile(slopes, 0.975)
+  
+  # Step 5: Store the results in the final dataframe
+  final_df_space <- bind_rows(final_df_space, data.frame(week = x, mean_slope = mean_slope, lower_bound = lower_bound, upper_bound = upper_bound))
+}
+
+# Print the final dataframe
+print(final_df_space)
+```
+
+
+```{r}
+final_df_space %>% 
+  ggplot(aes(x = week)) +
+   geom_segment(aes(y= lower_bound, 
+                   yend = upper_bound, 
+                   x = week, 
+                   xend = week, 
+                   color = as.factor(week)))+
+  geom_point(aes(y = mean_slope), color = "cyan") +
+  geom_point(aes(y = lower_bound), color = "pink") +
+  geom_point(aes(y = upper_bound), color = "gold") +
+  geom_hline(yintercept =0) +
+  labs(y = "Slope",
+       x = "Week")
+  
+```
+#HYDRATION: 
+
+```{r}
+data <- data_og %>% 
+  select(tree, week, water_potential, lwc, time) %>%
+  drop_na(lwc, water_potential) %>% 
+  group_by(tree, week) %>%
+  filter(all(c("pd", "md") %in% time)) %>%
+  ungroup() %>% 
+  distinct() 
+
+head(data)
+
+```
+
+```{r}
+df_all_groups <- data %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential)
+  
+
+df_grey <- df_all_groups
+
+df_1 <- df_all_groups %>% 
+  filter(week %in% c('10'))
+
+df_2 <- df_all_groups %>% 
+  filter(week %in% c('19'))
+
+df_3 <- df_all_groups %>% 
+  filter(week %in% c('21'))
+
+df_4 <- df_all_groups %>% 
+  filter(week %in% c('37'))
+
+nice_hydration_layered <- ggplot() +
+    geom_point(aes(y = water_potential, x = lwc, shape = time), data = df_grey, color = "grey") +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week), color = "grey", data = df_grey) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time, color = "df_1"), 
+               data = df_1 ) +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week, color = "df_1"), 
+              data = df_1) +
+    geom_point(aes(y = water_potential, x = lwc, shape = time, color = "df_2"), 
+               data = df_2) +
+    geom_line(aes(y = water_potential, x = lwc, group = tree_week, color = "df_2"), 
+              data = df_2) +
+    # geom_point(aes(y = water_potential, x = lwc, shape = time, color = "df_3"), 
+    #            data = df_3) +
+    # geom_line(aes(y = water_potential, x = lwc, group = tree_week, color = "df_3"), 
+    #           data = df_3) +
+    # geom_point(aes(y = water_potential, x = lwc, shape = time, color = "df_4"), 
+    #            data = df_4) +
+    # geom_line(aes(y = water_potential, x = lwc, group = tree_week, color = "df_4"), 
+    #           data = df_4
+    #           ) +
+    scale_colour_manual(name = 'Week', 
+         values =c("df_1" ="#122451", 
+                   "df_2"="#62929a",
+                  # "df_3"="#EC7E28",
+                   "df_4"="#c969a8"
+                   ), 
+         labels = c('10',
+                    '17',
+                  #  '21',
+                    '33')) +
+    labs(y = "Water Potential (MPa)", 
+       x = "Leaf Water Content (g)", 
+       color= "Week", 
+       shape = "Time"
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+  theme(
+    #legend.position = c(.9, .35),
+   # legend.position = "none",
+     legend.position = "right",
+  #strip.background = element_blank(),
+  #strip.text.y = element_blank(), 
+  #strip.text.x = element_text(size = 16), 
+  axis.text.y = element_text(size = 12), 
+  axis.text.x = element_text(size = 12), 
+  #axis.ticks.y = element_blank(), 
+  axis.title.y = element_text(size = 20), 
+  axis.title.x = element_text(size = 20), 
+ # axis.title.x = element_blank(),
+  legend.title = element_text(size = 14), 
+  legend.text = element_text(size = 14), 
+# legend.position = "none"
+  ) +
+   xlim(.5,2) +
+  scale_x_reverse()
+nice_hydration_layered
+
+data_og %>% 
+  ggplot(aes(y = lwc, x = week)) +
+  geom_point()+
+  facet_wrap(~time)
+```
+
+```{r}
+data %>% 
+  filter(week == '10') %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential) %>% 
+  ggplot(aes(y = water_potential, x = lwc, color =    as.factor(tree))) +
+    geom_point(aes(shape = time)) +
+  geom_smooth(method = "lm")
+
+```
+
+Pull 40 trees, get mean slope for those 40, do 1000x. 
+```{r}
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded before proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 1000
+
+# Number of random trees to sample
+n_sample_trees <- 10  # Adjust as needed
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(water_potential ~ lwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+# Iterate through each unique week
+unique_weeks <- unique(data$week)
+
+for (x in unique_weeks) {
+  # Filter data for the current week
+  week_data <- data %>%
+    filter(week == x)
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(week_data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- week_data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i, 
+            week = x
+          ) 
+        ) 
+      }
+  }
+
+}
+
+# round1 <- bootstrapped_slopes_df %>% 
+#   filter(round == 1)
+ci_values <- bootstrapped_slopes_df %>%
+        filter(slope > -100, slope < 100) %>% 
+        drop_na(slope) %>%
+        group_by(week, round) %>% #get the mean of each round and week
+       mutate(slope_round = mean(slope, na.rm = T)) %>% 
+          ungroup() %>% 
+        group_by(week) %>% 
+          mutate(mean_slope = mean(slope_round, na.rm = T),
+          lower_bound = quantile(slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(slope_round, 0.975, na.rm = TRUE),
+          week = week) %>% 
+  select(week, mean_slope, lower_bound, upper_bound) %>% 
+  distinct()
+          
+  week10 <- bootstrapped_slopes_df %>% 
+    filter(week == 10)
+  
+  unique(week10$tree)
+  
+        # Merge the CI values back into the original dataframe
+      summary_df_hyd <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(bootstrapped_slopes_df)
+```
+
+
+
+```{r}
+summary_df_hyd %>% 
+  ggplot(aes(x = week)) +
+   geom_segment(aes(y= lower_bound, 
+                   yend = upper_bound, 
+                   x = week, 
+                   xend = week, 
+                   color = as.factor(week)))+
+  geom_point(aes(y = mean_slope), color = "cyan") +
+  geom_point(aes(y = lower_bound), color = "pink") +
+  geom_point(aes(y = upper_bound), color = "gold") +
+  labs(y = "Slope",
+       x = "Week")
+```
+#COMBINE
+
+Should be week, mean_slope, lower_bound, upper_bound
+
+```{r}
+final_df_hyd <- summary_df_hyd %>% 
+  mutate(analysis = "hydration, ind. trees", 
+         time_season = "NA")
+
+final_df_space <- final_df_space %>% 
+  mutate(analysis = "space", 
+         time_season = "NA")
+
+time_boot_df <- time_boot_df %>% 
+  mutate(week = 0,
+         time_season = pre_post)
+
+final_df_all <- bind_rows(final_df_hyd, summary_df_hyd, final_df_space, final_df_time, time_boot_df) %>% 
+  mutate(slope = mean_slope, 
+         lwr = lower_bound, 
+         upr = upper_bound) %>% write_csv(here::here("processed-data", "bootstrapped_df_quke_lwc.csv"))
+```
+

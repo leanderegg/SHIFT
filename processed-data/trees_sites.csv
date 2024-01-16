@@ -36,7 +36,6 @@ tree,plot,site,species
 2092,Low,PineNeedle,live oak
 2093,Low,PineNeedle,live oak
 2301,Hobbiton,LL,live oak
-2379,Hobbiton,LL,blue oak
 2313,Ridge,LL,blue oak
 2322,Ridge,LL,live oak
 2327,NA,NA,blue oak
@@ -68,6 +67,7 @@ tree,plot,site,species
 2376,MiddleEarth,LL,live oak
 2377,MiddleEarth,LL,live oak
 2378,MiddleEarth,LL,blue oak
+2379,Hobbiton,LL,blue oak
 2379,MiddleEarth,LL,blue oak
 2380,MiddleEarth,LL,live oak
 2381,Weathertop,LL,blue oak

@@ -773,25 +773,54 @@ lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df, by = c("tree", "week",
   # filter(lfm_percent < 200, 
   #        lfm_percent > 0) %>% 
   rename(type_lfm = type) %>% 
-  filter(!(type_lfm == "stem")) %>% 
-  distinct()
+ # filter(!(type_lfm == "stem")) %>% 
+  distinct() %>% 
+  mutate(ilfm = 1/(lfm_percent/100)) %>% 
+  filter(ilfm < 2.5,
+         ilfm > 0)
   #filter(!is.na(rwc_lwc_percent))
 ```
 
 #*FINAL (NEW): write.csv
 
 ```{r}
-write.csv(lfm_rwc_alas_wp_wc_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
+lfm_rwc_alas_wp_wc_leaves_df <- lfm_rwc_alas_wp_wc_df %>% 
+  filter(!type_lfm == "stem")
+  
+write.csv(lfm_rwc_alas_wp_wc_leaves_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
 ```
+
+#LFM dataset: 
+
+```{r}
+lfm_mpa_df <- lfm_rwc_alas_wp_wc_df %>% 
+  group_by(tree, date_lfm, type_lfm, time) %>% 
+  mutate(lfm_percent = mean(lfm_percent, na.rm = T)) %>% 
+  mutate(ilfm = 1/(lfm_percent/100)) %>% 
+  select(tree, week,  date_lfm, time, time, type_lfm, plot, site, species, mpa_mean, lfm_percent, ilfm) %>% 
+  drop_na(species) %>% 
+  distinct()
+
+write.csv(lfm_mpa_df, here("processed-data", paste0("sedgwick_22_lfm_mpa_df",datver,".csv")))
+```
+
 
 #--------------------------------
 
 ```{r}
-lfm_rwc_alas_wp_wc_df %>% 
-  ggplot(aes(y = lfm_percent, 
-             x = mpa_mean)) +
-  geom_point(aes(color = time))
+lfm_mpa_df %>% 
+  filter(type_lfm == "leaf") %>% 
+  drop_na(species) %>% 
+  ggplot(aes(y = ilfm, 
+             x = 0-mpa_mean,
+             color = species)) +
+  geom_point(alpha = .5) +
+  geom_smooth(method = "lm", se = F)
 
+```
+
+
+```{r}
 lfm_rwc_alas_wp_wc_df %>% 
   ggplot(aes(y = lfm_percent, 
              x = lma_g_cm2)) +
