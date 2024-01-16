@@ -26,13 +26,12 @@ alas_df_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.
 unique(alas_df_raw$date)
 
 alas_noareas_df <- alas_df_raw %>% 
-   mutate(
-         tree_id = as.factor(tree_id), 
+   mutate(tree_id = as.factor(tree_id), 
          branch = as.factor(branch), 
          date_alas = date, 
          week = week(date)
          ) %>% 
-  select( -area_if_leaf_from_scan_fresh_weight_scan,
+  select(-area_if_leaf_from_scan_fresh_weight_scan,
         -dry_scan,
         -date_alas
          ) %>% 
@@ -40,7 +39,6 @@ alas_noareas_df <- alas_df_raw %>%
   select(-x17)
 
 #Weeks/dates are good. 
-
 
 ##Just after July, WITH areas entered correctly: 
 

@@ -875,7 +875,24 @@ pheno_525 <- wpwc525 %>%
   mutate(new_pheno = new_leaves_0_10)
 
 pheno_alldates <- rbind(pheno_218, pheno_228, pheno_315, pheno_325, pheno_413, pheno_46, pheno_425, pheno_504, pheno_525) %>% 
-  mutate(tree = as.numeric(tag)) 
+  mutate(tree = as.numeric(tag)) %>% 
+  drop_na(new_pheno) %>% 
+  select(tree, date, new_pheno) %>% 
+  mutate(pheno_score = case_when(
+    new_pheno %in% c("44689", #not sure why these are like this
+                     "44625.0",
+                     "?",
+                     "44750", 
+                     "44687",
+                     "44750.0") ~ NA_real_,
+    new_pheno %in% c("6 (5?)", "5 / 6" ) ~ 5, #make borderline scores a single number
+    new_pheno %in% c("6 / 7") ~ 6, 
+    TRUE ~ as.numeric(new_pheno)
+  )) %>% 
+  drop_na(pheno_score) %>% 
+  select(tree, date, pheno_score) %>% 
+  filter(!(date %in% c("2022-04-25","2022-05-25"))) #remove these last dates; they're the same as the week prior and all are 10s
 
 write.csv(pheno_alldates, here("processed-data", paste0("phenology",datver,".csv")))
+
 

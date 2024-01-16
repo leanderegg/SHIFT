@@ -41,7 +41,7 @@ Run all scripts for processing to make sure those are updated:
  source(here::here("scripts", "0_processing-scripts", "leaf_area_processing.R"))
  source(here("scripts","0_processing-scripts", "alas_processing.R"))
  source(here::here("scripts","0_processing-scripts", "lfm_processing.R"))
- source(here::here("scripts","0_processing-scripts", "md_pd_processing.R"))
+ source(here::here("scripts","0_processing-scripts", "md_pd_pheno_processing.R"))
  source(here::here("scripts","0_processing-scripts", "wc_processing.R"))
  source(here::here("scripts","0_processing-scripts", "swc_processing.R"))
 
@@ -434,14 +434,14 @@ write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,"
 
 This has only leaves, with one row per week/tree/time/year:
 ```{r}
-analysis_df <- wp_wc_rwc_alas_df %>% 
-  filter(species == "blue oak", 
+analysis_bothspp_df <- wp_wc_rwc_alas_df %>% 
+  filter(#species == "blue oak", 
          type == "leaf",
          #lwa_g_cm2 < 0.025, #some weirdly high values?
          !(week == 29 & lwc_mean > 1)
          )  %>% #one weird value in week 29)
   select(week, time, tree, plot, site, species, 
-        mpa_mean, lwc_mean, lma_g_cm2_mean, 
+         mpa_mean, lwc_mean, lma_g_cm2_mean, 
          ldmc_mean, alas_cm2_per_mm2_mean, lwa_g_cm2_mean, leaf_count, swc_per_dry_g_mean, rwc_mean, date_wp, week_alas_link) %>% 
   distinct() %>% 
   rename(lwa_g_cm2 = lwa_g_cm2_mean, 
@@ -470,6 +470,11 @@ analysis_df <- wp_wc_rwc_alas_df %>%
   ) %>%
   mutate(water_potential = -1*water_potential, 
          lwc = lwc_mean) 
+
+write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 
+
+analysis_df <- analysis_bothspp_df %>% 
+  filter(species %in% c("blue oak"))
   
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
 ```

@@ -1,0 +1,216 @@
+---
+title: "Data for Sloane & Naomi"
+author: "Indra Boving"
+date: "2023-12-20"
+output: html_document
+---
+Goal: 
+
+Species average + variance for sampling dates with most focal trees for '22 and '23  - hold out Pine Needle (because has deep water access)
+- Psi_pd, Psi_md
+-branch Al:As
+-LMA
++ Phenology data (whatever we've got) from blues and ??? lives?
+
+#Setup: 
+```{r setup, include=FALSE}
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(plotrix)
+
+datver <- 20231128
+```
+
+## Physiology Data: 
+
+####2022
+
+Creating a df that has mean, sd, and se of the following variable for each week that they were collected: 
+
+Psi pd and Psi md 
+Al:As
+LMA
+
+```{r}
+sn_df_raw <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")),show_col_types = FALSE) %>% 
+  filter(is.na(date_wp))
+
+sn_df_all <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")),show_col_types = FALSE) %>% 
+  select(date_wp, time, tree, plot, site, species, water_potential, lma_g_cm2, alas_cm2_per_mm2) %>% 
+  filter(!(site == "PineNeedle")) %>% 
+  mutate(date = case_when(
+    date_wp %in% c("2022-04-06") ~ "2022-04-04",
+    date_wp %in% c("2022-04-11") ~ "2022-04-13",
+    date_wp %in% c("2022-03-03") ~ "2022-02-28",
+    TRUE ~ as.character(date_wp)
+  ), 
+  date = ymd(date)) %>% 
+  select(-date_wp) %>% 
+  mutate(year = "2022", 
+         water_potential = -1*water_potential)
+
+#water potential summaries: 
+sn_wp_df <- sn_df_all %>% 
+   mutate(species = as.factor(species)) %>% 
+  group_by(date, time, species) %>% 
+  mutate(wp_mean = mean(water_potential, na.rm = T),
+         wp_se = std.error(water_potential, na.rm = T), 
+         wp_sd = sd(water_potential, na.rm = T)
+         ) %>% 
+  ungroup() %>% 
+  select(date, species, time,
+         wp_mean, wp_se, wp_sd)
+
+#alas and lma summaries
+sn_morph_df <- sn_df_all %>% 
+  group_by(date, species) %>% 
+    mutate(lma_mean = mean(lma_g_cm2, na.rm = T),
+         lma_se = std.error(lma_g_cm2, na.rm = T), 
+         lma_sd = sd(lma_g_cm2, na.rm = T),
+         alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
+         alas_se = std.error(alas_cm2_per_mm2, na.rm = T), 
+         alas_sd = sd(alas_cm2_per_mm2, na.rm = T)
+         ) %>% 
+  ungroup() %>% 
+  select(date, species, 
+         lma_mean, lma_sd, lma_se, 
+         alas_mean, alas_sd, alas_se)
+
+#put together in big df: 
+sn_summaries_df <- merge(sn_wp_df, sn_morph_df, by = c("date", "species"), all = T) %>% 
+  distinct() %>% 
+  mutate(year = "2022", 
+         date = ymd(date)) %>% 
+  drop_na(date)
+```
+
+####2023
+
+Psi pd and Psi md 
+Al:As
+LMA
+
+```{r}
+sn_wp_23_df1 <- read_csv(here::here("processed-data", "2023_wp.csv"),show_col_types = FALSE) %>% 
+  mutate(time = pd_md, 
+         tree = tag, 
+         water_potential = water_potential_mpa,
+         species = as.factor(species)) %>% 
+  select(date, time, tree, plot, site, species, water_potential) %>% 
+  filter(!(site == "PineNeedle")) 
+
+sn_wp_23_df <- sn_wp_23_df1 %>% 
+  mutate(species = as.factor(species)) %>% 
+  group_by(date, time, species) %>% 
+  mutate(wp_mean = mean(water_potential, na.rm = T),
+         wp_se = std.error(water_potential, na.rm = T), 
+         wp_sd = sd(water_potential, na.rm = T)
+         ) %>% 
+  ungroup() %>% 
+  select(date, species, time,
+         wp_mean, wp_se, wp_sd) %>% 
+  distinct()
+
+sn_morph_23_df1 <- read_csv(here::here("processed-data", "2023_alas.csv"),show_col_types = FALSE)  %>% 
+  select(date, tree, plot, site, species, lma_g_cm2, alas_cm2_per_mm2) %>% 
+  distinct() %>% 
+  filter(!(site == "PineNeedle")) 
+
+sn_morph_23_df <- sn_morph_23_df1 %>%  
+  mutate(species = as.factor(species)) %>% 
+  group_by(date, species) %>% 
+    mutate(lma_mean = mean(lma_g_cm2, na.rm = T),
+         lma_se = std.error(lma_g_cm2, na.rm = T), 
+         lma_sd = sd(lma_g_cm2, na.rm = T),
+         alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
+         alas_se = std.error(alas_cm2_per_mm2, na.rm = T), 
+         alas_sd = sd(alas_cm2_per_mm2, na.rm = T)
+         ) %>% 
+  ungroup() %>% 
+  select(date, species,
+         lma_mean, lma_sd, lma_se, 
+         alas_mean, alas_sd, alas_se) %>% 
+  distinct()
+
+sn_23_df <- merge(sn_wp_23_df1, sn_morph_23_df1, by = c("date", "species", "site", "plot", "tree"), all = T) %>% 
+  mutate(year = "2023") %>% 
+  group_by(tree, time, date) %>% 
+  mutate(water_potential = mean(water_potential, na.rm= T),
+         alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T), 
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T)) %>% 
+  ungroup() %>% 
+  distinct()
+
+sn_summaries_23_df <- merge(sn_wp_23_df, sn_morph_23_df, by = c("date", "species"), all = T) %>% 
+  distinct() %>% 
+  mutate(year = "2023") %>% 
+  filter(species %in% c("blue oak", "live oak"))
+```
+
+#COMBINE '22 and '23: 
+
+```{r}
+sn_summaries_all_df <- bind_rows(sn_summaries_23_df, sn_summaries_df) #%>% 
+ # pivot_wider(names_from = "time",
+ #    values_from = c(4:6),
+ #   values_fn = mean) %>%
+ # distinct()
+
+sn_all_df <- bind_rows(sn_23_df, sn_df_all) %>% 
+  drop_na(time) #%>% 
+  # pivot_wider(names_from = "time", 
+  #             values_from = "water_potential", 
+  #             values_fn = mean) %>% 
+  # rename(pd_mpa = pd, 
+  #        md_mpa = md)
+
+write_csv(sn_summaries_all_df, here::here("processed-data", "wp_morph_summaries_22_23.csv"))
+
+write_csv(sn_all_df, here::here("processed-data", "wp_morph_alldates_22_23.csv"))
+
+sn_all_df %>% 
+  ggplot(aes(y = water_potential, 
+             x = alas_cm2_per_mm2)) +
+  geom_point() +
+  facet_wrap(~year*time)
+
+sn_all_df %>% 
+  ggplot(aes(x = date, 
+             y = alas_cm2_per_mm2, 
+             color = species)) +
+  geom_point() +
+  facet_wrap(~year*time)
+```
+
+#Phenology: 
+
+```{r}
+pheno_sn_22_df <- read_csv(here("processed-data", paste0("phenology20230724.csv"))) %>% 
+  mutate(year = "2022") %>% 
+  select(2:5)
+
+pheno_23_df <- read_csv(here(paste0("Data_",datver), "phenology.csv"),
+                     show_col_types = FALSE) %>% 
+  janitor::clean_names() %>% 
+  mutate(tree = tree_id, 
+         date = mdy(date), 
+         pheno_score = phenology_score_0_10_new, 
+         year = "2023"
+         ) %>% 
+  select(tree, date, pheno_score, year)
+
+sn_pheno_all <- bind_rows(pheno_23_df, pheno_sn_22_df) %>% 
+  merge(read_csv(here("processed-data", "trees_sites.csv")), by = c("tree"))
+
+sn_pheno_all %>% 
+  ggplot(aes(y = pheno_score, 
+             x = date, 
+             color = species))+
+  geom_point() +
+  facet_wrap(~year, scales = "free")
+
+write_csv(sn_pheno_all, here("processed-data", "pheno_22_23.csv"))
+```
+
