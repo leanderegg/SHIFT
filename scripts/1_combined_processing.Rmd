@@ -92,6 +92,14 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), 
    #  TRUE ~ as.numeric(lwc_leaf))
    ) %>% 
   distinct()
+
+head(wc_df)
+
+#for entering leaf scans in google sheets, sent to Rayna:
+wc_df_nona<-wc_df %>% 
+  filter_at(vars(lwc_leaf, lwc_bulk), any_vars(!is.na(.))) %>% 
+  select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
+  write_csv(here::here("processed-data", "lwc_clean.csv"))
 ```
 
 ###WP:
@@ -152,7 +160,7 @@ wp_wc_df <- merge(wp_df, wc_df,
     week %in% c(9, 10, 11) ~ 11, 
     week %in% c(12, 13) ~ 13, 
     week %in% c(14, 15, 16) ~ 15, 
-    week %in% c(17, 18) ~ 18, 
+    week %in% c(17, 18) ~ 17, 
     week %in% c(19) ~ 19, 
     week %in% c(20, 21) ~ 21, 
     week %in% c(22) ~ 21, 
@@ -359,8 +367,6 @@ alas_df_means <- alas_df %>%
   mutate(week_alas_link = week, 
          type = "leaf") %>% 
   select(-week) 
-
-unique(alas_df_means$week_alas_link)
 ```
 
 ```{r}
@@ -381,10 +387,10 @@ wp_wc_rwc_alas_df1 <- merge(wp_wc_rwc_df, alas_df_means, by = c("week_alas_link"
     type == NA ~ type_rwc, 
     TRUE ~ as.character(type)
   ))
+```
 
-# notjoined <- wp_wc_rwc_alas_df1 %>% 
-#   filter(is.na(type))
 
+```{r}
 wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, by = c("tree"), all = T) %>% 
   dplyr::group_by(tree, time, week) %>%
   fill(c(date_wp, mpa_mean, lwc_mean), .direction = "downup") %>%
@@ -397,8 +403,10 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, by = c("tree"), a
     week = case_when(
       week %in% c(13) ~ 14, #combine dates that are very close together (week() just split at the wrong spot)
       week %in% c(11) ~ 10,
+    #  week %in% c(18) ~ 19, #4 days apart, 
       TRUE ~ week
   )) %>%
+  filter(!(week == 18)) %>% #remove week 18 because mostly did middays and repeated most of those trees 4 days later on the 19
   mutate(tree = as.character(tree))  %>% 
   group_by(tree, week, time) %>% #combine years to get a year mean
   mutate(water_potential = mean(mpa_mean, na.rm = T), 
@@ -458,8 +466,8 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
    mutate(tree = as.character(tree),
           #tree_week = paste(tree, week, sep = "_"),
           time_season = case_when(
-    week < 17 ~ "before leafout", 
-    week >= 17 ~ "after leafout", 
+    week <= 17 ~ "before leafout", 
+    week > 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) %>%  
   filter(!(week == 29 & lwc_mean < .451), #weird values, remove for now?
@@ -790,7 +798,7 @@ lfm_rwc_alas_wp_wc_leaves_df <- lfm_rwc_alas_wp_wc_df %>%
 write.csv(lfm_rwc_alas_wp_wc_leaves_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
 ```
 
-#LFM dataset: 
+#LFM dataset (Pepperwood)
 
 ```{r}
 lfm_mpa_df <- lfm_rwc_alas_wp_wc_df %>% 
@@ -799,13 +807,12 @@ lfm_mpa_df <- lfm_rwc_alas_wp_wc_df %>%
   mutate(ilfm = 1/(lfm_percent/100)) %>% 
   select(tree, week,  date_lfm, time, time, type_lfm, plot, site, species, mpa_mean, lfm_percent, ilfm) %>% 
   drop_na(species) %>% 
+  filter(type_lfm == "leaf") %>% 
   distinct()
 
 write.csv(lfm_mpa_df, here("processed-data", paste0("sedgwick_22_lfm_mpa_df",datver,".csv")))
 ```
 
-
-#--------------------------------
 
 ```{r}
 lfm_mpa_df %>% 
@@ -815,28 +822,10 @@ lfm_mpa_df %>%
              x = 0-mpa_mean,
              color = species)) +
   geom_point(alpha = .5) +
-  geom_smooth(method = "lm", se = F)
+  geom_smooth(method = "lm", se = F) +
+  facet_wrap(~date_lfm)
 
 ```
-
-
-```{r}
-lfm_rwc_alas_wp_wc_df %>% 
-  ggplot(aes(y = lfm_percent, 
-             x = lma_g_cm2)) +
-  geom_point(aes(color = time)) +
-  facet_wrap(~date, scales = "free")
-
-```
-
-
-
-
-
-
-
-
-
 
 
 #--------------------------------

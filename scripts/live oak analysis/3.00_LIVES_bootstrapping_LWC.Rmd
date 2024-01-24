@@ -20,7 +20,16 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 data_og <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
   filter(species == "live oak")  %>% 
   select(tree, week, water_potential, lwc, time_season, time, species) %>% 
-  distinct()
+  distinct() %>% 
+  group_by(week, time) %>% 
+  filter(n() >= 10) %>% 
+  filter(!week == 18) %>% 
+  mutate(time_season = case_when(
+    week  < 17 ~ "before leafout", 
+    week >= 17 ~ "after leafout", 
+    TRUE ~ as.character("none")
+  ))
+
 ```
 
 
@@ -65,7 +74,8 @@ Pull 14 trees, get mean slope for those 40, do 1000x.
 ###Before leafout: 
 ```{r}
 data <- filtered_data  %>% 
-  filter(time_season == "before leafout") %>% 
+  filter(#time_season == "before leafout", 
+         week %in% c(10:17)) %>% 
   distinct() %>% 
   drop_na(water_potential, lwc) 
 
@@ -152,7 +162,8 @@ mean_slope_before
 ###After leafout: 
 ```{r}
 data <- common_trees_data %>% 
-  filter(time_season == "after leafout") %>% 
+   filter(week %in% c(18:40)) %>% 
+ # filter(time_season == "after leafout") %>% 
   select(tree, week, water_potential, lwc) %>% 
   distinct() %>% 
   drop_na(water_potential, lwc)
@@ -258,7 +269,7 @@ time_boot_df %>%
 
 #SPACE: 
 
-```{r}
+```{r, eval = F}
 data <- data_og %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, lwc) %>% 
@@ -273,10 +284,7 @@ ggplot(aes(y = water_potential,
            color = as.factor(week))) +
   geom_point(alpha = .5) +
   geom_smooth(method = "lm", se = F)
-```
-Cant actually filter by trees that were in all weeks, because none were actually sampled in all weeks. Maybe just ignore? 
 
-```{r}
 # Define the number of bootstrap iterations
 n_iterations <- 1000
 
@@ -317,10 +325,7 @@ for (x in unique_weeks) {
 
 # Print the final dataframe
 print(final_df_space)
-```
 
-
-```{r}
 final_df_space %>% 
   ggplot(aes(x = week)) +
    geom_segment(aes(y= lower_bound, 
@@ -456,7 +461,7 @@ Pull 40 trees, get mean slope for those 40, do 1000x.
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 10  # Adjust as needed
+n_sample_trees <- 5  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -511,7 +516,7 @@ sampled_tree_ids <- sample(unique(week_data$tree), size = n_sample_trees, replac
 
 # round1 <- bootstrapped_slopes_df %>% 
 #   filter(round == 1)
-ci_values <- bootstrapped_slopes_df %>%
+ summary_df_hyd <- bootstrapped_slopes_df %>%
         filter(slope > -100, slope < 100) %>% 
         drop_na(slope) %>%
         group_by(week, round) %>% #get the mean of each round and week
@@ -524,20 +529,7 @@ ci_values <- bootstrapped_slopes_df %>%
           week = week) %>% 
   select(week, mean_slope, lower_bound, upper_bound) %>% 
   distinct()
-          
-  week10 <- bootstrapped_slopes_df %>% 
-    filter(week == 10)
-  
-  unique(week10$tree)
-  
-        # Merge the CI values back into the original dataframe
-      summary_df_hyd <- ci_values 
-      
-# Print the updated dataframe with CI values
-print(bootstrapped_slopes_df)
 ```
-
-
 
 ```{r}
 summary_df_hyd %>% 
@@ -562,15 +554,15 @@ final_df_hyd <- summary_df_hyd %>%
   mutate(analysis = "hydration, ind. trees", 
          time_season = "NA")
 
-final_df_space <- final_df_space %>% 
-  mutate(analysis = "space", 
-         time_season = "NA")
+# final_df_space <- final_df_space %>% 
+#   mutate(analysis = "space", 
+#          time_season = "NA")
 
 time_boot_df <- time_boot_df %>% 
   mutate(week = 0,
          time_season = pre_post)
 
-final_df_all <- bind_rows(final_df_hyd, summary_df_hyd, final_df_space, final_df_time, time_boot_df) %>% 
+final_df_all <- bind_rows(final_df_hyd , time_boot_df) %>% 
   mutate(slope = mean_slope, 
          lwr = lower_bound, 
          upr = upper_bound) %>% write_csv(here::here("processed-data", "bootstrapped_df_quke_lwc.csv"))

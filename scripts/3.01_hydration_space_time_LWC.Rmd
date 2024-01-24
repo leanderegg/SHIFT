@@ -264,7 +264,7 @@ ggsave(here("figures", "alas_long_plot"), alas_plot, device = "jpg", width = 12,
 Run: 
 here::here("scripts", "3.2_bootstrapping.Rmd")
 ```{r}
-final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwc.csv"))
+final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwc_qudo.csv"))
 ```
 
 #HYDRATION

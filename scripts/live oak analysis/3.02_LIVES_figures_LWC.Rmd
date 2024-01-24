@@ -9,6 +9,19 @@ library(gridExtra)
 
 ```{r}
 final_df_all <- read_csv(here("processed-data", "bootstrapped_df_quke_lwc.csv"))
+
+data_og <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
+  filter(species == "live oak")  %>% 
+  select(tree, week, water_potential, lwc, time_season, time, species, site) %>% 
+  distinct() %>% 
+  group_by(week, time) %>% 
+  filter(n() >= 10) %>% 
+  filter(!week == 18) %>% 
+  mutate(time_season = case_when(
+    week  < 17 ~ "before leafout", 
+    week >= 17 ~ "after leafout", 
+    TRUE ~ as.character("none")
+  ))
 ```
 
 #Scatterplots:
@@ -298,32 +311,56 @@ hyd_slopes
 
 ####Space
 
-Boostratpped: 
+SE: 
 
 ```{r}
-space_slope <-  final_df_all %>% 
-   filter(!week %in% c(9)) %>% 
-  filter(analysis == "space") %>% 
- # mutate(week = as.numeric(week)) %>% 
-   ggplot(aes(color= as.factor(week))
-    ) + 
+space_mod_4 <- lmer(water_potential ~ lwc + (lwc|week) + (1|tree) + (1|site), data =  data_og, REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod_4)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwc`, 
+         -lwc) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod_4)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwc`)%>% 
+  select(-`(Intercept)`, 
+         -lwc) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+
+space_slope <- ran_df_week_4 %>% 
+  #mutate(week = as.numeric(week)) %>% 
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+  ggplot(aes(color= as.factor(week))) + 
   geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
-    geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
+  geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
   geom_point(aes(y = lwr, x = as.factor(week)), size = 1) +
-  #geom_line(aes(group = week, y = week, x = upr)) +
   geom_segment(aes(y= lwr, 
                    yend = upr, 
                    x = as.factor(week), 
                    xend = as.factor(week), 
                    color = as.factor(week)))+
-  labs(x = "Week", 
-       color = "Week", 
-       y = " ") +
   theme(legend.position="none",
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
       plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 15),
+      axis.title.y = element_blank(),
       axis.title.x = element_blank(),
      axis.text = element_text(size = 12),
      legend.key=element_blank(), 
@@ -333,64 +370,14 @@ space_slope <-  final_df_all %>%
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
-  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
-                      # seq(10, 30, by = 1)
-  #                   ) +
+  # scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+  #                 #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+  #                     # seq(10, 30, by = 1)
+  #                    ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  color_week_assigned+
+  color_week_assigned +
  # color_many_2 +
-  guides(color = guide_legend(nrow = 2))
- # scale_x_reverse()
-space_slope
-```
-
-
-SE: 
-
-```{r, eval = F}
-space_slope <- ran_df_week_4 %>% 
-  mutate(week = as.numeric(week)) %>% 
- # filter(week %in% c(14, 17, 21, 29)) %>% 
- # filter(term == "lwc_mean") %>% 
-  mutate(upr = slope + (std.error.slope), 
-         lwr = slope - (std.error.slope)) %>% 
-  ggplot(aes(color= week)
-    ) + 
-  geom_point(aes(y = slope ,x = week), size =2) +
-    geom_point(aes(y = upr, x = week), size = 1) +
-  geom_point(aes(y = lwr, x = week), size = 1) +
-  #geom_line(aes(group = week, y = week, x = upr)) +
-  geom_segment(aes(y= lwr, 
-                   yend = upr, 
-                   x = week, 
-                   xend = week, 
-                   color = week))+
-  labs(x = "Week", 
-       color = "Week", 
-       y = " ") +
-  theme(legend.position="none",
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 15),
-      axis.title.x = element_blank(),
-     axis.text = element_text(size = 12),
-     legend.key=element_blank(), 
-     legend.text = element_text(size = 13), 
-    # legend.title = element_text(size = 16),
-    legend.title = element_blank(),
-     legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8)
-    ) +
-  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
-                      # seq(10, 30, by = 1)
-                     ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
-  color_grad_new +
- # color_many_2 +
-  guides(color = guide_legend(nrow = 2)) +
+ # guides(color = guide_legend(nrow = 2)) +
   ylim(-20, 35)
  # scale_x_reverse()
 space_slope
@@ -656,28 +643,5 @@ ggsave(here("figures", "combined_plots_all_quke"), combined_plots_all, device = 
 ```
 
 
-```{r}
-library(patchwork)
 
-combined_scatter_wide_patch <- 
-  space_nice_1 + 
-  time_1 +
-  nice_hydration_layered_1 +
-  plot_layout(ncol = 3, heights = c(1, 1, 1), widths = c(1, 1, 1))
-combined_scatter_wide_patch
-combined_scatter_wide_patch <- as_grob(combined_scatter_wide_patch)
-
-combined_slopes_wide_patch <- space_slope+ 
-  time_summary+
- hyd_slopes +
-  plot_layout(ncol = 3, heights = c(1, 1, 1), widths = c(1, 1, 1))
-combined_slopes_wide
-combined_slopes_wide_patch <- as_grob(combined_slopes_wide_patch)
-
-plot_legend.sz.mem <- cowplot::plot_grid(legend_scatterplots, combined_scatter_wide_patch, combined_slopes_wide_patch, ncol = 1, rel_heights = c(.7,1, 1))
-plot_legend.sz.mem
-
-plot.sz.mem <- as_grob(plot_legend.sz.mem)
-
-```
 

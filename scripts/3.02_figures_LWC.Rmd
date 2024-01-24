@@ -8,7 +8,7 @@ library(gridExtra)
 #Data: 
 
 ```{r}
-final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwc.csv"))
+final_df_all <- read_csv(here::here("processed-data", "bootstrapped_df_lwc_qudo.csv"))
 ```
 
 #Scatterplots:
@@ -211,7 +211,7 @@ Bootstrapped:
 
 ```{r}
 hyd_slopes <- final_df_all %>% 
-   filter(!week %in% c(9, 19)) %>% 
+  # filter(!week %in% c(9, 19)) %>% 
   filter(analysis == "hydration, ind. trees") %>% 
   ggplot(aes(color= as.factor(week))
     ) + 
@@ -301,11 +301,11 @@ hyd_slopes
 
 ####Space
 
-Boostratpped: 
+#####Bootstrapped, do not use
 
 ```{r}
-space_slope <-  final_df_all %>% 
-   filter(!week %in% c(9)) %>% 
+space_slope_bs <-  final_df_all %>% 
+   filter(!week %in% c(9, 18)) %>% 
   filter(analysis == "space") %>% 
  # mutate(week = as.numeric(week)) %>% 
    ggplot(aes(color= as.factor(week))
@@ -343,33 +343,33 @@ space_slope <-  final_df_all %>%
   geom_hline(yintercept = 0, linetype="dotted") + 
   color_week_assigned+
  # color_many_2 +
-  guides(color = guide_legend(nrow = 2)) +
-  ylim(-8, 35)
+  guides(color = guide_legend(nrow = 2)) #+
+  #ylim(-8, 35)
  # scale_x_reverse()
-space_slope
+space_slope_bs
 ```
 
 
-SE: 
+#####SE, use: 
 
 ```{r, eval = F}
-space_slope <- ran_df_week_4 %>% 
+space_slope_se <- ran_df_week_4 %>% 
   mutate(week = as.numeric(week)) %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc_mean") %>% 
-  mutate(upr = slope + (std.error.slope), 
-         lwr = slope - (std.error.slope)) %>% 
-  ggplot(aes(color= week)
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+  ggplot(aes(color= as.factor(week))
     ) + 
-  geom_point(aes(y = slope ,x = week), size =2) +
-    geom_point(aes(y = upr, x = week), size = 1) +
-  geom_point(aes(y = lwr, x = week), size = 1) +
-  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
+    geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
+  geom_point(aes(y = lwr, x = as.factor(week)), size = 1) +
+  #geom_line(aes(group = as.factor(week), y = as.factor(week), x = upr)) +
   geom_segment(aes(y= lwr, 
                    yend = upr, 
-                   x = week, 
-                   xend = week, 
-                   color = week))+
+                   x = as.factor(week), 
+                   xend = as.factor(week), 
+                   color = as.factor(week)))+
   labs(x = "Week", 
        color = "Week", 
        y = " ") +
@@ -387,17 +387,17 @@ space_slope <- ran_df_week_4 %>%
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8)
     ) +
-  scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
                   #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
                       # seq(10, 30, by = 1)
-                     ) +
+  #                   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  color_grad_new +
+  color_week_assigned +
  # color_many_2 +
-  guides(color = guide_legend(nrow = 2)) +
-  ylim(-20, 35)
+  guides(color = guide_legend(nrow = 2)) #+
+ # ylim(-8, 10)
  # scale_x_reverse()
-space_slope
+space_slope_se
 ```
 ####Time
 
@@ -602,6 +602,11 @@ legend_scatterplots
 ```
 
 ```{r}
+hyd_slopes
+```
+
+
+```{r}
 #labels of slopes: 
 y.grob1 <- textGrob("Slope", 
                    gp=gpar(fontface="bold", #col="blue", 
@@ -611,7 +616,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope, time_summary, hyd_slopes, 
+combined_slopes_wide <- cowplot::plot_grid(space_slope_se, time_summary, hyd_slopes, 
                                    nrow = 1, 
                                   # rel_heights = c(.15, 1, .3), 
                                    rel_widths = c(1, 1, 1)

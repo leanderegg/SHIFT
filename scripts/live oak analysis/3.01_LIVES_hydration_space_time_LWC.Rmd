@@ -40,7 +40,10 @@ dataversion <- paste0("Data_", datver)
 
 ```{r, echo=F}
 wc_all_raw <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
-  filter(species == "live oak") 
+  filter(species == "live oak") %>% 
+  group_by(week, time) %>% 
+  filter(n() >= 10) %>% 
+  filter(!week == 18)
 
 wc_all_raw %>% 
   group_by(week, time) %>% 
