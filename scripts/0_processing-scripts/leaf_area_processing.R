@@ -206,6 +206,8 @@ dry_to_wet_conversion <- leaf_area_df2 %>%
   summarise( mean = mean(conversion)) %>% 
   pull()
 
+dry_to_wet_conversion
+
 ##Convert dry to wet for all using conversion factor from above
 leaf_area_df3 <- leaf_area_df2 %>% 
   filter(!(date_leaf_area %in% c("2022-04-04") & file %in% c("from dry"))) %>% 

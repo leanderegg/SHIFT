@@ -70,6 +70,8 @@ lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
 lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
 lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) 
 
+Also has bulk dry and wet weights (sum of all leaves)
+
 ```{r}
 wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), show_col_types = FALSE) %>% #contains LWC data
   mutate(date = lubridate::ymd(date))%>% 
@@ -85,22 +87,55 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), 
      tree == 2127 ~ 2327, #weird trees
      tree == 2309 ~ 2379, 
      TRUE ~ tree
-   ), 
-   # lwc_leaf = case_when(
-   #   lwc_leaf >= 5 ~ NA_real_, #weird values
-   #  lwc_leaf < 0 ~ NA_real_, 
-   #  TRUE ~ as.numeric(lwc_leaf))
-   ) %>% 
-  distinct()
+   )) %>% 
+  distinct() %>% 
+  #select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
+  ungroup()
 
 head(wc_df)
 
 #for entering leaf scans in google sheets, sent to Rayna:
-wc_df_nona<-wc_df %>% 
-  filter_at(vars(lwc_leaf, lwc_bulk), any_vars(!is.na(.))) %>% 
-  select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
-  write_csv(here::here("processed-data", "lwc_clean.csv"))
+# wc_df_nona <-wc_df %>% 
+#   filter_at(vars(lwc_leaf, lwc_bulk), any_vars(!is.na(.))) %>% 
+#   write_csv(here::here("processed-data", "lwc_clean.csv"))
 ```
+
+###New LWA:
+
+Note: Need to finish entering as of Jan 31, 2024
+
+Using total leaf masses (ww and dw) and total scan (sum of all individually scanned leaves, when that was relevant)
+
+```{r}
+#This has the updated dry scans, from which we 
+datver_lwa <- "20231128"
+
+lwa_new_df <- read_csv(here(paste0("Data_",datver_lwa), "shift_lwa_new.csv"), show_col_types = FALSE) %>% 
+  clean_names() %>% 
+  mutate(area_cm2 = dry_scan_area*1.166899, #1.166899 = dry to wet mass conversion based on rescanned leaves from al:as collectd on 4/4/22), in leaf_area_processes.R script
+         tree = tree_id, 
+         time = pd_or_md,
+         date_wc = ymd(date), 
+         week = week(date), 
+         rep = leaf_number) %>% 
+   group_by(tree, week, time) %>% 
+  mutate(sum_area_cm2 = sum(area_cm2)) %>% 
+  select(tree, date_wc, week, sum_area_cm2, time) %>% 
+  distinct() %>% 
+  ungroup()
+
+wc_df1 <- merge(wc_df, lwa_new_df, by = c("tree", "date_wc", "time", "week")) %>% 
+  mutate(lwa_g_cm2_new = (wm_bulk_g - dm_bulk_g)/sum_area_cm2)
+```
+
+```{r}
+wc_df1 %>% 
+  ggplot(aes(y = lwa_g_cm2_new, 
+             x = date_wc, 
+             color = species)) +
+  geom_point()
+```
+
 
 ###WP:
 ```{r}
@@ -117,8 +152,8 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
 
 ####WC + WP:
 ```{r}
-wp_wc_df <- merge(wp_df, wc_df, 
-                  by = c("tree","plot", "site", "species", "time", "week"), 
+wp_wc_df <- merge(wp_df, wc_df1, 
+                  by = c("tree","time", "week", "species", "plot", "site"), 
                   all = T) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
@@ -126,22 +161,20 @@ wp_wc_df <- merge(wp_df, wc_df,
 #remove weird values before we combine leaves and bulk so that the combined represents the non-weird values
   mutate(lwc_bulk = case_when( 
     lwc_bulk > 2.5 ~ NA_real_, 
+    lwc_bulk < 0 ~ NA_real_, 
     TRUE ~ as.numeric(lwc_bulk)
   )) %>% 
    mutate(lwc_leaf = case_when(
      lwc_leaf >= 5 ~ NA_real_, #weird values
     lwc_leaf < 0 ~ NA_real_,
     TRUE ~ as.numeric(lwc_leaf))) %>% 
-  mutate(lwc_bulk = case_when(
-    lwc_bulk < 0 ~ NA_real_, 
-    TRUE ~ as.numeric(lwc_bulk)
-  )) %>% 
 #combine reps to get mean mpa and lwc per tree; combine bulk and separate lwc: 
   group_by(tree, week, time) %>% 
   mutate(mpa_mean = mean(mpa, na.rm = T), 
+        # sum_area_cm2 = sum(area_cm2), #sum leaf area across all reps
          lwc_leaf_mean = mean(lwc_leaf, na.rm=T), 
          lwc_bulk_mean = mean(lwc_bulk, na.rm=T), 
-        lwc_bulk_leaf_diff = lwc_leaf_mean-lwc_bulk_mean) %>% #see if there are any huge differences between leaves and bulk
+         lwc_bulk_leaf_diff = lwc_leaf_mean-lwc_bulk_mean) %>% #see if there are any huge differences between leaves and bulk
   ungroup() %>% 
   dplyr::select(-rep) %>%
   distinct() %>% 
@@ -153,7 +186,7 @@ wp_wc_df <- merge(wp_df, wc_df,
    # lwc_mean = NA ~ lfm,
     TRUE ~ mean(c_across(c('lwc_leaf_mean', 'lwc_bulk_mean')), na.rm=TRUE)
     )) %>% 
-   select(-date_wc, -lwc_leaf_mean, -lwc_bulk_mean) %>% 
+  select(-date_wc, -lwc_leaf_mean, -lwc_bulk_mean) %>% 
   distinct() %>% 
 #since we didn't collect RWC every week, create a column we can use to link RWC to all of the closest LWC weeks (should probably linearly interpolate at some point)
   mutate(week_rwc_link = case_when(
@@ -191,6 +224,7 @@ wp_wc_df <- merge(wp_df, wc_df,
   mutate(type = "leaf") #call these all leaves, becuase they are
 
 write.csv(wp_wc_df, here::here("processed-data", "wp_wc_df.csv"))
+view(wp_wc_df)
 ```
 
 #####RWC:
@@ -370,7 +404,7 @@ alas_df_means <- alas_df %>%
 ```
 
 ```{r}
-#merge alas_df_means with the df with wp, wc, and rwc-related values: 
+#Merge with OG df; #merge alas_df_means with the df with wp, wc, and rwc-related values: 
 wp_wc_rwc_alas_df1 <- merge(wp_wc_rwc_df, alas_df_means, by = c("week_alas_link", "tree", "year", "type"), 
   all = T) %>% 
   group_by(week_alas_link, tree, year) %>% 
@@ -386,7 +420,9 @@ wp_wc_rwc_alas_df1 <- merge(wp_wc_rwc_df, alas_df_means, by = c("week_alas_link"
   mutate(type = case_when(
     type == NA ~ type_rwc, 
     TRUE ~ as.character(type)
-  ))
+  )) 
+
+view(wp_wc_rwc_alas_df1)
 ```
 
 
@@ -430,6 +466,8 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, by = c("tree"), a
   drop_na(time) 
 ```
 
+
+
 #Writte .csv:
 
 ####Dataset with everything, both means and actual values: 
@@ -438,7 +476,7 @@ write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,"
 ```
 
 
-####Dataset for analysis of LWC, MPA, LWA for manuscript:
+####**Dataset for analysis of LWC, MPA, LWA for manuscript:
 
 This has only leaves, with one row per week/tree/time/year:
 ```{r}
@@ -450,7 +488,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          )  %>% #one weird value in week 29)
   select(week, time, tree, plot, site, species, 
          mpa_mean, lwc_mean, lma_g_cm2_mean, 
-         ldmc_mean, alas_cm2_per_mm2_mean, lwa_g_cm2_mean, leaf_count, swc_per_dry_g_mean, rwc_mean, date_wp, week_alas_link) %>% 
+         ldmc_mean, alas_cm2_per_mm2_mean, lwa_g_cm2_mean, lwa_g_cm2_new,leaf_count, swc_per_dry_g_mean, rwc_mean, date_wp, week_alas_link) %>% 
   distinct() %>% 
   rename(lwa_g_cm2 = lwa_g_cm2_mean, 
          lma_g_cm2 = lma_g_cm2_mean,
@@ -477,14 +515,27 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
   ) %>%
   mutate(water_potential = -1*water_potential, 
-         lwc = lwc_mean) 
+         lwc = lwc_mean)
 
 write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 
 
+#just blue oaks: 
 analysis_df <- analysis_bothspp_df %>% 
   filter(species %in% c("blue oak"))
   
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
+```
+
+View LWA:
+```{r}
+analysis_bothspp_df %>% 
+ # drop_na(lwa_g_cm2, lwa_g_cm2_new) %>% 
+  ggplot(aes(y = lwa_g_cm2, 
+             x = lwa_g_cm2_new, 
+             color = species)) +
+  geom_point()
+
+str(analysis_df)
 ```
 
 #Sample size/week
