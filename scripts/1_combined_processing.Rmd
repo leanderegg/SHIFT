@@ -25,6 +25,32 @@ select = dplyr::select
 source(here::here("scripts","scripts_functions", "figure_info.R"))
 ```
 
+#Env. data: 
+
+From dendra: https://dendra.science/orgs/ucnrs/datastreams?faceted=true&scheme=dq&selectStationId=58e68cacdf5ce600012602d6 
+```{r}
+shift_env <- read_csv(here::here("data", "sedgwick-during-shift.csv")) %>% 
+  clean_names() %>% 
+  mutate(adt_time = parse_date_time(time,  "m/d/y H:M"), 
+         date = as.Date(adt_time), 
+         month = month(date))
+range(shift_env$date)
+
+shift_early <- shift_env %>% 
+  filter(month %in% c(3:6)) %>% 
+  mutate(mean_temp = mean(sedgwick_air_temp_avg_deg_c)) %>% 
+  select(mean_temp) %>% 
+  distinct()
+shift_early
+
+shift_late <- shift_env %>% 
+  filter(month %in% c(7:9))  %>% 
+  mutate(mean_temp = mean(sedgwick_air_temp_avg_deg_c)) %>% 
+  select(mean_temp) %>% 
+  distinct()
+shift_late
+```
+
 ```{r}
 ## Data file version (so it's not hard coded in every read_excel() call)
 datver <- "20230724"
@@ -859,7 +885,24 @@ lfm_mpa_df <- lfm_rwc_alas_wp_wc_df %>%
   select(tree, week,  date_lfm, time, time, type_lfm, plot, site, species, mpa_mean, lfm_percent, ilfm) %>% 
   drop_na(species) %>% 
   filter(type_lfm == "leaf") %>% 
+  distinct() %>% 
+  mutate(date_lfm = ymd(date_lfm))
+
+lfm_mpa_df %>% 
+  ggplot(aes(y = lfm_percent, 
+             x = date_lfm)) +
+  geom_point() +
+  scale_x_date(breaks = "month")
+
+n_week <- lfm_mpa_df %>% 
+  filter(time == "md") %>% 
+  mutate(week = week(date_lfm)) %>% 
+  group_by(week, species) %>% 
+  mutate(n = n()) %>% 
+  select(n, species, week) %>% 
   distinct()
+
+unique(lfm_mpa_df$date_lfm)
 
 write.csv(lfm_mpa_df, here("processed-data", paste0("sedgwick_22_lfm_mpa_df",datver,".csv")))
 ```
