@@ -1,11 +1,16 @@
+datver <- "20231128" #date downloaded
+dataversion <- paste0("Data_", datver)
+
+#Data from LEAF_Lab_Sedgwick  google sheet: https://docs.google.com/spreadsheets/d/1zBABEvgD2qqwJpY3slrIFePbNCgTdh8vVs4PHMzit0w/edit?pli=1#gid=817120000 
+
 wp_23_df <- read_csv(here(paste0("Data_",datver), "wp_2023.csv"),
                      show_col_types = FALSE) %>% 
-  janitor::clean_names() %>% 
-  mutate(date = ymd(date), 
+  janitor::clean_names() %>%
+  mutate(date = ymd(date), #lubridate package, 
          year = year(date)) %>% 
   filter(year == c(2023)) %>% 
   mutate(date = case_when(
-    date %in% c("2023-05-15") ~ "2023-05-12",
+    date %in% c("2023-05-15") ~ "2023-05-12", #changed becuase entered wrong
     date %in% c("2023-07-27") ~ "2023-07-28", 
     TRUE ~ as.character(date)
   )) %>% 
@@ -14,7 +19,8 @@ wp_23_df <- read_csv(here(paste0("Data_",datver), "wp_2023.csv"),
     tag %in% c(2879) ~ 2379, 
     TRUE ~ as.numeric(tag)
   )) %>% 
-  select(tag, date, pd_md, water_potential_mpa, year)
+  select(tag, date, pd_md, water_potential_mpa, year) %>% 
+  filter(water_potential_mpa < 10) #removing outlier in predawn water potential
   # mutate(species = case_when(
   #   tag %in% c(2013, 2014, 2015, 2016) ~ "blue oak", #need to find other labels
   #   TRUE ~ as.character(species)

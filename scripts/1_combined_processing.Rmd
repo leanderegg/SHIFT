@@ -362,6 +362,7 @@ lwc = g water/g dry
 lma = g dry/area cm2
 
 ```{r}
+datver <- "20230724"
 alas_df_raw <- read_csv(here::here("processed-data", paste0("alas_leaf_area_df_week",datver,".csv")), show_col_types = F) %>% 
   rename(tree = tree_id) %>% 
   mutate(tree = case_when( #weird trees, misentered
@@ -411,6 +412,8 @@ alas_df <- merge(alas_df_raw, leaf_number, by = c("week", "tree", "branch", "yea
   distinct() %>% 
   select(-'...1')
 
+write_csv(alas_df, here::here("processed-data", "alas_for_rayna.csv"))
+
 #take the mean value for each tree, week, keeping years separate too. This dataset is best for joining with wc and mpa, as those also have single row per week, tree, year (because of bulk lwc metric)
 
 alas_df_means <- alas_df %>% 
@@ -427,6 +430,8 @@ alas_df_means <- alas_df %>%
   mutate(week_alas_link = week, 
          type = "leaf") %>% 
   select(-week) 
+
+
 ```
 
 ```{r}

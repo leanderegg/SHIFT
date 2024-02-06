@@ -1,3 +1,4 @@
+
 morph_23_df <- read_csv(here(paste0("Data_",datver), "alas_2023.csv"),show_col_types = FALSE) %>% 
   mutate(area_cm2 = as.numeric(area_from_scan),
          leaf_dry_mass_g = case_when(
@@ -26,7 +27,18 @@ morph_23_df <- read_csv(here(paste0("Data_",datver), "alas_2023.csv"),show_col_t
   ) %>% 
   select(tree, date, year, branch_number, length_mm, leaf_number, lma_g_cm2, 
          sla_cm_g, alas_cm2_per_mm2) 
+    
   
+morph_23_df %>% 
+  ggplot(aes(y = lma_g_cm2, 
+             x = tree)) +
+  geom_point()
+
+morph_23_df %>% 
+  ggplot(aes(y = lma_g_cm2, 
+             x = alas_cm2_per_mm2)) +
+  geom_point()
+
 
 #add in tree info:
 trees_sites_df <- read_csv(here("processed-data", "trees_sites.csv"),show_col_types = FALSE)
