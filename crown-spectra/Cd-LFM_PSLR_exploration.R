@@ -59,8 +59,15 @@ spectra <- right_join(info,spectra.raw, by=c("tree"="id")) %>% select(-c(sample_
 colnames(spectra)[grep("sample", colnames(spectra))] <- wavelengths$nm[match(colnames(spectra)[grep("sample", colnames(spectra))], wavelengths$wavelength)]
 
 
+# make a long form dataframe for plotting spectra
 spectra.long <- pivot_longer(spectra, cols=-c(1:7), names_to = "wavelenth", values_to = "reflect")
 spectra.long$wavelenth <- as.numeric(spectra.long$wavelenth)
+
+### Load field LFM data
+lfm <- read.csv(here("processed-data","lfm_alldates_20230724.csv"))
+lfmplus <- read.csv(here("processed-data","lfm_rwc_alas_wp_wc_df20230724.csv"))
+
+
 
 
 
