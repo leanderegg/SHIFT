@@ -1,10 +1,14 @@
 tree,plot,site,species
+10,Chamise,Chamise,ARCA
+11,Rohan,LL,ARCA
+12,High,Cucu Mesa,ARCA
+20,High,Cucu Mesa,LEU
+21,Rohan,LL,LEU
 1478,Low,Cucu Mesa,blue oak
 2004,High,Cucu Mesa,blue oak
 2005,High,Cucu Mesa,blue oak
 2006,High,Cucu Mesa,blue oak
 2007,High,Cucu Mesa,blue oak
-2008,High,Cucu Mesa,blue oak
 2009,Hobbiton,LL,blue oak
 2010,Weathertop,LL,blue oak
 2011,Weathertop,LL,blue oak
@@ -24,8 +28,20 @@ tree,plot,site,species
 2029,Shedd,Chamise,live oak
 2030,Shedd,Chamise,live oak
 2031,Shedd,Chamise,blue oak
-2032,NA,NA,blue oak
-2084,NA,NA,blue oak
+2040,NA,NA,NA
+2041,NA,NA,NA
+2042,NA,NA,NA
+2043,NA,NA,NA
+2044,NA,NA,NA
+2045,NA,NA,NA
+2046,NA,NA,NA
+2047,NA,NA,NA
+2048,NA,NA,NA
+2049,NA,NA,NA
+2050,NA,NA,NA
+2051,NA,NA,NA
+2052,NA,NA,NA
+2082,NA,NA,NA
 2085,Low,PineNeedle,blue oak
 2086,Low,PineNeedle,blue oak
 2087,Low,PineNeedle,blue oak
@@ -36,41 +52,47 @@ tree,plot,site,species
 2092,Low,PineNeedle,live oak
 2093,Low,PineNeedle,live oak
 2301,Hobbiton,LL,live oak
-2313,Ridge,LL,blue oak
-2322,Ridge,LL,live oak
-2327,NA,NA,blue oak
 2330,Ridge,LL,blue oak
 2331,Ridge,LL,live oak
+2342,NA,NA,NA
 2343,Hobbiton,LL,blue oak
-2344,Hobbiton,LL,blue oak
 2345,Hobbiton,LL,live oak
 2346,Hobbiton,LL,blue oak
 2347,Hobbiton,LL,blue oak
-2348,Hobbiton,LL,blue oak
-2349,Hobbiton,LL,blue oak
 2352,MiddleEarth,LL,live oak
-2353,MiddleEarth,LL,live oak
 2354,MiddleEarth,LL,live oak
 2360,MiddleEarth,LL,blue oak
-2361,MiddleEarth,LL,blue oak
-2364,MiddleEarth,LL,blue oak
 2365,MiddleEarth,LL,blue oak
-2366,MiddleEarth,LL,blue oak
 2367,MiddleEarth,LL,blue oak
 2369,MiddleEarth,LL,blue oak
 2370,Weathertop,LL,blue oak
 2371,Weathertop,LL,blue oak
 2372,Weathertop,LL,blue oak
-2373,Weathertop,LL,blue oak
-2374,Ridge,LL,blue oak
 2375,Hobbiton,LL,blue oak
 2376,MiddleEarth,LL,live oak
 2377,MiddleEarth,LL,live oak
 2378,MiddleEarth,LL,blue oak
 2379,MiddleEarth,LL,blue oak
-2379,Hobbiton,LL,blue oak
 2380,MiddleEarth,LL,live oak
 2381,Weathertop,LL,blue oak
 2382,Weathertop,LL,blue oak
 2383,Weathertop,LL,blue oak
 2384,Weathertop,LL,blue oak
+2802,NA,NA,NA
+NA,Chamise,Chamise,LEU
+2008,High,Cucu Mesa,blue oak
+2032,NA,NA,blue oak
+2084,NA,NA,blue oak
+2127,NA,NA,blue oak
+2309,Hobbiton,LL,blue oak
+2313,Ridge,LL,blue oak
+2322,Ridge,LL,live oak
+2344,Hobbiton,LL,blue oak
+2348,Hobbiton,LL,blue oak
+2349,Hobbiton,LL,blue oak
+2353,MiddleEarth,LL,live oak
+2361,MiddleEarth,LL,blue oak
+2364,MiddleEarth,LL,blue oak
+2366,MiddleEarth,LL,blue oak
+2373,Weathertop,LL,blue oak
+2374,Ridge,LL,blue oak

@@ -52,3 +52,4 @@ wp_23_trees_df <- merge(tree_info_all, wp_23_df, by = c("tag")) %>%
   select(tag, site, plot, species, date, pd_md, water_potential_mpa, year)
 
 write_csv(wp_23_trees_df, here::here("processed-data", "2023_wp.csv"))
+

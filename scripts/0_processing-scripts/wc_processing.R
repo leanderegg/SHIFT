@@ -21,6 +21,8 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
 
+
+
 #______________________________________________________________
 ############### Begin: WATER CONTENT - Load and Clean #######################################
 #______________________________________________________________
@@ -2986,7 +2988,7 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
          ) %>% 
   select(-tree_id, -wm, -dm,  -notes)
 
-trees_sites_df <- wc_alldates_longer_lwc_mpa_dates %>% 
+trees_sites_df <-  wc_alldates_longer_all %>% 
   select(tree, plot, site, species) %>% 
   distinct()
 
@@ -2997,8 +2999,9 @@ wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_
   select(-mpa)
 
 ##super annoying name, so rename: 
-wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022
 
+wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022
 #write csv: ####
+####wc_dalldates df ####
 write.csv(wc_all, here("processed-data", paste0("wc_alldates_",datver,".csv")))
 
