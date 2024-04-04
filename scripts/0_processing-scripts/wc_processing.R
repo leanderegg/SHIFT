@@ -3039,7 +3039,8 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
          dm_bulk_g = dm, 
          wm_bulk_g = wm
          ) %>% 
-  select(-tree_id, -wm, -dm,  -notes)
+  select(-tree_id, -wm, -dm, # -notes
+         )
 
 trees_sites_df <-  wc_alldates_longer_all %>% 
   select(tree, plot, site, species) %>% 
