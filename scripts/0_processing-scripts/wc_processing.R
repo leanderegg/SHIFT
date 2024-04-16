@@ -3040,7 +3040,8 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
          wm_bulk_g = wm
          ) %>% 
   select(-tree_id, -wm, -dm, # -notes
-         )
+         ) %>% 
+  filter(!(notes %in% c("*PD in question", "*PD in question; envelope not labelled with Tree ID", "NO WM")))
 
 trees_sites_df <-  wc_alldates_longer_all %>% 
   select(tree, plot, site, species) %>% 
@@ -3058,6 +3059,8 @@ wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_
   tree = case_when(
     tree == 2127 ~ 2327, #weird trees
     tree == 2309 ~ 2379, 
+    tree == 2014 & week == 37 ~ 2013, 
+    tree == 2802 ~ NA, #not sure what this tree is
     TRUE ~ tree
   )) %>% 
   distinct() %>% 
@@ -3074,6 +3077,8 @@ wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_
 wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022 %>% 
   select(-dw_g_md, -dw_g_pd, -ww_g_md, -ww_g_pd, -pd_bulk_dry, -pd_bulk_wet, -md_bulk_dry, -md_bulk_wet) %>% 
   distinct()
+
+
 #write csv: ####
 ####wc_dalldates df ####
 write.csv(wc_all, here("processed-data", paste0("wc_alldates_",datver,".csv")))

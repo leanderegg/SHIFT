@@ -171,11 +171,26 @@ qudo_wc_all <- bind_rows(qudo_wc_linear, qudo_wc_full) %>%
 ```{r}
 nice_all <- qudo_wc_all %>% 
    ggplot(aes(y = water_potential, 
-             x = lwa_g_cm2_new, 
+             x = lwa_g_cm2, 
              color = week)) +
   geom_point() +
 #  geom_smooth(method = "lm", se = F, color = "black") +
   facet_wrap(~section, scales = "free") +
+  color_grad +
+  labs(y = "Water Potential", 
+       x = "lwa_g_cm2_new", 
+       color = "Week") +
+  theme(legend.position = "none") 
+nice_all
+
+nice_all <- wc_all_raw  %>% 
+   ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2
+             , 
+             color = week)) +
+  geom_point() +
+#  geom_smooth(method = "lm", se = F, color = "black") +
+  #facet_wrap(~section, scales = "free") +
   color_grad +
   labs(y = "Water Potential", 
        x = "lwa_g_cm2_new", 

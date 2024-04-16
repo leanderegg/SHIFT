@@ -51,7 +51,7 @@ lfm_df <- lfm_raw %>%
     tree_id %in% c("ARCA") ~ 40, 
     TRUE ~ as.numeric(tree_id))) %>% 
   drop_na(date_updated) %>% 
-  mutate( lfm_wet_per_dry_g = ((wet_wt_g - dry_wt_g)/dry_wt_g), #do calculations
+  mutate(lfm_wet_per_dry_g = ((wet_wt_g - dry_wt_g)/dry_wt_g), #do calculations
          lfm_percent = 100 * ((wet_wt_g - dry_wt_g)/dry_wt_g),
          lfm_wet_wt_g = wet_wt_g, 
          lfm_dry_wt_g = dry_wt_g,

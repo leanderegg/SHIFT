@@ -14,7 +14,6 @@ tree,plot,site,species
 2011,Weathertop,LL,blue oak
 2012,Low,Cucu Mesa,blue oak
 2013,Low,Cucu Mesa,blue oak
-2014,Low,Cucu Mesa,blue oak
 2015,Low,Cucu Mesa,blue oak
 2020,Chamise,Chamise,blue oak
 2021,Chamise,Chamise,blue oak
@@ -78,9 +77,10 @@ tree,plot,site,species
 2382,Weathertop,LL,blue oak
 2383,Weathertop,LL,blue oak
 2384,Weathertop,LL,blue oak
-2802,NA,NA,NA
+NA,NA,NA,NA
 NA,Chamise,Chamise,LEU
 2008,High,Cucu Mesa,blue oak
+2014,Low,Cucu Mesa,blue oak
 2032,NA,NA,blue oak
 2084,NA,NA,blue oak
 2327,NA,NA,blue oak

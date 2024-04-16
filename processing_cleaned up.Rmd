@@ -29,7 +29,7 @@ source(here::here("scripts","scripts_functions", "figure_info.R"))
 
 From dendra: https://dendra.science/orgs/ucnrs/datastreams?faceted=true&scheme=dq&selectStationId=58e68cacdf5ce600012602d6 
 ```{r}
-shift_env <- read_csv(here::here("data", "sedgwick-during-shift.csv")) %>% 
+shift_env <- read_csv(here::here("data", "sedgwick-during-shift.csv"), show_col_types = FALSE) %>% 
   clean_names() %>% 
   mutate(adt_time = parse_date_time(time,  "m/d/y H:M"), 
          date = as.Date(adt_time), 
@@ -84,33 +84,45 @@ lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
 lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
 lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) 
 
-Also has bulk dry and wet weights (sum of all leaves)
+Things to note: 
+Week 9: We only have individual leaf lwc, not bulk. Not many trees have BOTH PD and MD values. 
+Week 10: Some trees have multiple reps for bulk and no leaf, maybe this is fine since we separate bulk and leaves later and get distict rows? 
+Week 11: looks like we only got PDs for a lot of trees here; might be resolved later by combining weeks? 
+Week 12: 2022-03-25; Switched to not doing leaves, only doing bulk; still have multiple reps per bulk, maybe to correspond with water potentials? 
+Week 13: All PD measurement from 2022-03-30
+Week 14: 2022-04-04 and 2022-04-06; back to both leaf and bulk; seems to be a lot fo trees with only PD
+Week 15: 2022-04-11 and 2022-04-13; looks like we got both bulk and leaves, and did a better job of getting both PD and MD
+Week 16:NA
+Week 17: 2022-04-25; just bulk, bth PD and MD present
+Week 18: 2022-05-04; just MDs
+Wewk 19: 2022-05-09; mix of PD and MD, all bulk
+Week 20: NA
+Week 21: 2022-05-23, some trees missing MDs
+Week 29: 2022-07-19, decent job getting all, all bulk
+Week 37: 2022-09-12 & 2022-09-15 all bulk; looks good except for some random missing info 
+
+Tree 2384 seems to be missing a lot; did it get confused with another tree? 
 
 ```{r}
 wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), show_col_types = FALSE) %>% #contains LWC data
   mutate(date = lubridate::ymd(date))%>% 
   select(-...1) %>% 
   mutate(date_wc = date) %>% 
-  select(-date)
-
-#some of these have two values for bulk masses
-
-head(wc_df)
-# Group the data by tree, week, and time, and filter out groups with only one replicate
-filtered_df <- wc_df %>%
-  group_by(tree, week, time) %>%
-  filter(n() > 1) %>%
-  ungroup()
-
-
-# View the resulting DataFrame
-filtered_df
+  select(-date, -notes) %>% 
+  filter_at(vars(lwc_bulk, dm_bulk_g, wm_bulk_g, lwc_leaf, dm_leaf_g, wm_leaf_g),any_vars(!is.na(.))) %>% 
+  #filter(!(duplicated(lwc_bulk))) %>% 
+  filter(!(week == 40)) %>% #these are Serpentine trees where we just have midddays, remove from this analysis
+  filter(!(week == 21 & date_wc %in% NA)) %>% 
+  filter(!(week == 29 & date_wc %in% NA)) %>%
+  filter(!(week == 33 & date_wc %in% NA)) 
 ```
 
 ###New LWA:
 Using total leaf masses (ww and dw) and total scan (sum of all individually scanned leaves, when that was relevant)
 
 Calculate LMA and see they make sense and if they dont then those are things we're missing. 
+
+Problem where there are two envelopes for some tree/time combos in week 37
 
 ```{r}
 #This has the updated dry scans, from which we can get an updated LWA to compare with our LWA approximations: 
@@ -157,19 +169,46 @@ lwa_new_df1 <- lwa_raw %>%
 
 
 #### For all leaves that were scanned in bulk, rename that scanned area as "sum_area_cm2":
-
-lwa_bulk_df <- lwa_new_df1 %>% 
-  filter(bulk_or_individual_leaf %in% c("bulk")) %>% 
-  mutate(sum_area_cm2 = area_cm2 ) %>% 
- # select(-lwc_leaf) %>% 
-#  select(sum_area_cm2, tree, week, time, date_wc) %>% 
+lwa_bulk_df_all <- lwa_new_df1 %>% 
+  filter(bulk_or_individual_leaf %in% c("bulk"), 
+         !(week == 37)) %>% #week 37 (september samplings) have two entries for some reason! I dont know why, but we'll do those separately.
+  mutate(sum_area_cm2 = area_cm2) %>% 
+  select(-rep, -lwc_leaf) %>%
   distinct()
 
+#sometimes bulk isn't actually bulk
+lwa_bulk_multiples <- lwa_bulk_df_all %>% 
+  group_by(tree, week, time) %>% 
+  filter(n() > 1) |>
+  mutate(sum_area_cm2 = sum(area_cm2))
+
+#sometimes bulk is actually bulk!
+lwa_bulk_singles <- lwa_bulk_df_all %>% 
+  group_by(tree, week, time) %>% 
+  filter(n() == 1)
+  
+ lwa_bulk_df <- bind_rows(lwa_bulk_singles, lwa_bulk_multiples)
+```
+
+
+```{r}
+####week 37, where they're listed as bulk but dont have a good reason to be separated. 
+
+lwa_wk_37 <- lwa_new_df1 %>% 
+  filter(week == 37) %>% 
+  group_by(tree, week, time, date_wc) %>% 
+   #select(-lwc_leaf) %>% 
+  mutate(sum_area_cm2 = sum(area_cm2, na.rm = T)) %>%  #sum of area of all the leaves for a given day and time
+ # select(tree, date_wc, week, sum_area_cm2, time) %>% 
+  ungroup() %>% 
+#  select(sum_area_cm2, tree, week, time, date_wc) %>% 
+  distinct()
 
 #### For all individual leaves that were scanned separately, find the sum of them for each tree/week/time, and call this "sum_area_cm2":
 
 lwa_leaves_df <- lwa_new_df1 %>% 
-  filter(bulk_or_individual_leaf %in% c("leaf"))%>% 
+  filter(bulk_or_individual_leaf %in% c("leaf"),
+         !(week == 37)) %>%
   group_by(tree, week, time, date_wc) %>% 
    #select(-lwc_leaf) %>% 
   mutate(sum_area_cm2 = sum(area_cm2, na.rm = T)) %>%  #sum of area of all the leaves for a given day and time
@@ -180,15 +219,13 @@ lwa_leaves_df <- lwa_new_df1 %>%
 
 
 ##Combine the bulk and the leaves summed into one df: 
-lwa_new_df <- bind_rows(lwa_leaves_df, lwa_bulk_df) %>% 
+lwa_new_df <- bind_rows(lwa_leaves_df, lwa_bulk_df, lwa_wk_37) %>% 
   select(-lwc_leaf, 
          -lwc_bulk, -dry_scan_area, #-bulk_or_individual_leaf, 
          -area_cm2, 
          -rep) %>% 
   distinct() %>% 
   drop_na(sum_area_cm2)
-
-view(lwa_new_df)
 
 #--------
 
@@ -221,7 +258,7 @@ wc_lma_long <- wc_df %>%
   drop_na(value) %>% 
   distinct() %>% 
   ungroup() %>% 
-  group_by(tree, time, week) %>%  #sum of all the weights of leaves for a given date/time
+  group_by(tree, time, week, date_wc) %>%  #sum of all the weights of leaves for a given date/time
   mutate(sum_dm_g = sum(value, na.rm = T)) %>% 
   #select(1:6, date_wc, sum_dm_g, lwc_bulk, lwc_leaf) %>% 
   select(-value, -name)  %>% 
@@ -234,9 +271,11 @@ wc_long_lwa_all1 <- merge(wc_lma_long, wc_lwa_long) %>% #combine dry mass datafr
   mutate(lwc_new = sum_water_wt_g/sum_dm_g) %>% #make a new lwc_df
   distinct()
 
+
 ####Old LWC measurement df: 
 wc_long_lwa_old <- wc_df %>% 
   select(tree, week, time, date_wc, lwc_bulk, lwc_leaf)
+
 
 ####Combine those together and see if there is a mismatch 
 wc_long_lwa_all2 <- merge(wc_long_lwa_all1, wc_long_lwa_old, 
@@ -260,26 +299,26 @@ mismatched_lwc_lwa <- wc_long_lwa_all2 %>%
   distinct() %>% 
   filter(lwc_wrong == "off")
 
-# plotly::ggplotly(wc_long_lwa_all2 %>%  #masses look correct
-#                  #filter(week == 33) %>% 
-#                   # drop_na(sum_area_cm2) %>% 
-#   ggplot(aes(y = lwc_new, 
-#              x = lwc_bulk, 
-#              color = species, 
-#              shape = lwc_wrong)) +
-#   geom_point()+
-#   facet_wrap(~week, scales = "free") +
-#     geom_abline()
-#   )
-
-#SOMETHING is off here, and I don't know what!! Something with how dry masses are combined; might be okay to ignore for now since the issue is likely with how things are lining up in 
+plotly::ggplotly(wc_long_lwa_all2 %>%  #masses look correct
+                 #filter(week == 33) %>%
+                  # drop_na(sum_area_cm2) %>%
+  ggplot(aes(y = lwc_new,
+             x = lwc_bulk,
+             color = species,
+             shape = lwc_wrong)) +
+  geom_point()+
+  facet_wrap(~week, scales = "free") +
+    geom_abline()
+  )
 ```
 
 
 ```{r}
+#SOMETHING is off here, and I don't know what!! Something with how dry masses are combined; might be okay to ignore for now since the issue is likely with how things are lining up in 
+
 #--------
 ##Add summed water weight, LWC, and dry weight data to the LWA df that contains area data: 
-wc_df_lwa <- merge(wc_long_lwa_all2, lwa_new_df, 
+wc_lwa_df <- merge(wc_long_lwa_all2, lwa_new_df, 
                    by = c("tree", "time", "week", "date_wc"), 
                    all = T) %>% 
   # select(tree, time, rep, week, date_wc, dry_scan_area, dm_leaf_g, wm_leaf_g, dm_bulk_g, wm_bulk_g) %>% 
@@ -291,35 +330,37 @@ wc_df_lwa <- merge(wc_long_lwa_all2, lwa_new_df,
          lma_g_cm2_new = sum_dm_g/sum_area_cm2) %>% 
   select(-lwc_leaf, -mismatch_leaf) %>% 
   distinct() %>% 
-  drop_na(species)
-```
+  drop_na(species) 
+#Visualize to see if it makes sense
 
-Visualize to see if it makes sense
-
-```{r}
-plotly::ggplotly(wc_df_lwa  %>%  #masses look correct
-                 filter(week == 33) %>% 
+plotly::ggplotly(wc_lwa_df  %>%  #masses look correct
+                 #filter(week == 33) %>% 
                    drop_na(sum_area_cm2) %>% 
   ggplot(aes(y = lma_g_cm2_new, 
              x = lwa_g_cm2_new, 
              color = species, 
-             shape = lwc_wrong)) +
+             shape = lwc_wrong, 
+             label = tree)) +
   geom_point()+
   facet_wrap(~week, scales = "free"))
 
-wc_df_lwa  %>% 
-    filter(week == 33) %>% 
+plotly::ggplotly(wc_lwa_df  %>% 
+  filter(week == 37) %>% 
                    drop_na(sum_area_cm2) %>% 
   ggplot(aes(y = sum_dm_g, 
              x = sum_area_cm2, 
              color = species,
-             shape = lwc_wrong)) +
+             shape = lwc_wrong, 
+             label = tree)) +
   geom_point()+
-  facet_wrap(~week) 
+  facet_wrap(~week))
+```
 
 
+```{r}
+#Check for weirdos in the LWC data (where there are mismatches)
 plotly::ggplotly(wc_df_lwa  %>% 
-  filter(week == 33) %>% 
+  #filter(week == 37) %>% 
   ggplot(aes(y = lwc_new, #new LWC calc
              x = lwc_bulk, #old LWC calc
              color = species,
@@ -330,8 +371,58 @@ plotly::ggplotly(wc_df_lwa  %>%
   geom_abline())
 
 
-wk_37 <- wc_df_lwa %>% 
-  filter(week == 37)
+plotly::ggplotly(wc_df_lwa  %>% 
+  #filter(week == 33) %>% 
+  ggplot(aes(y = lwc_new, #new LWC calc
+             x = lwc_bulk, #old LWC calc
+             color = species,
+             shape = lwc_wrong, 
+             label = tree)) +
+  geom_point()+
+  facet_wrap(~week, scales = "free") +
+  geom_abline())
+
+lwa_df <- wc_df_lwa %>% 
+  mutate(lwa_g_cm2_new = case_when(
+    lwc_wrong %in% c("off") ~ NA_real_,
+    tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2009) & week %in% c(12) ~ NA_real_, #this area is wrong, much too low - lost a leaf? 
+    tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
+    TRUE ~ as.numeric(lwa_g_cm2_new)
+  ))%>% 
+  mutate(lma_g_cm2_new = case_when(
+    lwc_wrong %in% c("off") ~ NA_real_,
+    tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2009) & week %in% c(12) ~ NA_real_, #this area is wrong!
+    tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
+    TRUE ~ as.numeric(lma_g_cm2_new)
+  )) %>% 
+  mutate(lwc_new = case_when(
+    lwc_wrong %in% c("off") ~ NA_real_,
+    tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
+    TRUE ~ as.numeric(lwc_new)
+  )) %>% 
+  mutate(lwc_bulk = case_when(
+    lwc_wrong %in% c("off") ~ NA_real_,
+    tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
+    TRUE ~ as.numeric(lwc_bulk)
+  )) %>% 
+  select(-mismatch_bulk, -lwc_wrong) %>% 
+  distinct()
+
+plotly::ggplotly(lwa_df %>% 
+  #filter(week == 33) %>% 
+  ggplot(aes(y = lwc_new, #new LWC calc
+             x = lwc_bulk, #old LWC calc
+             color = species,
+             #shape = lwc_wrong, 
+             label = tree)) +
+  geom_point()+
+  facet_wrap(~week, scales = "free") +
+  geom_abline())
+
 ##These actually all look good now! Yay! lwc_wrong also doesn't stand out as supppper wierd except in the plot comparing lwc_new to our older lwc_bulk, so we'll keep them in for now. 
 ```
 
@@ -349,19 +440,35 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
      TRUE ~ tree),
   date_wp = date) %>% 
   select(-tag, -plot_number, -date ) 
+
+# wp_check <- wp_df %>% 
+#   filter(week %in% c(10) & tree %in% c(2377))
+# 
+wp_wc_check <- wc_lwa_df %>%
+  filter(week %in% c(33) & tree %in% c(2369, 2367, 2379, 2383, 2011))
 ```
+
+Checked on these WP and LWC, and they seem correct (e.g. no good reason to think they're outliers)
+
+filter(week %in% c(29) & tree %in% c(2370))
+filter(week %in% c(21) & tree %in% c(2343))
+
+CHECK THESE ENVELOPES: 
+filter(week %in% c(15) & tree %in% c(2087, 2088, 2090, 2085, 2093))
+
+Values that were weird so removed: 
+filter(week %in% c(19) & tree %in% c(2089)): two bulk dry weights entered (0.5982 and 1.3073)
 
 ####WC + WP, LWA
 ```{r}
 #Merge water potential data with the dataset we made above that has the rescanned LMA and LWA for LWC leaves; rep is one per tree/week time to MPa will also need to be summarized similarly.
-wp_lwa_df <- wp_df %>% 
+wp_mean_df <- wp_df %>% 
   group_by(tree, week, time, date_wp) %>% 
   mutate(mean_mpa = mean(mpa, na.rm = T)) %>% 
   select(-mpa) %>% 
   distinct()
 
-
-wp_wc_lwa_df <- merge(wp_lwa_df, wc_df_lwa, 
+wp_wc_lwa_df1 <- merge(wp_mean_df, lwa_df, 
                   by = c("tree","time", "week", "species", "site", "plot"), 
                   all = T) %>% 
   filter(species != "ARCA", 
@@ -381,22 +488,68 @@ wp_wc_lwa_df <- merge(wp_lwa_df, wc_df_lwa,
   mutate(lma_g_cm2_new = case_when(
     lma_g_cm2_new %in% c(0) ~ NA, 
     TRUE ~ as.numeric(lma_g_cm2_new)
-  ))
+  )) %>% 
+  distinct() %>% 
+  filter(!(week %in% c(19) & tree %in% c(2089))) %>% 
+  filter(!(week %in% c(37) & tree %in% c(2086) & time %in% c("pd"))) 
 
-wp_wc_lwa_df %>% 
+#Visualize: some measurements of LWA don't make sense
+plotly::ggplotly(wp_wc_lwa_df1 %>% 
   ggplot(aes(y = mean_mpa, 
              x = lwa_g_cm2_new, 
              color = species, 
-             shape = lwc_wrong)) +
-  geom_point()
+             label = week)) +
+  geom_point())
 
+#Visualize: some measurements of LMA don't make sense; these are the same that don't make sense for LWA, so probably a bigger issue
+plotly::ggplotly(wp_wc_lwa_df1 %>% 
+  ggplot(aes(y = mean_mpa, 
+             x = lma_g_cm2_new, 
+             color = species,
+             label = tree)) +
+  geom_point())
+```
+
+
+```{r}
+#get rid of outliers identified above: (UPDATE: no longer any LWA > 0.05 after resumming the areas, yay!)
+ wp_wc_lwa_df <- wp_wc_lwa_df1 #%>% 
+  # mutate(lwa_g_cm2_new = case_when(
+  #   lwa_g_cm2_new > 0.05 ~ NA_real_,
+  #   TRUE ~ as.numeric(lwa_g_cm2_new)
+  # )) 
+
+plotly::ggplotly(wp_wc_lwa_df %>% 
+  ggplot(aes(y = mean_mpa, 
+             x = lwa_g_cm2_new, 
+             color = species, 
+             label = tree),
+             tooltip = c("tree", "species", "time")) +
+  geom_point() +
+    facet_wrap(~week)
+  ) 
+
+plotly::ggplotly(wp_wc_lwa_df %>% 
+  ggplot(aes(y = mean_mpa, 
+             x = lwc_new, 
+             shape = site,
+             color = species, 
+             label = tree)) +
+  geom_point() +
+    facet_wrap(~week)
+  ) 
+
+###okay, these will get brought it later down the line!
 ```
 
 ####WC + WP
+
+Merge water potential dataset and water content datasets from above
+
 ```{r}
-wp_wc_df1 <-  merge(wp_df, wc_df, 
-                  by = c("tree","time", "week", "species", "plot", "site"), 
-                  all = T) %>% 
+wp_wc_df1 <-  merge(wp_df, wc_df,
+                  by = c("tree","time", "week", "species", "plot", "site"),
+                  all = T) %>%
   filter(species != "ARCA", 
          species != "LEU") %>% 
   distinct() %>% 
@@ -482,7 +635,6 @@ wp_wc_df2 <- merge(wp_wc_df1, lwa_new_df) %>%
   distinct()
 
 write.csv(wp_wc_df2, here::here("processed-data", "wp_wc_df.csv"))
-#view(wp_wc_df)
 ```
 
 #####RWC:
@@ -519,8 +671,6 @@ rwc_df <- rwc_df_raw %>%
   select(mean_swc_per_dry_g, mean_swc_g, tree, date_rwc, year,type_rwc, week_rwc_link,
          ) %>% 
   as.data.frame()
-
-unique(rwc_df$week)
 ```
 
 ###RWC + WC + WP:
@@ -530,7 +680,7 @@ Merge those. MPa and LWC are repeated because they align with SWC leaves and ste
 For moving on in combining, we'll just use Year 0 Leaves, should give us a df that is still one row per LWC and MPa per date/time combo 
 
 ```{r}
-wp_wc_rwc_df_all <- merge(wp_wc_df1, rwc_df,
+wp_wc_rwc_df_all <- merge(wp_wc_df2, rwc_df,
                     by = c("tree", "week_rwc_link"),
                     all = T
                     ) %>% 
@@ -740,6 +890,16 @@ ggplot(aes(y = lwa_g_cm2_new,
   facet_wrap(~week) +
   geom_abline()
 
+all_data_new_lwa %>% 
+ggplot(aes(y = lma_g_cm2_new, 
+           x = lma_g_cm2,
+           color = species
+           #color = as.factor(week)
+           )) +
+  geom_point()+
+  facet_wrap(~week) +
+  geom_abline()
+
 #look at it again (compare distributions of inferred LWA and LWA from new scans)
 all_data_new_lwa %>% 
   ggplot() +
@@ -799,6 +959,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, all_data_new_lwa, all = T) %>%
          lwc_mean = mean(lwc_mean),
          alas_cm2_per_mm2_mean = mean(alas_cm2_per_mm2, na.rm = T), 
          lwa_g_cm2_mean = mean(lwa_g_cm2, na.rm = T), 
+         lwa_g_cm2_new_mean = mean(lwa_g_cm2_new, na.rm = T), 
          rwc_mean = mean(rwc, na.rm = T), 
          swc_per_dry_g_mean = mean(mean_swc_per_dry_g, na.rm = T)
          ) %>% 
@@ -810,7 +971,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, all_data_new_lwa, all = T) %>%
   fill(alas_cm2_per_mm2, date_wp, lma_g_cm2_mean, ldmc_mean, leaf_count,.direction = "downup") %>% 
   ungroup() %>% 
     group_by(tree, week, time, date_wp) %>% 
-  fill(lma_g_cm2_new, lwa_g_cm2_new ,.direction = "downup") %>% 
+  fill(lma_g_cm2_new, lwa_g_cm2_new_mean ,.direction = "downup") %>% 
   ungroup() %>% 
   distinct() %>% 
   drop_na(time) 
@@ -841,11 +1002,12 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          lwc_mean, 
          #lwc_g_cm2,
          lma_g_cm2_mean, 
-         lma_g_cm2_new,
+         #lma_g_cm2_new,
+         lwa_g_cm2_new_mean,
          ldmc_mean, 
          alas_cm2_per_mm2_mean, 
          lwa_g_cm2_mean, 
-         lwa_g_cm2_new,
+         #lwa_g_cm2_new,
          #leaf_count, 
          swc_per_dry_g_mean,
          rwc_mean,
@@ -854,6 +1016,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   distinct() %>% 
   rename(lwa_g_cm2 = lwa_g_cm2_mean, 
          lma_g_cm2 = lma_g_cm2_mean,
+         lwa_g_cm2_new = lwa_g_cm2_new_mean,
          alas_cm2_per_mm2 = alas_cm2_per_mm2_mean,
          ldmc = ldmc_mean, 
          water_potential = mpa_mean, 
@@ -877,7 +1040,10 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
   ) %>%
   mutate(water_potential = -1*water_potential, 
-         lwc = lwc_mean) 
+         lwc = lwc_mean) %>% 
+  mutate(lwa_g_cm2_new = case_when(
+    is.infinite(lwa_g_cm2_new) ~ NA_real_, 
+    TRUE ~ as.numeric(lwa_g_cm2_new)))
 
 write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 
 
@@ -888,7 +1054,9 @@ analysis_df <- analysis_bothspp_df %>%
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
 ```
 
-#Sample size/week
+######Just looking at the data
+
+#######Sample size/week
 
 - What are the counts per week?
 - How often did we measure both pd and md for same tree?
@@ -954,7 +1122,7 @@ write.csv(counts_all, here("processed-data",
 ```
 
 
-Whats up with week 17? 
+#######Something weird with week 17?
 
 ```{r, warning=F}
 analysis_df %>% 
@@ -998,9 +1166,7 @@ analysis_df %>%
     geom_point(aes(shape = time)
                ) +
   geom_smooth(method = "lm")
-```
 
-```{r}
 analysis_df %>% 
   ggplot(aes(y = lma_g_cm2, x = lwc_mean )) +
   geom_point()
@@ -1023,16 +1189,17 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F
                values_to = "cwc") %>% 
   mutate(date = gsub("x", "", date_x, fixed = TRUE),
          date = mdy(date), 
-          week = week(date), 
+         week = week(date), 
          tree = as.character(comment)
          ) %>% 
  # select() %>% 
   group_by(tree, week) %>% 
   mutate(cwc = mean(cwc)) %>% 
-  rename(week_cwc_link = week) %>% 
+  ungroup() %>% 
+  mutate(week_cwc_link = week) %>% 
   filter(cwc > -100) %>% 
   select(-site, -species, - date_x, -comment, -source)%>% 
-  mutate(week_cwc_link = case_when( #dates of overflight and water potential
+  mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
     date %in% c("2022-02-24", "2022-02-28") ~ "1",
     date %in% c("2022-03-08", "2022-03-03") ~ "2",
     date %in% c("2022-03-16", "2022-03-15") ~ "3",
@@ -1048,14 +1215,16 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F
   )) %>% 
   mutate(date_shift = date)
 
-unique(cwc_raw$week_cwc_link)
-unique(analysis_df$week)
-unique(analysis_df$date_wp)
-```
-```{r}
+##Look at it: 
 cwc_raw %>% 
   ggplot(aes(y = cwc, 
              x = date, 
+             color = as.factor(date))) +
+  geom_point()
+
+cwc_raw %>% 
+  ggplot(aes(y = cwc, 
+             x = week, 
              color = as.factor(date))) +
   geom_point()
 
@@ -1070,7 +1239,8 @@ analysis_df %>%
 
 
 ```{r}
-cwc_lwc_raw <- analysis_df %>% 
+#get our 'analysis df'  data so that it aligns with the CWC dates: 
+cwc_lwc_raw <- analysis_bothspp_df %>% 
   mutate(week_cwc_link = case_when( #so that the weeks of overflights overlap with the weeks of sample collection
     week %in% c(8, 9) ~ 9, 
     week %in% c(14, 13) ~ 14, 
@@ -1079,7 +1249,7 @@ cwc_lwc_raw <- analysis_df %>%
     TRUE ~ as.numeric(week)
   )) %>% 
   mutate(date = date_wp) %>% 
-  mutate(week_cwc_link = case_when( #dates of overflight and water potential
+  mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
     date %in% c("2022-02-24", "2022-02-28") ~ "1",
     date %in% c("2022-03-08", "2022-03-03") ~ "2",
     date %in% c("2022-03-16", "2022-03-15") ~ "3",
@@ -1095,13 +1265,14 @@ cwc_lwc_raw <- analysis_df %>%
   )) %>% 
   select(-date)
 
-#Combine: 
-unique(cwc_raw$week_cwc_link) #cwc weeks
-unique(cwc_raw$date) #cwc weeks
-unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
-unique(cwc_lwc_raw$date_wp)
+#Combine CWC data with lwc data: 
 
-cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link"), all = T) %>% 
+# unique(cwc_raw$week_cwc_link) #cwc weeks
+# unique(cwc_raw$date) #cwc weeks
+# unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
+# unique(cwc_lwc_raw$date_wp)
+
+cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link", "week"), all = T) %>% 
   distinct() %>% 
   #drop_na(site, species) %>% 
  # select(-shift_id, -la_tree_id) %>% 
@@ -1130,7 +1301,8 @@ cwc_analysis_df <-  cwc_lwc_all_df %>%
    select(tree, site, species, week, 
           #lat, 
           #lon, 
-          time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, leaf_count, week_cwc_link, water_potential, time_season) %>%
+          time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, #leaf_count, 
+          week_cwc_link, water_potential, time_season) %>%
    distinct() %>% 
   mutate(week = week(date_shift))%>% 
   group_by(tree, week) %>% 
@@ -1147,7 +1319,7 @@ write.csv(cwc_analysis_df, here("processed-data", paste0("cwc_analysis",datver,"
 ```
 
 For Jean: 
-```{r}
+```{r, eval = F}
 jean_df <- cwc_analysis_df %>% 
   select(tree, species, time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, lwa_g_cm2, water_potential) %>% 
   group_by(tree) %>% 
@@ -1167,9 +1339,11 @@ LFM is split into different into different categories: stem vs. leaves (type col
 plsr: 20% randome holdout, k=fold cross validation
 
 ```{r}
-lfm_df_all <- read_csv(here("processed-data", paste0("lfm_alldates_",datver,".csv"))) 
+lfm_df_all <- read_csv(here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
+  select(-'...1') %>% 
+  mutate(year_alas = year) #rename year column so that it plays nicely with the main df (we want the alas year and the LFM years to line up, so year_alas and year_lfm area just the same)
 
-lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df_all, by = c("tree", "week", "time", "type", "year"), 
+lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df_all, by = c("tree", "week", "time", "type", "year_alas"), 
                                all = T) %>% 
   filter(tree > 100) %>% 
   distinct()  %>% 
@@ -1181,9 +1355,9 @@ lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df_all, by = c("tree", "we
   ungroup() %>% 
   mutate(rwc_lfm_percent = ((lfm_wet_wt_g-lfm_dry_wt_g)/lfm_dry_wt_g)/mean_swc_per_dry_g * 100,
          rwc_lwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100)) %>% 
-  mutate(rwc_lwc_percent = case_when(
-    type %in% c("stem") ~ NA_real_, 
-    TRUE ~ as.numeric(rwc_lwc_percent))) %>% 
+  # mutate(rwc_lwc_percent = case_when(
+  #   type %in% c("stem") ~ NA_real_, 
+  #   TRUE ~ as.numeric(rwc_lwc_percent))) %>% 
   distinct() %>% 
   # filter(lfm_percent < 200, 
   #        lfm_percent > 0) %>% 
@@ -1192,7 +1366,8 @@ lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df_all, by = c("tree", "we
   distinct() %>% 
   mutate(ilfm = 1/(lfm_percent/100)) %>% 
   filter(ilfm < 2.5,
-         ilfm > 0)
+         ilfm > 0) #%>% 
+  # select(tree, week, time, type_lfm, type_rwc, mpa_mean, lfm_percent, lfm_dry_wt_g, lfm_wet_wt_g, date_lfm, date_wp)
   #filter(!is.na(rwc_lwc_percent))
 ```
 
@@ -1200,14 +1375,28 @@ lfm_rwc_alas_wp_wc_df <- merge(wp_wc_rwc_alas_df, lfm_df_all, by = c("tree", "we
 
 ```{r}
 lfm_rwc_alas_wp_wc_leaves_df <- lfm_rwc_alas_wp_wc_df %>% 
-  filter(!type_lfm == "stem")
+  filter(!type_lfm == "stem") %>% 
+  select(tree, species, week, time, type_lfm, year, lfm_wet_wt_g, lfm_dry_wt_g, lfm_percent, date_lfm, mpa_mean, notes) %>% 
+  distinct() %>% 
+  mutate(tree = as.numeric(tree)) %>% 
+  filter(tree > 100)
+
+filtered_lfm_df <- lfm_rwc_alas_wp_wc_leaves_df %>%
+  group_by(tree, species, week, date_lfm, type_lfm, time, year) %>%
+  filter(n() > 1) %>%
+  ungroup()
+
+filtered_lfm_df %>% 
+  write.csv(here("processed-data", paste0("lfm_dupes",datver,".csv")))
+
+summary(lfm_rwc_alas_wp_wc_leaves_df)
   
 write.csv(lfm_rwc_alas_wp_wc_leaves_df, here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")))
 ```
 
 #LFM dataset (Pepperwood)
 
-```{r}
+```{r, eval = F}
 lfm_mpa_df <- lfm_rwc_alas_wp_wc_df %>% 
   group_by(tree, date_lfm, type_lfm, time) %>% 
   mutate(lfm_percent = mean(lfm_percent, na.rm = T)) %>% 
@@ -1252,678 +1441,7 @@ lfm_mpa_df %>%
 ```
 
 
-#--------------------------------
 
-#OLD BELOW:
-
-```{r}
-# lfm_leaves_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "leaf", 
-#          year == 0) %>% 
-#  mutate(lfm_wet_wt_y0_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_y0_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_y0_g = lfm_dry_wt_g, 
-#          lfm_y0_percent = lfm_percent, 
-#          tree = as.numeric(tree)) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# 
-# lfm_leaves_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "leaf", 
-#          year == 1) %>% 
-#   mutate(lfm_wet_wt_y1_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_y1_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_y1_g = lfm_dry_wt_g, 
-#          lfm_y1_percent = lfm_percent, 
-#          tree = as.numeric(tree)) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# lfm_both_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "both",
-#          year == 3)  %>% 
-#   mutate(lfm_wet_wt_both_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_both_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_both_g = lfm_dry_wt_g, 
-#          lfm_both_percent = lfm_percent, 
-#          tree = as.numeric(tree), 
-#          date_lfm_both = date_lfm) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# #Stems: 
-# 
-# lfm_stem_y0_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "stem", 
-#          year == 0) %>% 
-#  mutate(lfm_wet_wt_y0_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_y0_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_y0_g = lfm_dry_wt_g, 
-#          lfm_y0_percent = lfm_percent, 
-#          tree = as.numeric(tree)) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# lfm_stem_y1_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "stem",
-#          year == 1)%>% 
-#   mutate(lfm_wet_wt_y1_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_y1_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_y1_g = lfm_dry_wt_g, 
-#          lfm_y1_percent = lfm_percent, 
-#          tree = as.numeric(tree)) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# lfm_stem_both_df <- read.csv( here("processed-data", paste0("lfm_alldates_",datver,".csv"))) %>% 
-#   filter(type == "both",
-#          year == 1)  %>% 
-#   mutate(lfm_wet_wt_both_g = lfm_wet_wt_g, 
-#          lfm_wet_per_dry_both_g = lfm_wet_per_dry_g, 
-#          lfm_dry_wt_both_g = lfm_dry_wt_g, 
-#          lfm_both_percent = lfm_percent, 
-#          tree = as.numeric(tree), 
-#          date_lfm_both = date_lfm) %>% 
-#   select(-year, -lfm_wet_wt_g, -lfm_dry_wt_g, -lfm_percent, -lfm_wet_per_dry_g)
-# 
-# 
-# #combine: 
-# lfm_leaves_df <- merge(lfm_leaves_y0_df, lfm_leaves_y1_df, 
-#                        by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
-#   distinct() 
-# 
-# lfm_leaves_both_df <- merge(lfm_leaves_df, lfm_both_both_df,
-#                             by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
-#   distinct() 
-# 
-# 
-# #stems
-# lfm_stem_df <- merge(lfm_stem_y0_df, lfm_stem_y1_df, 
-#                        by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
-#   distinct() 
-# 
-# lfm_stem_both_df <- merge(lfm_stem_df, lfm_stem_both_df,
-#                             by = c("tree", "time", "date_lfm", "week", "type"), all = T) %>% 
-#   distinct()
-# 
-# ```
-# 
-# #####LFM + RWC + WC + WP (wide):
-# 
-# ######RWC calc.
-# 
-# (percent lwc of saturated wc):
-# 
-# ```{r}
-# wp_wc_rwc_lfm_df_wide_leaves <- merge(wp_wc_rwc_df, lfm_leaves_both_df, 
-#                                by = c("tree", "week", "time"), 
-#                                all = T) %>% 
-#   distinct() 
-# 
-# #stem:
-# wp_wc_rwc_lfm_df_wide_stem <- merge(wp_wc_rwc_df, lfm_stem_both_df, 
-#                                by = c("tree", "week", "time"), 
-#                                all = T) %>% 
-#   distinct() 
-# 
-# #make a shorter name because the long one will be a pain to write out!
-# all_water_df <- bind_rows(wp_wc_rwc_lfm_df_wide_leaves, wp_wc_rwc_lfm_df_wide_stem) %>% 
-#   mutate(rwc_percent = ((lwc_mean/mean_swc_per_dry_g)*100), 
-#         # rwc_percent_y1 = ((lwc_mean/mean_swc_per_dry_g_y1)*100),
-#          ) %>% 
-#   filter(!species %in% c("leaf")) %>% 
-#   distinct()
-# ```
-# 
-# ###AL:AS, add to LFM + RWC + WC + WP: 
-# 
-# ```{r}
-# alas_all_water_df <- merge(all_water_df, alas_df, by = c("week", "tree"), all = T) %>% 
-#   mutate(lwa_g_cm2 = lwc_mean * lma_g_cm2)
-# ```
-# 
-# ```{r}
-# all_water_df_alas <- alas_all_water_df %>% 
-#   select(week, tree, time, plot, site, species, mpa_mean, lwc_mean, type, mean_swc_per_dry_g, mean_swc_g, lfm_y0_percent, lfm_y1_percent, lfm_both_percent, rwc_percent, lwm_g, ldm_g, area_cm2, lma_g_cm2, alas_cm2_per_mm2, leaf_count, sla_cm_g, lwa_g_cm2, date_wp) %>% 
-#   distinct() %>% 
-#   filter(tree > 1000)
-# ```
-# 
-# #FINAL (OLD): write.csv
-# 
-# ```{r}
-# write.csv(all_water_df_alas, here("processed-data", paste0("LWC_LFM_WP_dates",datver,".csv")))
-# ```
-# 
-# #For Sedgwick dataset: 
-# 
-# ```{r}
-# #what we have from processing above: 
-# sedgwick <- all_water_df_alas %>% 
-#   select(-lwm_g, -ldm_g, -area_cm2) %>% 
-#   group_by(tree, date_wp, time) %>% 
-#   mutate(date = date_wp, 
-#          lfm_y0_percent = mean(lfm_y0_percent, na.rm = T),
-#          lfm_y1_percent = mean(lfm_y1_percent, na.rm = T),
-#          lfm_both_percent = mean(lfm_both_percent, na.rm = T),
-#          rwc_y0_percent = mean(rwc_percent_y0, na.rm = T),
-#          rwc_y0_percent = mean(rwc_percent_y0, na.rm = T),
-#         #  lwa_g_cm2 = mean( lwa_g_cm2, na.rm = T),
-#          # sla_cm_g = mean( sla_cm_g, na.rm = T),
-#         #  alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T),
-#         # lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
-#          ) %>% 
-# #  distinct() %>% 
-#   ungroup() %>% 
-#   select(-rwc_percent_y0, -date_wp) %>% 
-#   select(date, week, tree, time, plot, site, species, 7:20) %>% 
-#   drop_na(time) %>% 
-#   distinct()
-# 
-# write.csv(sedgwick, here("processed-data", paste0("SHIFT_summary",datver,".csv")))
-# ```
-# 
-# ```{r}
-# sedgwick %>% 
-#   filter(sla_cm_g < 200) %>% 
-#   filter(lma_g_cm2 < 0.05, 
-#          time == "md") %>% 
-#   ggplot(aes(y=leaf_count, x = lma_g_cm2, color = species))+
-#   geom_jitter(alpha = .5) +
-#   geom_smooth(method = "lm")
-# ```
-# 
-# 
-# for Anna's student: 
-# ```{r}
-# # lfm_mpa_only <- all_water_df %>% 
-# #   select(tree, plot, site, species, date_lfm, date_wp, week, time, mpa, type, lfm_y0_percent, lfm_y1_percent, lfm_wet_wt_y0_g, lfm_wet_wt_y1_g, lfm_dry_wt_y0_g, lfm_dry_wt_y1_g, lfm_both_percent, lfm_wet_wt_both_g, lfm_dry_wt_both_g) %>% 
-# #   drop_na(date_lfm) %>% 
-# #   distinct()
-# # 
-# # write.csv(lfm_mpa_only, here("processed-data", paste0("lfm_mpa_shift_",datver,".csv")))
-# ```
-# 
-# NOTE: This just includes leaves, need to make another df or add stems eventually.
-# 
-# ```{r}
-# all_water_df %>% 
-#   filter(#year %in% c(0,1), 
-#          mean_swc_per_dry_g_y0 < 5, 
-#          #swc_percent < 300, 
-#          species == "blue oak") %>% 
-#   ggplot(aes(y = mean_swc_per_dry_g_y0, 
-#              x = as.factor(week), 
-#             # color = as.factor(type)
-#              )) +
-#   geom_boxplot() +
-#   #facet_wrap(~year) +
-#   labs(x = "Week", 
-#        y = "SWC (g water/g dry)", 
-#        color = "Type") +
-#   color_two
-# 
-# all_water_df %>% 
-#   filter(#year %in% c(0,1), 
-#          mean_swc_per_dry_g_y0 < 5, 
-#          #swc_percent < 300, 
-#         # species == "blue oak"
-#          ) %>% 
-#   ggplot(aes(y = mean_swc_per_dry_g_y0, 
-#              x = as.factor(week), 
-#             color = as.factor(species)
-#              )) +
-#   geom_boxplot() +
-#   #facet_wrap(~year) +
-#   labs(x = "Week", 
-#        y = "SWC (g water/g dry)", 
-#        color = "Species", 
-#        title = "Leaves, Y0") +
-#   color_two 
-# ```
-# 
-# ######Missings: 
-# 
-# ```{r, echo=F}
-# #wp_wc_rwc_lfm_df_wide_trees_leaves %>%
-#   all_water_df %>% 
-#  # filter(species == "blue oak") %>% 
-#   select(week, time, tree, lwc_mean, species) %>% 
-#   distinct() %>% 
-#   drop_na(lwc_mean) %>% 
-#   group_by(week, time, species) %>% 
-#   count() %>% 
-#   ggplot(aes(x = week, y = n, fill = time)) +
-#   #facet_wrap(~ species) +
-#   geom_col(stat = "identity") + 
-#   scale_x_continuous(breaks = seq(9, 40, by = 1)) +
-#   labs(title = "LWC")
-# ```
-# 
-# Need to find lwcs:
-# 
-# - week 9 (2022 - 02-28),
-#     -  specifically: tree 2085, 2086, 2087, 2088, 2090, 2348, 2349, 2361
-# - week 12 (2022-03-25), some middays
-# - week 15 (2022-04-13), trees: 2369, 2377
-# - week 17, tree 2383 MD,
-# - week 18, (2022-04-05), tree 2343 pd, 2346 pd, 2347 pd,  2365 pd, 2367 pd, 2369 pd, (all pds?)
-# - week 21 (20022-05-23) tree 2025 md, tree 2027 md, 2354 md
-# - week 29 (2022-07-19) tree 2020 pd, 2030 pd, 2376 pd, 2379 pd, 
-# - week 33 (2022-08-18) all (still need to be entered?)
-# - week 37 (2022-09-12 and later) many (still need to be entered?)
-# 
-# ```{r, echo=F}
-# all_water_df %>% 
-#   select(week, time, tree, mpa_mean, species) %>% 
-#   unique() %>% 
-#   drop_na(mpa_mean) %>% 
-#   group_by(week, time, species) %>% 
-#   count() %>% 
-#   ggplot(aes(x = week, y = n, fill = time)) +
-#  # facet_wrap(~ species) +
-#   geom_col(#stat = "identity"
-#     ) + 
-#   scale_x_continuous(breaks = seq(9, 40, by = 1)) +
-#   labs(title = "MPa")
-# ```
-# ```{r}
-# # all_water_df_new <- all_water_df %>% 
-# #   select(tree, plot, site, species, week, time, lwc_mean, mpa_mean) %>% 
-# #   distinct()
-# ```
-# 
-# Q: What are we missing??? 
-# 
-# A: A lot....but where??
-# 
-# (This is each date we collected the associated metric, so if NA in that cell then we don't have it)
-# 
-# ```{r}
-# # missings_df <- all_water_df %>% 
-# #   select(tree, week, species, site, plot, time, date_wp, date_wc, 
-# #         # date_lfm, 
-# #          date_rwc
-# #          ) %>% 
-# #   filter(if_any(c(date_wp, 
-# #                   date_wc, 
-# #                  # date_lfm
-# #                   ), ~ is.na(.))) %>% 
-# #   distinct()
-# # 
-# # write.csv(missings_df, here("processed-data", paste0("missing_LWC_LFM_WP_dates",datver,".csv")))
-# ```
-# 
-# #####Outliers: 
-# 
-# 10/26 - started this but need to confirm how we actually want to deal with outliers before moving ahead.
-# 
-# ```{r}
-# # outs_lwc <- all_water_df %>% 
-# #   group_by(species, week) %>% 
-# #   identify_outliers(lwc_leaf)
-# # 
-# # outs_lwc_mpa <- all_water_df %>% 
-# #   group_by(species, week, time) %>% 
-# #   identify_outliers(mpa)
-# # 
-# # outs_lfm <- all_water_df %>% 
-# #   group_by(species, week, time) %>% 
-# #   identify_outliers(lfm_y0_percent)
-# 
-# # without outliers: (something like this...)
-# # df %>% 
-# #   anti_join(outs, by = c("tree", "week")) %>% 
-# #   view()
-```
-
-#---------------
-#Visualize!
-
-####Water content dynamics: 
-
-Bulk vs. individual leaf LWC...they should probably be the same? 
-
-#####Leaf water content:
-
-```{r}
-# all_water_df %>% 
-#   ggplot(aes(x = lwc_leaf,
-#              y = lwc_bulk, 
-#              color = species, 
-#              size = week)) +
-#   geom_jitter(alpha = .5) +
-#   geom_abline() +
-#   ylim(-1, 3) +
-#   xlim(0, 3) +
-#   color_two +
-#   facet_wrap(~species) +
-#   labs(caption = "black line is 1:1")
-```
-
-
-```{r}
-# all_water_df %>% 
-#     filter(lwc_mean < 4, 
-#          lwc_mean > 0
-#          #lfm_percent > 20, 
-#   #        lfm_percent < 300) %>% 
-#   ) %>% 
-#   ggplot(aes(y = -1*mpa, 
-#              x = lwc_mean, 
-#              #color = week 
-#              #size = week
-#              )) +
-#   geom_jitter(alpha = .6, 
-#               aes(color = week)) +
-#   geom_smooth(method = "lm", 
-#               aes(group = week, 
-#                   color = week)) +
-#   facet_wrap(~species)+
-#   labs(x = "LWC (g water/gram dry)", 
-#        y = "MPa", 
-#        color = "Week") 
-```
-
-```{r}
-# all_water_df %>% 
-#     filter(lwc_mean < 4, 
-#          lwc_mean > 0,
-#          #lfm_percent > 20, 
-#   #        lfm_percent < 300) %>% 
-#   ) %>% 
-#   ggplot(aes(x = -1*mpa_mean, 
-#              y = lwc_mean, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_jitter(alpha = .5) +
-#   facet_wrap(~species)+
-#   labs(y = "LWC (g water/gram dry)", 
-#        x = "MPa", 
-#        color = "Week") +
-#   color_grad
-# ```
-# ```{r}
-# all_water_df %>% 
-#     filter(lwc_mean < 4, 
-#          lwc_mean > 0,
-#          week > 15
-#          #lfm_percent > 20, 
-#   #        lfm_percent < 300) %>% 
-#   ) %>% 
-#   ggplot(aes(x = -1*mpa_mean, 
-#              y = lwc_mean, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_jitter(alpha = .5) +
-#   facet_wrap(~species)+
-#   labs(y = "LWC (g water/gram dry)", 
-#        x = "MPa", 
-#        color = "Week") +
-#   color_grad
-```
-
-```{r}
-# all_water_df %>% 
-#     filter(lwc_mean < 4, 
-#          lwc_mean > 0,
-#          species == "blue oak"
-#          #lfm_percent > 20, 
-#   #        lfm_percent < 300) %>% 
-#   ) %>% 
-#   drop_na(site) %>% 
-#   ggplot(aes(x = -1*mpa_mean, 
-#              y = lwc_mean, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_jitter(alpha = .5) +
-#   facet_wrap(~site)+
-#   labs(y = "LWC (g water/gram dry)", 
-#        x = "MPa", 
-#        color = "Week", 
-#        title = "blue oak") +
-#   color_grad
-```
-
-
-```{r}
-# all_water_df %>% 
-#     filter(lwc_mean < 4, 
-#          lwc_mean > 0,
-#          species == "live oak"
-#          #lfm_percent > 20, 
-#   #        lfm_percent < 300) %>% 
-#   ) %>% 
-#   drop_na(site) %>% 
-#   ggplot(aes(x = -1*mpa_mean, 
-#              y = lwc_mean, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_jitter(alpha = .5) +
-#   facet_wrap(~site)+
-#   labs(y = "LWC (g water/gram dry)", 
-#        x = "MPa", 
-#        color = "Week", 
-#        title = "live oak") +
-#   # color_grad
-```
-
-#####Relative water content: 
-
-Reminder: RWC is combination of LWC and SWC, where:
-
-SWC = g water/g dry after 2 hour rehydration (mean per tree/time of day/week)
-LWC = g water/g dry (mean per tree/time of day/week)
-
-RWC x LWC: 
-
-```{r}
-# all_water_df %>% 
-#    filter(lwc_mean < 5,
-#           mean_swc_per_dry_g_y0 < 5) %>% 
-#   ggplot(aes(y = lwc_mean, 
-#              x = mean_swc_per_dry_g_y0, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_point(alpha = .6) +
-#   facet_wrap(~species)+
-#   labs(x = "Saturated Leaf Water Content", 
-#        y = "Field Leaf Water Content", 
-#        caption = "black line is 1:1") +
-#   color_grad +
-#   geom_abline()
-```
-
-```{r}
-# all_water_df %>% 
-#    filter(lwc_mean < 5,
-#           mean_swc_per_dry_g_y0 < 5) %>% 
-#   ggplot(aes(y = mpa_mean, 
-#              x = mean_swc_per_dry_g_y0, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_point(alpha = .6) +
-#   facet_wrap(~species)+
-#   labs(x = "Saturated Leaf Water Content", 
-#        y = "MPa", 
-#        #caption = "black line is 1:1"
-#        ) +
-#   color_grad 
-```
-
-```{r}
-# all_water_df %>% 
-#   filter(rwc_percent_y0 > 0, 
-#          rwc_percent_y0 < 300) %>% 
-#   ggplot(aes(y = lwc_mean * 100, 
-#              x =rwc_percent_y0, 
-#              color = week 
-#              #size = week
-#              )) +
-#   geom_point(alpha = .6) +
-#   facet_wrap(~species)+
-#   labs(x = "RWC (% of saturated)", 
-#        y = "LWC (% of dry)", 
-#        caption = "black line is 1:1") +
-#   color_grad +
-#   geom_abline()
-```
-
-RWC vs. MPa
-
-```{r}
-# all_water_df %>% 
-#    filter(rwc_percent_y0 > 0, 
-#           rwc_percent_y0 < 300) %>% 
-#   ggplot(aes(y = -1*mpa, 
-#              x = rwc_percent_y0, 
-#              color = as.factor(week)
-#              #size = week
-#              )) +
-#   geom_jitter() +
-#   facet_wrap(~species)+
-#   labs(x = "Relative Water Content", 
-#        y = "MPa") +
-#   color_many
-```
-
-```{r}
-# all_water_df %>% 
-#    filter(rwc_percent_y0 > 0, 
-#           rwc_percent_y0 < 300) %>% 
-#   ggplot(aes(y = -1*mpa_mean, 
-#              x = rwc_percent_y0, 
-#              color = interaction(species,time) 
-#              #size = week
-#              )) +
-#   geom_point(alpha = .6) +
-#   facet_wrap(~interaction(species, time))+
-#   labs(x = "Relative Water Content", 
-#        y = "MPa") +
-#   color_many
-```
-Q: What are the RWCs important for phsyiological thresholds? 
-
-#####LFM: 
-
-LFM x MPa, year 0
-
-```{r}
-# all_water_df %>% 
-#   filter(lfm_y0_percent > 20, 
-#          lfm_y0_percent < 300) %>% 
-#   ggplot(aes(y = -1*mpa_mean, 
-#              x = lfm_y0_percent, 
-#              color = week)) +
-#   geom_jitter(alpha = .6) +
-#   facet_wrap(~species) +
-#   color_grad +
-#   labs(y = "MPa", 
-#        x = "LFM, Y0")
-```
-
-LFM x MPa, year 1
-
-```{r}
-# all_water_df %>% 
-#   filter(lfm_y1_percent > 20, 
-#          lfm_y1_percent < 300) %>% 
-#   ggplot(aes(y = -1*mpa, 
-#              x = lfm_y1_percent, 
-#              color = species)) +
-#   geom_point() +
-#   color_two +
-#   labs(y = "MPa", 
-#        x = "LFM, Y1")
-```
-
-LFM year 1 vs. year 0
-
-```{r}
-# all_water_df %>% 
-#   filter(lfm_y1_percent > 20, 
-#          lfm_y1_percent < 300,
-#          lfm_y0_percent > 20, 
-#          lfm_y0_percent < 300)  %>% 
-#   ggplot(aes(y = lfm_y0_percent, 
-#              x = lfm_y1_percent, 
-#              color = species, 
-#              size = week)) +
-#   facet_wrap(~species) +
-#   geom_jitter(alpha = .6) + 
-#   geom_abline() +
-#   color_two
-```
-
-RWC boxplots: 
-
-```{r}
-# rwc_df_spp %>% 
-#   filter(species == "blue oak", 
-#          year == 0) %>% 
-#   filter(year %in% c(0,1), 
-#          swc_per_dry_g < 5, 
-#          swc_percent < 300) %>% 
-#   ggplot(aes(y = swc_per_dry_g, 
-#              x = as.factor(week), 
-#              color = as.factor(type), 
-#              #fill = species
-#              )) +
-#   geom_boxplot() +
-#   #facet_wrap(~year, scales = "free") +
-#   labs(x = "Week", 
-#        y = "SWC (g water/g dry)", 
-#        color = "Type") +
-#   color_two
-# 
-# 
-# rwc_df_spp %>% 
-#   filter(species == "blue oak", 
-#          year == 0, 
-#          type == "leaf") %>% 
-#   filter(year %in% c(0,1), 
-#          swc_per_dry_g < 5, 
-#          swc_percent < 300) %>% 
-#   ggplot(aes(y = swc_per_dry_g, 
-#              x = as.factor(week), 
-#              color = as.factor(type), 
-#              #fill = species
-#              )) +
-#   geom_boxplot() +
-#   #facet_wrap(~year, scales = "free") +
-#   labs(x = "Week", 
-#        y = "SWC (g water/g dry)", 
-#        color = "Type") +
-#   color_two
-# ```
-
-#---------------
-
-#Ongoing issues: 
-
-```{r, echo=F}
-# all_water_df %>% 
-#   #select(week, time, tree, water_potential, lwc, date) %>% 
-#  # unique() %>% 
-#   group_by(date_wp, time, species) %>% 
-#   count() %>% 
-#   ggplot(aes(x = date_wp, y = n, fill = time)) +
-#   facet_wrap(~species)+
-#   geom_col(stat = "identity") 
-```
-
-```{r, echo=F}
-# all_water_df %>% 
-#   #select(week, time, tree, water_potential, lwc, date) %>% 
-#  # unique() %>% 
-#   group_by(date_wc, time, species) %>% 
-#   count() %>% 
-#   ggplot(aes(x = date_wc, y = n, fill = time)) +
-#   facet_wrap(~species)+
-#   geom_col(stat = "identity") 
-```
 - water potentials for week 17 piney, cucu, and chamise are missing? (04.25.2022 and 04.27.2022) We have LFM and LWC for this week from those sites however.  
 
 - missing LFM from week 18 (05.04.2022)
