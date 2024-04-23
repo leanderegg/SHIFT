@@ -516,7 +516,7 @@ sampled_tree_ids <- sample(unique(week_data$tree), size = n_sample_trees, replac
 # round1 <- bootstrapped_slopes_df %>% 
 #   filter(round == 1)
 summary_df_hyd <- bootstrapped_slopes_df %>%
-        filter(slope > -100, slope < 100) %>% 
+        filter(slope > -100, slope < 100) %>% # remove v ulikely slopes
         drop_na(slope) %>%
         group_by(week, round) %>% #get the mean of each round and week
        mutate(slope_round = mean(slope, na.rm = T)) %>% 

@@ -2735,12 +2735,39 @@ wc_alldates_pd <- rbind(
   select(-date, -pd_avg) %>% 
   mutate(time = "PD") %>% 
   mutate()
+#______________________________________________________________
+############### NEW 2022-05-09 (Week 19) PD Dry Weights ##################
+#______________________________________________________________
+
+
+wc_alldates_pd_noweek19 <- wc_alldates_pd %>% 
+  mutate(pd_bulk_dry = case_when(
+    week == 19 ~ NA_real_, 
+    TRUE ~ as.numeric(pd_bulk_dry)
+  ))
+
+wc_alldates_pd_reweighed_week19 <- read_csv(here::here("data", "week19_reweighed_dry_masses.csv")) %>% 
+  clean_names() %>% 
+  mutate(pd_bulk_dry = dm_3, 
+         tree = tree_id) %>% 
+  select(tree, pd_bulk_dry) %>% 
+  mutate(week = as.numeric(19))
+
+wc_alldates_pd2 <- merge(wc_alldates_pd_reweighed_week19, wc_alldates_pd_noweek19, 
+                         by = c("week", "tree"), all = T) %>% 
+  distinct() %>% 
+  mutate(pd_bulk_dry = case_when(
+    week %in% c(19) & pd_bulk_dry.y %in% c(NA) ~ as.numeric(pd_bulk_dry.x), 
+    TRUE ~ as.numeric(pd_bulk_dry.y)
+  )) %>% 
+  select(-pd_bulk_dry.x, -pd_bulk_dry.y)
 
 #______________________________________________________________
-############### ALL up to 8-18 (combine) #######################
+############### ALL up to 8-18 (combine md + pd) #######################
 #______________________________________________________________
 
-wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
+
+wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
                                                                      "tag",
                                                                      "plot_number",
                                                                      "tree",
@@ -2749,7 +2776,27 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
                                                                      "rep", 
                                                                      "site", 
                                                                      "plot"
-                                                                    )) %>%
+                                                                    )) %>% 
+  mutate(md_bulk_dry = case_when( #these seem like they were entered wrong, reweighed dry weights and they were 2X more than written (tarring issue that week?)
+    tree %in% c(2087) & date_md %in% c("2022-04-11") ~ 0.6140, 
+    tree %in% c(2090) & date_md %in% c("2022-04-11") ~ 0.8925, 
+    tree %in% c(2093) & date_md %in% c("2022-04-11") ~ 0.6906, 
+    tree %in% c(2086) & date_md %in% c("2022-04-11") ~ 0.8345, 
+    tree %in% c(2088) & date_md %in% c("2022-04-11") ~ 0.6761, 
+    tree %in% c(2089) & date_md %in% c("2022-04-11") ~ 1.1715, 
+    tree %in% c(2343) & date_md %in% c("2022-04-13") ~ 1.1378,
+    tree %in% c(2085) & date_md %in% c("2022-04-11") ~ 1.0818,
+    tree %in% c(2369) & date_md %in% c("2022-04-11") ~ 0.6345,
+    tree %in% c(2372) & date_md %in% c("2022-04-11") ~ 0.5244,
+    tree %in% c(2091) & date_md %in% c("2022-04-11") ~ 1.2648,
+    tree %in% c(2089) & date_md %in% c("2022-04-11") ~ 0.5118,
+    tree %in% c(2092) & date_md %in% c("2022-04-11") ~ 0.9860,
+    TRUE ~ as.numeric(md_bulk_dry)
+  )) %>%
+  mutate(pd_bulk_dry = case_when( #these seem like they were entered wrong, reweighed dry weights and they were 2X more than written (tarring issue that week?)
+    tree %in% c(2028) & date_md %in% c("2022-05-09") ~ 0.8478, 
+    TRUE ~ as.numeric(pd_bulk_dry)
+  )) %>%
   mutate(md_bulk_wet = as.numeric(md_bulk_wet), 
          pd_bulk_wet = as.numeric(pd_bulk_wet), 
          lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
@@ -3050,7 +3097,8 @@ trees_sites_df <-  wc_alldates_longer_all %>%
 wc912_trees <- merge(trees_sites_df, wc912, all.y = T) 
 
 
-wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_longer_all )  %>% 
+wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, 
+                                                       wc_alldates_longer_all )  %>% 
   mutate(time  = case_when(
     time %in% c("PD") ~ "pd", 
     time %in% c("MD") ~ "md", 
@@ -3061,7 +3109,7 @@ wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_
     tree == 2309 ~ 2379, 
     tree == 2014 & week == 37 ~ 2013, 
     tree == 2802 ~ NA, #not sure what this tree is
-    TRUE ~ tree
+    TRUE ~ as.numeric(tree)
   )) %>% 
   distinct() %>% 
   #select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 

@@ -37,8 +37,8 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 
 #read in data: 
 ```{r}
-wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) %>% 
-  filter(lwa_g_cm2_new < 0.02 & lwa_g_cm2_new > 0.005) 
+wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) #%>% 
+ # filter(lwa_g_cm2_new < 0.02 & lwa_g_cm2_new > 0.005) 
 ```
 
 Before leafout: 

@@ -2,18 +2,24 @@ tree,plot,site,species
 10,Chamise,Chamise,ARCA
 11,Rohan,LL,ARCA
 12,High,Cucu Mesa,ARCA
-20,High,Cucu Mesa,LEU
-21,Rohan,LL,LEU
 1478,Low,Cucu Mesa,blue oak
+20,High,Cucu Mesa,LEU
 2004,High,Cucu Mesa,blue oak
+2004,NA,NA,NA
+2005,NA,NA,NA
 2005,High,Cucu Mesa,blue oak
+2006,NA,NA,NA
 2006,High,Cucu Mesa,blue oak
+2007,NA,NA,NA
 2007,High,Cucu Mesa,blue oak
 2009,Hobbiton,LL,blue oak
 2010,Weathertop,LL,blue oak
 2011,Weathertop,LL,blue oak
 2012,Low,Cucu Mesa,blue oak
+2012,NA,NA,NA
 2013,Low,Cucu Mesa,blue oak
+2013,NA,NA,NA
+2015,NA,NA,NA
 2015,Low,Cucu Mesa,blue oak
 2020,Chamise,Chamise,blue oak
 2021,Chamise,Chamise,blue oak
@@ -21,6 +27,7 @@ tree,plot,site,species
 2023,Chamise,Chamise,live oak
 2024,Chamise,Chamise,blue oak
 2025,Chamise,Chamise,blue oak
+2026,NA,NA,NA
 2026,Shedd,Chamise,blue oak
 2027,Shedd,Chamise,blue oak
 2028,Shedd,Chamise,blue oak
@@ -41,15 +48,25 @@ tree,plot,site,species
 2051,NA,NA,NA
 2052,NA,NA,NA
 2082,NA,NA,NA
+2085,NA,NA,NA
 2085,Low,PineNeedle,blue oak
 2086,Low,PineNeedle,blue oak
+2086,NA,NA,NA
+2087,NA,NA,NA
 2087,Low,PineNeedle,blue oak
+2088,NA,NA,NA
 2088,Low,PineNeedle,blue oak
 2089,Low,PineNeedle,live oak
+2089,NA,NA,NA
+2090,NA,NA,NA
 2090,Low,PineNeedle,blue oak
+2091,NA,NA,NA
 2091,Low,PineNeedle,live oak
 2092,Low,PineNeedle,live oak
+2092,NA,NA,NA
 2093,Low,PineNeedle,live oak
+2093,NA,NA,NA
+21,Rohan,LL,LEU
 2301,Hobbiton,LL,live oak
 2330,Ridge,LL,blue oak
 2331,Ridge,LL,live oak
@@ -64,6 +81,7 @@ tree,plot,site,species
 2365,MiddleEarth,LL,blue oak
 2367,MiddleEarth,LL,blue oak
 2369,MiddleEarth,LL,blue oak
+2370,NA,NA,NA
 2370,Weathertop,LL,blue oak
 2371,Weathertop,LL,blue oak
 2372,Weathertop,LL,blue oak
@@ -79,12 +97,16 @@ tree,plot,site,species
 2384,Weathertop,LL,blue oak
 NA,NA,NA,NA
 NA,Chamise,Chamise,LEU
+1475,NA,NA,NA
 2008,High,Cucu Mesa,blue oak
 2014,Low,Cucu Mesa,blue oak
 2032,NA,NA,blue oak
+2083,NA,NA,NA
 2084,NA,NA,blue oak
+2084,NA,NA,NA
 2327,NA,NA,blue oak
 2379,Hobbiton,LL,blue oak
+2310,NA,NA,NA
 2313,Ridge,LL,blue oak
 2322,Ridge,LL,live oak
 2344,Hobbiton,LL,blue oak
