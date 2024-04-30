@@ -303,6 +303,8 @@ hyd_slopes
 
 #####Bootstrapped, do not use
 
+...why?
+
 ```{r}
 space_slope_bs <-  final_df_all %>% 
    filter(!week %in% c(9, 18)) %>% 

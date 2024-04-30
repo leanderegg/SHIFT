@@ -196,15 +196,15 @@ dry_to_wet_conversion <- leaf_area_df2 %>%
   mutate(area_cm2 = mean(area_cm2)) %>% 
   ungroup() %>% 
   #distinct() %>% 
-  select(branch, year_leaf_area, file, tree_id, area_cm2) %>% 
+  select(branch, year_leaf_area, file, tree_id, area_cm2, species) %>% 
   pivot_wider(names_from = file, values_from = area_cm2, values_fn = mean 
               ) %>% 
   rename(from_dry = 'from dry') %>% 
   mutate(conversion = (txt/from_dry)) %>% 
   mutate(test = from_dry * conversion) %>% 
   filter(conversion < 2) %>% #only use realistic conversion (likly lost some leaves between wet and dry scanning)
-  summarise( mean = mean(conversion)) %>% 
-  pull()
+  group_by(species) %>% 
+  summarise(mean = mean(conversion)) 
 
 dry_to_wet_conversion
 

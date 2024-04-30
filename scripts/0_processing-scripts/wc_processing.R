@@ -21,6 +21,8 @@ library(readxl)
 library(gridExtra)
 library(MetBrewer)
 
+
+
 #______________________________________________________________
 ############### Begin: WATER CONTENT - Load and Clean #######################################
 #______________________________________________________________
@@ -328,7 +330,17 @@ wc308_long_wet <- wc308md %>%
 
 wc308_long_dry_premerge <- merge(wc308_long_md, wc308_long_dry, all.x = T)
 
-wc_long_md_308 <- merge(wc308_long_dry_premerge, wc308_long_wet)
+wc_long_md_308 <- merge(wc308_long_dry_premerge, wc308_long_wet)  %>% 
+  mutate(ww_g = case_when(
+    ww_g %in% c(0.939) & tag %in% c("2007.0") ~ 0.0939,
+    TRUE ~ as.numeric(ww_g)
+  ))# %>% 
+  # mutate(dw_g = case_when(
+  #   dw_g %in% c(0.0240) & tag %in% c("2346.0") ~ 0.2400,
+  #   dw_g %in% c(0.0836) & tag %in% c("2331.0") ~ 0.8360,
+  #   TRUE ~ as.numeric(dw_g)
+  # ))
+
 
 #______________________________________________________________
 ############### 03-15-2022 #######################################
@@ -389,7 +401,17 @@ wc315_long_wet <- wc315md %>%
 
 wc315_long_dry_premerge <- merge(wc315_long_md, wc315_long_dry, all.x = T)
 
-wc_long_md_315 <- merge(wc315_long_dry_premerge, wc315_long_wet, all.x = T)
+wc_long_md_315 <- merge(wc315_long_dry_premerge, wc315_long_wet, all.x = T) %>% 
+  mutate(ww_g = case_when(
+    ww_g %in% c(0.1466) & tag %in% c("2347.0") ~ .0146,
+    TRUE ~ as.numeric(ww_g)
+  )) #%>% 
+  # mutate(dw_g = case_when(
+  #   dw_g %in% c(0.0240) & tag %in% c("2346.0") ~ 0.2400,
+  #   dw_g %in% c(0.0836) & tag %in% c("2331.0") ~ 0.8360,
+  #   TRUE ~ as.numeric(dw_g)
+  # ))
+
 
 #______________________________________________________________
 ############### 03-23-2022 #######################################
@@ -516,7 +538,12 @@ wc325_long_wet <- wc325md %>%
 
 wc325_long_dry_premerge <- merge(wc325_long_md, wc325_long_dry, all = T)
 
-wc_long_md_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, all= T)
+wc_long_md_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, all= T) %>% 
+  mutate(dw_g = NA, 
+         ww_g = NA, 
+         measure_ww = NA, 
+         measure_dw = NA) %>% 
+  distinct() #these are all just the same
 
 ##No specific LWC
 
@@ -834,7 +861,19 @@ wc413_long_wet <- wc413md %>%
 
 wc413_long_dry_premerge <- merge(wc413_long_md, wc413_long_dry)
 
-wc_long_md_413 <- merge(wc413_long_dry_premerge, wc413_long_wet)
+wc_long_md_413 <- merge(wc413_long_dry_premerge, wc413_long_wet) %>% 
+  mutate(ww_g = case_when(
+    ww_g %in% c(824) ~ 0.0824, 
+    ww_g %in% c(0.1146) & tag %in% c("2381.0") ~ 0.2165,
+    ww_g %in% c(0.0657) & tag %in% c("2381.0") ~ 0.1234,
+    ww_g %in% c(0.1056) & tag %in% c("2381.0") ~ 0.1997,
+    TRUE ~ as.numeric(ww_g)
+  )) %>% 
+  mutate(dw_g = case_when(
+    dw_g %in% c(0.0240) & tag %in% c("2346.0") ~ 0.2400,
+    dw_g %in% c(0.0836) & tag %in% c("2331.0") ~ 0.8360,
+    TRUE ~ as.numeric(dw_g)
+  ))
 
 
 ##Have bulk and individual leaves
@@ -1607,7 +1646,6 @@ wc308_long_wet <- wc308pd %>%
 wc308_long_dry_premerge <- merge(wc308_long_pd, wc308_long_dry, all.x = T)
 
 wc_long_308 <- merge(wc308_long_dry_premerge, wc308_long_wet, all.x = T)
-
 #______________________________________________________________
 ############### 03-15-2022 #######################################
 #______________________________________________________________
@@ -1736,6 +1774,8 @@ wc_long_323 <- merge(wc323_long_dry_premerge, wc323_long_wet, all= T)
 #______________________________________________________________
 ############### 03-25-2022 #######################################
 #______________________________________________________________
+#The non-bulk LWCs are just double entered water potentials!! - IB, 3/21/2024
+
 
 wc325pd <- wc325 %>%
   as.data.frame() %>% 
@@ -1769,7 +1809,7 @@ wc325_long_dry <- wc325pd %>%
   #   ,measure_dw == "pd9_g_dry" ~ "pd9", 
   #  # ,measure_dw == "pd_bulk_dry" ~ "pd_bulk" 
 # TRUE ~ measure_dw)) %>% 
-dplyr::select(!matches("pd[1-9]"), -pd_avg)
+dplyr::select(!matches("pd[1-9]"), -pd_avg) 
 
 wc325_long_wet <- wc325pd %>% 
   pivot_longer(cols=matches(c("pd[1-9]_g_wet", "pd_bulk_wet")) 
@@ -1788,12 +1828,30 @@ wc325_long_wet <- wc325pd %>%
   #   ,measure_ww == "pd8_g_wet" ~ "pd8"
   #   ,measure_ww == "pd9_g_wet" ~ "pd9"
   # )) %>% 
-dplyr::select(!matches("pd[1-9]"), -pd_avg)
+dplyr::select(!matches("pd[1-9]"), -pd_avg)# %>% 
+ # mutate()%>% 
+ # separate(measure_ww, into = c("pd", NA, NA), remove = F)
 
 
-wc325_long_dry_premerge <- merge(wc325_long_pd, wc325_long_dry, all = T)
+wc325_long_dry_premerge <- merge(wc325_long_pd, wc325_long_dry, all = T) #%>% 
+  # group_by(tag, site, plot, plot_number, species, pd_bulk_wet, pd_bulk_dry, pd_avg, date, measure_dw, dw_g) %>% 
+  # group_modify(~add_row(pd = "pd", .x)) 
+  
 
-wc_long_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, all= T)
+wc_long_325 <- merge(wc325_long_dry_premerge, wc325_long_wet, by = c("site", "species", "plot","plot_number", "tag"), all= T) %>% 
+  mutate(dw_g = NA, 
+         ww_g = NA, 
+         measure_ww = NA, 
+         measure_dw = NA) %>% 
+  distinct() #these are all just the same
+  # mutate(dw_g = case_when(
+  #   measure_dw %in% c("pd_bulk_dry") ~ NA, 
+  #   TRUE ~ as.numeric(dw_g)
+  # )) %>% 
+  # mutate(ww_g = case_when(
+  #   measure_ww %in% c("pd_bulk_wet") ~ NA, 
+  #   TRUE ~ as.numeric(ww_g)
+  # ))
 
 ##No specific LWC
 
@@ -2675,13 +2733,41 @@ wc_alldates_pd <- rbind(
   mutate(rep = str_sub(pd, 3, -1), 
          date_pd = date) %>% 
   select(-date, -pd_avg) %>% 
-  mutate(time = "PD")
+  mutate(time = "PD") %>% 
+  mutate()
+#______________________________________________________________
+############### NEW 2022-05-09 (Week 19) PD Dry Weights ##################
+#______________________________________________________________
+
+
+wc_alldates_pd_noweek19 <- wc_alldates_pd %>% 
+  mutate(pd_bulk_dry = case_when(
+    week == 19 ~ NA_real_, 
+    TRUE ~ as.numeric(pd_bulk_dry)
+  ))
+
+wc_alldates_pd_reweighed_week19 <- read_csv(here::here("data", "week19_reweighed_dry_masses.csv")) %>% 
+  clean_names() %>% 
+  mutate(pd_bulk_dry = dm_3, 
+         tree = tree_id) %>% 
+  select(tree, pd_bulk_dry) %>% 
+  mutate(week = as.numeric(19))
+
+wc_alldates_pd2 <- merge(wc_alldates_pd_reweighed_week19, wc_alldates_pd_noweek19, 
+                         by = c("week", "tree"), all = T) %>% 
+  distinct() %>% 
+  mutate(pd_bulk_dry = case_when(
+    week %in% c(19) & pd_bulk_dry.y %in% c(NA) ~ as.numeric(pd_bulk_dry.x), 
+    TRUE ~ as.numeric(pd_bulk_dry.y)
+  )) %>% 
+  select(-pd_bulk_dry.x, -pd_bulk_dry.y)
 
 #______________________________________________________________
-############### ALL up to 8-18 (combine) #######################
+############### ALL up to 8-18 (combine md + pd) #######################
 #______________________________________________________________
 
-wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
+
+wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
                                                                      "tag",
                                                                      "plot_number",
                                                                      "tree",
@@ -2690,7 +2776,27 @@ wc_alldates <- merge(wc_alldates_pd, wc_alldates_md, all = T, by = c(#"date",
                                                                      "rep", 
                                                                      "site", 
                                                                      "plot"
-                                                                    )) %>%
+                                                                    )) %>% 
+  mutate(md_bulk_dry = case_when( #these seem like they were entered wrong, reweighed dry weights and they were 2X more than written (tarring issue that week?)
+    tree %in% c(2087) & date_md %in% c("2022-04-11") ~ 0.6140, 
+    tree %in% c(2090) & date_md %in% c("2022-04-11") ~ 0.8925, 
+    tree %in% c(2093) & date_md %in% c("2022-04-11") ~ 0.6906, 
+    tree %in% c(2086) & date_md %in% c("2022-04-11") ~ 0.8345, 
+    tree %in% c(2088) & date_md %in% c("2022-04-11") ~ 0.6761, 
+    tree %in% c(2089) & date_md %in% c("2022-04-11") ~ 1.1715, 
+    tree %in% c(2343) & date_md %in% c("2022-04-13") ~ 1.1378,
+    tree %in% c(2085) & date_md %in% c("2022-04-11") ~ 1.0818,
+    tree %in% c(2369) & date_md %in% c("2022-04-11") ~ 0.6345,
+    tree %in% c(2372) & date_md %in% c("2022-04-11") ~ 0.5244,
+    tree %in% c(2091) & date_md %in% c("2022-04-11") ~ 1.2648,
+    tree %in% c(2089) & date_md %in% c("2022-04-11") ~ 0.5118,
+    tree %in% c(2092) & date_md %in% c("2022-04-11") ~ 0.9860,
+    TRUE ~ as.numeric(md_bulk_dry)
+  )) %>%
+  mutate(pd_bulk_dry = case_when( #these seem like they were entered wrong, reweighed dry weights and they were 2X more than written (tarring issue that week?)
+    tree %in% c(2028) & date_md %in% c("2022-05-09") ~ 0.8478, 
+    TRUE ~ as.numeric(pd_bulk_dry)
+  )) %>%
   mutate(md_bulk_wet = as.numeric(md_bulk_wet), 
          pd_bulk_wet = as.numeric(pd_bulk_wet), 
          lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
@@ -2762,9 +2868,7 @@ wc_alldates_longer_mpa <- wc_alldates %>%
     time == "mpa_md" ~ "MD"
   ))
 
-view(wc_alldates)
 #Bulk leaves: 
-
 wc_alldates_longer_bulk <- wc_alldates %>% 
   select("tree", "plot", "week", "site", "rep",
          
@@ -2794,7 +2898,6 @@ wc_alldates_longer_bulk <- wc_alldates %>%
   select(-time_lwc)
 
 #Individual leaves: 
-
 wc_alldates_longer_leaf <- wc_alldates %>% 
   select("tree", "plot", "week", "site", "rep",
          # "time.x", "time.y",
@@ -2951,7 +3054,6 @@ wc_alldates_longer_all <- merge(wc_alldates_longer_lwc_mpa_masses_leafs,
                                           wc_alldates_longer_dates) %>% 
   distinct()
 
-view(wc_alldates_longer_all)
 #______________________________________________________________
 ############### 9-12-2022 PLUS #######################
 #______________________________________________________________
@@ -2984,21 +3086,48 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
          dm_bulk_g = dm, 
          wm_bulk_g = wm
          ) %>% 
-  select(-tree_id, -wm, -dm,  -notes)
+  select(-tree_id, -wm, -dm, # -notes
+         ) %>% 
+  filter(!(notes %in% c("*PD in question", "*PD in question; envelope not labelled with Tree ID", "NO WM")))
 
-trees_sites_df <- wc_alldates_longer_lwc_mpa_dates %>% 
+trees_sites_df <-  wc_alldates_longer_all %>% 
   select(tree, plot, site, species) %>% 
   distinct()
 
 wc912_trees <- merge(trees_sites_df, wc912, all.y = T) 
 
 
-wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, wc_alldates_longer_all ) %>% 
-  select(-mpa)
+wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, 
+                                                       wc_alldates_longer_all )  %>% 
+  mutate(time  = case_when(
+    time %in% c("PD") ~ "pd", 
+    time %in% c("MD") ~ "md", 
+    TRUE ~"NA"
+  ), 
+  tree = case_when(
+    tree == 2127 ~ 2327, #weird trees
+    tree == 2309 ~ 2379, 
+    tree == 2014 & week == 37 ~ 2013, 
+    tree == 2802 ~ NA, #not sure what this tree is
+    TRUE ~ as.numeric(tree)
+  )) %>% 
+  distinct() %>% 
+  #select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
+  ungroup() %>% 
+  select(-mpa) %>%
+  group_by(tree, time, week) %>% 
+  fill(c(dm_bulk_g, wm_bulk_g, lwc_bulk), .direction = "downup") %>% 
+  filter(!(is.na(dm_leaf_g) & !is.na(wm_leaf_g)) &  # Keep rows where dm_leaf_g is not missing while wm_leaf_g is not missing
+           !(!is.na(dm_leaf_g) & is.na(wm_leaf_g))) 
 
-##super annoying name, so rename: 
-wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022
+##super annoying name, so rename and also remove uncessary columns:
+
+wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022 %>% 
+  select(-dw_g_md, -dw_g_pd, -ww_g_md, -ww_g_pd, -pd_bulk_dry, -pd_bulk_wet, -md_bulk_dry, -md_bulk_wet) %>% 
+  distinct()
+
 
 #write csv: ####
+####wc_dalldates df ####
 write.csv(wc_all, here("processed-data", paste0("wc_alldates_",datver,".csv")))
 

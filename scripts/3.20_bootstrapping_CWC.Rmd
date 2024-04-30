@@ -19,8 +19,9 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 #DATA
 ```{r}
 data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>%  
-  select(tree, week, water_potential, cwc, time_season, time) %>% 
-  distinct() 
+ # select(tree, week, water_potential, cwc, time_season, time) %>% 
+  distinct() %>% 
+    filter(!tree %in% c(2012, 2011)) 
 ```
 
 
@@ -111,7 +112,6 @@ data <- filtered_data  %>%
          !(week == 9)) %>% 
   distinct() %>% 
   drop_na(water_potential, cwc) %>% 
-  filter(!tree %in% c(2012, 2011)) %>% 
   group_by(tree) %>% 
   mutate(COUNT = n()) %>% 
   filter(!(COUNT == 1)) %>% 
@@ -124,7 +124,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 33  # Adjust as needed
@@ -216,7 +216,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 33  # Adjust as needed
@@ -333,7 +333,7 @@ Cant actually filter by trees that were in all weeks, because none were actually
 
 ```{r}
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Create an empty dataframe to store results
 cwc_final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
