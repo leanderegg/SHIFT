@@ -1383,6 +1383,7 @@ polygons, shade: get rid lof least bright pixels
 #  write.csv(cwc_analysis_df, here("processed-data", paste0("cwc_analysis",datver,".csv")))
 ```
 
+Rained on 9/12
 ```{r}
 datver_cwc <- "20231128" #Just change this in the 1_combined_processing.Rmd
 dataversion_cwc <- paste0("Data_", datver_cwc)

@@ -8,7 +8,7 @@ wp_23_df <- read_csv(here(paste0("Data_",datver), "wp_2023.csv"),
   janitor::clean_names() %>%
   mutate(date = ymd(date), #lubridate package, 
          year = year(date)) %>% 
-  filter(year == c(2023)) %>% 
+  filter(year == c(2023)) %>% #2022 is cleaned up in other areas of R. 
   mutate(date = case_when(
     date %in% c("2023-05-15") ~ "2023-05-12", #changed becuase entered wrong
     date %in% c("2023-07-27") ~ "2023-07-28", 

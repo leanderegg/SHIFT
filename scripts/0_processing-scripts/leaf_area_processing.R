@@ -206,13 +206,23 @@ dry_to_wet_conversion <- leaf_area_df2 %>%
   group_by(species) %>% 
   summarise(mean = mean(conversion)) 
 
-dry_to_wet_conversion
+dry_to_wet_conversion_lives <- dry_to_wet_conversion %>% 
+  filter(species == "L") %>% 
+  select(mean) %>% 
+  pull
+
+dry_to_wet_conversion_blues <- dry_to_wet_conversion %>% 
+  filter(species == "B") %>% 
+  select(mean) %>% 
+  pull
+  
 
 ##Convert dry to wet for all using conversion factor from above
 leaf_area_df3 <- leaf_area_df2 %>% 
   filter(!(date_leaf_area %in% c("2022-04-04") & file %in% c("from dry"))) %>% 
   mutate(leaf_area_new = case_when(
-    file %in% c("from dry") ~ area_cm2*dry_to_wet_conversion, 
+    file %in% c("from dry") & species %in% c("B") ~ area_cm2*dry_to_wet_conversion_blues, 
+    file %in% c("from dry") & species %in% c("L") ~ area_cm2*dry_to_wet_conversion_lives, 
     TRUE ~ as.numeric(area_cm2)
   )) %>% 
   select(-area_cm2) %>% 
