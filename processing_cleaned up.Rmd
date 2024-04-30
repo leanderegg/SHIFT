@@ -131,13 +131,17 @@ datver_lwa <- "20240321" #where the lwa info is located
 
 #Raw Area data: 
 lwa_raw0 <- read_csv(here(paste0("Data_",datver_lwa), "shift_lwa_new.csv"), show_col_types = FALSE) %>% 
-  clean_names() 
+  clean_names() %>% 
+  mutate(tree_id = case_when(tree_id %in% c(1475) ~ 1478, 
+                          tree_id %in% c(2082) ~ 2382, 
+                          tree_id %in% c(2385) ~ 2085, 
+                          TRUE ~ as.numeric(tree_id)))
 
 #make sure bulk vs. individual leaves are correctly coded; this is important because bulk leaves will not be summarized over a single date. 
 lwa_raw1 <- lwa_raw0 %>% 
   #filter(is.na(bulk_or_individual_leaf)) %>%
-  group_by(dry_scan_area, tree_id) %>%
   mutate(bulk_or_individual_leaf_old = bulk_or_individual_leaf) %>% 
+  group_by(dry_scan_area, tree_id) %>%
   mutate(bulk_or_individual_leaf = case_when(
     is.na(dry_scan_area) ~ NA_character_,
     n() > 1 | bulk_or_individual_leaf_old %in% c("bulk") ~ "bulk",
@@ -148,9 +152,15 @@ lwa_raw1 <- lwa_raw0 %>%
     date %in% c("2022-04-04") & tree_id %in% c(2086) & pd_or_md %in% c("md") ~ 10.109, #entered wrong in datasheet (entered as summed bulk, but was missing one leaf entry)
     TRUE ~ as.numeric(dry_scan_area))
   ) %>% 
-  filter(!(date %in% c("9/12/22", "9/15/22", "9/16/22") & tree_id %in% c(1478, 2006, 2012,2015) & notes %in% c("y0, area from rstudio"))) %>% 
-  mutate(tree = as.numeric(tree_id))
+  # filter(!(date %in% c("9/12/22", "9/15/22", "9/16/22") & tree_id %in% c(1478, 2006, 2012,2015) & notes %in% c("y0, area from rstudio"))) %>% 
+  mutate(tree = as.numeric(tree_id))# %>% 
+ # filter(date %in% c("4/25/22", "4/27/22"))
 
+unique(lwa_raw0$date)
+```
+
+
+```{r}
 ##Add in species and site and plot info! 
 
 lwa_raw <- merge(trees_sites_df, lwa_raw1, by = c("tree"))
@@ -164,9 +174,14 @@ lwa_new_df1 <- lwa_raw %>%
          week = week(date_wc), 
          rep = leaf_number) %>% 
   select(tree, date_wc, time, week, rep, lwc_leaf, lwc_bulk, dry_scan_area, bulk_or_individual_leaf, species) %>% 
+  group_by(tree) %>% 
+  fill(species, .direction = "downup") %>% 
+  ungroup() %>% 
   mutate(area_cm2 = case_when(
-    species %in% c("blue oak") ~ dry_scan_area*1.166899, 
-    species %in% c("live oak") ~ dry_scan_area*1.126367, 
+    species %in% c("blue oak") & week <= 17 ~ dry_scan_area*1.166899, 
+    species %in% c("live oak") & week <= 17 ~ dry_scan_area*1.126367, 
+    species %in% c("blue oak") & week > 17 ~ dry_scan_area*1.068375, 
+    species %in% c("live oak") & week > 17 ~ dry_scan_area*1.058706, 
     TRUE ~ as.numeric(dry_scan_area)
     )) %>%  #1.166899 = dry to wet mass conversion based on rescanned leaves from al:as collectd on 4/4/22), in leaf_area_processes.R script
   distinct()
@@ -316,7 +331,7 @@ plotly::ggplotly(wc_long_lwa_all2 %>%  #masses look correct
     geom_abline()
   )
 ```
-###THIS IS THE DF THAT IS GETTING MISSINGS ENTERED INTO: 
+###*****THIS IS THE DF THAT IS GETTING MISSINGS ENTERED INTO: 
 
 ```{r}
 #--------
@@ -333,10 +348,20 @@ wc_lwa_df <- merge(wc_long_lwa_all2, lwa_new_df,
          lma_g_cm2_new = sum_dm_g/sum_area_cm2) %>% 
   select(-lwc_leaf, -mismatch_leaf) %>% 
   distinct() %>% 
-  drop_na(species) 
+  drop_na(species)
+
+wc_lwa_df_toenter <- wc_lwa_df  %>% 
+  select(tree, week, date_wc, time, species, dm_bulk_g, wm_bulk_g, dry_scan_area, sum_area_cm2) %>% 
+  distinct() %>% 
+  drop_na(species) %>% 
+  mutate(scan_done = case_when(
+    dry_scan_area > 0 ~ "done", 
+    TRUE ~ as.character("scan needed")
+  ))
+  
 #Visualize to see if it makes sense
 
-write.csv(wc_lwa_df, here::here("processed-data", "lwa_toenter_20240422.csv"))
+write.csv(wc_lwa_df_toenter, here::here("processed-data", "lwa_toenter_20240422.csv"))
 
 plotly::ggplotly(wc_lwa_df  %>%  #masses look correct
                  #filter(week == 33) %>% 
@@ -541,7 +566,7 @@ plotly::ggplotly(wp_wc_lwa_df %>%
              label = tree),
              tooltip = c("tree", "species", "time")) +
   geom_point() +
-    facet_wrap(~week)
+    facet_wrap(~week, scales = "free")
   )
 ```
 
@@ -644,6 +669,17 @@ wp_wc_df2 <- merge(wp_wc_df1, lwa_new_df2) %>%
 
 write.csv(wp_wc_df2, here::here("processed-data", "wp_wc_df.csv"))
 ```
+
+```{r}
+plotly::ggplotly(wp_wc_df2 %>% 
+  filter(week == 17) %>% 
+  ggplot(aes(y = mpa_mean, 
+             x = lwc_mean, 
+             color = time, 
+             label = tree)) +
+  geom_point())
+```
+
 
 #####RWC:
 
@@ -796,7 +832,7 @@ leaf_number <- read_csv(here(here("Data_20230316","alas_leaf_number.csv")), show
      tree %in% c(2080) ~ 2380,
      tree %in% c(2081) ~ 2381,
      tree %in% c(2082) ~ 2382,
-    tree %in% c(2083) ~ 2383,
+     tree %in% c(2083) ~ 2383,
     tree %in% c(2393) ~ 2093,
     tree %in% c(2350) ~ 2354,
     tree %in% c(2303) ~ 2330,
@@ -952,7 +988,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, all_data_new_lwa, all = T) %>%
     rwc = (lwc_mean/mean_swc_per_dry_g)*100,
     week = case_when(
       week %in% c(13) ~ 14, #combine dates that are very close together (week() just split at the wrong spot)
-      week %in% c(11) ~ 10,
+     # week %in% c(11) ~ 10,
     #  week %in% c(18) ~ 19, #4 days apart, 
       TRUE ~ week
   )) %>%
@@ -981,6 +1017,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, all_data_new_lwa, all = T) %>%
     group_by(tree, week, time, date_wp) %>% 
   fill(lma_g_cm2_new, lwa_g_cm2_new_mean ,.direction = "downup") %>% 
   ungroup() %>% 
+  filter(year_alas == 0) %>% 
   distinct() %>% 
   drop_na(time) 
 ```
@@ -993,6 +1030,16 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, all_data_new_lwa, all = T) %>%
 write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
 ```
 
+```{r}
+plotly::ggplotly(wp_wc_rwc_alas_df %>% 
+  filter(week == 17, species == "blue oak") %>% 
+  ggplot(aes(y = mpa_mean, 
+             x = lwa_g_cm2_new, 
+             color = time, 
+             shape = as.factor(date_wp),
+             label = tree)) +
+  geom_point())
+```
 
 ####**Dataset for analysis of LWC, MPA, LWA for manuscript:
 
@@ -1187,6 +1234,156 @@ analysis_df %>%
 Reprossessing happening with new isofit, CWC would not change much probably; 
 polygons, shade: get rid lof least bright pixels
 ```{r}
+##OLD VERSION: 
+
+# datver_cwc <- "20231128" #Just change this in the 1_combined_processing.Rmd
+# dataversion_cwc <- paste0("Data_", datver_cwc)
+# 
+# cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F) %>% 
+#   clean_names() %>%
+#   pivot_longer(cols = c(5:17),
+#     names_to = "date_x", 
+#                values_to = "cwc") %>% 
+#   mutate(date = gsub("x", "", date_x, fixed = TRUE),
+#          date = mdy(date), 
+#          week = week(date), 
+#          tree = as.character(comment)
+#          ) %>% 
+#  # select() %>% 
+#   group_by(tree, week) %>% 
+#   mutate(cwc = mean(cwc)) %>% 
+#   ungroup() %>% 
+#   mutate(week_cwc_link = week) %>% 
+#   filter(cwc > -100) %>% 
+#   select(-site, -species, - date_x, -comment, -source)%>% 
+#   # mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
+#   #   date %in% c("2022-02-24", "2022-02-28") ~ "1",
+#   #   date %in% c("2022-03-08", "2022-03-03") ~ "2",
+#   #   date %in% c("2022-03-16", "2022-03-15") ~ "3",
+#   #   date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
+#   #   date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
+#   #   date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
+#   #   date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
+#   #   date %in% c("2022-05-03", "2022-05-04") ~ "8",
+#   #   date %in% c("2022-05-11", "2022-05-09") ~ "9",
+#   #   date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
+#   #   date %in% c("2022-09-14", "2022-09-15") ~ "11", 
+#   #   date %in% c("2022-08-18", "2022-07-19") ~ "extra"
+#   # )) %>% 
+#   mutate(week_cwc_link = case_when(  #so that the weeks of overflights overlap with the week #s of sample collection
+#     #date %in% c("2022-04-20") ~ 17, 
+#     week %in% c(8, 9) ~ 9, 
+#     week %in% c(14, 13) ~ 14, 
+#     week %in% c(17) ~ 18, #shift week 18 collected on 4/27 and mpas collected on 4/25 and 4/27
+#     week %in% c(20) ~ 21,
+#    # date %in% c("2022-03-15" & time %in% c("md")) ~ 11, #predawns were collected on week 10 technically, so we want them to have that cwc
+#     TRUE ~ as.numeric(week)
+#   )) %>% 
+#   mutate(date_shift = date) %>% 
+#   select(-date)
+# 
+# ##Look at it: 
+# cwc_raw %>% 
+#   ggplot(aes(y = cwc, 
+#              x = date, 
+#              color = as.factor(date))) +
+#   geom_point()
+# 
+# cwc_raw %>% 
+#   ggplot(aes(y = cwc, 
+#              x = week, 
+#              color = as.factor(date))) +
+#   geom_point()
+# 
+# 
+# analysis_df %>% 
+#   ggplot(aes(y = water_potential, 
+#              x = date_wp, 
+#              color = as.factor(date_wp))) +
+#   geom_point()
+# 
+# unique(cwc_raw$week)
+# 
+# #get our 'analysis df'  data so that it aligns with the CWC dates: 
+# cwc_mpa_raw <- analysis_bothspp_df %>% 
+#   # mutate(week_cwc_link = case_when( #so that the weeks of overflights overlap with the week #s of sample collection
+#   #   week %in% c(8, 9) ~ 9, 
+#   #   week %in% c(14, 13) ~ 14, 
+#   #   #week %in% c(17) ~ 16, 
+#   #   week %in% c(21) ~ 20,
+#   #   TRUE ~ as.numeric(week)
+#   # )) %>% 
+#   mutate(date = date_wp) %>% 
+#   # mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
+#   #   date %in% c("2022-02-24", "2022-02-28") ~ "1",
+#   #   date %in% c("2022-03-08", "2022-03-03") ~ "2",
+#   #   date %in% c("2022-03-16", "2022-03-15") ~ "3",
+#   #   date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
+#   #   date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
+#   #   date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
+#   #   date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
+#   #   date %in% c("2022-05-03", "2022-05-04") ~ "8",
+#   #   date %in% c("2022-05-11", "2022-05-09") ~ "9",
+#   #   date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
+#   #   date %in% c("2022-09-14", "2022-09-15") ~ "11", 
+#   #   date %in% c("2022-08-18", "2022-07-19") ~ "extra"
+#   # )) %>% 
+#   select(-date)
+# 
+# #Combine CWC data with lwc data: 
+# 
+# # unique(cwc_raw$week_cwc_link) #cwc weeks
+# # unique(cwc_raw$date) #cwc weeks
+# # unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
+# # unique(cwc_lwc_raw$date_wp)
+# 
+# cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week"), all = T) %>% 
+#   distinct() %>% 
+#   #drop_na(site, species) %>% 
+#  # select(-shift_id, -la_tree_id) %>% 
+#    mutate(
+#      #alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
+#   #        sla_mean = mean(sla_cm_g,na.rm = T), 
+#   #        lma_mean = mean(lma_g_cm2,na.rm = T),
+#   #        lwa_mean = mean(lwa_g_cm2,na.rm = T),
+#   #        leaf_count_mean = mean(leaf_count, na.rm = T),
+#          #leaf_area_mean = mean(area_cm2, na.rm = T), 
+#          #ldmc_mean = mean(ldmc, na.rm = T),
+#    ) %>% 
+#     #rename(date_shift = date) %>% 
+#    distinct() %>% 
+#   #drop_na(time) %>% 
+#   ungroup() #%>% 
+#   # group_by(tree, week, time, type) %>% 
+#   # mutate(rwc_percent = case_when(
+#   #   rwc_lfm_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+#   #   rwc_lwc_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
+#   #   rwc_lfm_percent > 0 ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)), 
+#   #   TRUE~ as.numeric(rwc_lwc_percent)
+#   # ))
+# 
+# cwc_analysis_df <-  cwc_lwc_all_df %>% 
+#    select(tree, site, species, week, 
+#           #lat, 
+#           #lon, 
+#           time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, #leaf_count, 
+#           week_cwc_link, water_potential, time_season) %>%
+#    distinct() %>% 
+#   mutate(week = week(date_shift))%>% 
+#   group_by(tree, week) %>% 
+#   mutate(cwc = mean(cwc)) %>% 
+#   ungroup() %>% 
+#   select(-time_season) %>% 
+#    mutate(time_season = case_when(
+#     week < 17 ~ "before leafout", 
+#     week >= 17 ~ "after leafout", 
+#     TRUE ~ as.character("none")
+#   )) 
+# 
+#  write.csv(cwc_analysis_df, here("processed-data", paste0("cwc_analysis",datver,".csv")))
+```
+
+```{r}
 datver_cwc <- "20231128" #Just change this in the 1_combined_processing.Rmd
 dataversion_cwc <- paste0("Data_", datver_cwc)
 
@@ -1196,8 +1393,8 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F
     names_to = "date_x", 
                values_to = "cwc") %>% 
   mutate(date = gsub("x", "", date_x, fixed = TRUE),
-         date = mdy(date), 
-         week = week(date), 
+         date_shift = mdy(date), 
+         week = week(date_shift), 
          tree = as.character(comment)
          ) %>% 
  # select() %>% 
@@ -1206,125 +1403,39 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F
   ungroup() %>% 
   mutate(week_cwc_link = week) %>% 
   filter(cwc > -100) %>% 
-  select(-site, -species, - date_x, -comment, -source)%>% 
-  mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
-    date %in% c("2022-02-24", "2022-02-28") ~ "1",
-    date %in% c("2022-03-08", "2022-03-03") ~ "2",
-    date %in% c("2022-03-16", "2022-03-15") ~ "3",
-    date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
-    date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
-    date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
-    date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
-    date %in% c("2022-05-03", "2022-05-04") ~ "8",
-    date %in% c("2022-05-11", "2022-05-09") ~ "9",
-    date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
-    date %in% c("2022-09-14", "2022-09-15") ~ "11", 
-    date %in% c("2022-08-18", "2022-07-19") ~ "extra"
-  )) %>% 
-  mutate(date_shift = date)
-
-##Look at it: 
-cwc_raw %>% 
-  ggplot(aes(y = cwc, 
-             x = date, 
-             color = as.factor(date))) +
-  geom_point()
-
-cwc_raw %>% 
-  ggplot(aes(y = cwc, 
-             x = week, 
-             color = as.factor(date))) +
-  geom_point()
-
-
-analysis_df %>% 
-  ggplot(aes(y = water_potential, 
-             x = date_wp, 
-             color = as.factor(date_wp))) +
-  geom_point()
-
-```
-
-
-```{r}
-#get our 'analysis df'  data so that it aligns with the CWC dates: 
-cwc_lwc_raw <- analysis_bothspp_df %>% 
-  mutate(week_cwc_link = case_when( #so that the weeks of overflights overlap with the weeks of sample collection
-    week %in% c(8, 9) ~ 9, 
-    week %in% c(14, 13) ~ 14, 
-    #week %in% c(17) ~ 16, 
-    week %in% c(21) ~ 20,
-    TRUE ~ as.numeric(week)
-  )) %>% 
-  mutate(date = date_wp) %>% 
-  mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
-    date %in% c("2022-02-24", "2022-02-28") ~ "1",
-    date %in% c("2022-03-08", "2022-03-03") ~ "2",
-    date %in% c("2022-03-16", "2022-03-15") ~ "3",
-    date %in% c("2022-03-22", "2022-03-23", "2022-03-25") ~ "4",
-    date %in% c("2022-04-05", "2022-04-04", "2022-04-06") ~ "5",
-    date %in% c("2022-04-12", "2022-04-11", "2022-04-13") ~ "6",
-    date %in% c("2022-04-29", "2022-04-25", "2022-04-27") ~ "7",
-    date %in% c("2022-05-03", "2022-05-04") ~ "8",
-    date %in% c("2022-05-11", "2022-05-09") ~ "9",
-    date %in% c("2022-05-17", "2022-05-23", "2022-05-29") ~ "10",
-    date %in% c("2022-09-14", "2022-09-15") ~ "11", 
-    date %in% c("2022-08-18", "2022-07-19") ~ "extra"
-  )) %>% 
-  select(-date)
-
-#Combine CWC data with lwc data: 
-
-# unique(cwc_raw$week_cwc_link) #cwc weeks
-# unique(cwc_raw$date) #cwc weeks
-# unique(cwc_lwc_raw$week_cwc_link) #other physiology weeks
-# unique(cwc_lwc_raw$date_wp)
-
-cwc_lwc_all_df <- merge(cwc_raw, cwc_lwc_raw, by = c("tree", "week_cwc_link", "week"), all = T) %>% 
+  select(-site, -species, - date_x, -comment, -source)
+  
+  
+cwc_raw_mpa <- cwc_raw %>% 
+  select(cwc, tree, date_shift) %>% 
+  mutate(week_shift = week(date_shift)) %>% 
   distinct() %>% 
-  #drop_na(site, species) %>% 
- # select(-shift_id, -la_tree_id) %>% 
-   mutate(
-     #alas_mean = mean(alas_cm2_per_mm2, na.rm = T),
-  #        sla_mean = mean(sla_cm_g,na.rm = T), 
-  #        lma_mean = mean(lma_g_cm2,na.rm = T),
-  #        lwa_mean = mean(lwa_g_cm2,na.rm = T),
-  #        leaf_count_mean = mean(leaf_count, na.rm = T),
-         #leaf_area_mean = mean(area_cm2, na.rm = T), 
-         #ldmc_mean = mean(ldmc, na.rm = T),
-   ) %>% 
-    #rename(date_shift = date) %>% 
-   distinct() %>% 
-  #drop_na(time) %>% 
-  ungroup() #%>% 
-  # group_by(tree, week, time, type) %>% 
-  # mutate(rwc_percent = case_when(
-  #   rwc_lfm_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
-  #   rwc_lwc_percent == NA ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)),
-  #   rwc_lfm_percent > 0 ~ mean(c(rwc_lfm_percent, rwc_lwc_percent, na.rm = T)), 
-  #   TRUE~ as.numeric(rwc_lwc_percent)
-  # ))
+  mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
+    week_shift %in% c(20) ~ 21, #shift date = 2022-05-17, mpa dates = 2022-05-23 and 05-25
+    date_shift %in% c("2022-04-29") ~ 17, #shift date = 2022-04-29, mpa date = 2022-04-25
+    TRUE ~ as.numeric(week_shift)))
 
-cwc_analysis_df <-  cwc_lwc_all_df %>% 
-   select(tree, site, species, week, 
-          #lat, 
-          #lon, 
-          time, date_shift, date_wp, cwc, lwc_mean, lma_g_cm2, alas_cm2_per_mm2, lwa_g_cm2, #leaf_count, 
-          week_cwc_link, water_potential, time_season) %>%
-   distinct() %>% 
-  mutate(week = week(date_shift))%>% 
-  group_by(tree, week) %>% 
-  mutate(cwc = mean(cwc)) %>% 
+mpa_raw_cwc <- analysis_bothspp_df %>% 
   ungroup() %>% 
-  select(-time_season) %>% 
+  select(water_potential, tree, species, time, date_wp) %>% 
+  mutate(week_cwc_link = week(date_wp)) %>% 
+  distinct() 
+
+#final df with mpas and cwc matched by closest week (overflight and mpa collection):
+mpa_cwc_all <- merge(cwc_raw_mpa, mpa_raw_cwc, 
+                     by  = c("tree", "week_cwc_link"), 
+                     all = T)  %>% 
+  mutate(week = week_cwc_link) %>% 
    mutate(time_season = case_when(
     week < 17 ~ "before leafout", 
     week >= 17 ~ "after leafout", 
     TRUE ~ as.character("none")
   )) 
+#shift data from 2022-05-03 not used. Is there something about this date that would make it better than 2022-04-29?
 
-write.csv(cwc_analysis_df, here("processed-data", paste0("cwc_analysis",datver,".csv"))) 
+write.csv(mpa_cwc_all, here("processed-data", paste0("cwc_analysis",datver,".csv")))
 ```
+
 
 For Jean: 
 ```{r, eval = F}

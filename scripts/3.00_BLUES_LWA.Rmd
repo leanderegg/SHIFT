@@ -101,7 +101,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed
@@ -187,7 +187,7 @@ data <- common_trees_data %>%
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed
@@ -301,7 +301,7 @@ ggplot(aes(y = water_potential,
   geom_smooth(method = "lm", se = F)
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Create an empty dataframe to store results
 final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
@@ -378,7 +378,7 @@ df_1 <- df_all_groups %>%
   filter(week %in% c('12'))
 
 df_2 <- df_all_groups %>% 
-  filter(week %in% c('18'))
+  filter(week %in% c('21'))
 
 # df_3 <- df_all_groups %>% 
 #   filter(week %in% c('19'))
@@ -451,7 +451,8 @@ Pull X trees, get mean slope for those X, do 1000x.
 data %>% 
   #group_by(week) %>% 
   #summarise() %>% 
-  count(as.factor(week))
+  count(as.factor(week)) %>% 
+  mutate(trees = n/2)
 ```
 
 
@@ -463,7 +464,7 @@ data <- data %>%
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 6  # Adjust as needed
