@@ -37,6 +37,7 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
   )) %>% 
   select(-plot) %>% 
   distinct() %>% 
+  filter(!(week %in% 14 & tree %in% c(2014) & time %in% c("md"))) %>% #LWA seems off, much too high for this week; check scan
   filter(!(week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006))) #trees from this week seem wrong. 
 
 data_og <- data_qudo_raw %>% 
@@ -392,7 +393,7 @@ df_4 <- df_all_groups %>%
 nice_hydration_layered <- plotly::ggplotly(ggplot() +
     geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, label = week), data = df_grey, color = "grey") +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week), color = "grey", data = df_grey) +
-    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_1"), 
+    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_1", label = tree), 
                data = df_1 ) +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_1"), 
               data = df_1) +
