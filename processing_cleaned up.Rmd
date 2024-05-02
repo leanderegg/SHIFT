@@ -17,6 +17,7 @@ library(readxl)
 library(gridExtra)
 #library(calecopal)
 library(rstatix)
+library(plotly)
 
 select = dplyr::select
  
@@ -53,7 +54,8 @@ Run all scripts for processing to make sure those are updated:
  source(here::here("scripts", "0_processing-scripts", "leaf_area_processing.R"))
  source(here("scripts","0_processing-scripts", "alas_processing.R"))
  source(here::here("scripts","0_processing-scripts", "lfm_processing.R"))
- source(here::here("scripts","0_processing-scripts", "md_pd_pheno_processing.R"))
+datver_wp <- "20231128" #this was hard coded into md_pd_pheno_processing, pulled out here to make sure this wasn't an error
+source(here::here("scripts","0_processing-scripts", "md_pd_pheno_processing.R"))
  source(here::here("scripts","0_processing-scripts", "wc_processing.R"))
  source(here::here("scripts","0_processing-scripts", "swc_processing.R"))
 

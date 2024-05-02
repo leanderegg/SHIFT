@@ -1,9 +1,11 @@
-datver <- "20231128" #date downloaded
-dataversion <- paste0("Data_", datver)
+# datver <- "20231128" #date downloaded
+# dataversion <- paste0("Data_", datver)
+
+library(dlookr)
 
 #Data from LEAF_Lab_Sedgwick  google sheet: https://docs.google.com/spreadsheets/d/1zBABEvgD2qqwJpY3slrIFePbNCgTdh8vVs4PHMzit0w/edit?pli=1#gid=817120000 
 
-wp_23_df <- read_csv(here(paste0("Data_",datver), "wp_2023.csv"),
+wp_23_df <- read_csv(here(paste0("Data_",datver_wp), "wp_2023.csv"),
                      show_col_types = FALSE) %>% 
   janitor::clean_names() %>%
   mutate(date = ymd(date), #lubridate package, 
