@@ -42,8 +42,6 @@ dataversion <- paste0("Data_", datver)
 wc_all_raw <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>% 
   drop_na(time)
 
-unique(wc_all_raw$week)
-unique(wk_all_long$week)
 ```
 
 

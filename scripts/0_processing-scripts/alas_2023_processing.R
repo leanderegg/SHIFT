@@ -1,3 +1,5 @@
+datver <- "20231128" #date downloaded
+dataversion <- paste0("Data_", datver)
 
 morph_23_df <- read_csv(here(paste0("Data_",datver), "alas_2023.csv"),show_col_types = FALSE) %>% 
   mutate(area_cm2 = as.numeric(area_from_scan),
