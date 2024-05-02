@@ -214,7 +214,7 @@ Things to note:
 Week 9: We only have individual leaf lwc, not bulk. Not many trees have BOTH PD and MD values. 
 Week 10: Some trees have multiple reps for bulk and no leaf, maybe this is fine since we separate bulk and leaves later and get distict rows? 
 Week 11: looks like we only got PDs for a lot of trees here; might be resolved later by combining weeks? 
-Week 12: 2022-03-25; Switched to not doing leaves, only doing bulk; still have multiple reps per bulk, maybe to correspond with water potentials? 
+Week 12: 2022-03-25; Switched to not doing leaves, only doing bulk  
 Week 13: All PD measurement from 2022-03-30
 Week 14: 2022-04-04 and 2022-04-06; back to both leaf and bulk; seems to be a lot fo trees with only PD
 Week 15: 2022-04-11 and 2022-04-13; looks like we got both bulk and leaves, and did a better job of getting both PD and MD
@@ -424,21 +424,28 @@ plotly::ggplotly(wc_lwa_df  %>%
   facet_wrap(~week, scales = "free") +
   geom_abline())
 
+#remove obviously off values:
 lwa_df <- wc_lwa_df %>% 
   mutate(lwa_g_cm2_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2346, 2381) & week %in% c(15) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2370) & week %in% c(15) & time %in% c("pd") ~ NA_real_,
     tree %in% c(2009) & week %in% c(13) ~ NA_real_, #this area is wrong, much too low - lost a leaf? 
     tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
    #  tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_, #not an issue with area, just with weights
-    tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+  tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_, 
+  week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006) & time %in% c("pd") ~ NA_real_,  #areas area off for these
     TRUE ~ as.numeric(lwa_g_cm2_new)
   ))%>% 
   mutate(lma_g_cm2_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
+    tree %in% c(2346, 2381) & week %in% c(15) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2370) & week %in% c(15) & time %in% c("pd") ~ NA_real_,
     tree %in% c(2009) & week %in% c(13) ~ NA_real_, #this area is wrong!
     tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
+    week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006) & time %in% c("pd") ~ NA_real_,  #areas area off for these
     # tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_,
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
     TRUE ~ as.numeric(lma_g_cm2_new)
@@ -529,12 +536,6 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
      TRUE ~ as.numeric(tree)),
   date_wp = date) %>% 
   select(-tag, -plot_number, -date ) 
-
-investigating_wk10 <- wp_df  %>% 
-  filter(week == 10 & time %in% c("md")) %>% 
-  distinct()
-
-unique(investigating_wk10$tree)
 ```
 
 1) Checked on these WP and LWC, and they seem correct (e.g. no good reason to think they're outliers, ):
@@ -544,7 +545,6 @@ unique(investigating_wk10$tree)
 filter(week %in% c(15) & tree %in% c(2087, 2088, 2090, 2085, 2093)) - UPDATE: dry weights were entered wrong.
 filter(week %in% c(29) & tree %in% c(2370, 2086, 2028)) #pd LWC too high
 filter(week %in% c(21) & tree %in% c(2343)) #pd LWC too high
-
 
 3) 
 Values that were weird so removed: 
@@ -674,13 +674,6 @@ group_by(tree, week, time, date_wc) %>%
      lma_g_cm2_new < 0.009 ~ NA_real_, 
     TRUE~ as.numeric(lma_g_cm2_new)
   ))
-  
-investigating_wk10 <-wp_wc_df2  %>% 
-  filter(week == 10 & time %in% c("md")) %>% 
-  distinct()
-
-unique(investigating_wk10$tree)
-
 
 #Visualize: some measurements of LWA don't make sense
 plotly::ggplotly(wp_wc_df2 %>% 
@@ -927,13 +920,6 @@ wp_wc_rwc_alas_df1 <- merge(wp_wc_rwc_df, alas_df_means, by = c("week_alas_link"
   group_by(tree) %>% 
   fill(c("species"), .direction = "downup")
 
-investigating_wk10 <-wp_wc_rwc_alas_df1  %>% 
-  filter(week == 10 & time %in% c("md")) %>% 
-  distinct()
-
-unique(investigating_wk10$tree)
-
-
 #look at how new LWA and old LWA compare: 
 wp_wc_rwc_alas_df1 %>% #week 19 is still weird!!! 
   filter(lwa_g_cm2_new < .3) %>% 
@@ -1118,6 +1104,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   filter(!(week == 29 & lwc_mean < .451), #weird values, remove for now?
          !(week == 15 & lwc_mean < .7), 
          !(time %in% c("pd") & lwc_mean < .5), 
+         !(lwa_g_cm2_new < .01 & time %in% c("pd")),
          !(week == 33 & tree == 2347), 
         # !(week == 18), #seems off
          #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
