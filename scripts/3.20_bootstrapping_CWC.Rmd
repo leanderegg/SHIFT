@@ -19,9 +19,12 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 #DATA
 ```{r}
 data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>%  
+  mutate(water_potential = -1*water_potential) %>% 
  # select(tree, week, water_potential, cwc, time_season, time) %>% 
   distinct() %>% 
-    filter(!tree %in% c(2012, 2011)) 
+   # filter(!tree %in% c(2012, 2011)) %>% 
+  filter(!(tree %in% c(2346))) %>% #this tree seems to have a problem with post-leafout cwc - all 0s - likely becuase the canopy was too small to see. 
+  filter(!week %in% 11) #week 11 only has 9 midday measurements and acts really odd (2022-03-15) 
 ```
 
 
@@ -127,7 +130,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 10
 
 # Number of random trees to sample
-n_sample_trees <- 33  # Adjust as needed
+n_sample_trees <- 39  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -207,7 +210,7 @@ data <- common_trees_data %>%
   group_by(tree) %>% 
   mutate(COUNT = n()) %>% 
   filter(!(COUNT == 1)) %>% 
-  select(-COUNT)
+  select(-COUNT) 
 
 num_unique_trees <- length(unique(data$tree))
 cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
@@ -219,7 +222,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 10
 
 # Number of random trees to sample
-n_sample_trees <- 33  # Adjust as needed
+n_sample_trees <- 50  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
