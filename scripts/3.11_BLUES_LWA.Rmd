@@ -375,7 +375,7 @@ df_all_groups <- data %>%
 df_grey <- df_all_groups
 
 df_1 <- df_all_groups %>% 
-  filter(week %in% c('12'))
+  filter(week %in% c('14'))
 
 df_2 <- df_all_groups %>% 
   filter(week %in% c('21'))
@@ -401,7 +401,7 @@ nice_hydration_layered <- plotly::ggplotly(ggplot() +
     #            data = df_3) +
     # geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_3"),
     #           data = df_3) +
-    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_4"),
+    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_4", label = tree_week),
                data = df_4) +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_4"),
               data = df_4
