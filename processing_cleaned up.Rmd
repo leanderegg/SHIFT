@@ -22,7 +22,7 @@ select = dplyr::select
  
 #source("http://goo.gl/UUyEzD") #outlier KD (original function)
 
-source(here::here("scripts","scripts_functions", "figure_info.R"))
+#source(here::here("scripts","scripts_functions", "figure_info.R")) #if making pretty figs 
 ```
 
 #Env. data: 
@@ -74,49 +74,6 @@ write_csv(trees_sites_df, here("processed-data", "trees_sites.csv"))
 
 #Combine DFs: 
 
-#####WC:
-
-Water content data looks like this: 
-
-md_bulk_wet = as.numeric(md_bulk_wet), 
-lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
-lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
-lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
-lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) 
-
-Things to note: 
-Week 9: We only have individual leaf lwc, not bulk. Not many trees have BOTH PD and MD values. 
-Week 10: Some trees have multiple reps for bulk and no leaf, maybe this is fine since we separate bulk and leaves later and get distict rows? 
-Week 11: looks like we only got PDs for a lot of trees here; might be resolved later by combining weeks? 
-Week 12: 2022-03-25; Switched to not doing leaves, only doing bulk; still have multiple reps per bulk, maybe to correspond with water potentials? 
-Week 13: All PD measurement from 2022-03-30
-Week 14: 2022-04-04 and 2022-04-06; back to both leaf and bulk; seems to be a lot fo trees with only PD
-Week 15: 2022-04-11 and 2022-04-13; looks like we got both bulk and leaves, and did a better job of getting both PD and MD
-Week 16:NA
-Week 17: 2022-04-25; just bulk, bth PD and MD present
-Week 18: 2022-05-04; just MDs
-Wewk 19: 2022-05-09; mix of PD and MD, all bulk
-Week 20: NA
-Week 21: 2022-05-23, some trees missing MDs
-Week 29: 2022-07-19, decent job getting all, all bulk
-Week 37: 2022-09-12 & 2022-09-15 all bulk; looks good except for some random missing info 
-
-Tree 2384 seems to be missing a lot; did it get confused with another tree? 
-
-```{r}
-wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), show_col_types = FALSE) %>% #contains LWC data
-  mutate(date = lubridate::ymd(date))%>% 
-  select(-...1) %>% 
-  mutate(date_wc = date) %>% 
-  select(-date, -notes) %>% 
-  filter_at(vars(lwc_bulk, dm_bulk_g, wm_bulk_g, lwc_leaf, dm_leaf_g, wm_leaf_g),any_vars(!is.na(.))) %>% 
-  #filter(!(duplicated(lwc_bulk))) %>% 
-  filter(!(week == 40)) %>% #these are Serpentine trees where we just have midddays, remove from this analysis
-  filter(!(week == 21 & date_wc %in% NA)) %>% 
-  filter(!(week == 29 & date_wc %in% NA)) %>%
-  filter(!(week == 33 & date_wc %in% NA)) 
-```
-
 ###New LWA:
 Using total leaf masses (ww and dw) and total scan (sum of all individually scanned leaves, when that was relevant)
 
@@ -132,15 +89,12 @@ datver_lwa <- "20240321" #where the lwa info is located
 #Raw Area data: 
 lwa_raw0 <- read_csv(here(paste0("Data_",datver_lwa), "shift_lwa_new.csv"), show_col_types = FALSE) %>% 
   clean_names() %>% 
-  mutate(tree_id = case_when(tree_id %in% c(1475) ~ 1478, 
+  mutate(tree_id = case_when(tree_id %in% c(1475) ~ 1478, #screwed up tree ids
                           tree_id %in% c(2082) ~ 2382, 
                           tree_id %in% c(2385) ~ 2085, 
-                          TRUE ~ as.numeric(tree_id)))
-
-#make sure bulk vs. individual leaves are correctly coded; this is important because bulk leaves will not be summarized over a single date. 
-lwa_raw1 <- lwa_raw0 %>% 
+                          TRUE ~ as.numeric(tree_id))) %>% 
   #filter(is.na(bulk_or_individual_leaf)) %>%
-  mutate(bulk_or_individual_leaf_old = bulk_or_individual_leaf) %>% 
+  mutate(bulk_or_individual_leaf_old = bulk_or_individual_leaf) %>% #make sure bulk vs. individual leaves are correctly coded; this is important because bulk leaves will not be summarized over a single date. 
   group_by(dry_scan_area, tree_id) %>%
   mutate(bulk_or_individual_leaf = case_when(
     is.na(dry_scan_area) ~ NA_character_,
@@ -156,14 +110,9 @@ lwa_raw1 <- lwa_raw0 %>%
   mutate(tree = as.numeric(tree_id))# %>% 
  # filter(date %in% c("4/25/22", "4/27/22"))
 
-unique(lwa_raw0$date)
-```
-
-
-```{r}
 ##Add in species and site and plot info! 
 
-lwa_raw <- merge(trees_sites_df, lwa_raw1, by = c("tree"))
+lwa_raw <- merge(trees_sites_df, lwa_raw0, by = c("tree"))
 
 ##Clean up raw area data so that we are clear which scans are for individual leaves and which are for bulk samples, convert the dry scans using the scaling coefficient we measured by rescanning some already-scanned dry leaves
 lwa_new_df1 <- lwa_raw %>% 
@@ -208,7 +157,6 @@ lwa_bulk_singles <- lwa_bulk_df_all %>%
  lwa_bulk_df <- bind_rows(lwa_bulk_singles, lwa_bulk_multiples)
 
 ####week 37, where they're listed as bulk but dont have a good reason to be separated. 
-
 lwa_wk_37 <- lwa_new_df1 %>% 
   filter(week == 37) %>% 
   group_by(tree, week, time, date_wc) %>% 
@@ -247,14 +195,62 @@ lwa_new_df <- bind_rows(lwa_leaves_df, lwa_bulk_df, lwa_wk_37) %>%
   drop_na(sum_area_cm2)
 
 #--------
+```
 
-#Now this is to get the dry weight info in a condition with which to attach it to the updated scans: 
+#####WC:
+Now this is to get the dry weight info in a condition with which to attach it to the updated scans: 
 
+Water content data looks like this: 
+
+md_bulk_wet = as.numeric(md_bulk_wet), 
+lwc_md_bulk = ((md_bulk_wet-md_bulk_dry)/md_bulk_dry)
+lwc_pd_bulk = ((pd_bulk_wet - pd_bulk_dry)/pd_bulk_dry)
+lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
+lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) 
+
+Things to note: 
+Week 9: We only have individual leaf lwc, not bulk. Not many trees have BOTH PD and MD values. 
+Week 10: Some trees have multiple reps for bulk and no leaf, maybe this is fine since we separate bulk and leaves later and get distict rows? 
+Week 11: looks like we only got PDs for a lot of trees here; might be resolved later by combining weeks? 
+Week 12: 2022-03-25; Switched to not doing leaves, only doing bulk; still have multiple reps per bulk, maybe to correspond with water potentials? 
+Week 13: All PD measurement from 2022-03-30
+Week 14: 2022-04-04 and 2022-04-06; back to both leaf and bulk; seems to be a lot fo trees with only PD
+Week 15: 2022-04-11 and 2022-04-13; looks like we got both bulk and leaves, and did a better job of getting both PD and MD
+Week 16:NA
+Week 17: 2022-04-25; just bulk, bth PD and MD present
+Week 18: 2022-05-04; just MDs
+Wewk 19: 2022-05-09; mix of PD and MD, all bulk
+Week 20: NA
+Week 21: 2022-05-23, some trees missing MDs
+Week 29: 2022-07-19, decent job getting all, all bulk
+Week 37: 2022-09-12 & 2022-09-15 all bulk; looks good except for some random missing info 
+
+Tree 2384 seems to be missing a lot; did it get confused with another tree? 
+
+```{r}
+wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), show_col_types = FALSE) %>% #contains LWC data
+  mutate(date = lubridate::ymd(date))%>% 
+  select(-...1) %>% 
+  mutate(date_wc = date) %>% 
+  select(-date, -notes) %>% 
+  # filter_at(vars(lwc_bulk, dm_bulk_g, wm_bulk_g, lwc_leaf, dm_leaf_g, wm_leaf_g),any_vars(!is.na(.))) %>% 
+  #filter(!(duplicated(lwc_bulk))) %>% 
+  filter(!(week == 40)) %>% #these are Serpentine trees where we just have midddays, remove from this analysis
+  group_by(week) %>% 
+  fill(c("date_wc"), .direction = "downup") %>% #some weeks dont have dates, fill those in
+  #filter(is.na(date_wc)) %>% 
+  ungroup() %>% 
+  distinct() %>% 
+  filter(week == 13)
+```
+
+```{r}
 ###First the water weights (how much water is in bulk leaves). 
 
 #####For this, each tree, time (pd or md) and week has 1 value that is in the sum of all the bulk + leaf measurements
 
 wc_lwa_long <- wc_df %>% 
+  filter(week == 13) %>% 
   mutate(water_leaves = wm_leaf_g - dm_leaf_g, 
          water_bulk = wm_bulk_g - dm_bulk_g) %>% 
   select(-rep, -dm_bulk_g, -dm_leaf_g, -lwc_bulk, -lwc_leaf, -wm_bulk_g, -wm_leaf_g) %>% 
@@ -310,7 +306,17 @@ wc_long_lwa_all2 <- merge(wc_long_lwa_all1, wc_long_lwa_old,
     mismatch_bulk < -0.5 ~ "off", 
     TRUE ~ "probably correct"
   )) %>% 
+  group_by(tree, date_wc, time) %>% 
+  fill(c("plot", "site", "species"), .direction = "downup") %>% 
   distinct()
+
+wc_long_lwa_wk_37 <- wc_long_lwa_all2  %>% 
+  filter(week == 37)
+
+
+wc_long_lwa_wk_13 <- wc_long_lwa_all2  %>% 
+  filter(week == 13)
+
 
 #####These are ones that we should be sceptical of: 
 mismatched_lwc_lwa <- wc_long_lwa_all2 %>% 

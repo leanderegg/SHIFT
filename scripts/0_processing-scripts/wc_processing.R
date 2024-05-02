@@ -2734,7 +2734,10 @@ wc_alldates_pd <- rbind(
          date_pd = date) %>% 
   select(-date, -pd_avg) %>% 
   mutate(time = "PD") %>% 
-  mutate()
+  mutate(ww_g_pd = case_when(
+    ww_g_pd > 1000 ~ NA_real_, 
+    TRUE ~ as.numeric(ww_g_pd) #misentered ww for tree 2009 on 2022-03-30
+  ))
 #______________________________________________________________
 ############### NEW 2022-05-09 (Week 19) PD Dry Weights ##################
 #______________________________________________________________
@@ -2804,13 +2807,13 @@ wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
          , lwc_md_leaf = ((ww_g_md - dw_g_md)/dw_g_md)
          , lwc_pd_leaf = ((ww_g_pd - dw_g_pd)/dw_g_pd)) %>% 
   distinct() %>% 
-  group_by(tag, week) %>% 
+ # group_by(tag, week) %>% 
   # mutate(md_bulk_dry = sum(dw_g_md), #want to get bulk dry and wet weights for each tree on each week
   #        pd_bulk_dry = sum(dw_g_pd),
   #        md_bulk_wet = sum(ww_g_md),
   #        pd_bulk_wet = sum(ww_g_pd),
   #        ) %>% 
-  ungroup() %>% 
+ # ungroup() %>% 
   select(-tag, -plot_number, -md, -pd,
          #-time
          ) %>% 
@@ -2819,7 +2822,7 @@ wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
           "tree", 
          "species",
           "week", 
-       #  "date",
+        # "date",
         #"time", 
           "date_pd", 
           "date_md", 
@@ -2840,7 +2843,7 @@ wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
           "ww_g_md"
           ) %>% 
   #select(-time) %>% 
-  arrange("week", "tree", "rep")
+  arrange("week", "date_pd","tree", "rep")
 
 ####That is currently very wide, so make longer: 
 
@@ -2849,7 +2852,7 @@ wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
 #Water potentials: 
 
 wc_alldates_longer_mpa <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep", 
+  select("tree", "plot", "week", "site", "rep", "date_pd", "date_md",
          #"date_pd", 
          #"date_md", 
         # "species",  
@@ -2863,14 +2866,23 @@ wc_alldates_longer_mpa <- wc_alldates %>%
   pivot_longer(cols = c("mpa_pd","mpa_md"), 
                names_to = "time", 
                values_to = "mpa")  %>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date")  %>% 
   mutate(time = case_when(
     time == "mpa_pd" ~ "PD", 
     time == "mpa_md" ~ "MD"
-  ))
+  ))%>% 
+  mutate(time_date = case_when(
+    time == "date_pd" ~ "PD", 
+    time == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date) %>% 
+  distinct()
 
 #Bulk leaves: 
 wc_alldates_longer_bulk <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep","date_pd", "date_md",
          
          # "time.x", "time.y",
          "lwc_md_bulk", 
@@ -2895,11 +2907,24 @@ wc_alldates_longer_bulk <- wc_alldates %>%
     time_lwc == "lwc_pd_bulk" ~ "PD", 
     time_lwc == "lwc_md_bulk" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc, -rep) %>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date")  %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, lwc_bulk) %>% 
+  select(tree, plot, week, site, lwc_bulk, time, time_date, date) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date) %>% 
+  mutate(rep = 1)
 
 #Individual leaves: 
 wc_alldates_longer_leaf <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep","date_pd", "date_md",
          # "time.x", "time.y",
          #"lwc_md_bulk", 
          "lwc_md_leaf",
@@ -2914,11 +2939,23 @@ wc_alldates_longer_leaf <- wc_alldates %>%
     time_lwc == "lwc_pd_leaf" ~ "PD", 
     time_lwc == "lwc_md_leaf" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc) %>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date")  %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, lwc_leaf) %>% 
+  select(tree, plot, week, site, lwc_leaf, time, time_date, date, rep) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date)
 
 #Dry weights, BULK (need this for lwa measures)
 wc_alldates_longer_masses_dw <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep","date_pd", "date_md",
          "pd_bulk_dry", 
         # "pd_bulk_wet", 
         # "dw_g_pd", 
@@ -2936,11 +2973,25 @@ wc_alldates_longer_masses_dw <- wc_alldates %>%
     time_lwc == "pd_bulk_dry" ~ "PD", 
     time_lwc == "md_bulk_dry" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc )%>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date")  %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, dm_bulk_g) %>% 
+  select(tree, plot, week, site, dm_bulk_g, time, time_date, date) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date)%>% 
+  mutate(rep = 1)
+
 
 #Wet weights, BULK (need this for lwa measures)
 wc_alldates_longer_masses_ww <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep","date_pd", "date_md",
          #"pd_bulk_dry", 
           "pd_bulk_wet", 
          # "dw_g_pd", 
@@ -2958,11 +3009,25 @@ wc_alldates_longer_masses_ww <- wc_alldates %>%
     time_lwc == "pd_bulk_wet" ~ "PD", 
     time_lwc == "md_bulk_wet" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc)%>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date") %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, wm_bulk_g) %>% 
+  select(tree, plot, week, site, wm_bulk_g, time, time_date, date) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date) %>% 
+  mutate(rep = 1)
+
 
 #Dry weights, LEAF (need this for lwa measures)
 wc_alldates_longer_masses_dw_leaf <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep","date_pd", "date_md",
          #"pd_bulk_dry", 
          # "pd_bulk_wet", 
           "dw_g_pd", 
@@ -2980,11 +3045,23 @@ wc_alldates_longer_masses_dw_leaf <- wc_alldates %>%
     time_lwc == "dw_g_pd" ~ "PD", 
     time_lwc == "dw_g_md" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc)%>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date") %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, dm_leaf_g) %>% 
+  select(tree, plot, week, site, dm_leaf_g, time, time_date, date, rep) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date)
 
 #Wet weights, LEAF (need this for lwa measures)
 wc_alldates_longer_masses_ww_leaf <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep",
+  select("tree", "plot", "week", "site", "rep", "date_pd", "date_md",
          #"pd_bulk_dry", 
          #"pd_bulk_wet", 
          # "dw_g_pd", 
@@ -3002,57 +3079,84 @@ wc_alldates_longer_masses_ww_leaf <- wc_alldates %>%
     time_lwc == "ww_g_pd" ~ "PD", 
     time_lwc == "ww_g_md" ~ "MD"
   )) %>% 
-  select(-time_lwc)
+  select(-time_lwc)%>% 
+  pivot_longer(cols = c("date_pd", "date_md"), 
+               names_to = "time_date", 
+               values_to = "date") %>% 
+  mutate(time_date = case_when(
+    time_date == "date_pd" ~ "PD", 
+    time_date == "date_md" ~ "MD"
+  )) %>% 
+  drop_na(date, wm_leaf_g) %>% 
+  select(tree, plot, week, site, wm_leaf_g, time, time_date, date, rep) %>% 
+  filter(time == time_date) %>% 
+  distinct() %>% 
+  select(-time_date)
 
 #Combine those: 
+
+#these need to have the follow columns: 
+#tree, plot, week, site, rep, a measurement column (leaf, bulk, weights, mpas), and time, and date.  
 
 #1) Both bulk and ind. leaves: 
 wc_alldates_longer_lwc <- merge(wc_alldates_longer_bulk, 
                                 wc_alldates_longer_leaf, 
+                                all = T
                             )
 
-#2) All lwc and mpas: 
-wc_alldates_longer_lwc_mpa <- merge(wc_alldates_longer_lwc,
-                                 wc_alldates_longer_mpa 
-                                 )
+#2) All lwc and mpas: ##UPDATE: skip this step!
+# wc_alldates_longer_lwc_mpa <- merge(wc_alldates_longer_lwc,
+#                                  wc_alldates_longer_mpa , 
+#                                  all = T
+#                                  )
 
 #3) All lwc and bulk wet weights (dw = sum across reps)
-wc_alldates_longer_lwc_mpa_ww <- merge(wc_alldates_longer_lwc_mpa,
-                                        wc_alldates_longer_masses_ww
+wc_alldates_longer_lwc_mpa_ww <- merge(wc_alldates_longer_lwc,
+                                        wc_alldates_longer_masses_ww, 
+                                       all = T
 )
 
 #4) All lwc and bulk dry weights (dw = sum across reps)
 wc_alldates_longer_lwc_mpa_masses <- merge(wc_alldates_longer_masses_dw,
-                                        wc_alldates_longer_lwc_mpa_ww)
+                                        wc_alldates_longer_lwc_mpa_ww, 
+                                        all = T
+                                        )
 
 #5) Above + leaf dry weights 
 wc_alldates_longer_lwc_mpa_masses_leaf_dw <- merge(wc_alldates_longer_lwc_mpa_masses, 
-                                                   wc_alldates_longer_masses_dw_leaf)
+                                                   wc_alldates_longer_masses_dw_leaf, 
+                                                   all = T)
 
 #5) Above + leaf WET weights 
-wc_alldates_longer_lwc_mpa_masses_leafs <- merge(wc_alldates_longer_lwc_mpa_masses_leaf_dw, 
-                                                   wc_alldates_longer_masses_ww_leaf)
+wc_alldates_longer_all  <- merge(wc_alldates_longer_lwc_mpa_masses_leaf_dw, 
+                                                   wc_alldates_longer_masses_ww_leaf, 
+                                                 all = T) %>% 
+  #select(-time_date) %>% 
+  distinct() %>% 
+  group_by(tree, rep, date, time) %>% 
+  fill(c("dm_leaf_g", "wm_leaf_g"), .direction = "downup")
 
-#Dates for each pd and md measurement: 
-wc_alldates_longer_dates <- wc_alldates %>% 
-  select("tree", "plot", "week", "site", "rep", "species", 
-         "date_md", "date_pd") %>% 
-  #mutate(mpa_md = as.numeric(mpa_md)) %>% 
-  pivot_longer(cols = c("date_pd","date_md"), 
-               names_to = "date_time", 
-               values_to = "date")  %>% 
-  mutate(time = case_when(
-    date_time == "date_pd" ~ "PD", 
-    date_time == "date_md" ~ "MD"
-  )) %>% 
-  select(-date_time)
-
-#Combine: 
-#4) lwc, mpa and dates
-
-wc_alldates_longer_all <- merge(wc_alldates_longer_lwc_mpa_masses_leafs,
-                                          wc_alldates_longer_dates) %>% 
-  distinct()
+# #Dates for each pd and md measurement: 
+# wc_alldates_longer_dates <- wc_alldates %>% 
+#   select("tree", "plot", "week", "site", "rep", "species", 
+#          "date_md", "date_pd", "mpa_pd", "mpa_md") %>% 
+#   #mutate(mpa_md = as.numeric(mpa_md)) %>% 
+#   pivot_longer(cols = c("date_pd","date_md"), 
+#                names_to = "date_time", 
+#                values_to = "date")  %>% 
+#   mutate(time = case_when(
+#     date_time == "date_pd" ~ "PD", 
+#     date_time == "date_md" ~ "MD"
+#   )) %>% 
+#   select(-date_time)
+# 
+# #Combine: 
+# #4) lwc, mpa and dates
+# 
+# wc_alldates_longer_all <- merge(wc_alldates_longer_lwc_mpa_masses_leafs,
+#                                           wc_alldates_longer_dates, 
+#                                 by = c("tree", "plot", "week", "site", "rep")) %>% 
+#   distinct()
 
 #______________________________________________________________
 ############### 9-12-2022 PLUS #######################
@@ -3088,16 +3192,29 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
          ) %>% 
   select(-tree_id, -wm, -dm, # -notes
          ) %>% 
-  filter(!(notes %in% c("*PD in question", "*PD in question; envelope not labelled with Tree ID", "NO WM")))
+  filter(!(notes %in% c("*PD in question", "*PD in question; envelope not labelled with Tree ID", "NO WM"))) %>% 
+  distinct() %>% 
+  mutate(date = case_when(
+    notes %in% c("Date is either 9/12 or 9/15") ~ as.Date("2022-09-15"), 
+    TRUE ~ as.Date(date)
+  ))
+
+dupes_wc912 <- wc912_trees %>% 
+  filter(week %in% 37) %>% 
+  distinct() %>% 
+  group_by(date, tree, time) %>% 
+  filter(n() > 1)
 
 trees_sites_df <-  wc_alldates_longer_all %>% 
   select(tree, plot, site, species) %>% 
   distinct()
 
-wc912_trees <- merge(trees_sites_df, wc912, all.y = T) 
+wc912_trees <- merge(trees_sites_df, wc912, all.y = T) %>% 
+  group_by(tree) %>% 
+  fill(c("plot","site", "species"), .direction = "downup")
 
 
-wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees, 
+wc_all  <- bind_rows(wc912_trees, 
                                                        wc_alldates_longer_all )  %>% 
   mutate(time  = case_when(
     time %in% c("PD") ~ "pd", 
@@ -3109,22 +3226,36 @@ wc_alldates_longer_lwc_mpa_dates_fall2022 <- bind_rows(wc912_trees,
     tree == 2309 ~ 2379, 
     tree == 2014 & week == 37 ~ 2013, 
     tree == 2802 ~ NA, #not sure what this tree is
+    notes %in% c("Mystery tree from upper Lisque or Piney", "Mystery blue ID") ~ 22, 
+    tree %in% c(NA_real_) & species %in% c("LEU") ~ 22, 
     TRUE ~ as.numeric(tree)
   )) %>% 
+  mutate(site = case_when(
+    species %in% c("LEU") & tree == 22 ~ "Chamise", 
+    TRUE ~ as.character(site)
+  )) %>% 
+    mutate(plot = case_when(
+      species %in% c("LEU") & tree == 22 ~ "Chamise", 
+      TRUE ~ as.character(plot)
+    )) %>% 
   distinct() %>% 
   #select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
   ungroup() %>% 
-  select(-mpa) %>%
-  group_by(tree, time, week) %>% 
-  fill(c(dm_bulk_g, wm_bulk_g, lwc_bulk), .direction = "downup") %>% 
+  group_by(tree, time, week, date) %>% 
+ # fill(c(dm_bulk_g, wm_bulk_g, lwc_bulk), .direction = "downup") %>% 
   filter(!(is.na(dm_leaf_g) & !is.na(wm_leaf_g)) &  # Keep rows where dm_leaf_g is not missing while wm_leaf_g is not missing
-           !(!is.na(dm_leaf_g) & is.na(wm_leaf_g))) 
-
-##super annoying name, so rename and also remove uncessary columns:
-
-wc_all <- wc_alldates_longer_lwc_mpa_dates_fall2022 %>% 
-  select(-dw_g_md, -dw_g_pd, -ww_g_md, -ww_g_pd, -pd_bulk_dry, -pd_bulk_wet, -md_bulk_dry, -md_bulk_wet) %>% 
-  distinct()
+           !(!is.na(dm_leaf_g) & is.na(wm_leaf_g))) %>% 
+  distinct() %>% 
+  ungroup() %>% 
+  group_by(tree, week, time) %>% 
+  fill("date", .direction = "downup") %>% 
+  ungroup() %>% 
+  group_by(tree) %>% 
+  fill("species", .direction = "downup") %>% 
+ # filter(week == 13) %>% 
+  #select(-dw_g_md, -dw_g_pd, -ww_g_md, -ww_g_pd, -pd_bulk_dry, -pd_bulk_wet, -md_bulk_dry, -md_bulk_wet) %>% 
+  distinct %>% 
+  arrange(tree, week, time)
 
 
 #write csv: ####
