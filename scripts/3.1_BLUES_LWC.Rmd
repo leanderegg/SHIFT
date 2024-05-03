@@ -168,7 +168,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed
@@ -254,7 +254,7 @@ data <- common_trees_data %>%
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed
@@ -369,7 +369,7 @@ ggplot(aes(y = water_potential,
   geom_smooth(method = "lm", se = F)
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Create an empty dataframe to store results
 final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
@@ -399,8 +399,8 @@ for (x in unique_weeks) {
   
   # Step 4: Calculate the mean slope and 95% CI
   mean_slope <- mean(slopes)
-  lower_bound <- quantile(slopes, 0.025)
-  upper_bound <- quantile(slopes, 0.975)
+  lower_bound <- quantile(slopes, 0.025, na.rm = T)
+  upper_bound <- quantile(slopes, 0.975, na.rm = T)
   
   # Step 5: Store the results in the final dataframe
   final_df_space <- bind_rows(final_df_space, data.frame(week = x, mean_slope = mean_slope, lower_bound = lower_bound, upper_bound = upper_bound))
@@ -543,7 +543,7 @@ data <- data_og %>%
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 1000
+n_iterations <- 10
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed
@@ -2031,7 +2031,7 @@ lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>%
 
 lma_mpa_plot <- lma_mpa_df %>% 
   ggplot(aes(#y = water_potential, 
-             y =-1*mpa_mean,
+             y =-1*mean_mpa,
             x = lma_g_cm2_new,
              color = as.factor(time),
             shape = time
@@ -2078,6 +2078,3 @@ lma_mpa_plot
 
 ggsave(here("figures", "qudo figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
-
-
-

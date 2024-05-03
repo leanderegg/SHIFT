@@ -36,14 +36,18 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
     TRUE ~ as.character("none")
   )) %>% 
   select(-plot) %>% 
-  distinct()
+  distinct() %>% 
+  filter(!(week %in% 14 & tree %in% c(2014) & time %in% c("md"))) %>% #LWA seems off, much too high for this week; check scan
+  filter(!(week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006))) #trees from this week seem wrong. 
 
 data_og <- data_qudo_raw %>% 
-  select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
-  distinct()
+  select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site, date_wp) %>% 
+  distinct() %>% 
+ # filter(week == 15) %>% 
+  arrange(tree, week, time)
 
-daat_wk21 <- data_og %>% 
-  filter(week == 21)
+data_wk33 <- data_og %>% 
+  filter(week == 33)
 unique(data_og$tree)
 ```
 
@@ -104,7 +108,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 10
 
 # Number of random trees to sample
-n_sample_trees <- 40  # Adjust as needed
+n_sample_trees <- 43  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -248,7 +252,7 @@ sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = T
       tbootstrapped_slopes_df_after <- ci_values 
       
 # Print the updated dataframe with CI values
-print(tbootstrapped_slopes_df_after)
+#print(tbootstrapped_slopes_df_after)
 
 summary(tbootstrapped_slopes_df_after)
 
@@ -331,8 +335,8 @@ for (x in unique_weeks) {
   
   # Step 4: Calculate the mean slope and 95% CI
   mean_slope <- mean(slopes)
-  lower_bound <- quantile(slopes, 0.025)
-  upper_bound <- quantile(slopes, 0.975)
+  lower_bound <- quantile(slopes, 0.025, na.rm = T)
+  upper_bound <- quantile(slopes, 0.975, na.rm = T)
   
   # Step 5: Store the results in the final dataframe
   final_df_space <- bind_rows(final_df_space, data.frame(week = x, mean_slope = mean_slope, lower_bound = lower_bound, upper_bound = upper_bound))
@@ -375,21 +379,21 @@ df_all_groups <- data %>%
 df_grey <- df_all_groups
 
 df_1 <- df_all_groups %>% 
-  filter(week %in% c('12'))
+  filter(week %in% c('14'))
 
 df_2 <- df_all_groups %>% 
-  filter(week %in% c('21'))
+  filter(week %in% c('33'))
 
 # df_3 <- df_all_groups %>% 
 #   filter(week %in% c('19'))
 
 df_4 <- df_all_groups %>% 
-  filter(week %in% c('37'))
+  filter(week %in% c('19'))
 
 nice_hydration_layered <- plotly::ggplotly(ggplot() +
-    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time), data = df_grey, color = "grey") +
+    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, label = week), data = df_grey, color = "grey") +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week), color = "grey", data = df_grey) +
-    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_1"), 
+    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_1", label = tree), 
                data = df_1 ) +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_1"), 
               data = df_1) +
@@ -401,7 +405,7 @@ nice_hydration_layered <- plotly::ggplotly(ggplot() +
     #            data = df_3) +
     # geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_3"),
     #           data = df_3) +
-    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_4"),
+    geom_point(aes(y = water_potential, x = lwa_g_cm2_new, shape = time, color = "df_4", label = tree_week),
                data = df_4) +
     geom_line(aes(y = water_potential, x = lwa_g_cm2_new, group = tree_week, color = "df_4"),
               data = df_4
