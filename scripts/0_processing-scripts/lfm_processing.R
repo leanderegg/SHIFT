@@ -107,7 +107,8 @@ lfm_df_avg <- lfm_df %>% group_by(time, type, year, tree, date_lfm, week) %>% su
 # and summing years and tissue types to get one bulk lfm value per ind per time
 # the only question is whether I should sum all values, including duplicates. I decided yes.
 lfm_df_ind <- lfm_df %>% group_by(time, tree, date_lfm, week) %>% summarise(wet_wt_tot = sum(lfm_wet_wt_g, na.rm=T), wet_wt_n = length(which(lfm_wet_wt_g>0)),
-                                                                            dry_wt_tot = sum(lfm_dry_wt_g, na.rm=T), dry_wt_n = length(which(lfm_dry_wt_g>0))) %>%
+                                                                            dry_wt_tot = sum(lfm_dry_wt_g, na.rm=T), dry_wt_n = length(which(lfm_dry_wt_g>0)),
+                                                                            n_years = length(unique(year))) %>%
   mutate(lfm_wet_per_dry_g = (wet_wt_tot-dry_wt_tot)/dry_wt_tot, 
          lfm_percent = 100*(wet_wt_tot-dry_wt_tot)/dry_wt_tot)
   # note: there are still 17 instances where a tree was evidently measured multiple times in the same week.
@@ -115,6 +116,6 @@ lfm_df_ind <- lfm_df %>% group_by(time, tree, date_lfm, week) %>% summarise(wet_
 # bring in lat lon and species info
 latlon <- read.csv(here("processed-data","Tree_LatLons.csv"))
 
-lfm_ind <- left_join(latlon, lfm_df_ind, by=c("lfm.ID"="tree"))
+lfm_ind <- left_join(latlon, lfm_df_ind, by=c("lfm.ID"="tree")) %>% select(-wet_wt_n, - dry_wt_n, -n_years)
 
 write.csv(lfm_df_ind, here("processed-data", paste0("lfm_alldates_indavg",datver,".csv")))
