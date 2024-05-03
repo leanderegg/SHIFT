@@ -26,7 +26,9 @@ lfm_raw <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx
 lfm_raw$age[which(lfm_raw$age=="missing")] <- 3 # if missing, assumed it was bulk
 lfm_raw$age[which(is.na(lfm_raw$age))] <- 3
 lfm_raw$age[which(lfm_raw$age=="1,2")] <- 1 # anything yr 1 had yr 1 or 2+
-
+# have one value prob with a missing decimal
+lfm_raw$wet_wt_g[which(lfm_raw$wet_wt_g==404)] <- 0.404
+lfm_raw <- lfm_raw[-which(lfm_raw$wet_wt_g<0),] # get rid of things with negative wet weights
 
 lfm_df <- lfm_raw %>% 
   # filter(!tree_id %in% c( ##Ignoring shrubs for now, but lets not always do this!
@@ -55,7 +57,7 @@ lfm_df <- lfm_raw %>%
     tree_id %in% c("BAPI") ~ 40, 
     tree_id %in% c("ARCA") ~ 40, 
     TRUE ~ as.numeric(tree_id))) %>% 
-  drop_na(date_updated) %>% 
+  drop_na(date_updated, wet_wt_g, dry_wt_g) %>% 
   mutate(lfm_wet_per_dry_g = ((wet_wt_g - dry_wt_g)/dry_wt_g), #do calculations
          lfm_percent = 100 * ((wet_wt_g - dry_wt_g)/dry_wt_g),
          lfm_wet_wt_g = wet_wt_g, 
@@ -95,16 +97,24 @@ length(which(lfm_df$tree %in% badnames))
 
 lfm_df <- lfm_df[-which(lfm_df$tree %in% badnames),]
 
-write.csv(lfm_df, here("processed-data", paste0("lfm_alldates_cleaned",datver,".csv")))
+write.csv(lfm_df, here("processed-data", paste0("lfm_alldates",datver,".csv")))
 
 # Averaging obs since we have many duplicates and I can't figure out how this happened. Repeated Measures of the same container?
   # we'll just sum the wet weights and dry weights
-lfm_df_avg <- lfm_df %>% group_by(time, type, year, tree, date_lfm, week) %>% summarise(lfm_wet_per_dry_g = mean(wet_wt_g_tot = sum(lfm_wet_wt_g, na.rm=T), dry_wt_g_tot = sum(lfm_dry_wt_g, na.rm=T), lfm_wet_per_dry_g, na.rm=T), lfm_percent = mean(lfm_percent, na.rm=T))
+lfm_df_avg <- lfm_df %>% group_by(time, type, year, tree, date_lfm, week) %>% summarise(lfm_wet_per_dry_g = mean(lfm_wet_per_dry_g, na.rm=T),wet_wt_g_tot= sum(lfm_wet_wt_g, na.rm=T), dry_wt_g_tot = sum(lfm_dry_wt_g, na.rm=T), lfm_percent = mean(lfm_percent, na.rm=T))
   # this averages ~250 duplicate measurements
-write.csv(lfm_df, here("processed-data", paste0("lfm_alldates_avgd",datver,".csv")))
-
 
 # and summing years and tissue types to get one bulk lfm value per ind per time
-  # the only question is whether I should sum all values, including duplicates
-lfm_bulk_df <- 
+# the only question is whether I should sum all values, including duplicates. I decided yes.
+lfm_df_ind <- lfm_df %>% group_by(time, tree, date_lfm, week) %>% summarise(wet_wt_tot = sum(lfm_wet_wt_g, na.rm=T), wet_wt_n = length(which(lfm_wet_wt_g>0)),
+                                                                            dry_wt_tot = sum(lfm_dry_wt_g, na.rm=T), dry_wt_n = length(which(lfm_dry_wt_g>0))) %>%
+  mutate(lfm_wet_per_dry_g = (wet_wt_tot-dry_wt_tot)/dry_wt_tot, 
+         lfm_percent = 100*(wet_wt_tot-dry_wt_tot)/dry_wt_tot)
+  # note: there are still 17 instances where a tree was evidently measured multiple times in the same week.
 
+# bring in lat lon and species info
+latlon <- read.csv(here("processed-data","Tree_LatLons.csv"))
+
+lfm_ind <- left_join(latlon, lfm_df_ind, by=c("lfm.ID"="tree"))
+
+write.csv(lfm_df_ind, here("processed-data", paste0("lfm_alldates_indavg",datver,".csv")))
