@@ -171,7 +171,7 @@ qudo_wc_all <- bind_rows(qudo_wc_linear, qudo_wc_full) %>%
 ```{r}
 nice_all <- qudo_wc_all %>% 
    ggplot(aes(y = water_potential, 
-             x = lwa_g_cm2, 
+             x = lwa_g_cm2_new, 
              color = week)) +
   geom_point() +
 #  geom_smooth(method = "lm", se = F, color = "black") +
@@ -185,7 +185,7 @@ nice_all
 
 nice_all <- wc_all_raw  %>% 
    ggplot(aes(y = water_potential, 
-             x = lwa_g_cm2
+             x = lwa_g_cm2_new
              , 
              color = week)) +
   geom_point() +
@@ -200,10 +200,11 @@ nice_all
 ```
 
 ```{r}
-lin_nice <- qudo_wc_linear %>% 
+plotly::ggplotly(lin_nice <- qudo_wc_linear %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2_new, 
-             color = week)) +
+             color = week, 
+             label = tree)) +
   geom_point() +
   geom_smooth(method = "lm", 
               se = F, 
@@ -212,7 +213,7 @@ lin_nice <- qudo_wc_linear %>%
   labs(y = "", 
        x = "", 
        color = "Week") +
-  theme(legend.position = "none") 
+  theme(legend.position = "none")) 
 lin_nice
 ```
 

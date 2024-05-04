@@ -396,6 +396,17 @@ plotly::ggplotly(wc_lwa_df  %>%
              label = tree)) +
   geom_point()+
   facet_wrap(~week))
+
+plotly::ggplotly(wc_lwa_df  %>% 
+  #filter(week == 37) %>% 
+  drop_na(sum_area_cm2) %>% 
+  ggplot(aes(y = sum_water_wt_g, 
+             x = lwc_bulk, 
+             color = species,
+             shape = lwc_wrong, 
+             label = tree)) +
+  geom_point()+
+  facet_wrap(~week))
 ```
 
 ######REMOVING WC and LWA OUTLIERS: 
@@ -424,8 +435,9 @@ plotly::ggplotly(wc_lwa_df  %>%
   facet_wrap(~week, scales = "free") +
   geom_abline())
 
-#remove obviously off values:
+#remove obviously off values, make NA: 
 lwa_df <- wc_lwa_df %>% 
+#LWA new: any values with wrong areas and wrong summed masses
   mutate(lwa_g_cm2_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
@@ -438,6 +450,7 @@ lwa_df <- wc_lwa_df %>%
   week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006) & time %in% c("pd") ~ NA_real_,  #areas area off for these
     TRUE ~ as.numeric(lwa_g_cm2_new)
   ))%>% 
+#LMA new: any values with wrong areas
   mutate(lma_g_cm2_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
@@ -450,20 +463,24 @@ lwa_df <- wc_lwa_df %>%
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
     TRUE ~ as.numeric(lma_g_cm2_new)
   )) %>% 
+#LWC: issues with weights
   mutate(lwc_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
     tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
      tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_,
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+     tree %in% c(2370) & week %in% c(29) & time %in% c("md") ~ NA_real_,
     TRUE ~ as.numeric(lwc_new)
   )) %>% 
+#Issue with weights, 
   mutate(lwc_bulk = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
     tree %in% c(2383, 2384) & week %in% c(37) ~ NA_real_,
     tree %in% c(2086) & week %in% c(14) & time %in% c('md') ~ NA_real_,
      tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_,
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+      tree %in% c(2370) & week %in% c(29) & time %in% c("md") ~ NA_real_,
     TRUE ~ as.numeric(lwc_bulk)
   )) %>% 
   select(-mismatch_bulk, -lwc_wrong) %>% 
@@ -684,6 +701,15 @@ plotly::ggplotly(wp_wc_df2 %>%
              label = tree)) +
   geom_point())
 
+#Visualize: some measurements of LWA don't make sense
+plotly::ggplotly(wp_wc_df2 %>% 
+  ggplot(aes(y = mean_mpa, 
+             x = lwc_mean, 
+             color = species, 
+             shape = as.factor(week),
+             label = tree)) +
+  geom_point())
+
 #Visualize: some measurements of LMA don't make sense; these are the same that don't make sense for LWA, so probably a bigger issue
 plotly::ggplotly(wp_wc_df2  %>% 
   ggplot(aes(y = mean_mpa, 
@@ -698,6 +724,18 @@ plotly::ggplotly(wp_wc_df2  %>%
                    #filter(time == "md") %>% 
   ggplot(aes(y = mean_mpa, 
              x = lwa_g_cm2_new, 
+             color = species, 
+             shape = time,
+             label = tree),
+             tooltip = c("tree", "species", "time")) +
+  geom_point() +
+    facet_wrap(~week, scales = "free")
+  )
+
+plotly::ggplotly(wp_wc_df2  %>% 
+                   #filter(time == "md") %>% 
+  ggplot(aes(y = mean_mpa, 
+             x = lwc_mean, 
              color = species, 
              shape = time,
              label = tree),
@@ -929,6 +967,16 @@ ggplot(aes(y = lwa_g_cm2_new,
   geom_point()+
   facet_wrap(~species) +
   geom_abline()
+
+#look at how new LWA and old LWA compare: 
+wp_wc_rwc_alas_df1 %>% #week 19 is still weird!!! 
+  #filter(lwa_g_cm2_new < .3) %>% 
+ggplot(aes(y = lwc_new, 
+           x = lwc_mean,
+           color = as.factor(species))) +
+  geom_point()+
+  facet_wrap(~week) +
+  geom_abline()
 #decent!
 ```
 
@@ -1005,7 +1053,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>%
   )) %>%
   filter(!(week == 18)) %>% #remove week 18 because mostly did middays and repeated most of those trees 4 days later on the 19
   mutate(tree = as.character(tree))  %>% 
-  group_by(tree, week, time) %>% #combine years to get a year mean
+  dplyr::group_by(tree, week, time) %>% #combine years to get a year mean
   mutate(water_potential = mean(mean_mpa, na.rm = T), 
          ldmc_mean = mean(ldmc, na.rm = T),
          lma_g_cm2_mean= mean(lma_g_cm2, na.rm = T),
@@ -1037,10 +1085,10 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>%
     mutate(mpa_mean = mean_mpa) %>% 
   # select( -week_rwc_link, -alas_measured, -mpa_mean, -tree_factor, -dm_bulk_g, -wm_bulk_g, -sum_water_wt_g, -sum_dm_g, -bulk_or_individual_leaf, -sum_area_cm2, -type_rwc, -year_rwc, -week_wp, -mean_swc_g, -ldmc, -rwc, -lwa_g_cm2, -ldm_g, -year_alas, -mean_swc_per_dry_g, - mean_mpa, -lma_g_cm2, -alas_cm2_per_mm2, -lwa_g_cm2_new, -date_wc, -lwc_new) %>% 
 select(tree, week, date_wp, time, site, plot,  order(colnames(.))) %>% 
-  distinct()
+  distinct() 
 
-investigating_wk10 <-wp_wc_rwc_alas_df  %>% 
-  filter(week == 10 & time %in% c("md")) %>% 
+investigating <-wp_wc_rwc_alas_df  %>% 
+  filter(week == 29) %>% 
   distinct()
 
 unique(investigating_wk10$tree)
@@ -1064,7 +1112,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   filter(#species == "blue oak", 
          type == "leaf",
          #lwa_g_cm2 < 0.025, #some weirdly high values?
-         !(week == 29 & lwc_mean > 1) #one weird value in week 29)
+         #!(week == 29 & lwc_mean > 1) #one weird value in week 29)
          )  %>% 
   select(week, time, tree, plot, site, species, 
          water_potential,  
@@ -1104,7 +1152,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   filter(!(week == 29 & lwc_mean < .451), #weird values, remove for now?
          !(week == 15 & lwc_mean < .7), 
          !(time %in% c("pd") & lwc_mean < .5), 
-         !(lwa_g_cm2_new < .01 & time %in% c("pd")),
+         #!(lwa_g_cm2_new < .01 & time %in% c("pd")),
          !(week == 33 & tree == 2347), 
         # !(week == 18), #seems off
          #lwa_g_cm2 < 0.025 #weird outliers due to LMA, probably
@@ -1114,6 +1162,14 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   mutate(lwa_g_cm2_new = case_when(
     is.infinite(lwa_g_cm2_new) ~ NA_real_, 
     TRUE ~ as.numeric(lwa_g_cm2_new)))
+
+analysis_bothspp_df %>% 
+  group_by(week, time) %>% 
+  summarise(n = n())
+
+investigating <-analysis_bothspp_df %>% 
+  filter(week == 29) %>% 
+  distinct()
 
 write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 
 
@@ -1139,8 +1195,8 @@ lwc_counts <- analysis_df %>%
   rename(n_lwc = n)
 
 lwa_counts <- analysis_df %>% 
-  select(lwa_g_cm2, tree, time) %>% 
-  drop_na(lwa_g_cm2) %>% 
+  select(lwa_g_cm2_new, tree, time) %>% 
+  drop_na(lwa_g_cm2_new) %>% 
   group_by(week, time) %>% 
   count() %>% 
   rename(n_lwa = n)
@@ -1165,8 +1221,8 @@ lwc_counts_paired <- analysis_df %>%
   select(-time)
 
 lwa_counts_paired <- analysis_df %>% 
-  drop_na(lwa_g_cm2) %>% 
-  select(lwa_g_cm2, tree, time) %>% 
+  drop_na(lwa_g_cm2_new) %>% 
+  select(lwa_g_cm2_new, tree, time) %>% 
   group_by(tree, week) %>% 
   filter(all(c("pd", "md") %in% time)) %>%
   ungroup() %>% 
@@ -1267,11 +1323,11 @@ cwc_raw <- read_csv(here(dataversion_cwc,"cwc_alldates.csv"), show_col_types = F
   ungroup() %>% 
   mutate(week_cwc_link = week) %>% 
   filter(cwc > -100) %>% 
-  select(-site, -species, - date_x, -comment, -source)
+  select(-species, - date_x, -comment, -source)
   
   
 cwc_raw_mpa <- cwc_raw %>% 
-  select(cwc, tree, date_shift) %>% 
+  select(cwc, tree, date_shift, site) %>% 
   mutate(week_shift = week(date_shift)) %>% 
   distinct() %>% 
   mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
@@ -1294,12 +1350,16 @@ mpa_raw_cwc <- wp_mean_df %>% #analysis_bothspp_df %>%
 mpa_cwc_all <- merge(cwc_raw_mpa, mpa_raw_cwc, 
                      by  = c("tree", "week_cwc_link"), 
                      all = T)  %>% 
-  mutate(week = week_cwc_link) %>% 
+  mutate(week = week_cwc_link, 
+         tree = as.numeric(tree)) %>% 
    mutate(time_season = case_when(
     week < 17 ~ "before leafout", 
     week >= 17 ~ "after leafout", 
     TRUE ~ as.character("none")
-  )) 
+  )) %>% 
+  arrange(tree, week, time) %>% 
+  filter(tree > 1000) #remove shrubs
+
 #shift data from 2022-05-03 not used. Is there something about this date that would make it better than 2022-04-29?
 
 write.csv(mpa_cwc_all, here("processed-data", paste0("cwc_analysis",datver,".csv")))

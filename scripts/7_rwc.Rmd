@@ -1,0 +1,843 @@
+---
+title: "Establishing relationships between LWC and MPa, Part 3"
+author: "Indra Boving"
+date: "11/9/2022"
+output: html_document
+---
+
+##setup
+```{r setup, include=FALSE}
+#install.packages("")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+library(arm)
+
+select = dplyr::select
+
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
+#datver <- "20230316"
+#dataversion <- paste0("Data_", datver)
+```
+
+#data wrangling:
+
+```{r, echo=F}
+rwc_all_raw <- read_csv(here("processed-data", paste0("lfm_rwc_alas_wp_wc_df",datver,".csv")), show_col_types = FALSE) 
+
+rwc_long_df <- rwc_all_raw %>% 
+   filter(
+      rwc_lfm_percent < 500,
+      rwc_lfm_percent > 0,
+          !year == 3
+         ) %>% 
+  mutate(lwc = lwc_mean) %>% 
+  group_by(tree, week, time) %>% 
+  mutate(water_potential = mean(mpa_mean)) %>% 
+  ungroup() %>% 
+  group_by(tree, type, year) %>% #get maximum RWC per tree (i.e. max observed over all samplings)
+  mutate(max_swc_per_dry_g = max(mean_swc_per_dry_g), 
+        # rwc_max_percent = (lwc/max_swc_per_dry_g)*100
+         ) %>% 
+  ungroup() %>% 
+  select(week, week_rwc_link, date_wp, time, tree, plot, site, species, year, type, lwc, lfm_wet_per_dry_g, water_potential, mean_swc_per_dry_g, max_swc_per_dry_g) %>% 
+  distinct() %>% 
+  drop_na(type) %>% 
+  mutate(rwc_week = case_when(
+    week == week_rwc_link ~ "yes", 
+    TRUE ~ as.character("no")
+  )) %>% 
+  rename(lfm = lfm_wet_per_dry_g) %>% 
+  pivot_longer(cols = c(lfm, lwc),
+               names_to = "collection_type",
+               values_to = "lwc_wet_per_dry") %>% 
+  mutate(rwc_percent = (lwc_wet_per_dry/mean_swc_per_dry_g)*100,
+         rwc_max_percent = (lwc_wet_per_dry/max_swc_per_dry_g)*100,
+         )  %>% 
+  distinct() 
+
+write_csv(rwc_long_df, here("processed-data",paste0("rwc_df",datver,".csv")))
+```
+
+Look at max SWC for each tree: 
+
+#Seaon max SWC
+
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(max_swc_per_dry_g = mean(max_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "md"
+         ) %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = max_swc_per_dry_g, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems
+```
+
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(max_swc_per_dry_g = mean(max_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "md"
+         ) %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = max_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems +
+  ylim(0, 2.5)
+```
+
+
+#RWC vs. LWC
+```{r, echo=F}
+rwc_long_df  %>% 
+  filter(rwc_percent < 200) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x= water_potential), 
+             color = species) +
+  geom_point() +
+  facet_wrap(~year)
+```
+
+
+```{r, echo=F}
+rwc_long_df  %>% 
+  ggplot(aes(y = rwc_percent, 
+             x= lwc_wet_per_dry, 
+             color = as.factor(week), 
+             shape = type)) +
+  geom_point() +
+  facet_wrap(~year)
+```
+```{r}
+rwc_long_df %>% 
+  filter(type == "leaf") %>% 
+  ggplot(aes(y = rwc_percent, x = rwc_max_percent, color = type)) +
+  geom_point() +
+  geom_abline()
+
+rwc_max <- rwc_long_df %>% 
+   filter(type == "leaf", 
+          species == "blue oak",
+          rwc_max_percent < 200) %>% 
+  ggplot(aes(y = -1*water_potential, x = rwc_max_percent)) +
+  geom_point()+
+  scale_x_reverse()
+rwc_max
+
+rwc_nomax <- rwc_long_df %>% 
+   filter(type == "leaf", 
+          species == "blue oak",
+          rwc_percent < 200) %>% 
+  ggplot(aes(y = -1*water_potential, x = rwc_percent)) +
+  geom_point() +
+  scale_x_reverse()
+rwc_nomax
+```
+
+
+```{r, echo=F}
+rwc_long_df %>% 
+ # filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_max_percent, 
+             x= water_potential, 
+             color = species,
+             )) +
+  geom_smooth(method = "lm") +
+  geom_point() +
+  facet_wrap(~time)
+
+rwc_long_df %>% 
+ # filter(rwc_percent < 100) %>% 
+  ggplot(aes(y = rwc_max_percent, 
+             x= water_potential, 
+             color = type,
+             )) +
+  geom_smooth(method = "lm") +
+  geom_point(alpha= .5) +
+  facet_wrap(~time*species)
+```
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_max_percent < 150
+         ) %>% 
+  ggplot(aes(y = rwc_max_percent, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "RWC (% of global max)", 
+       color = "Type") +
+  color_two
+```
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_max_percent < 150
+         ) %>% 
+  ggplot(aes(y = rwc_max_percent, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "RWC (% of season max)", 
+       color = "Type") +
+  color_two
+```
+
+
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 150
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "RWC (% of tissue SWC)", 
+       color = "Type") +
+  color_two
+```
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 150
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "RWC (% of tissue SWC)", 
+       color = "Type") +
+  color_two
+```
+
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems
+```
+
+```{r}
+rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "md"
+         ) %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems
+```
+
+
+```{r}
+rwc_long_df %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         type == "leaf") %>% 
+  filter(year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+         #swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = as.factor(week_rwc_link), 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_boxplot() +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Week", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_two
+```
+#FIGURE: 
+```{r}
+swc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "md"
+         ) %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems +
+   theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+swc_scatter
+
+rwc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "md"
+         ) %>% 
+  distinct() %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 200
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Midday Water Potential", 
+       y = "RWC (%)", 
+       color = "Type") +
+  color_leaves_stems +
+  theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_text(size = 13), 
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+rwc_scatter
+
+
+legend_plot <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time== "md"
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Type") +
+ color_leaves_stems +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+
+stacked_nice <- cowplot::plot_grid(swc_scatter, 
+                                   rwc_scatter,
+                                   nrow = 2, 
+                                   rel_heights = c(1,1)) 
+
+stacked_nice
+
+final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
+final
+
+ggsave(here("figures", "nice_rwc_swc_md"), final, device = "jpg", width = 6, height = 6, dpi = 300)
+```
+
+
+```{r}
+swc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time == "pd"
+         ) %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        # swc_percent < 300
+         ) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = -1*water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+  #geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "", 
+       y = "SWC (g water/g dry)", 
+       color = "Type") +
+  color_leaves_stems +
+   theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+swc_scatter
+
+rwc_scatter <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+         time== "pd"
+         ) %>% 
+  distinct() %>% 
+  filter(#year %in% c(0,1), 
+         mean_swc_per_dry_g < 5, 
+        rwc_percent < 200
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+ geom_jitter(alpha = .5, #position = "dodge"
+             position=position_dodge(width=.8))+
+ # geom_boxplot(fill = NA) +
+  #facet_wrap(~year, scales = "free") +
+  labs(x = "Water Potential", 
+       y = "RWC (%)", 
+       color = "Type") +
+  color_leaves_stems +
+  theme(legend.position = "none",
+          strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_text(size = 13), 
+     axis.title.y = element_text(size = 13), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) 
+rwc_scatter
+
+
+legend_plot <- rwc_long_df %>% 
+  group_by(week, tree, type) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time== "md"
+         ) %>% 
+  ggplot(aes(y = rwc_percent, 
+             x = -1* water_potential, 
+             color = as.factor(type), 
+             #fill = species
+             )) +
+  geom_point(alpha = .5) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+    legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F, size = .5) + 
+  labs(color = "Type") +
+ color_leaves_stems +
+  guides(color = guide_legend(nrow = 1))
+legend_plot
+
+legend_scatterplots <- cowplot::get_legend(legend_plot)
+legend_scatterplots
+
+stacked_nice <- cowplot::plot_grid(swc_scatter, 
+                                   rwc_scatter,
+                                   nrow = 2, 
+                                   rel_heights = c(1,1)) 
+
+stacked_nice
+
+final<- cowplot::plot_grid(legend_scatterplots, stacked_nice, nrow = 2, rel_heights  = c(.25, 4))
+final
+
+ggsave(here("figures", "nice_rwc_swc_pd"), final, device = "jpg", width = 6, height = 6, dpi = 300)
+```
+
+#-----
+
+#PV CURVES: 
+
+#From Indra's data compilation:
+```{r}
+pv_all_raw <- read_csv(here("data", "pv_curves", "pv_curves_long.csv"), show_col_types = FALSE) %>% clean_names() %>% 
+  rename(rev_mpa = x1_mpa, 
+         def_wc = x100_rwc) %>% 
+  select(-def_wc, -rwc) %>% 
+  mutate(date_pv = mdy(date)) %>% 
+  #filter(def_wc > 100) %>% 
+  dplyr::group_by(as.factor(tree), date_pv) %>%
+  fill(c(1:19), .direction = "downup") %>%
+  ungroup() %>% 
+  mutate(total_nonsample_wt = case_when(
+    total_nonsample_wt %in% c(NA) ~ 0,
+    TRUE ~ as.numeric(total_nonsample_wt)
+  )) %>% 
+  mutate(tree = as.factor(tree), 
+        sample_wt = mass_g - total_nonsample_wt,
+        dw_g = stem_dry_wt_g + leaves_dry_wt_g, 
+        ww_g = sample_wt - dw_g,
+        gww_gdw = ww_g/dw_g) %>% 
+  select(-stem_mass_g, -time, -psi) %>% 
+  drop_na(gww_gdw)
+
+pv_swc_all <- pv_all_raw %>% 
+  filter(mpa > -2) %>% #for points above the tlp (estimated to be around ~2)
+  group_by(tree, date) %>%
+  summarise(swc_sat = lm(formula = gww_gdw ~ mpa)$coefficients[["(Intercept)"]])
+
+
+pv_df <- merge(pv_all_raw, pv_swc_all, by=c("tree", "date"), all = T) %>%
+  mutate(rwc_new = 100 * (gww_gdw/swc_sat)) 
+
+pv_df %>% 
+  filter(rwc_new > 70, 
+         rwc_new < 100) %>% 
+  #filter(tree %in% c(2381, 2381.1, 2381.2, 2382, 2383)) %>% 
+ggplot(aes(x = mpa, y = rwc_new)) +
+  geom_point(aes(color = tree)) +
+  facet_wrap(~rehydrated, scales = "free")
+
+pv_df %>% 
+  filter(rwc_new > 70) %>% 
+ggplot(aes(y = -1/mpa, x = rwc_new)) +
+  geom_point(aes(color = tree)) +
+  facet_wrap(~rehydrated, scales = "free")
+```
+
+#From Kelly's data compilation: 
+
+```{r}
+pv_kk_raw <- read_csv(here("data", "pv_curves", "pv_shift_kk.csv"), show_col_types = FALSE) %>% clean_names() %>% 
+  mutate(gww = fresh_mass - dry_mass, 
+         gdw = dry_mass, 
+         gww_gdw = gww/gdw, 
+         tree = as.factor(sample), 
+         mpa = water_potential) 
+
+pv_swc_kk <- pv_kk_raw %>% 
+  filter(water_potential > -2) %>% #for points above the tlp (estimated to be around ~2)
+  group_by(tree, date, rep) %>%
+  summarise(swc_extrapolated = lm(formula = gww_gdw ~ water_potential)$coefficients[["(Intercept)"]])
+
+
+pv_kk_df <- merge(pv_kk_raw, pv_swc_kk, by=c("tree", "date","rep"), all = T) %>%
+  mutate(rwc_new = 100 * (gww_gdw/swc_extrapolated), 
+         rwc = 100*(fresh_mass/fresh_mass_saturated)) %>% 
+  filter(rwc_new < 150)
+
+pv_kk_df %>% 
+  filter(rwc_new > 70, 
+         rwc_new < 100) %>% 
+  #filter(tree %in% c(2381, 2381.1, 2381.2, 2382, 2383)) %>% 
+ggplot(aes(x = water_potential, y = rwc_new)) +
+  geom_point(aes(color = tree))
+
+pv_kk_df %>% 
+  filter(rwc_new > 70,
+         rwc_new < 100) %>%
+  #filter(tree %in% c(2381, 2381.1, 2381.2, 2382, 2383)) %>% 
+ggplot(aes(y = water_potential, x = rwc)) +
+  geom_point(aes(color = tree)) +
+facet_wrap(~species)
+
+pv_kk_df %>% 
+  filter(rwc_new > 70) %>% 
+ggplot(aes(y = -1/mpa, x = rwc)) +
+  geom_point(aes(color = tree)) +
+  facet_wrap(~species, scales = "free")
+
+pv_kk_df %>% 
+  filter(rwc_new > 70, 
+         rwc_new < 100) %>% 
+ggplot(aes(y = -1/mpa, x = rwc_new)) +
+  geom_point(aes(color = date)) +
+  facet_wrap(~species, scales = "free")
+
+pv_kk_qudo_df <- pv_kk_df %>% 
+  filter(species %in% c("blue"))
+```
+
+#-----
+
+#LAYER: 
+
+```{r}
+pv_rwc_df <- rwc_long_df %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time == "md"
+         ) %>% 
+  filter(rwc_percent > 40)
+
+below_tlp <- pv_kk_qudo_df %>% 
+  filter(rwc < 90)
+
+pv_rwc_df  <- pv_rwc_df %>% 
+  filter(rwc_percent<120)
+pv_rwc_df_av <- pv_rwc_df %>% group_by(week, time) %>% summarise(rwc_percent = mean(rwc_percent,na.rm=T), water_potential = mean(water_potential, na.rm=T))
+
+ggplot() +
+  geom_point(data = pv_rwc_df, aes(x = rwc_percent, y = -1*water_potential, shape = time, color = as.factor(week)), alpha = .5) +
+  geom_point(data=pv_rwc_df_av, aes(x = rwc_percent, y = -1*water_potential, shape = time, color = as.factor(week)), size=6)+
+ geom_point(data = pv_df, aes(x = rwc_new, y = mpa), color = "purple") +
+  geom_jitter(data = pv_kk_qudo_df, aes(x = rwc, y  = mpa, color = as.factor(date)
+                                      ), alpha = .5) +
+   #geom_jitter(data = below_tlp, aes(x = rwc, y  = mpa#, color = as.factor(sample)
+                                       #), color = "orange", alpha = .5) +
+  xlim(40, 100) +
+  geom_smooth(data = pv_rwc_df_av, method="lm", se=F, aes(color=as.factor(week),x = rwc_percent, y = -1*water_potential))
+#  geom_smooth(method = "lm", se = FALSE, data = pv_kk_qudo_df, aes(x = rwc, y  = mpa, color = as.factor(date))) +
+ # geom_smooth(method = "lm", data = pv_rwc_df, aes(x = rwc_percent, y  = -1*water_potential), color = "blue") +
+  #  geom_smooth(method = "lm", data = below_tlp, aes(x = rwc, y  = mpa), color = "orange") +
+ # geom_smooth(data = pv_df, aes(x = rwc_new, y  = mpa), color = "purple") +
+  ggtitle("RWC, tissue-level maximum")
+```
+Change: force RWC through origin
+
+
+```{r}
+pv_rwc_df <- rwc_long_df %>% 
+  filter(species == "blue oak", 
+         year == 0, 
+        # time == "md"
+         ) %>% 
+  filter(rwc_percent > 40)
+
+below_tlp <- pv_kk_qudo_df %>% 
+  filter(rwc < 90)
+  
+ggplot() +
+  geom_point(data = pv_rwc_df, aes(x = rwc_percent, y = 1/water_potential, shape = time), color = "blue", alpha = .5) +
+ # geom_point(data = pv_df, aes(x = rwc_new, y = mpa), color = "purple") +
+  geom_jitter(data = pv_kk_qudo_df, aes(x = rwc, y  = -1/mpa#, color = as.factor(sample)
+                                       ), color = "red", alpha = .2) +
+   geom_jitter(data = below_tlp, aes(x = rwc, y  = -1/mpa#, color = as.factor(sample)
+                                       ), color = "orange", alpha = .5) +
+  geom_smooth(method = "lm", data = pv_kk_qudo_df, aes(x = rwc, y  = -1/mpa), color = "red") +
+  geom_smooth(method = "lm", data = pv_rwc_df, aes(x = rwc_percent, y  = 1/water_potential), color = "blue") +
+    geom_smooth(method = "lm", data = below_tlp, aes(x = rwc, y  = -1/mpa), color = "orange") +
+ # geom_smooth(data = pv_df, aes(x = rwc_new, y  = mpa), color = "purple") +
+  ggtitle("RWC, tissue-level maximum") +
+  scale_x_reverse() +
+  lims(x = c(100, 70), 
+       y = c(0, 10))
+```
+
+```{r}
+ggplot() +
+  geom_point(data = pv_rwc_df, aes(x = rwc_max_percent, y  = -1*water_potential), color = "blue") +
+ # geom_point(data = pv_df, aes(y = rwc_new, x = mpa), color = "purple") +
+  geom_point(data = pv_kk_qudo_df, aes(x = rwc, y  = mpa), color = "pink") +
+   geom_point(data = pv_kk_qudo_df, aes(x = rwc_new, y = mpa), color = "yellow") +
+  geom_smooth(data = pv_kk_qudo_df, aes(x = rwc, y = mpa), color = "pink") +
+   geom_smooth(data = pv_kk_qudo_df, aes(x = rwc_new, y = mpa), color = "yellow") +
+  geom_smooth(data = pv_rwc_df, aes(x = rwc_max_percent, y = -1*water_potential), color = "blue") +
+  #geom_smooth(data = pv_df, aes(y = rwc_new, x = mpa), color = "purple") +
+  ggtitle("RWC from max observed") +
+  xlim(0, 100)
+
+```
+
+
