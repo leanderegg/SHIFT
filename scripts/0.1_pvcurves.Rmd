@@ -103,7 +103,12 @@ pv_new_kk_df <- pv_new_kk_raw %>%
 
 Combine: 
 ```{r}
-pv_new_df <- bind_rows(pv_new_kk_df, pv_new_rr_df)
+pv_new_df <- bind_rows(pv_new_kk_df, pv_new_rr_df) %>% 
+  filter(!(rehydrated %in% c("no")))
+
+unique(pv_new_df$date)
+
+unique(pv_new_df$unique_id)
 
 ```
 
@@ -161,7 +166,7 @@ pv_nice
 pv_nice <- pv_new_df %>% 
   group_by(unique_id) %>% 
   filter(lwc < 2.1) %>% 
-  filter(!(date %in% c("2022-04-01", "2022-04-05")), 
+  filter(!(date %in% c("2022-04-01", "2022-04-05")), #these are weird? 
          lwc < 2.25) %>% 
   ggplot(aes(y = water_potential, 
             # x = lwc_mean_centered, 
@@ -935,7 +940,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 20  # Adjust as needed
+n_sample_trees <- 32  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()

@@ -49,10 +49,14 @@ data_og <- data_qudo_raw %>%
   select(tree, week, water_potential, lwc_mean, time_season, time, species, site) %>% 
   distinct()
 
-
-wc_qudo_df %>% 
+#take a look at the counts for each week: 
+data_og%>% 
   group_by(week, time) %>% 
   summarise(n = n())
+
+head(data_og)
+
+summary(data_og)
 
 daat_wk21 <- data_og %>% 
   filter(week == 21)
@@ -453,8 +457,8 @@ df_1 <- df_all_groups %>%
 df_2 <- df_all_groups %>% 
   filter(week %in% c('17'))
 
-# df_3 <- df_all_groups %>% 
-#   filter(week %in% c('19'))
+df_3 <- df_all_groups %>%
+  filter(week %in% c('19'))
 
 df_4 <- df_all_groups %>% 
   filter(week %in% c('33'))
@@ -470,10 +474,10 @@ nice_hydration_layered <- ggplot() +
                data = df_2) +
     geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_2"), 
               data = df_2) +
-    # geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_3"),
-    #            data = df_3) +
-    # geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_3"),
-    #           data = df_3) +
+    geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_3"),
+               data = df_3) +
+    geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_3"),
+              data = df_3) +
     geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_4"),
                data = df_4) +
     geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_4"),
@@ -482,12 +486,12 @@ nice_hydration_layered <- ggplot() +
     scale_colour_manual(name = 'Week', 
          values =c("df_1" ="#122451", 
                    "df_2"="#62929a",
-                  # "df_3"="#EC7E28",
+                   "df_3"="#EC7E28",
                    "df_4"="#c969a8"
                    ), 
          labels = c('12',
                     '17',
-                    #'19',
+                    '19',
                     '33')) +
     labs(y = "Water Potential (MPa)", 
        x = "Leaf Water Content (g)", 
@@ -541,8 +545,8 @@ data <- data_og %>%
   filter(!(week == 17 & tree %in% c(2010, 2379))) %>% 
   filter(!(week == 15 & tree %in% c(2009))) %>% 
   filter(!(week == 33 & tree %in% c(2379, 2378)))%>% 
-  filter(!(week == 29 & tree %in% c(2006, 2086))) %>% 
-  filter(!(week == 19)) #something weird is up with week 19!
+  filter(!(week == 29 & tree %in% c(2006, 2086))) #%>% 
+ # filter(!(week == 19)) #something weird is up with week 19!
 
 # Assuming your dataset is called 'data'
 # Make sure 'data' is properly loaded before proceeding
@@ -787,7 +791,7 @@ data <- data_og %>%
   mutate(tree_week = paste(tree, week, sep = "_")
   ) %>% 
   mutate(water_potential = water_potential) %>% 
-  filter(week == 29)
+  filter(week == 19)
   
 
 plotly::ggplotly(ggplot() +

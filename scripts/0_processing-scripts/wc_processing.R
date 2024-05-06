@@ -1404,6 +1404,7 @@ wc818_long_dry_premerge <- merge(wc818_long_md, wc818_long_dry, all.x = T) #comb
 wc_long_md_818 <- merge(wc818_long_dry_premerge, wc818_long_wet, all.x = T) #combine MPa, dry, and wet data
 
 ##Not entered yet, as of 8-28-2022
+
 #______________________________________________________________
 ############### All MDs #######################################
 #______________________________________________________________
@@ -1455,6 +1456,35 @@ wc_alldates_md <- rbind(wc_long_md_228,
          date_md = date) %>% 
   select(-date, -md_avg) %>% 
   mutate(time = "MD")
+
+#______________________________________________________________
+############### NEW 2022-05-09 (Week 19) MD Dry Weights ##################
+#______________________________________________________________
+
+
+wc_alldates_md_noweek19 <- wc_alldates_md %>% 
+  mutate(md_bulk_dry = case_when(
+    week == 19 ~ NA_real_, 
+    TRUE ~ as.numeric(md_bulk_dry)
+  ))
+
+wc_alldates_md_reweighed_week19 <- read_csv(here::here("data", "week19_reweighed_dry_masses.csv")) %>% 
+  clean_names() %>% 
+  filter(pd_md == "md") %>% 
+  mutate(md_bulk_dry = dm_3, 
+         tree = tree_id) %>% 
+  select(tree, md_bulk_dry,) %>% 
+  mutate(week = as.numeric(19))
+
+wc_alldates_md2 <- merge(wc_alldates_md_reweighed_week19, wc_alldates_md_noweek19, 
+                         by = c("week", "tree"), all = T) %>% 
+  distinct() %>% 
+  mutate(md_bulk_dry = case_when(
+    week %in% c(19) & md_bulk_dry.y %in% c(NA) ~ as.numeric(md_bulk_dry.x), 
+    TRUE ~ as.numeric(md_bulk_dry.y)
+  )) %>% 
+  select(-md_bulk_dry.x, -md_bulk_dry.y) %>% 
+  mutate(difference = md_bulk_dry - md_bulk_wet)
 
 
 #______________________________________________________________
@@ -2772,7 +2802,7 @@ wc_alldates_pd2 <- merge(wc_alldates_pd_reweighed_week19, wc_alldates_pd_noweek1
 #______________________________________________________________
 
 
-wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md, all = T, by = c(#"date",
+wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md2, all = T, by = c(#"date",
                                                                      "tag",
                                                                      "plot_number",
                                                                      "tree",
@@ -3201,11 +3231,6 @@ wc912 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx")
     TRUE ~ as.Date(date)
   ))
 
-dupes_wc912 <- wc912_trees %>% 
-  filter(week %in% 37) %>% 
-  distinct() %>% 
-  group_by(date, tree, time) %>% 
-  filter(n() > 1)
 
 trees_sites_df <-  wc_alldates_longer_all %>% 
   ungroup() %>% 
@@ -3215,6 +3240,12 @@ trees_sites_df <-  wc_alldates_longer_all %>%
 wc912_trees <- merge(trees_sites_df, wc912, all.y = T) %>% 
   group_by(tree) %>% 
   fill(c("plot","site"), .direction = "downup")
+
+dupes_wc912 <- wc912_trees %>% 
+  filter(week %in% 37) %>% 
+  distinct() %>% 
+  group_by(date, tree, time) %>% 
+  filter(n() > 1)
 
 
 wc_all  <- bind_rows(wc912_trees, wc_alldates_longer_all )  %>% 

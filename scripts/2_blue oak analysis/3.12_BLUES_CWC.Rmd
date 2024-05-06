@@ -156,7 +156,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Number of random trees to sample
 n_sample_trees <- 42  # Adjust as needed based on the number of unique trees
@@ -248,10 +248,10 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 50  # Adjust as needed
+n_sample_trees <- 39  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -364,6 +364,7 @@ ggplot(aes(y = water_potential,
 #HOW MANY trees? 
 
 data %>% 
+  drop_na(water_potential, cwc) %>% 
   group_by(week) %>% 
   count()
 ```
@@ -371,7 +372,7 @@ Cant actually filter by trees that were in all weeks, because none were actually
 
 ```{r}
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Create an empty dataframe to store results
 cwc_final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
