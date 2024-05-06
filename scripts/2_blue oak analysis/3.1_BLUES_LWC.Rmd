@@ -1980,7 +1980,7 @@ ggsave(here("figures", "qudo figures", "LWC", "combined_plots_all_qudo"), combin
 
 #------------------------------------
 
-#LMA by MPa, nice: 
+#LMA by MPa: 
 
 Using LMA from Al:As: 
 
@@ -2034,10 +2034,24 @@ scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 ```
 
 Using LMA from scannings leaves used for LWC: (this will have higher sample size and no repeated Al:As data!)
+
 ```{r}
 lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>% 
-  filter(species == "blue oak")
+  filter(species == "blue oak") 
 
+#How much does WP relate to LMA? 
+
+m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + (1|tree), data = lma_mpa_df, REML = T)
+summary(m1)
+MuMIn::r.squaredGLMM(m1)
+anova(m1)
+AIC(m1)
+
+marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
+marginal_r2
+```
+
+```{r}
 lma_mpa_plot <- lma_mpa_df %>% 
   ggplot(aes(#y = water_potential, 
              y =-1*mean_mpa,
@@ -2048,6 +2062,10 @@ lma_mpa_plot <- lma_mpa_df %>%
   geom_point(alpha = 1, 
             # aes (shape = site)
              ) +
+  annotate(geom = "text", 
+           x = .010, 
+           y = -5, 
+           label = paste("R2 = ", marginal_r2))+
   theme(#legend.position="top",
         legend.position= c(.87, .87),
       strip.background = element_blank(),

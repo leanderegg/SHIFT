@@ -47,11 +47,111 @@ dataversion <- paste0("Data_", datver)
 data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>%  
   filter(species %in% c("blue oak")) %>% 
   select(tree, week, water_potential, cwc, time_season, time, site, date_wp) %>% 
+  mutate(water_potential = -1*water_potential) %>% 
   distinct() %>% 
    # filter(!tree %in% c(2012, 2011)) %>% 
   filter(!(tree %in% c(2346))) %>% #this tree seems to have a problem with post-leafout cwc - all 0s - likely becuase the canopy was too small to see. 
   filter(!week %in% 11) #week 11 only has 9 midday measurements and acts really odd (2022-03-15) 
 ```
+
+#----------------
+#Phenology timelines
+
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+lma_plot <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+  group_by(week_alas_link, species) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T)) %>% 
+  filter(species %in% c("blue oak")) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  select(week, #species, 
+         lma_g_cm2) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot(aes(x = week_alas_link, 
+             y = lma_g_cm2, 
+             #color = species
+             )) +
+  geom_point(size = 3) +
+  geom_line() +
+ # scale_x_continuous(breaks = c(10, 14, 17, 21, 29, 37)) +
+  labs(y = "LMA") +
+  theme(legend.position = "none",
+        axis.title.y = element_text(size = 20), 
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+ggsave(here("figures", "qudo figures", "lma_long_plot"), lma_plot, device = "jpeg", width = 12, height = 1.5, dpi = 300)
+```
+
+
+```{r, fig.height=2, fig.width=6}
+lma_plot <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+  group_by(week_alas_link, species) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2_new, na.rm = T)) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  select(week, species, lma_g_cm2) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot(aes(x = week_alas_link, 
+             y = lma_g_cm2, 
+             color = species)) +
+  geom_point(size = 3) +
+  geom_line() +
+  scale_x_continuous(breaks = c(10, 11, 13, 14, 17, 21, 29, 37, 40)) +
+  labs(y = "LMA") +
+  theme(legend.position = "none", 
+        axis.title.y = element_text(size = 20), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(hjust=.5, size= 20))
+lma_plot
+
+fig_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+  group_by(week_alas_link, species) %>% 
+  mutate(alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T)) %>% 
+  select(week, species, alas_cm2_per_mm2) %>% 
+  distinct() %>% 
+  drop_na(alas_cm2_per_mm2)
+
+unique(fig_df$week)
+
+alas_plot <- fig_df %>% 
+  filter(week %in% c(c(10, 11, 13, 14, 17, 21, 29, 37, 40))) %>% 
+  ggplot(aes(x = week_alas_link, 
+             y = alas_cm2_per_mm2))+
+  #geom_hline(yintercept = 0) +
+  geom_point(size = 3) +
+  geom_line() +
+  scale_x_continuous(breaks = c(10, 11, 13, 14, 17, 21, 29, 37, 40)) +
+  labs(y = "Al:As") +
+  theme(legend.position = "none", 
+        axis.title.y = element_text(size = 20), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(hjust=.5, size= 20)
+        )
+alas_plot
+
+ggsave(here("figures", "alas_long_plot"), alas_plot, device = "jpg", width = 12, height = 2, dpi = 300)
+```
+
 #--------------
 
 #Bootstrapping
