@@ -1435,7 +1435,7 @@ time_summary_bs_tree
 ggsave(here("figures", "time_summary_slopes_boot_tree"), time_summary_bs_tree, device = "jpg", width = 2.5, height = 3, dpi = 300)
 ```
 
-#Models
+#MODELS
 
 ```{r}
 glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod) 
@@ -1468,7 +1468,7 @@ cwc_mods <- bind_rows(space_mod_df <- space_mod_df %>% mutate(mod = "space"),
 cwc_mods
 
 
-write_csv(cwc_mods, here::here("processed-data", "cwc_mods.csv"))
+write_csv(cwc_mods, here::here("processed-data", "model results", "cwc_mods.csv"))
 ```
 
 #----------

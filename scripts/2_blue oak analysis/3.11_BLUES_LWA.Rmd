@@ -1266,7 +1266,7 @@ lwa_g_cm2_new_mods <- bind_rows(space_mod_df <- space_mod_df %>%
 
 lwa_g_cm2_new_mods
 
-write_csv(lwa_g_cm2_new_mods, here::here("processed-data", "lwa_g_cm2_new_qudo_mods.csv"))
+write_csv(lwa_g_cm2_new_mods, here::here("processed-data", "model results", "lwa_qudo_mods.csv"))
 ```
 
 #-----------

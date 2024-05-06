@@ -1347,7 +1347,7 @@ lwc_mean_mods <- bind_rows(space_mod_df <- space_mod_df %>%
 
 lwc_mean_mods
 
-write_csv(lwc_mean_mods, here::here("processed-data", "lwc_mean_qudo_mods.csv"))
+write_csv(lwc_mean_mods, here::here("processed-data", "model results", "lwc_mean_qudo_mods.csv"))
 ```
 
 #-------
