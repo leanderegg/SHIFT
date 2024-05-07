@@ -51,6 +51,8 @@ data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv"))
    # filter(!tree %in% c(2012, 2011)) %>% 
  # filter(!(tree %in% c(2346))) %>% #this tree seems to have a problem with post-leafout cwc - all 0s - likely becuase the canopy was too small to see. 
   filter(!week %in% 11) #week 11 only has 9 midday measurements and acts really odd (2022-03-15) 
+
+unique(data_og$tree)
 ```
 #--------------
 

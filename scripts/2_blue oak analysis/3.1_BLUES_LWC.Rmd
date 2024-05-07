@@ -1939,7 +1939,7 @@ y.grob2 <- textGrob("Water Potential (MPa)",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15), rot=90)
 
-x.grob2 <- textGrob("Leaf Water Content (g/cm2)", 
+x.grob2 <- textGrob("Leaf Water Content (g)", 
                    gp=gpar(fontface="bold", #col="blue",
                            fontsize=15))
 
@@ -1974,7 +1974,7 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here("figures", "qudo figures", "LWC", "combined_plots_all_qudo"), combined_plots_all, device = "jpg", width = 12, height = 8, dpi = 300)
+ggsave(here("figures", "qudo figures", "LWC", "combined_plots_all_qudo"), combined_plots_all, device = "jpg", width = 12, height = 7, dpi = 300)
 ```
 
 
@@ -1988,8 +1988,33 @@ Using LMA from Al:As:
 data_qudo_lma <- data_qudo_raw %>% 
  # filter(time %in% c("md")) %>% 
   group_by(tree, week, time) %>% 
-  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T))
+  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T)) %>% 
+  filter(species %in% c("blue oak")) %>% 
+  select(week, tree, species, lma_g_cm2, water_potential)
 
+#How much does WP relate to LMA? 
+###Model with random slopes and intercepts per tree, with lma_g_cm2_new as the fixed effect. 
+
+m1 <- lmer(water_potential ~ lma_g_cm2 + time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
+summary(m1)
+MuMIn::r.squaredGLMM(m1)
+anova(m1)
+AIC(m1)
+
+m2 <- lmer(water_potential ~ time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#compare mods: 
+anova(m1, m2)
+
+#Store the R-squared of the 'better' model
+marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
+marginal_r2
+```
+
+
+```{r}
 data_qudo_lma  %>% 
   ggplot(aes(y = water_potential, 
             # y =mpa_mean,
@@ -2033,25 +2058,39 @@ data_qudo_lma  %>%
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 ```
 
+#Stats
 Using LMA from scannings leaves used for LWC: (this will have higher sample size and no repeated Al:As data!)
 
 ```{r}
 lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>% 
-  filter(species == "blue oak") 
+  filter(species == "blue oak") %>% 
+  select(lma_g_cm2_new, time, tree, mean_mpa) %>% 
+  drop_na(lma_g_cm2_new, time, tree, mean_mpa) 
 
 #How much does WP relate to LMA? 
+###Model with random slopes and intercepts per tree, with lma_g_cm2_new as the fixed effect. 
 
-m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + (1|tree), data = lma_mpa_df, REML = T)
+m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
 summary(m1)
 MuMIn::r.squaredGLMM(m1)
 anova(m1)
 AIC(m1)
 
+m2 <- lm(mean_mpa ~ time + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#compare mods: 
+anova(m1, m2)
+
+#Store the R-squared of the 'better' model
 marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
 marginal_r2
 ```
 
+
 ```{r}
+#PLot!
 lma_mpa_plot <- lma_mpa_df %>% 
   ggplot(aes(#y = water_potential, 
              y =-1*mean_mpa,

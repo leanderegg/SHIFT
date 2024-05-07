@@ -207,8 +207,6 @@ together
 
 
 
-#LEEs example: (use this)
-
 #####Whole df: 
 ```{r}
 #alternative method with random effects
@@ -595,7 +593,7 @@ color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
 #greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))
 
 #Combine into 1 df: 
-vdc2 <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>% 
+vdc2_lwa <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>% 
   group_by(dataset) %>% 
   mutate(total = sum(vcov)) %>% 
   ungroup() %>% 
@@ -609,7 +607,7 @@ vdc2 <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>%
       TRUE ~ as.character(grp)
   ))
 
-vdc2_plot <- vdc2 %>% ggplot(aes(x = dataset, 
+vdc2_plot <- vdc2_lwa %>% ggplot(aes(x = dataset, 
                     y = percent_var,
                     fill = grp_new)) +
   geom_col(stat = "identity") +

@@ -983,15 +983,28 @@ wp_wc_rwc_df_all %>%
   facet_wrap(~growth_words) +
   geom_smooth(method = "lm", se = F)+
   color_leaves_stems +
-  labs(y = "Saturated WC (g wet/g dry)", 
-       x = "Water Potential (-MPa)")
+  labs(y = "Saturated Water Content (g wet/g dry)", 
+       x = "Water Potential (MPa)")
 
 swc_fig_SI <- wp_wc_rwc_df_all %>% 
+  mutate(date_rwc = case_when(
+    date_rwc %in% c("2022-04-11", "2022-04-14") ~ as.Date("2022-04-12"),
+    date_rwc %in% c("2022-05-23", "2022-05-27") ~ as.Date("2022-05-25"),
+    date_rwc %in% c("2022-09-12") ~ as.Date("2022-09-15"),
+    TRUE ~ as.Date(date_rwc)
+  )) %>% 
+  mutate(species = case_when(
+    species %in% c("live oak") ~ ("Q. kelloggii"),
+    species %in% c("blue oak") ~ ("Q. douglassii"),
+    TRUE ~ as.character(species)
+  )) %>% 
   filter(mean_swc_per_dry_g < 3, 
          mean_swc_per_dry_g > .3, 
          !year_rwc == 3, 
          year_rwc %in% c(0,1), 
-         type_rwc == "leaf") %>% 
+         type_rwc == "leaf", 
+         #time == "md"
+         ) %>% 
   drop_na(week) %>% 
   # mutate(growth_words = case_when(
   #   year == 0 ~ "new growth",
@@ -999,23 +1012,46 @@ swc_fig_SI <- wp_wc_rwc_df_all %>%
   #   year %in% c(2, 3) ~ "old growth", 
   #   TRUE ~ as.character(year)
   # )) %>% 
-  ggplot(aes(y = mean_swc_per_dry_g, 
-             x = mean_mpa, 
-             color = as.factor(week), 
-             shape = as.factor(year_rwc))) +
-  geom_jitter(alpha = 1) +
+  ggplot(aes(x = mean_swc_per_dry_g, 
+             y = -1*mean_mpa, 
+             color = as.factor(date_rwc), 
+            # shape = as.factor(year_rwc)
+            # shape = time
+             )) +
+  geom_jitter(alpha = 1) + 
+  theme(
+   # legend.position = c(.8, .2),
+   # legend.position = "none",
+  strip.background = element_blank(),
+  legend.key = element_rect(fill = NA),
+  #strip.text.y = element_blank(), 
+   strip.text.x = element_text(size = 16), 
+  # axis.text.y = element_text(size = 12), 
+   axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+  #axis.ticks.y = element_blank(), 
+   axis.title.y = element_text(size = 16),
+   axis.title.x = element_text(size = 16),
+ # axis.title.y = element_blank(),
+  legend.title = element_text(size = 16), 
+  legend.text = element_text(size = 13), 
+  plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+# legend.position = "none"
+  ) +
+ # geom_smooth(method = "lm", se = F)+
  # facet_wrap(~growth_words) +
   #geom_smooth(method = "lm", se = F)+
   color_many +
   #color_leaves_stems +
-  labs(y = "Saturated WC (g wet/g dry)", 
-       x = "Water Potential (-MPa)", 
-       color = "Week", 
+  labs(x = "Saturated Water Content (g wet/g dry)", 
+       y  = "Water Potential (MPa)", 
+       color = "Date", 
        shape = "Tissue Age") +
-  facet_wrap(~species)
+  facet_wrap(~species, scales = "free")
 swc_fig_SI
 
-ggsave(here("figures", "SI Figures", "swc_fig_SI"), swc_fig_SI, device = "jpg", width = 8, height = 5, dpi = 300)
+ggsave(here("figures", "SI Figures", "swc_fig_SI"), swc_fig_SI, device = "jpg", width = 9, height = 5, dpi = 300)
 ```
 
 ###AL:As & inferred LWA: 
@@ -1336,7 +1372,10 @@ analysis_bothspp_df %>%
 investigating <-analysis_bothspp_df %>% 
   filter(week == 29) %>% 
   distinct()
+```
 
+
+```{r}
 write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 
 
 #just blue oaks: 
