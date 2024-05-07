@@ -994,7 +994,7 @@ swc_fig_SI <- wp_wc_rwc_df_all %>%
     TRUE ~ as.Date(date_rwc)
   )) %>% 
   mutate(species = case_when(
-    species %in% c("live oak") ~ ("Q. kelloggii"),
+    species %in% c("live oak") ~ ("Q. agrifolia"),
     species %in% c("blue oak") ~ ("Q. douglassii"),
     TRUE ~ as.character(species)
   )) %>% 
@@ -1330,6 +1330,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          #leaf_count, 
          swc_per_dry_g_mean,
          rwc_mean,
+        # swc,
          date_wp, 
          week_alas_link) %>% 
   distinct() %>% 
@@ -1549,6 +1550,7 @@ mpa_raw_cwc <- wp_mean_df %>% #analysis_bothspp_df %>%
   mutate(week_cwc_link = case_when( #dates of overflight and water potential, give unique names (shifts flight number) so they line up with CWC:
     #week_shift %in% c(20) ~ 21, #shift date = 2022-05-17, mpa dates = 2022-05-23 and 05-25
     date_wp %in% c("2022-03-30") ~ 14,#shift date = 2022-04-05, mpa PD date = 2022-03-30
+    date_wp %in% c("2022-03-25") ~ 13,
     TRUE ~ as.numeric(week_cwc_link)))
 
 #final df with mpas and cwc matched by closest week (overflight and mpa collection):

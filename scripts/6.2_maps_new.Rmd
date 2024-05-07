@@ -182,8 +182,10 @@ wp_ind_new <- wp_ind %>%
   ))
 
 write_csv(wp_ind_new, here("processed-data", "geospatial", "wp_ind_new.csv"))
+```
 
 
+```{r, eval=FALSE}
 wp_wc_ad <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = FALSE) 
 
 #### Lee's version which hopefully cuts down on replicate values
@@ -214,7 +216,7 @@ wp_wc_ind <- left_join(wp_wc_ind, latlon, by=c("tree"))
 
 
 # calculate delta Psi
-wp_wc_ind$e_drop <- wp_wc_ind$md_mpa-wp_ind$pd_mpa
+wp_wc_ind$e_drop <- wp_wc_ind$md_mpa-wp_wc_ind$pd_mpa
 
 # add in lat lon and utm
 wp_wc_ind$lat_utm <- latlon.utm@coords[match( wp_wc_ind$tree,latlon.utm$tree),2]
@@ -235,8 +237,24 @@ boundary <- sf::st_read(here("processed-data", "geospatial", "boundary.kml" ))
 ```
 
 ```{r}
+#With no water pots.
+#trees <- read_csv(here("processed-data", "geospatial", "trees_latlon.csv"), show_col_types = F) 
+
+#With water pots:
+trees <- read_csv(here("processed-data", "geospatial", "wp_wc_ind_new.csv"), show_col_types = F)
+
+# make a latlon and utm spatial data version
+latlon.ll <- SpatialPointsDataFrame(coords = data.frame(trees$longitude, trees$latitude),
+                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
+                                    data=trees)
+#make into the right projection: 
+#latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sedg_hillshade2))
+```
+
+
+```{r}
 pds <- latlon.ll@data  %>% 
-  filter(week %in% c(17:37), 
+  filter(week %in% c(18:37), 
         # species == "blue oak"
          ) %>% 
   group_by(tree) %>% 
@@ -275,27 +293,13 @@ whole_map <- leaflet(pds) %>%
 whole_map
 ```
 
-```{r}
-#With no water pots.
-#trees <- read_csv(here("processed-data", "geospatial", "trees_latlon.csv"), show_col_types = F) 
-
-#With water pots:
-trees <- read_csv(here("processed-data", "geospatial", "wp_wc_ind_new.csv"), show_col_types = F)
-
-# make a latlon and utm spatial data version
-latlon.ll <- SpatialPointsDataFrame(coords = data.frame(trees$longitude, trees$latitude),
-                                    proj4string = CRS("+proj=longlat +datum=WGS84"), 
-                                    data=trees)
-#make into the right projection: 
-#latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sedg_hillshade2))
-```
 
 #MPa
 
 ####Early in season (first month)
 ```{r}
 wk10_mds <- latlon.ll@data  %>% 
-  filter(week %in% c(10,11,12, 14)) %>% 
+  filter(week %in% c(10:15)) %>% 
   group_by(tree) %>% 
   mutate(md_mpa = mean(md_mpa, na.rm = T)) %>% 
   arrange(desc(md_mpa)) %>% 
@@ -313,7 +317,7 @@ early_mds <- leaflet(wk10_mds) %>%
   addTiles()  %>% 
   addPolygons(data=boundary, 
               stroke = TRUE, 
-              fillOpacity = 0.5, 
+              fillOpacity = 0, 
               smoothFactor = 0.2,
     color = "black", 
     opacity = .6,) %>% 

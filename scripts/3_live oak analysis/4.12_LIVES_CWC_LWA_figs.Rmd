@@ -63,7 +63,7 @@ data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv"))
 
 Bootstrapped: 
 ```{r}
-final_df_all_lwc <-  read_csv(here::here("processed-data", "bootstrapped_df_quke_lwc_mean.csv")) %>% 
+final_df_all_lwc <-  read_csv(here::here("processed-data", "bootstrapped_df_quag_lwc_mean.csv")) %>% 
   filter(!(week == 33))
 
 
@@ -336,12 +336,12 @@ x.grob1 <- textGrob("Time",
 combined_slopes_wide <- cowplot::plot_grid(space_slope_bs_lwc, NULL, time_summary_lwc,
                                            # NULL, pv_slope,
                                    nrow = 1, 
-                                  rel_widths = c(1, -.005, 1  #, -.02, .5
+                                  rel_widths = c(1, -.005, .5  #, -.02, .5
                                                  ), 
                                   labels = c("A", "", "B"#,"", "G"
                                              ),
                                   label_x = .1,
-                                  hjust= c(1, 0, 1),
+                                  hjust= c(-1, 0, -1),
                                   label_y = .98
                                   # rel_heights = c(.15, 1, .3), 
                                    #rel_widths = c(1, 1, 1), 
@@ -362,10 +362,7 @@ combined_plots_wide_labels_lwc <- grid.arrange(arrangeGrob(combined_slopes_wide,
                                 #left = y.grob2, 
                                 bottom = x.grob2,
                                 heights = c(1, 0)))
-```
 
-
-```{r}
 #labels of slopes: 
 y.grob1 <- textGrob("Slope", 
                    gp=gpar(fontface="bold", #col="blue", 
@@ -378,12 +375,12 @@ x.grob1 <- textGrob("Time",
 combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary,
                                            # NULL, pv_slope,
                                    nrow = 1, 
-                                  rel_widths = c(1, -.005, 1  #, -.02, .5
+                                  rel_widths = c(1, -.005, .5  #, -.02, .5
                                                  ), 
                                   labels = c("C", "", "D"#,"", "G"
                                              ),
                                   label_x = .1,
-                                  #hjust= c(3, 0, 3),
+                                  hjust= c(-.6, 0, -1),
                                   label_y = .98
                                   # rel_heights = c(.15, 1, .3), 
                                    #rel_widths = c(1, 1, 1), 
@@ -392,7 +389,7 @@ combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary,
 
 combined_slopes_wide
 #labels of scatterplots: 
-y.grob2 <- textGrob("Water Potential (MPa)", 
+y.grob2 <- textGrob("Slope", 
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15), rot=90)
 
@@ -406,48 +403,143 @@ combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_slopes_wide,
                                 heights = c(1, 0)))
 
 
-quke_plot_slopes <- cowplot::plot_grid(combined_plots_wide_labels_lwc,
+quag_plot_slopes <- cowplot::plot_grid(combined_plots_wide_labels_lwc,
                                        combined_plots_wide_labels,
                                        nrow = 2)
-quke_plot_slopes
+quag_plot_slopes
 
-quke_plot_slopes_final <- grid.arrange(arrangeGrob(quke_plot_slopes,
+quag_plot_slopes_final <- grid.arrange(arrangeGrob(quag_plot_slopes,
+                                top = legend_scatterplots,
                                 left = y.grob2, 
                                 heights = c(1, 0)))
 
-ggsave(here("figures", "quke figures", "slopes_space_time_quke"), quke_plot_slopes_final, device = "jpg", width = 7, height = 4, dpi = 300)
+legend_scatterplots
+
+ggsave(here("figures", "quag figures", "slopes_space_time_quag"), quag_plot_slopes_final, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
+####SWC and LMA: 
+
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
+  filter(year_alas %in% c(0), 
+         year_rwc %in% c(0))
+
+
+lma_plot <- lma_plot_df  %>% 
+   # select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link, year_alas,year_rwc) %>% 
+  drop_na(mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species#, year_alas, year_rwc
+             ) %>% 
+  # mutate(mean_swc_per_dry_g  = scale(mean_swc_per_dry_g), 
+  #        lma_g_cm2 = scale(lma_g_cm2)) %>% 
+ # select(mean_swc_per_dry_g, lma_g_cm2, species, week, year_alas) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)
+        # year_rwc = as.factor(year_rwc), 
+       #  year_alas = as.factor(year_alas)
+       ) %>% 
+  filter(species %in% c("live oak")) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  # select(week, #species, 
+  #        year_alas, 
+  #        lma_g_cm2,
+  #         mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+              #  shape = year_alas, 
+             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+             #color = species
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 43, 
+           #  line_type = year_alas,
+             #color = species
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+            # shape = year_rwc, 
+             #color = species
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             #color = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+       # axis.title.x = element_text(size = 13), 
+        axis.title.x = element_blank(), 
+        axis.text.x = element_text(size = 13), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=15,
+                           fontface="bold"), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontface="bold",
+                           fontsize=15), 
+                   rot=90)
+
+x.grob2 <- textGrob("Week", 
+                   gp=gpar(col="black", 
+                           fontface="bold",
+                           fontsize=15), 
+                   rot=0)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            bottom = x.grob2,
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+
+
+ggsave(here("figures", "quag figures", "lma_long_plot"), lma_swc_plot, device = "jpeg", width = 6, height = 1.75, dpi = 300)
+```
+
+#COMBINE ALL: 
 
 ```{r}
-combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, NULL, 
-                                      time_1,
-                                   labels=c("A","", "C"),
-                                   label_x = .1,
-                                   label_y = .98,
-                                   nrow = 1,
-                                   rel_widths = c(1, -0, 1)
-                                   #rel_widths = c(1, 1, 1)
-                                   ) 
-combined_plots_wide_nolegend
+plot <- cowplot::plot_grid(quag_plot_slopes_final,
+                           lma_swc_plot, 
+                           nrow = 2, 
+                           rel_heights = c(.9, .3))
+plot
 
-combined_plots_wide <- cowplot::plot_grid(legend_scatterplots,
-                                      combined_plots_wide_nolegend,
-                                          nrow = 2, 
-                                          rel_heights = c(.2, 1))
-
-combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_plots_wide, 
-                                left = y.grob2, 
-                                bottom = x.grob2,
-                                heights = c(1, 0)))
-
-combined_plots_all <- cowplot::plot_grid(
-  combined_plots_wide_labels, 
-  combined_slopes_wide_labels, 
-          nrow = 2, 
-          rel_heights = c(.75, .6))
-
-combined_plots_all
-
-ggsave(here("figures", "quke figures", "CWC", "combined_plots_all_quke"), combined_plots_all, device = "jpg", width = 8, height = 7, dpi = 300)
+ggsave(here("figures", "quag figures", "quag_fig_plot"), plot, device = "jpeg", width = 7, height = 5, dpi = 300)
 ```
+
+
+

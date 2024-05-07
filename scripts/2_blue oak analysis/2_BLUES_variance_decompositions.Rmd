@@ -38,7 +38,7 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 #DATA 
 ```{r}
 wc_all_raw <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) %>% 
-  filter(!(week %in% 33))
+  filter(!(week %in% 33)) #week 33 is screwy for LWA for some reason, remove for now 
 ```
 
 Before leafout: 

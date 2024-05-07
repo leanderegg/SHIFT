@@ -53,7 +53,17 @@ data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv"))
   filter(!week %in% 11) #week 11 only has 9 midday measurements and acts really odd (2022-03-15) 
 
 unique(data_og$tree)
+
+data_og %>% 
+  group_by(week, time) %>% 
+  filter(is.na(cwc)) %>% 
+  count()
+
 ```
+Odd that some trees never have CWC: 
+tree 2376
+tree 2380 for week 13
+
 #--------------
 
 #Bootstrapping
@@ -161,7 +171,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Number of random trees to sample
 n_sample_trees <- 14  # Adjust as needed based on the number of unique trees
@@ -256,7 +266,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Number of random trees to sample
 n_sample_trees <- 13  # Adjust as needed
@@ -379,7 +389,7 @@ Cant actually filter by trees that were in all weeks, because none were actually
 
 ```{r}
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Create an empty dataframe to store results
 cwc_final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
@@ -470,13 +480,13 @@ final_df_all_cwc %>% write_csv(here::here("processed-data", "bootstrapped_df_cwc
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_quke_df <- data_og %>% 
+wc_quag_df <- data_og %>% 
   drop_na(time)
 
-wc_lm_df <- wc_quke_df %>% 
+wc_lm_df <- wc_quag_df %>% 
   filter(week > 17)
 
-wk_all <- wc_quke_df 
+wk_all <- wc_quag_df 
 
 wk_all_wide <- wk_all %>% 
   #drop_na(date_wp) %>% 
@@ -942,7 +952,7 @@ space_slopes
 #TIME
 
 ```{r}
-wc_quke_df %>% 
+wc_quag_df %>% 
   drop_na(week) %>% 
   ggplot(aes(y = cwc, 
              x = as.factor(week), 
@@ -957,7 +967,7 @@ wc_quke_df %>%
 ```
 
 ```{r, echo=FALSE, warning = F}
-time <- wc_quke_df %>% 
+time <- wc_quag_df %>% 
   drop_na(week) %>% 
   ggplot(aes(y = water_potential, 
              x = cwc, 
@@ -1002,7 +1012,7 @@ ggsave(here("figures", "nice_time"), time, device = "jpg", width = 4, height = 2
 
 
 ```{r, echo=FALSE}
-wc_quke_df %>% 
+wc_quag_df %>% 
   filter(time == "pd") %>% 
   ggplot(aes(y = water_potential, 
              x = cwc, 
@@ -1044,21 +1054,21 @@ YES
 
 
 ```{r}
-wc_quke_md_df <- wc_quke_df %>% 
+wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md")
 
 #with separate periods: 
-time_season_mod <- lmer(water_potential ~ cwc + time_season + (1|week) + (cwc|tree)+ (1|site), data = wc_quke_md_df)
+time_season_mod <- lmer(water_potential ~ cwc + time_season + (1|week) + (cwc|tree)+ (1|site), data = wc_quag_md_df)
 
 time_season_mod_df <- broom::tidy(time_season_mod)
 
 #with separate periods: 
-time_season_mod_int <- lmer(water_potential ~ cwc*time_season + (1|week) + (cwc|tree)+ (1|site), data = wc_quke_md_df)
+time_season_mod_int <- lmer(water_potential ~ cwc*time_season + (1|week) + (cwc|tree)+ (1|site), data = wc_quag_md_df)
 
 time_season_mod_int_df <- broom::tidy(time_season_mod)
 
-time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree)+ (1|site), data = wc_quke_md_df)
-#time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_quke_md_df)
+time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree)+ (1|site), data = wc_quag_md_df)
+#time_mod <- lmer(water_potential ~ cwc + (cwc|tree), data = wc_quag_md_df)
  
 MuMIn::r.squaredGLMM(time_mod)
 
@@ -1157,12 +1167,12 @@ theme(
 
 ####Just linear: 
 ```{r}
-lin_wc_quke_md_df <- wc_quke_df %>% 
+lin_wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md") %>% 
   filter(time_season == "after leafout")
   
   
-lin_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = lin_wc_quke_md_df)
+lin_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = lin_wc_quag_md_df)
 summary(lin_time_mod)
 
 MuMIn::r.squaredGLMM(lin_time_mod)
@@ -1282,13 +1292,13 @@ lin_ran_df_tree_after %>%
 ####Before leafout: 
 
 ```{r}
-bef_wc_quke_md_df <- wc_quke_df %>% 
+bef_wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md") %>% 
   filter(time_season == "before leafout") %>% 
   drop_na(site)
   
   
-bef_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = bef_wc_quke_md_df, REML = T)
+bef_time_mod <- lmer(water_potential ~ cwc + (1|week) + (cwc|tree) + (1|site), data = bef_wc_quag_md_df, REML = T)
 summary(bef_time_mod)
 
 
@@ -1916,5 +1926,5 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here("figures", "quke figures", "CWC", "combined_plots_all_quke"), combined_plots_all, device = "jpg", width = 8, height = 7, dpi = 300)
+ggsave(here("figures", "quag figures", "CWC", "combined_plots_all_quag"), combined_plots_all, device = "jpg", width = 6, height = 7, dpi = 300)
 ```

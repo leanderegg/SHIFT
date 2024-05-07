@@ -18,7 +18,7 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 ```
 
 ```{r}
-data_quke_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
+data_quag_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
   filter(species == "live oak") %>% 
   distinct() %>% 
   group_by(week, time) %>% 
@@ -30,7 +30,7 @@ data_quke_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp"
     TRUE ~ as.character("none")
   )) 
 
-data_og <- data_quke_raw %>% 
+data_og <- data_quag_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
   distinct()
 
@@ -562,7 +562,7 @@ final_df_all <- bind_rows(final_df_hyd, final_df_space, time_boot_df) %>%
          upr = upper_bound) 
 
 final_df_all %>% 
-  write_csv(here::here("processed-data", "bootstrapped_df_quke_lwa_g_cm2_new.csv"))
+  write_csv(here::here("processed-data", "bootstrapped_df_quag_lwa_g_cm2_new.csv"))
 ```
 
 #-------
@@ -599,21 +599,21 @@ dataversion <- paste0("Data_", datver)
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_quke_df <- data_quke_raw %>% 
+wc_quag_df <- data_quag_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
   distinct()
 
-wc_quke_df %>% 
+wc_quag_df %>% 
   group_by(week, time) %>% 
   summarise(n = n())
 
-wc_lm_df <- wc_quke_df %>% 
+wc_lm_df <- wc_quag_df %>% 
   filter(week > 17)
 ```
 
 From what weeks do we have the most trees?
 ```{r, echo=F}
-wc_quke_df %>% 
+wc_quag_df %>% 
   select(week, time, tree, lwa_g_cm2_new) %>% 
   drop_na(lwa_g_cm2_new) %>% 
   unique() %>% 
@@ -625,7 +625,7 @@ wc_quke_df %>%
   labs(y = "lwa_g_cm2_new counts") +
   color_fill
 
-wc_quke_df %>% 
+wc_quag_df %>% 
     select(week, time, tree, water_potential) %>% 
   drop_na(water_potential) %>% 
  # unique() %>% 
@@ -644,14 +644,14 @@ IMPORTANT: NO MIDDAYS FOR WEEK 14!
 #Timeline
 
 ```{r, fig.height=.75, fig.width=6}
-wc_quke_df %>% 
+wc_quag_df %>% 
   filter(time == "md") %>% 
   drop_na(water_potential) %>% 
   #ggplot(aes(x = week, y = 0, color = mean(water_potential, na.rm = T)))+
   ggplot(aes(x = week, y = 0, color = water_potential))+
   geom_hline(yintercept = 0) +
   geom_point(size = 5) +
-  geom_point(data= wc_quke_df %>% 
+  geom_point(data= wc_quag_df %>% 
                filter(week %in% c(10, 12, 14,15, 17, 18, 19, 21, 37)), 
            pch=21, 
            size=5, 
@@ -672,7 +672,7 @@ wc_quke_df %>%
 
 #Phenology timelines
 ```{r, fig.height=2, fig.width=6}
-fig_df <- data_quke_raw %>% 
+fig_df <- data_quag_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, lma_g_cm2, time_season, time, species, week_alas_link) %>% 
   distinct() %>% 
   group_by(week_alas_link, species) %>% 
@@ -699,10 +699,10 @@ lma_plot <- fig_df %>%
         axis.text.x = element_text(hjust=.5, size= 20))
 lma_plot
 
-ggsave(here("figures", "quke figures", "LWA", "lma_long_quke_plot"), lma_plot, device = "jpg", width = 12, height = 2, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "lma_long_quag_plot"), lma_plot, device = "jpg", width = 12, height = 2, dpi = 300)
 
 
-fig_df <- data_quke_raw %>% 
+fig_df <- data_quag_raw %>% 
   select(tree, alas_cm2_per_mm2, time_season, time, species, week_alas_link) %>% 
   group_by(week_alas_link) %>% 
   mutate(alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T)) %>% 
@@ -730,7 +730,7 @@ alas_plot <- fig_df %>%
         )
 alas_plot
 
-ggsave(here("figures", "quke figures", "LWA", "alas_long_quke_plot"), alas_plot, device = "jpg", width = 12, height = 2, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "alas_long_quag_plot"), alas_plot, device = "jpg", width = 12, height = 2, dpi = 300)
 ```
 
 #Bootsrapped dataset: 
@@ -743,7 +743,7 @@ final_df_all
 MPa ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (1|wk)
 
 ```{r, warning = F}
-wk_all <- wc_quke_df 
+wk_all <- wc_quag_df 
 
 wk_all_wide <- wk_all %>% 
   #drop_na(date_wp) %>% 
@@ -894,7 +894,7 @@ nice_hydration_layered <- ggplot() +
   scale_x_reverse()
 nice_hydration_layered
   
-ggsave(here("figures", "quke figures", "LWA", "nice_hydration_layered"), nice_hydration_layered, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_hydration_layered"), nice_hydration_layered, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
 Slopes of the formula: 
@@ -1005,7 +1005,7 @@ theme(
   color_grad 
 hyd_slopes
 
-ggsave(here("figures", "quke figures", "LWA", "nice_hydration_slopes"), hyd_slopes, device = "jpg", width = 5, height = 2.5, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_hydration_slopes"), hyd_slopes, device = "jpg", width = 5, height = 2.5, dpi = 300)
 ```
 
 Random *intercepts* of each week:
@@ -1046,7 +1046,7 @@ theme(
   color_grad
 hyd_ints
 
-ggsave(here("figures", "quke figures", "LWA", "nice_hydration_ints"), hyd_ints, device = "jpg", width = 5, height = 2.5, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_hydration_ints"), hyd_ints, device = "jpg", width = 5, height = 2.5, dpi = 300)
 ```
 
 
@@ -1091,7 +1091,7 @@ theme(
   color_grad 
 hyd_slopes_bs_inds
 
-ggsave(here("figures", "quke figures", "LWA", "nice_hydration_slopes_bs_inds"), hyd_slopes_bs_inds, device = "jpg", width = 5, height = 2.5, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_hydration_slopes_bs_inds"), hyd_slopes_bs_inds, device = "jpg", width = 5, height = 2.5, dpi = 300)
 ```
 
 
@@ -1156,7 +1156,7 @@ space_nice <- wc_wk_centered_df %>%
   guides(color = guide_legend(nrow = 2))
 space_nice
 
-ggsave(here("figures", "quke figures", "LWA", "nice_space"), space_nice, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_space"), space_nice, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
 ```{r, warning = F, echo=FALSE}
@@ -1197,7 +1197,7 @@ space_nice_centered <- wc_wk_centered_df %>%
 
 space_nice_centered
 
-ggsave(here("figures", "quke figures", "LWA", "nice_space_centered"), space_nice_centered, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_space_centered"), space_nice_centered, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
 Do we need to include site here? 
@@ -1521,7 +1521,7 @@ space_slopes
 This isn't working for some reason!
 
 ```{r, warning = F, eval = F}
-wc_wk_centered_pd_df <- wc_quke_df %>% 
+wc_wk_centered_pd_df <- wc_quag_df %>% 
   filter(time == "pd") %>% 
   group_by(week) %>% 
   mutate(mean_lwa_g_cm2_new = mean(lwa_g_cm2_new)) %>% 
@@ -1684,7 +1684,7 @@ ran_pd_df_week %>%
 #TIME
 
 ```{r}
-wc_quke_df %>% 
+wc_quag_df %>% 
   #filter(!week %in% c(9, 18, 19)) %>% 
   drop_na(week) %>% 
   ggplot(aes(y = lwa_g_cm2_new, 
@@ -1702,7 +1702,7 @@ wc_quke_df %>%
 ```
 
 ```{r, echo=FALSE, warning = F}
-time <- wc_quke_df %>% 
+time <- wc_quag_df %>% 
   drop_na(week) %>% 
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
@@ -1742,13 +1742,13 @@ time <- wc_quke_df %>%
   color_two_grey
 time 
 
-ggsave(here("figures", "quke figures", "LWA", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
 ```
 
 
 
 ```{r, echo=FALSE}
-wc_quke_df %>% 
+wc_quag_df %>% 
   filter(time == "pd") %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2_new, 
@@ -1787,16 +1787,16 @@ anova(space_mod, space_mod_site)
 ####All time
 
 ```{r}
-wc_quke_md_df <- wc_quke_df %>% 
+wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md")
   
-time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = wc_quke_md_df)
-#time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree), data = wc_quke_md_df)
+time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = wc_quag_md_df)
+#time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree), data = wc_quag_md_df)
  
 #with separate periods: 
-time_season_mod <- lmer(water_potential ~ lwa_g_cm2_new + time_season + (1|week) + (lwa_g_cm2_new|tree), data = wc_quke_md_df)
+time_season_mod <- lmer(water_potential ~ lwa_g_cm2_new + time_season + (1|week) + (lwa_g_cm2_new|tree), data = wc_quag_md_df)
 
-time_season_mod_int <- lmer(water_potential ~ lwa_g_cm2_new*time_season + (1|week) + (lwa_g_cm2_new|tree), data = wc_quke_md_df)
+time_season_mod_int <- lmer(water_potential ~ lwa_g_cm2_new*time_season + (1|week) + (lwa_g_cm2_new|tree), data = wc_quag_md_df)
 
 time_season_mod_df <- broom::tidy(time_season_mod)
 
@@ -1897,12 +1897,12 @@ theme(
 
 ####Just linear: 
 ```{r}
-lin_wc_quke_md_df <- wc_quke_df %>% 
+lin_wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md") %>% 
   filter(time_season == "after leafout")
   
   
-lin_time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = lin_wc_quke_md_df)
+lin_time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = lin_wc_quag_md_df)
 summary(lin_time_mod)
 
 MuMIn::r.squaredGLMM(lin_time_mod)
@@ -2024,14 +2024,14 @@ lin_ran_df_tree_after %>%
 Problem: no middays for week 14!
 
 ```{r}
-bef_wc_quke_md_df <- wc_quke_df %>% 
+bef_wc_quag_md_df <- wc_quag_df %>% 
   filter(time == "md") %>% 
   #filter(time_season == "before leafout") %>% 
   filter(week <= 17) %>% 
   drop_na(site)
   
   
-bef_time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = bef_wc_quke_md_df, REML = T)
+bef_time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = bef_wc_quag_md_df, REML = T)
 summary(bef_time_mod)
 
 
@@ -2158,7 +2158,7 @@ ggplot() +
        x = "Time")
 time_summary_sd
 
-ggsave(here("figures", "quke figures", "LWA", "time_summary_slopes"), time_summary, device = "jpg", width = 2.5, height = 3, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "time_summary_slopes"), time_summary, device = "jpg", width = 2.5, height = 3, dpi = 300)
 
 ```
 
@@ -2183,7 +2183,7 @@ ggplot() +
 time_summary_bs_tree
 
 
-ggsave(here("figures", "quke figures", "LWA", "time_summary_slopes_boot_tree"), time_summary_bs_tree, device = "jpg", width = 2.5, height = 3, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "time_summary_slopes_boot_tree"), time_summary_bs_tree, device = "jpg", width = 2.5, height = 3, dpi = 300)
 ```
 
 #Models
@@ -2235,7 +2235,7 @@ lwa_g_cm2_new_mods <- bind_rows(space_mod_df <- space_mod_df %>%
 
 lwa_g_cm2_new_mods
 
-write_csv(lwa_g_cm2_new_mods, here::here("processed-data", "lwa_g_cm2_new_quke_mods.csv"))
+write_csv(lwa_g_cm2_new_mods, here::here("processed-data", "lwa_g_cm2_new_quag_mods.csv"))
 ```
 
 
@@ -2390,7 +2390,7 @@ space_nice_1
 #####Time:
 
 ```{r}
-time_1 <- wc_quke_df %>% 
+time_1 <- wc_quag_df %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -2760,7 +2760,7 @@ pv_slope <-  pv_boot_df %>%
  # scale_x_reverse()
 pv_slope
 
-ggsave(here("figures", "quke figures", "LWA", "pv_slope_plot_quke"), pv_slope, device = "jpg", width = 1, height = 3, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "pv_slope_plot_quag"), pv_slope, device = "jpg", width = 1, height = 3, dpi = 300)
 ```
 
 #COMBINE
@@ -2866,7 +2866,7 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here("figures", "quke figures", "LWA", "combined_plots_all_quke"), combined_plots_all, device = "jpg", width = 10, height = 9, dpi = 300)
+ggsave(here("figures", "quag figures", "LWA", "combined_plots_all_quag"), combined_plots_all, device = "jpg", width = 10, height = 9, dpi = 300)
 ```
 
 

@@ -1530,7 +1530,7 @@ hyd_slopes <- final_df_all %>%
    geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
           xmin = -Inf, xmax = Inf), 
           fill = "#969696",
-          alpha = .05, 
+          alpha = .01, 
           color = NA) +
   geom_hline(aes(yintercept = 880.5797), color = "#525252") +
   geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
@@ -1577,7 +1577,7 @@ space_slope_bs <-  final_df_all %>%
    geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
           xmin = -Inf, xmax = Inf), 
           fill = "#969696",
-          alpha = .05, 
+          alpha = .01, 
           color = NA) +
   geom_hline(aes(yintercept = 880.5797), color = "#525252") +
   geom_point(aes(y = slope ,x = as.factor(week)), size =2) +

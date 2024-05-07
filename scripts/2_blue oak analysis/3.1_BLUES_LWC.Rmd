@@ -1083,6 +1083,17 @@ space_mod_site <- lmer(water_potential ~ lwc_mean_centered  + (lwc_mean_centered
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
+
+MuMIn::r.squaredGLMM(space_mod_site)
+
+var(space_df$water_potential, na.rm=T) #0.940, 
+vest_lin <- data.frame(VarCorr(space_mod_site))
+sum(vest_lin$vcov) + 0.09 #1.001
+
+space_linear_vest_df <- vest_lin %>% 
+  add_row(vcov = r2m, 
+          grp = "marginal_r2") %>% 
+  mutate(dataset= "After Leaf Expansion")
 ```
 
 YES
@@ -1257,7 +1268,7 @@ lin_wc_qudo_md_df <- wc_qudo_df %>%
   filter(time_season == "after leafout")
   
   
-lin_time_mod <- lmer(water_potential ~ lwc_mean + (1|week) + (lwc_mean|tree), data = lin_wc_qudo_md_df)
+lin_time_mod <- lmer(water_potential ~ lwc_mean + (1|week)  + (lwc_mean|tree), data = lin_wc_qudo_md_df)
 
 summary(lin_time_mod)
 
@@ -1275,7 +1286,7 @@ bef_wc_qudo_md_df <- wc_qudo_df %>%
   drop_na(site)
   
   
-bef_time_mod <- lmer(water_potential ~ lwc_mean + (1|week) + (lwc_mean|tree), data = bef_wc_qudo_md_df, REML = T)
+bef_time_mod <- lmer(water_potential ~ lwc_mean  +  (1|week) + (lwc_mean|tree), data = bef_wc_qudo_md_df, REML = T)
 summary(bef_time_mod)
 MuMIn::r.squaredGLMM(bef_time_mod)
 ```
@@ -2064,7 +2075,8 @@ Using LMA from scannings leaves used for LWC: (this will have higher sample size
 ```{r}
 lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>% 
   filter(species == "blue oak") %>% 
-  select(lma_g_cm2_new, time, tree, mean_mpa) %>% 
+  select(lma_g_cm2_new, time, tree, mean_mpa, week) %>% 
+  mutate(week = as.factor(week)) %>% 
   drop_na(lma_g_cm2_new, time, tree, mean_mpa) 
 
 #How much does WP relate to LMA? 
@@ -2088,6 +2100,66 @@ marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
 marginal_r2
 ```
 
+```{r}
+lma_mpa_df_pd <- lma_mpa_df %>% 
+  filter(time == "pd")
+#just pds: 
+
+#just pds: 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+anova(m2)
+AIC(m2)
+
+m3 <- lm(mean_mpa ~ week, data = lma_mpa_df_pd, REML = F)
+m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+summary(m3)
+MuMIn::r.squaredGLMM(m3)
+anova(m3)
+AIC(m3)
+
+#does lma tell us more than week does? Or does just knowing the week tell us more? 
+anova(m2, m3)
+
+m5 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+
+#Store the R-squared of the 'better' model
+marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m5)[1], digits = 3)
+marginal_r2_pd
+```
+
+
+```{r}
+lma_mpa_df_md <- lma_mpa_df %>% 
+  filter(time == "md")
+#just mds: 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
+
+MuMIn::r.squaredGLMM(m2)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+anova(m2)
+AIC(m2)
+
+m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
+summary(m3)
+MuMIn::r.squaredGLMM(m3)
+anova(m3)
+AIC(m3)
+#does lma tell us more than week does? Or does just knowing the week tell us more? 
+anova(m2, m3)
+
+#just mds: 
+m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
+#Store the R-squared of the 'better' model
+marginal_r2_md <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
+marginal_r2_md
+
+```
+
 
 ```{r}
 #PLot!
@@ -2103,8 +2175,14 @@ lma_mpa_plot <- lma_mpa_df %>%
              ) +
   annotate(geom = "text", 
            x = .010, 
+           y = -4.75, 
+           color = "#528791",
+           label = paste("R2 = ", marginal_r2_pd)) +
+  annotate(geom = "text", 
+           x = .010, 
            y = -5, 
-           label = paste("R2 = ", marginal_r2))+
+           color = "#CC5265",
+           label = paste("R2 = ", marginal_r2_md)) +
   theme(#legend.position="top",
         legend.position= c(.87, .87),
       strip.background = element_blank(),
@@ -2143,4 +2221,149 @@ scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 lma_mpa_plot
 
 ggsave(here("figures", "qudo figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+
+#----------------
+#Phenology timelines
+
+####SWC and LMA: 
+
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")))  %>% 
+    select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link) %>% 
+  drop_na(mean_swc_per_dry_g)
+
+lma_plot <- lma_plot_df  %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species) %>% 
+  # mutate(mean_swc_per_dry_g  = scale(mean_swc_per_dry_g), 
+  #        lma_g_cm2 = scale(lma_g_cm2)) %>% 
+  select(mean_swc_per_dry_g, lma_g_cm2, species, week) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  filter(species %in% c("blue oak")) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  select(week, #species, 
+         lma_g_cm2,
+          mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+             y = lma_g_cm2  * 80, 
+             #color = species
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 80, 
+             #color = species
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey"
+             #color = species
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+             group = species
+             #color = species
+             ),
+            color = "darkgrey") +
+ # scale_x_continuous(breaks = c(10, 14, 17, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)") +
+  theme(legend.position = "none",
+        axis.title.y = element_text(size = 20), 
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+
+
+ggsave(here("figures", "qudo figures", "lma_long_plot"), lma_swc_plot, device = "jpeg", width = 12, height = 1.75, dpi = 300)
+```
+
+
+```{r, fig.height=2, fig.width=6}
+lma_plot <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>%
+ # lma_plot <- read_csv(here("processed-data", paste0("analysis",datver,".csv")), show_col_types = F) %>% 
+  group_by(week_alas_link, species) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2_new, na.rm = T)) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  select(week, species, lma_g_cm2) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot(aes(x = week_alas_link, 
+             y = lma_g_cm2, 
+             color = species)) +
+  geom_point(size = 3) +
+  geom_line() +
+  scale_x_continuous(breaks = c(10, 11, 13, 14, 17, 21, 29, 37, 40)) +
+  labs(y = "LMA") +
+  theme(legend.position = "none", 
+        axis.title.y = element_text(size = 20), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(hjust=.5, size= 20))
+lma_plot
+```
+
+
+```{r, fig.height=2, fig.width=6}
+fig_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv")), show_col_types = F) %>% 
+  group_by(week_alas_link, species) %>% 
+  mutate(alas_cm2_per_mm2 = mean(alas_cm2_per_mm2, na.rm = T)) %>% 
+  select(week, species, alas_cm2_per_mm2) %>% 
+  distinct() %>% 
+  drop_na(alas_cm2_per_mm2)
+
+unique(fig_df$week)
+
+alas_plot <- fig_df %>% 
+  filter(week %in% c(c(10, 11, 13, 14, 17, 21, 29, 37, 40))) %>% 
+  ggplot(aes(x = week_alas_link, 
+             color = species,
+             y = alas_cm2_per_mm2))+
+  #geom_hline(yintercept = 0) +
+  geom_point(size = 3) +
+  geom_line() +
+  scale_x_continuous(breaks = c(10, 11, 13, 14, 17, 21, 29, 37, 40)) +
+  labs(y = "Al:As") +
+  theme(legend.position = "none", 
+        axis.title.y = element_text(size = 20), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(hjust=.5, size= 20)
+        )
+alas_plot
+
+ggsave(here("figures", "alas_long_plot"), alas_plot, device = "jpg", width = 12, height = 2, dpi = 300)
 ```

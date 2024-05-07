@@ -43,7 +43,7 @@ data_quke_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp"
   tree %in% c(2370) & week %in% c(15) & time %in% c('md') ~ NA_real_,
   TRUE ~ as.numeric(lwc_mean))) %>% 
   filter(!(week == 17 & tree %in% c(2010, 2379))) %>% #these trees have something wrong too
-  filter(!(week == 14)) #this week only had 2 trees collected with both PD and MD live oaks; remove!
+  filter(!(week %in% c(14, 15, 33))) #these weeks only had 2 trees collected with both PD and MD live oaks; remove!
 
 data_og <- data_quke_raw %>% 
   select(tree, week, water_potential, lwc_mean, time_season, time, species, site) %>% 
@@ -1455,7 +1455,7 @@ nice_hydration_layered_1 <- ggplot() +
        #caption = "triangles = predawn, circles = midday"
        ) +
   theme(
-    legend.position = c(.8, .2),
+    legend.position = c(.8, .3),
    # legend.position = "none",
   strip.background = element_blank(),
   legend.key = element_rect(fill = NA),
@@ -1803,7 +1803,7 @@ combined_slopes_wide <- cowplot::plot_grid(space_slope_bs, NULL, time_summary, N
                                   labels = c("B", "", "D", "", "F"#,"", "G"
                                              ),
                                   label_x = .2,
-                                  hjust= c(2.5, 0, 3.5, 0, 2),
+                                  hjust= c(2, 0, 1.25, 0, 1),
                                   label_y = .98
                                   # rel_heights = c(.15, 1, .3), 
                                    #rel_widths = c(1, 1, 1), 
@@ -1831,6 +1831,7 @@ combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, NULL,
                                       time_1, NULL, 
                                    nice_hydration_layered_1,
                                    labels=c("A","", "C", "", "E"),
+                                   hjust= c(-1, 0, -1, 0, -1),
                                    label_x = .112,
                                    label_y = .98,
                                    nrow = 1,
@@ -1857,12 +1858,112 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here::here("figures", "quke figures", "LWC", "combined_plots_all_quke"), combined_plots_all, device = "jpg", width = 12, height = 8, dpi = 300)
+ggplot2::ggsave(here::here("figures", "quke figures", "LWC", "combined_plots_all_quke"), combined_plots_all, device = "jpg", width = 10, height = 6, dpi = 300)
 ```
 
 
 #------------------------------------
+####SWC and LMA: 
 
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
+  filter(year_alas %in% c(0), 
+         year_rwc %in% c(0))
+
+
+lma_plot <- lma_plot_df  %>% 
+   # select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link, year_alas,year_rwc) %>% 
+  drop_na(mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species#, year_alas, year_rwc
+             ) %>% 
+  # mutate(mean_swc_per_dry_g  = scale(mean_swc_per_dry_g), 
+  #        lma_g_cm2 = scale(lma_g_cm2)) %>% 
+ # select(mean_swc_per_dry_g, lma_g_cm2, species, week, year_alas) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)
+        # year_rwc = as.factor(year_rwc), 
+       #  year_alas = as.factor(year_alas)
+       ) %>% 
+  filter(species %in% c("live oak")) %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  # select(week, #species, 
+  #        year_alas, 
+  #        lma_g_cm2,
+  #         mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+              #  shape = year_alas, 
+             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+             #color = species
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 43, 
+           #  line_type = year_alas,
+             #color = species
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+            # shape = year_rwc, 
+             #color = species
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             #color = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+        axis.title.x = element_text(size = 20), 
+        axis.text.x = element_text(size = 20), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+
+
+ggsave(here("figures", "quke figures", "lma_long_plot"), lma_swc_plot, device = "jpeg", width = 6, height = 1.75, dpi = 300)
+```
 #LMA by MPa, nice: 
 
 Using LMA from Al:As: 
