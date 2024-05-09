@@ -7,8 +7,6 @@ output:
   word_document: default
 ---
 
-#*BOOTSTRAPPING*
-
 #Setup
 
 ```{r setup, include=FALSE}
@@ -19,7 +17,7 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 library(lme4)
 library(MuMIn) #for r.squaredGLMM fxn
 ```
-
+#-------
 #DATA: 
 
 ```{r}
@@ -36,14 +34,7 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
     TRUE ~ as.character("none")
   )) %>% 
   select(-plot) %>% 
-  distinct() %>% 
-  mutate(lwc_mean = case_when(
-  tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
-  tree %in% c(2347) & week %in% c(15) & time %in% c('md') ~ NA_real_,
-  tree %in% c(2370) & week %in% c(15) & time %in% c('md') ~ NA_real_,
-  TRUE ~ as.numeric(lwc_mean))) %>% 
-  filter(!(week == 17 & tree %in% c(2010, 2379))) %>% #these trees have something wrong too
-  filter(!(week == 15 & tree %in% c(2009)))
+  distinct() 
 
 data_og <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwc_mean, time_season, time, species, site) %>% 
@@ -105,7 +96,8 @@ plotly::ggplotly(ggplot() +
   facet_wrap(~week, scales = "free"))
 
 ```
-
+#-------
+#*BOOTSTRAPPING*
 
 #TIME:
 ```{r}
@@ -1993,84 +1985,11 @@ ggsave(here("figures", "qudo figures", "LWC", "combined_plots_all_qudo"), combin
 
 #LMA by MPa: 
 
-Using LMA from Al:As: 
-
-```{r}
-data_qudo_lma <- data_qudo_raw %>% 
- # filter(time %in% c("md")) %>% 
-  group_by(tree, week, time) %>% 
-  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T)) %>% 
-  filter(species %in% c("blue oak")) %>% 
-  select(week, tree, species, lma_g_cm2, water_potential)
-
-#How much does WP relate to LMA? 
-###Model with random slopes and intercepts per tree, with lma_g_cm2_new as the fixed effect. 
-
-m1 <- lmer(water_potential ~ lma_g_cm2 + time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
-summary(m1)
-MuMIn::r.squaredGLMM(m1)
-anova(m1)
-AIC(m1)
-
-m2 <- lmer(water_potential ~ time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
-summary(m2)
-MuMIn::r.squaredGLMM(m2)
-
-#compare mods: 
-anova(m1, m2)
-
-#Store the R-squared of the 'better' model
-marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
-marginal_r2
-```
-
-
-```{r}
-data_qudo_lma  %>% 
-  ggplot(aes(y = water_potential, 
-            # y =mpa_mean,
-            x = lma_g_cm2,
-             color = as.factor(time)
-             )) +
-  geom_point(alpha = .5, 
-            # aes (shape = site)
-             ) +
-  theme(legend.position="top",
-       # legend.position= c(.7, .2),
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-      axis.title = element_text(size = 16),
-     axis.text.y = element_text(size = 12),
-     axis.text.x = element_text(size = 12),
-    # axis.text.x  = element_blank(),
-     legend.key=element_blank(), 
-     # axis.title.x = element_blank(),
-    # axis.title.y = element_blank(),
-     legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
-     legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8),
-    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
-    ) +
-  geom_smooth(method = "lm", se = F,size = .5) + 
- # geom_vline(xintercept = 0, linetype = "dotted") +
-  labs(#y= "Middays (MPa)", 
-       y = "Water Potential (MPa)",
-       x = "Leaf Mass per Area (g/cm2)", 
-       color = "Week", 
-       shape = "Site") +
-#  color_many_2 +
- # color_week_assigned +
- # xlim(.5,2) +
- # ylim(-5,0)+
-  guides(color = guide_legend(nrow = 1)) +
-  #scale_x_reverse() +
-scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
-```
 
 #Stats
 Using LMA from scannings leaves used for LWC: (this will have higher sample size and no repeated Al:As data!)
+
+- PD and MD together with time as a predictor: 
 
 ```{r}
 lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>% 
@@ -2079,27 +1998,26 @@ lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>%
   mutate(week = as.factor(week)) %>% 
   drop_na(lma_g_cm2_new, time, tree, mean_mpa) 
 
-#How much does WP relate to LMA? 
-###Model with random slopes and intercepts per tree, with lma_g_cm2_new as the fixed effect. 
+#How much does WP relate to LMA, accounting for time (pd or md) and week? 
 
-m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
+#
+###Model with random slopes and intercepts per tree, with lma_g_cm2_new and time (week as the fixed effect. 
+m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + week + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
 summary(m1)
-MuMIn::r.squaredGLMM(m1)
-anova(m1)
-AIC(m1)
+MuMIn::r.squaredGLMM(m1) #0.8329473
 
-m2 <- lm(mean_mpa ~ time + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
+m2 <- lm(mean_mpa ~ time + week + (1|tree) + (lma_g_cm2_new|tree), data = lma_mpa_df, REML = F)
 summary(m2)
-MuMIn::r.squaredGLMM(m2)
+MuMIn::r.squaredGLMM(m2) #0.8322236 
 
 #compare mods: 
-anova(m1, m2)
+anova(m1, m2) #m1 is slightly better
 
 #Store the R-squared of the 'better' model
 marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
 marginal_r2
 ```
-
+- PD alone: 
 ```{r}
 lma_mpa_df_pd <- lma_mpa_df %>% 
   filter(time == "pd")
@@ -2109,55 +2027,49 @@ lma_mpa_df_pd <- lma_mpa_df %>%
 m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
 
 #m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
-summary(m2)
+#summary(m2)
 MuMIn::r.squaredGLMM(m2)
-anova(m2)
-AIC(m2)
 
-m3 <- lm(mean_mpa ~ week, data = lma_mpa_df_pd, REML = F)
 m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
-summary(m3)
+#summary(m3)
 MuMIn::r.squaredGLMM(m3)
-anova(m3)
-AIC(m3)
+
 
 #does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3)
+anova(m2, m3) #LMA does not contribute significantly to predicting MPa
 
-m5 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+#R2 of model without the week term: 
+m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+MuMIn::r.squaredGLMM(m4)
 
 #Store the R-squared of the 'better' model
-marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m5)[1], digits = 3)
+marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
 marginal_r2_pd
 ```
 
-
+- For just MDs:
 ```{r}
 lma_mpa_df_md <- lma_mpa_df %>% 
   filter(time == "md")
 #just mds: 
 m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
-
 MuMIn::r.squaredGLMM(m2)
-summary(m2)
-MuMIn::r.squaredGLMM(m2)
-anova(m2)
-AIC(m2)
 
 m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
-summary(m3)
+#summary(m3)
 MuMIn::r.squaredGLMM(m3)
-anova(m3)
-AIC(m3)
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3)
 
-#just mds: 
+#does lma tell us more than week does? Or does just knowing the week tell us more? 
+anova(m2, m3) #LMA does not contribute significantly to predicting MPa
+
+#R2 of model without the week term: 
 m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
+#summary(m3)
+MuMIn::r.squaredGLMM(m3)
+
 #Store the R-squared of the 'better' model
 marginal_r2_md <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
 marginal_r2_md
-
 ```
 
 
@@ -2223,6 +2135,80 @@ lma_mpa_plot
 ggsave(here("figures", "qudo figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
+
+####Using LMA from Al:As: 
+
+```{r, eval = F}
+data_qudo_lma <- data_qudo_raw %>% 
+ # filter(time %in% c("md")) %>% 
+  group_by(tree, week, time) %>% 
+  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T)) %>% 
+  filter(species %in% c("blue oak")) %>% 
+  select(week, tree, species, lma_g_cm2, water_potential)
+
+#How much does WP relate to LMA? 
+###Model with random slopes and intercepts per tree, with lma_g_cm2_new as the fixed effect. 
+
+m1 <- lmer(water_potential ~ lma_g_cm2 + time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
+summary(m1)
+MuMIn::r.squaredGLMM(m1)
+anova(m1)
+AIC(m1)
+
+m2 <- lmer(water_potential ~ time + (1|tree) + (lma_g_cm2|tree), data = data_qudo_lma, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#compare mods: 
+anova(m1, m2)
+
+#Store the R-squared of the 'better' model
+marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
+marginal_r2
+
+#look at it:
+data_qudo_lma  %>% 
+  ggplot(aes(y = water_potential, 
+            # y =mpa_mean,
+            x = lma_g_cm2,
+             color = as.factor(time)
+             )) +
+  geom_point(alpha = .5, 
+            # aes (shape = site)
+             ) +
+  theme(legend.position="top",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+     # axis.title.x = element_blank(),
+    # axis.title.y = element_blank(),
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  geom_smooth(method = "lm", se = F,size = .5) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(#y= "Middays (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Mass per Area (g/cm2)", 
+       color = "Week", 
+       shape = "Site") +
+#  color_many_2 +
+ # color_week_assigned +
+ # xlim(.5,2) +
+ # ylim(-5,0)+
+  guides(color = guide_legend(nrow = 1)) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+```
 #----------------
 #Phenology timelines
 

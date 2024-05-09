@@ -482,7 +482,7 @@ plotly::ggplotly(wc_lwa_df  %>%
   write_csv(here::here("processed-data", "lwa_toenter_20240422.csv"))
 ```
 
-######REMOVING WC and LWA OUTLIERS: 
+######*REMOVING WC and LWA OUTLIERS: 
 ```{r}
 #Check for weirdos in the LWC data (where there are mismatches)
 plotly::ggplotly(wc_lwa_df %>% 
@@ -684,7 +684,7 @@ unique(lwa_df$date_wc)
 ```
 
 ####WC + WP, LWA
-######REMOVING MPA OUTLIERS: 
+######*REMOVING MPA OUTLIERS: 
 ```{r}
 #Merge water potential data with the dataset we made above that has the rescanned LMA and LWA for LWC leaves; rep is one per tree/week time to MPa will also need to be summarized similarly.
 wp_mean_df <- wp_df %>% 
@@ -1297,7 +1297,7 @@ unique(investigating_wk10$tree)
 ```
 
 
-#Write .csvs:
+
 
 ####Dataset with everything, both means and actual values: 
 ```{r}
@@ -1305,7 +1305,9 @@ write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,"
 ```
 
 
-####**Dataset for analysis of LWC, MPA, LWA for manuscript:
+####Dataset for analysis of LWC, MPA, LWA for manuscript:
+
+######*REMOVING GENERAL OUTLIERS:
 
 This has only leaves, with one row per week/tree/time/year; it will have duplicates of Al:As related measurements, but most importantly LWA, LWA, and MPa should have unique rows. 
 
@@ -1364,17 +1366,41 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
          lwc = lwc_mean) %>% 
   mutate(lwa_g_cm2_new = case_when(
     is.infinite(lwa_g_cm2_new) ~ NA_real_, 
-    TRUE ~ as.numeric(lwa_g_cm2_new)))
+    TRUE ~ as.numeric(lwa_g_cm2_new)))  %>% 
+  
+#issues found later on in analysis: 
+  mutate(lwc_mean = case_when(
+  tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+  tree %in% c(2347) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+  tree %in% c(2370) & week %in% c(15) & time %in% c('md') ~ NA_real_,
+  TRUE ~ as.numeric(lwc_mean))) %>% 
+  filter(!(week == 17 & tree %in% c(2010, 2379))) #%>% #these trees have something wrong too
+# filter(!(species %in% c("live oak") & week %in% c(14, 15, 33))) %>%  #these weeks only had 2 trees collected with both PD and MD live oaks; remove!
+ # filter(!week %in% c(9)) #this week has v low sample sizes, lets just not use!
+```
 
-analysis_bothspp_df %>% 
-  group_by(week, time) %>% 
-  summarise(n = n())
+Sample sizes: 
+```{r}
+sample_sizes <- analysis_bothspp_df %>% 
+  drop_na(lwc_mean) %>% 
+  group_by(date_wp, time, species) %>% 
+  summarise(n = n()) %>% 
+  pivot_wider(names_from = "species", 
+             values_from = "n") %>% 
+  arrange(date_wp, time) %>% 
+  write_csv(here::here("processed-data", "sample_sizes_postQAQC.csv"))
+sample_sizes
+
+sample_sizes %>%
+  kableExtra::kbl(caption = "Sample Sizes") %>%
+  kableExtra::kable_classic(full_width = F, html_font = "Cambria") %>% 
+  kableExtra::save_kable(here::here("figures", "SI Figures", "sample_sizes_table"), device = jpeg)
 
 investigating <-analysis_bothspp_df %>% 
   filter(week == 29) %>% 
   distinct()
 ```
-
+#FINAL CSVs:
 
 ```{r}
 write.csv(analysis_bothspp_df, here("processed-data", paste0("analysis_bothspp",datver,".csv"))) 

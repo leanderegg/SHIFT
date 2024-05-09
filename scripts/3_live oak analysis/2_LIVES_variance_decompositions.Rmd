@@ -1,0 +1,720 @@
+---
+title: "Establishing relationships between lwc_mean and MPa"
+author: "Indra Boving"
+date: "11/8/2022"
+output: html_document
+---
+
+##Setup
+```{r setup, include=FALSE}
+#install.packages("MuMIn")
+#devtools::install_github("an-bui/calecopal")
+
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+library(calecopal)
+library(rstatix)
+library(vars)
+library(MuMIn)
+library(lme4) #for mixed effects models
+library(cowplot)
+select = dplyr::select
+#if (!require("BiocManager", quietly = TRUE))
+   # install.packages("BiocManager")
+#BiocManager::install("variancePartition")
+
+library('variancePartition')
+
+source(here::here("scripts", "scripts_functions", "plotPercentBars_IB.R"))
+
+source(here::here("scripts", "scripts_functions", "figure_info.R"))
+```
+
+#DATA 
+```{r}
+wc_all_raw <- read_csv(here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = F) %>% 
+  filter(species == "live oak") 
+```
+
+Before leafout: 
+
+```{r}
+quag_wc_all <- wc_all_raw 
+
+quag_wc_linear <- quag_wc_all %>% 
+  filter(week > 17)
+```
+
+```{r}
+full_nice <- quag_wc_all %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc_mean, 
+             color = week)) +
+  geom_point() +
+ # geom_smooth(method = "lm", 
+            #  se = F, 
+            #  color = "black") +
+  color_grad +
+  #color_many +
+  labs(y = "MPa",
+       x = "lwc_mean", 
+       color = "Week") +
+  theme(legend.position = c(0.1, 0.78)) +
+  scale_x_reverse()
+full_nice
+```
+
+Making models of each variable of interest: 
+
+Use al:as or lma to pick inflection point (currently just using week):
+
+Variance decomposition, build 3-4 models:
+lwc_mean ~ null
+~time
+~mpa
+~mpa + time
+
+Look at marginal R^2, decompose add them together, overlap should be greater than sum (since they explain some same)
+
+
+```{r}
+m0 <- lmer(water_potential ~ 1 + (1|tree), data = quag_wc_all)
+m1 <- lmer(water_potential ~ week + (1|tree), data = quag_wc_all)
+m2 <- lmer(water_potential ~ lwc_mean + (1|tree), data = quag_wc_all)
+m3 <- lmer(water_potential ~ week + lwc_mean + (1|tree), data = quag_wc_all)
+
+#try using r.squaredGLMM:
+mods_list <- list(m0, m1, m2, m3)
+
+r2 <- lapply(mods_list, r.squaredGLMM)
+r2
+
+r2m <- c(r2[[1]][1], r2[[2]][1], r2[[3]][1], r2[[4]][1]) #vector of r2s
+mods <- c("m0", "m1", "m2", "m3")
+
+mod_all_df1_full <-  data.frame(mods, r2m)
+
+mod_all_df_full <- mod_all_df1_full %>% 
+  pivot_wider(names_from = mods, 
+              values_from = r2m) %>% 
+  mutate(
+    #other_effects =  m3 - week_effect - lwc_mean_effect,
+    week_effect = m3 - m2, #week + mpa mod - mpa mod
+         lwc_mean_effect = m3 - m1, #week + mpa mod - week mod
+         week_lwc_mean_effect = m3, #week + mpa mod 
+    other_effects =  m3 - week_effect - lwc_mean_effect,
+         ) #full minus the effects of mpa and week alone
+mod_all_df_full
+
+#for plotting (maybe?)
+mod_all_long_full <- mod_all_df_full %>% 
+  select(week_effect, lwc_mean_effect, week_lwc_mean_effect, other_effects) %>% 
+  pivot_longer(cols = c(week_effect, lwc_mean_effect, week_lwc_mean_effect, other_effects), 
+    names_to = "effect") %>% 
+  distinct() %>% 
+  mutate(analysis = case_when(
+    effect %in% c("week_effect", "lwc_mean_effect", "other_effects") ~ "Var. Decomp", 
+    effect %in% c("week_lwc_mean_effect") ~ "Full Mod.", 
+    TRUE ~ as.character(effect)), 
+    decomp = "Full Date Range")
+mod_all_long_full
+
+mod_all_long_full %>% 
+  ggplot(aes(x = analysis, 
+             y = value, 
+         fill = effect)) +
+  geom_col(stat = "identity") +
+ # geom_text(aes(label = value)) +
+  color_many +
+  labs(y = "R squared", 
+       x = "Predictor") +
+  color_fill
+
+```
+
+Once leafout finishes, then things get linear: 
+
+- currently just using week approximation, but will use LMA plateau once we have that together:
+
+#Datasets: 
+```{r}
+quag_wc_full <- wc_all_raw %>% 
+   filter(#week > 15, 
+         species == "live oak", 
+         lwc_mean < 10) %>% 
+  group_by(tree, week, time, lwc_mean) %>%  
+  mutate(section = "full") %>% 
+  select(section, species, week, water_potential, lwc_mean, site)
+
+quag_wc_linear <- wc_all_raw %>% 
+  filter(week > 17, 
+         species == "live oak", 
+         lwc_mean < 10) %>% 
+  group_by(tree, week, time, lwc_mean) %>% 
+  mutate(section = "linear")%>% 
+  select(section, species, week, water_potential, lwc_mean, site)
+
+quag_wc_all <- bind_rows(quag_wc_linear, quag_wc_full) %>% 
+  distinct
+```
+
+
+```{r}
+nice_all <- quag_wc_all %>% 
+   ggplot(aes(y = water_potential, 
+             x = lwc_mean, 
+             color = week)) +
+  geom_point() +
+#  geom_smooth(method = "lm", se = F, color = "black") +
+  facet_wrap(~section, scales = "free") +
+  color_grad +
+  labs(y = "Water Potential", 
+       x = "lwc_mean", 
+       color = "Week") +
+  theme(legend.position = "none") 
+nice_all
+```
+
+```{r}
+lin_nice <- quag_wc_linear %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwc_mean, 
+             color = week)) +
+  geom_point() +
+  geom_smooth(method = "lm", 
+              se = F, 
+              color = "black") +
+  color_grad +
+  labs(y = "", 
+       x = "", 
+       color = "Week") +
+  theme(legend.position = "none") 
+lin_nice
+```
+
+```{r}
+together <- cowplot::plot_grid( full_nice, 
+                                lin_nice,
+                               ncol = 1, 
+                               rel_heights = c(1, 1))
+together
+```
+
+
+
+#####Whole df: 
+```{r}
+#alternative method with random effects
+
+mvar <- lmer(water_potential ~ lwc_mean + (1|site/tree) + (1|week), data=quag_wc_full)
+
+r2m <- r.squaredGLMM(mvar)[1] # plust the marginal R2 of lwc_mean
+#r2m 
+
+var(quag_wc_full$water_potential, na.rm=T) # 1.18
+vest <- data.frame(VarCorr(mvar))
+#sum(vest$vcov) + 0.09 #1.001
+
+wc_all_vest_df <- vest %>% 
+  add_row(vcov = r2m, 
+          grp = "marginal_r2") %>% 
+  mutate(dataset= "All Dates")
+
+#wc_all_vest_df
+sum(wc_all_vest_df$vcov)
+```
+
+#####Linear: 
+```{r}
+#alternative method with random effects
+
+mvar_lin <- lmer(water_potential ~ lwc_mean + (1|site/tree) + (1|week), data=quag_wc_linear)
+
+r2m <- r.squaredGLMM(mvar_lin)[1] # plust the marginal R2 of lwc_mean
+ 
+r2m #0.107
+
+var(quag_wc_linear$water_potential, na.rm=T) # 1.0239
+vest_lin <- data.frame(VarCorr(mvar_lin))
+sum(vest$vcov) + 0.09 #1.001
+
+wc_linear_vest_df <- vest_lin %>% 
+  add_row(vcov = r2m, 
+          grp = "marginal_r2") %>% 
+  mutate(dataset= "After Leaf Expansion")
+
+#wc_linear_vest_df
+#sum(wc_linear_vest_df$vcov) #Close enough to 1?
+```
+
+#Plot
+
+```{r}
+#Colors: 
+color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
+                                               "Site" = "#252525",
+                                                "Tree" =  "#525252",
+                                               "LWC (g)" = "#C969A1" ,
+                                                "Week" = "#62929a"))
+
+#greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))
+
+#Combine into 1 df: 
+vdc2 <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>% 
+  group_by(dataset) %>% 
+  mutate(total = sum(vcov)) %>% 
+  ungroup() %>% 
+  mutate(percent_var = vcov/total) %>% 
+  mutate(grp_new = case_when(
+    grp %in% c("marginal_r2") ~ "LWC (g)", 
+    grp %in% c("Residual") ~ "Residuals",
+    grp %in% c("site") ~ "Site",
+      grp %in% c("tree:site") ~ "Tree", 
+      grp %in% c("week") ~ "Week", 
+      TRUE ~ as.character(grp)
+  ))
+
+vdc2_plot_lwc <- vdc2 %>% ggplot(aes(x = dataset, 
+                    y = percent_var,
+                    fill = grp_new)) +
+  geom_col(stat = "identity") +
+  color_fill_vdc +
+  labs(y = "", 
+       x = "", 
+       fill = "Variable") +
+  theme(
+    legend.position = "top",
+  strip.background = element_blank(),
+ # strip.text.y = element_blank(), 
+  axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_blank(),
+ # legend.title = element_text(size = 14), 
+  legend.title = element_blank(), 
+ legend.text= element_text(size = 12), 
+  ) +
+    scale_x_discrete(limits=rev)
+  
+vdc2_plot_lwc
+
+ggsave(here("figures",  "quag figures", "LWC",  "vdc2_plot"), vdc2_plot_lwc, device = "jpg", width = 5.5, height = 7, dpi = 300)
+```
+
+#LMA over time: 
+
+```{r}
+lma_plot <- wc_all_raw %>% 
+  group_by(week, species) %>% 
+  mutate(mean_lma = mean(lma_g_cm2, na.rm = T)) %>% 
+  ggplot(aes(y = mean_lma, x = week )) +
+  geom_point() +
+  labs(x = "Week", 
+       color = "week", 
+       y = "Leaf Mass/Area") +
+  theme(legend.position="top",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+ # geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))  + 
+  scale_x_continuous(breaks = c(10, 13, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                      # seq(10, 30, by = 1)
+                     ) 
+lma_plot
+```
+
+```{r}
+vardecomp_lma_plot <- cowplot::plot_grid(vdc2_plot_lwc, lma_plot, 
+                                   nrow = 1, rel_heights = c(1, 1), 
+                                   rel_widths = c(1, 1)
+                                   ) 
+
+vardecomp_lma_plot
+
+ggsave(here("figures", "quag figures", "LWC", "vardecomp_lma_plot"), vardecomp_lma_plot, device = "jpg", width = 12, height = 5, dpi = 300)
+```
+
+#-------------------
+
+#LWA analysis: 
+
+Before leafout: 
+```{r}
+quag_wc_all <- wc_all_raw 
+
+quag_wc_linear <- quag_wc_all %>% 
+  filter(week > 17)
+
+full_nice <- quag_wc_all %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2_new, 
+             color = week, 
+             label = tree)) +
+  geom_point() +
+ # geom_smooth(method = "lm", 
+            #  se = F, 
+            #  color = "black") +
+  color_grad +
+  #color_many +
+  labs(y = "MPa",
+       x = "lwa_g_cm2_new", 
+       color = "Week") +
+  # theme(#legend.position = c(0.1, .02),
+  #       legend.position = "right")) +
+  scale_x_reverse() + 
+   facet_wrap(~time)
+
+plotly::ggplotly(full_nice)
+```
+
+Making models of each variable of interest: 
+
+Use al:as or lma to pick inflection point (currently just using week):
+
+Variance decomposition, build 3-4 models:
+lwa_g_cm2_new ~ null
+~time
+~mpa
+~mpa + time
+
+Look at marginal R^2, decompose add them together, overlap should be greater than sum (since they explain some same)
+
+
+```{r}
+m0 <- lmer(water_potential ~ 1 + (1|tree), data = quag_wc_all)
+m1 <- lmer(water_potential ~ week + (1|tree), data = quag_wc_all)
+m2 <- lmer(water_potential ~ lwa_g_cm2_new + (1|tree), data = quag_wc_all)
+m3 <- lmer(water_potential ~ week + lwa_g_cm2_new + (1|tree), data = quag_wc_all)
+
+#try using r.squaredGLMM:
+mods_list <- list(m0, m1, m2, m3)
+
+r2 <- lapply(mods_list, r.squaredGLMM)
+r2
+
+r2m <- c(r2[[1]][1], r2[[2]][1], r2[[3]][1], r2[[4]][1]) #vector of r2s
+mods <- c("m0", "m1", "m2", "m3")
+
+mod_all_df1_full <-  data.frame(mods, r2m)
+
+mod_all_df_full <- mod_all_df1_full %>% 
+  pivot_wider(names_from = mods, 
+              values_from = r2m) %>% 
+  mutate(
+    #other_effects =  m3 - week_effect - lwa_g_cm2_new_effect,
+    week_effect = m3 - m2, #week + mpa mod - mpa mod
+         lwa_g_cm2_new_effect = m3 - m1, #week + mpa mod - week mod
+         week_lwa_g_cm2_new_effect = m3, #week + mpa mod 
+    other_effects =  m3 - week_effect - lwa_g_cm2_new_effect,
+         ) #full minus the effects of mpa and week alone
+mod_all_df_full
+
+#for plotting (maybe?)
+mod_all_long_full <- mod_all_df_full %>% 
+  select(week_effect, lwa_g_cm2_new_effect, week_lwa_g_cm2_new_effect, other_effects) %>% 
+  pivot_longer(cols = c(week_effect, lwa_g_cm2_new_effect, week_lwa_g_cm2_new_effect, other_effects), 
+    names_to = "effect") %>% 
+  distinct() %>% 
+  mutate(analysis = case_when(
+    effect %in% c("week_effect", "lwa_g_cm2_new_effect", "other_effects") ~ "Var. Decomp", 
+    effect %in% c("week_lwa_g_cm2_new_effect") ~ "Full Mod.", 
+    TRUE ~ as.character(effect)), 
+    decomp = "Full Date Range")
+mod_all_long_full
+
+mod_all_long_full %>% 
+  ggplot(aes(x = analysis, 
+             y = value, 
+         fill = effect)) +
+  geom_col(stat = "identity") +
+ # geom_text(aes(label = value)) +
+  color_many +
+  labs(y = "R squared", 
+       x = "Predictor") +
+  color_fill
+
+```
+
+Once leafout finishes, then things get linear: 
+
+- currently just using week approximation, but will use LMA plateau once we have that together:
+
+#Datasets: 
+```{r}
+quag_wc_full <- wc_all_raw %>% 
+   filter(#week > 15, 
+         species == "live oak", 
+         lwa_g_cm2_new < 10) %>% 
+  group_by(tree, week, time, lwa_g_cm2_new) %>%  
+  mutate(section = "full") %>% 
+  select(section, species, week, water_potential, lwa_g_cm2_new, site)
+
+quag_wc_linear <- wc_all_raw %>% 
+  filter(week > 17, 
+         species == "live oak", 
+         lwa_g_cm2_new < 10) %>% 
+  group_by(tree, week, time, lwa_g_cm2_new) %>% 
+  mutate(section = "linear")%>% 
+  select(section, species, week, water_potential, lwa_g_cm2_new, site)
+
+quag_wc_all <- bind_rows(quag_wc_linear, quag_wc_full) %>% 
+  distinct
+```
+
+
+```{r}
+nice_all <- quag_wc_all %>% 
+   ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2_new, 
+             color = week)) +
+  geom_point() +
+#  geom_smooth(method = "lm", se = F, color = "black") +
+  facet_wrap(~section, scales = "free") +
+  color_grad +
+  labs(y = "Water Potential", 
+       x = "lwa_g_cm2_new", 
+       color = "Week") +
+  theme(legend.position = "none") 
+nice_all
+
+nice_all <- wc_all_raw  %>% 
+   ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2_new
+             , 
+             color = week)) +
+  geom_point() +
+#  geom_smooth(method = "lm", se = F, color = "black") +
+  #facet_wrap(~section, scales = "free") +
+  color_grad +
+  labs(y = "Water Potential", 
+       x = "lwa_g_cm2_new", 
+       color = "Week") +
+  theme(legend.position = "none") 
+nice_all
+```
+
+```{r}
+plotly::ggplotly(lin_nice <- quag_wc_linear %>% 
+  ggplot(aes(y = water_potential, 
+             x = lwa_g_cm2_new, 
+             color = week, 
+             label = tree)) +
+  geom_point() +
+  geom_smooth(method = "lm", 
+              se = F, 
+              color = "black") +
+  color_grad +
+  labs(y = "", 
+       x = "", 
+       color = "Week") +
+  theme(legend.position = "none")) 
+lin_nice
+```
+
+```{r}
+together <- cowplot::plot_grid( full_nice, 
+                                lin_nice,
+                               ncol = 1, 
+                               rel_heights = c(1, 1))
+together
+```
+
+#####Whole df: 
+```{r}
+#alternative method with random effects
+
+mvar <- lmer(water_potential ~ lwa_g_cm2_new + (1|site/tree) + (1|week), data=quag_wc_full)
+
+r2m <- r.squaredGLMM(mvar)[1] # plust the marginal R2 of lwc_mean
+#r2m 
+
+var(quag_wc_full$water_potential, na.rm=T) # 1.18
+vest <- data.frame(VarCorr(mvar))
+#sum(vest$vcov) + 0.09 #1.001
+
+wc_all_vest_df <- vest %>% 
+  add_row(vcov = r2m, 
+          grp = "marginal_r2") %>% 
+  mutate(dataset= "All Dates")
+
+#wc_all_vest_df
+sum(wc_all_vest_df$vcov)
+``` 
+
+
+#####Linear: 
+```{r}
+#alternative method with random effects
+mvar_lin <- lmer(water_potential ~ lwa_g_cm2_new + (1|site/tree) + (1|week), data=quag_wc_linear)
+
+r2m <- r.squaredGLMM(mvar_lin)[1] # plust the marginal R2 of lwa_g_cm2_new
+ 
+r2m #0.107
+
+var(quag_wc_linear$water_potential, na.rm=T) # 0.9556679
+vest_lin <- data.frame(VarCorr(mvar_lin))
+sum(vest_lin$vcov) + 0.09 #0.9822295
+
+wc_linear_vest_df <- vest_lin %>% 
+  add_row(vcov = r2m, 
+          grp = "marginal_r2") %>% 
+  mutate(dataset= "After Leaf Expansion")
+
+#wc_linear_vest_df
+#sum(wc_linear_vest_df$vcov) #Close enough to 1?
+```
+
+###Plot
+
+```{r}
+#Colors: 
+color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
+                                               "Site" = "#252525",
+                                                "Tree" =  "#525252",
+                                               "LWA (g/cm2)" = "#D7B110" ,
+                                                "Week" = "#62929a"))
+
+#greys <- list(c("#FFFFFF" "#F0F0F0" "#D9D9D9" "#BDBDBD" "#969696" "#737373" "#525252" "#252525" "#000000"))
+
+#Combine into 1 df: 
+vdc2_lwa <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>% 
+  group_by(dataset) %>% 
+  mutate(total = sum(vcov)) %>% 
+  ungroup() %>% 
+  mutate(percent_var = vcov/total) %>% 
+  mutate(grp_new = case_when(
+    grp %in% c("marginal_r2") ~ "LWA (g/cm2)", 
+    grp %in% c("Residual") ~ "Residuals",
+    grp %in% c("site") ~ "Site",
+      grp %in% c("tree:site") ~ "Tree", 
+      grp %in% c("week") ~ "Week", 
+      TRUE ~ as.character(grp)
+  ))
+
+vdc2_plot <- vdc2_lwa %>% ggplot(aes(x = dataset, 
+                    y = percent_var,
+                    fill = grp_new)) +
+  geom_col(stat = "identity") +
+  color_fill_vdc +
+  labs(y = "", 
+       x = "", 
+       fill = "Variable") +
+  theme(
+    legend.position = "top",
+  strip.background = element_blank(),
+ # strip.text.y = element_blank(), 
+  axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_blank(), 
+ # legend.title = element_text(size = 14), 
+  legend.title = element_blank(), 
+ legend.text= element_text(size = 12), 
+  ) +
+    scale_x_discrete(limits=rev)
+  
+vdc2_plot
+
+ggsave(here("figures", "quag figures", "LWA", "vdc2_lwa_new_plot"), vdc2_plot, device = "jpg", width = 5.5, height = 7, dpi = 300)
+```
+
+#---------------
+#COMBINE: 
+
+```{r}
+  #Colors: 
+color_fill_vdc <- scale_fill_manual(values = c("Residuals" = "#D9D9D9",
+                                               "Site" = "#252525",
+                                                "Tree" =  "#525252",
+                                               "LWC (g/g)" = "#C969A1",
+                                               "LWA (g/cm2)" = "#D7B110" ,
+                                               "Week" = "#62929a"))
+
+vdc2_new <- bind_rows(wc_linear_vest_df, wc_all_vest_df) %>% 
+  group_by(dataset) %>% 
+  mutate(total = sum(vcov)) %>% 
+  ungroup() %>% 
+  mutate(percent_var = vcov/total) %>% 
+  mutate(grp_new = case_when(
+    grp %in% c("marginal_r2") ~ "LWA (g/cm2)", 
+    grp %in% c("Residual") ~ "Residuals",
+    grp %in% c("site") ~ "Site",
+      grp %in% c("tree:site") ~ "Tree", 
+      grp %in% c("week") ~ "Week", 
+      TRUE ~ as.character(grp)
+  )) %>% 
+  add_row(grp_new = "LWC (g/g)", percent_var = 1.08, dataset = "All Dates", total = 1)
+
+
+
+legend_plot <- vdc2_new  %>% 
+ ggplot(aes(x = dataset, 
+            y = percent_var,
+            fill = grp_new)) +
+  geom_col(stat = "identity") +
+  color_fill_vdc +
+  labs(y = "", 
+       x = "", 
+       fill = "Variable") +
+  theme(
+  legend.position = "top",
+  strip.background = element_blank(),
+ # strip.text.y = element_blank(), 
+  axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12), 
+ # axis.text.y = element_blank(), 
+  #axis.ticks.y = element_blank(), 
+  axis.title = element_text(size = 20), 
+ # legend.title = element_text(size = 14), 
+  legend.title = element_blank(), 
+ legend.text= element_text(size = 12), 
+ legend.margin=margin(0,0,0,0),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+  ) +
+  scale_x_discrete(limits=rev) +
+  guides(fill = guide_legend(nrow = 1))
+  
+legend_plot
+
+legend <- cowplot::get_legend(legend_plot)
+```
+
+```{r}
+combined_plot <- cowplot::plot_grid(vdc2_plot + 
+                                      theme(legend.position = "none",
+  plot.margin = unit(c(0,0, 0, 0), units = "pt")),
+                                      vdc2_plot_lwc  + 
+                                      theme(legend.position = "none", 
+                                            axis.text.y = element_blank(),
+  plot.margin = unit(c(0, 5.5, 0, 0), units = "pt")), 
+                                   nrow = 1, 
+                                   rel_heights = c(1, 1), 
+                                   rel_widths = c(1, 1)
+                                   ) 
+
+combined_plot2 <- cowplot::plot_grid(legend,  combined_plot,
+                                   nrow = 2, rel_heights = c(.1, 1), 
+                                   rel_widths = c(1, 1)
+                                   ) 
+combined_plot2
+
+ggsave(here("figures", "quag figures", "vardecomp_combined"), combined_plot2, device = "jpg", width = 7, height = 5, dpi = 300)
+```
+
