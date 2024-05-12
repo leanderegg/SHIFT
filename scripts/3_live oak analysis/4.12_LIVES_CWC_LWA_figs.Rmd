@@ -280,6 +280,7 @@ time_summary
 
 ```{r}
 legend_plot <- data_og %>% 
+  filter(week %in% c(10, 14, 15, 17, 18, 19, 21, 29, 27)) %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -344,7 +345,7 @@ combined_slopes_wide <- cowplot::plot_grid(space_slope_bs_lwc, NULL, time_summar
                                   hjust= c(-1, 0, -1),
                                   label_y = .98
                                   # rel_heights = c(.15, 1, .3), 
-                                   #rel_widths = c(1, 1, 1), 
+                                  # rel_widths = c(1, 1, .5), 
                                   # rel_widths = c(.7, .8, .7, .3)
                                    ) 
 
@@ -415,7 +416,7 @@ quag_plot_slopes_final <- grid.arrange(arrangeGrob(quag_plot_slopes,
 
 legend_scatterplots
 
-ggsave(here("figures", "quag figures", "slopes_space_time_quag"), quag_plot_slopes_final, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "slopes_space_time_quag"), quag_plot_slopes_final, device = "jpg", width = 5, height = 4, dpi = 300)
 ```
 
 ####SWC and LMA: 
@@ -495,7 +496,9 @@ lma_plot <- lma_plot_df  %>%
         axis.text.x = element_text(size = 13), 
        # axis.title.x = element_blank(), 
         axis.text.y = element_blank(),
-        axis.ticks = element_blank(), 
+        axis.ticks = element_blank(),
+      legend.box.margin=margin(-5,-8,-8,-8),
+     plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt") 
        # axis.text.x = element_text(hjust=.5, size= 20)
         )
 lma_plot
@@ -535,11 +538,16 @@ ggsave(here("figures", "quag figures", "lma_long_plot"), lma_swc_plot, device = 
 plot <- cowplot::plot_grid(quag_plot_slopes_final,
                            lma_swc_plot, 
                            nrow = 2, 
-                           rel_heights = c(.9, .3))
+                           rel_heights = c(.9, .3), 
+                           rel_widths = c(1, .5))
 plot
 
-ggsave(here("figures", "quag figures", "quag_fig_plot"), plot, device = "jpeg", width = 7, height = 5, dpi = 300)
+ggsave(here("figures", "quag figures", "quag_fig_plot"), plot, device = "jpeg", width = 6, height = 5, dpi = 300)
 ```
 
+#Combine for Fig. 5
 
+```{r}
+
+```
 

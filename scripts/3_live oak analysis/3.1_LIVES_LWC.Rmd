@@ -1082,7 +1082,9 @@ anova(space_mod, space_mod_site)
 
 space_mod <- lmer(water_potential ~ lwc_mean_centered + (lwc_mean_centered|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
 
+summary(space_mod)
 space_mod_df <- broom.mixed::tidy(space_mod)
+
 ```
 YES
 
@@ -1224,6 +1226,8 @@ time_mod <- lmer(water_potential ~ lwc_mean + (1|week) + (lwc_mean|tree), data =
 time_season_mod <- lmer(water_potential ~ lwc_mean + time_season + (1|week) + (lwc_mean|tree), data = wc_quag_md_df)
 
 time_season_mod_int <- lmer(water_potential ~ lwc_mean*time_season + (1|week) + (lwc_mean|tree), data = wc_quag_md_df)
+
+summary(time_season_mod_int)
 
 time_season_mod_df <- broom::tidy(time_season_mod)
 ```
@@ -1729,8 +1733,6 @@ ggplot(aes(color = time_season)) +
 time_summary
 ```
 
-
-
 ######Legend:
 
 ```{r}
@@ -1967,82 +1969,46 @@ quag_lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>%
   mutate(week = as.factor(week)) %>% 
   drop_na(lma_g_cm2_new, time, tree, mean_mpa) 
 
-#How much does WP relate to LMA, accounting for time (pd or md) and week? 
+#PD alone: 
 
-#
-###Model with random slopes and intercepts per tree, with lma_g_cm2_new and time (week as the fixed effect. 
-m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + week + (1|tree) + (lma_g_cm2_new|tree), data = quag_lma_mpa_df, REML = F)
-summary(m1)
-MuMIn::r.squaredGLMM(m1) #0.8329473
-
-m2 <- lm(mean_mpa ~ time + week + (1|tree) + (lma_g_cm2_new|tree), data = quag_lma_mpa_df, REML = F)
-summary(m2)
-MuMIn::r.squaredGLMM(m2) #0.8322236 
-
-#compare mods: 
-anova(m1, m2) #m1 is slightly better
-
-#Store the R-squared of the 'better' model
-marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
-marginal_r2
-```
-- PD alone: 
-```{r}
-quag_lma_mpa_df_pd <- quag_lma_mpa_df %>% 
+quag_lma_mpa_df_pd <- lma_mpa_df %>% 
   filter(time == "pd")
 #just pds: 
 
-#just pds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
 
-#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = quag_lma_mpa_df_pd, REML = F)
-#summary(m2)
+#(1-lma|tree) just slope? 
+#(1|tree) #just intercept
+
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_pd, REML = T)
+library(lmerTest) #this gives you a p value
+m2
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
 MuMIn::r.squaredGLMM(m2)
 
-
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
-#summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
-#summary(m4)
-
 #Store the R-squared of the 'better' model
-marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
-marginal_r2_pd
-```
+quag_marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_pd
 
-- For just MDs:
-```{r}
-quag_lma_mpa_df_md <- quag_lma_mpa_df %>% 
+
+#For just MDs:
+
+quag_lma_mpa_df_md <- lma_mpa_df %>% 
   filter(time == "md")
 #just mds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_md, REML = T)
+
+library(lmerTest) #this gives you a p value
+
+summary(m2)
 MuMIn::r.squaredGLMM(m2)
 
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
-summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-
-m4 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
-
 #Store the R-squared of the 'better' model
-marginal_r2_md <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
-marginal_r2_md
-```
+quag_marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_md
 
-
-```{r}
 #PLot!
-lma_mpa_plot <- quag_lma_mpa_df %>% 
+lma_mpa_plot_new <- quag_lma_mpa_df %>% 
   ggplot(aes(#y = water_potential, 
              y =-1*mean_mpa,
             x = lma_g_cm2_new,
@@ -2056,12 +2022,12 @@ lma_mpa_plot <- quag_lma_mpa_df %>%
            x = .010, 
            y = -4.75, 
            color = "#528791",
-           label = paste("R2 = ", marginal_r2_pd)) +
+           label = paste("R2 = ", quag_marginal_r2_pd)) +
   annotate(geom = "text", 
            x = .010, 
            y = -5, 
            color = "#CC5265",
-           label = paste("R2 = ", marginal_r2_md)) +
+           label = paste("R2 = ", quag_marginal_r2_md)) +
   theme(#legend.position="top",
         legend.position= c(.87, .87),
       strip.background = element_blank(),
@@ -2097,9 +2063,9 @@ lma_mpa_plot <- quag_lma_mpa_df %>%
   guides(color = guide_legend(nrow = 2)) +
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
-lma_mpa_plot
+lma_mpa_plot_new
 
-ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot_new"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
 Using LMA from Al:As: 
@@ -2152,3 +2118,115 @@ data_quag_lma  %>%
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 ```
+
+#USE THIS:Combine Al:As scans and other scans to up our sample size: 
+
+```{r}
+library(lmerTest) #this gives you a p value
+
+lma_alas_quag <- data_quag_lma %>% select(time, water_potential, lma_g_cm2) %>% 
+  rename(mean_mpa = water_potential, 
+         lma_g_cm2_new = lma_g_cm2) %>% 
+  mutate(mean_mpa = -1*mean_mpa)
+
+lma_quag_df <- bind_rows(lma_alas_quag, 
+                         quag_lma_mpa_df %>% 
+                           select(-week)) %>% 
+  filter(lma_g_cm2_new < 0.025)
+#PD alone: 
+
+quag_lma_mpa_df_pd <- lma_quag_df %>% 
+  filter(time == "pd")
+#just pds: 
+
+#just pds: 
+#(1-lma|tree) just slope? 
+#(1|tree) #just intercept
+
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_pd, REML = T)
+library(lmerTest) #this gives you a p value
+m2
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+quag_marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_pd
+
+
+#For just MDs:
+
+quag_lma_mpa_df_md <- lma_quag_df %>% 
+  filter(time == "md")
+#just mds: 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_quag_df, REML = T)
+
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+quag_marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_md
+
+
+lma_mpa_plot <- lma_quag_df %>% 
+  ggplot(aes(#y = water_potential, 
+             y =-1*mean_mpa,
+            x = lma_g_cm2_new,
+             color = as.factor(time),
+            shape = time
+             )) +
+  geom_point(alpha = 1, 
+            # aes (shape = site)
+             ) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -5.25, 
+           color = "#528791",
+           label = paste("R2 = ", quag_marginal_r2_pd)) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -5.5, 
+           color = "#CC5265",
+           label = paste("R2 = ", quag_marginal_r2_md)) +
+  theme(#legend.position="top",
+        legend.position= c(.9 .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+     # axis.title.x = element_blank(),
+    # axis.title.y = element_blank(),
+     legend.text = element_text(size = 14), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  geom_smooth(method = "lm", se = F,size = .5) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(#y= "Middays (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Mass per Area (g/cm2)", 
+      # color = "Week", 
+      # shape = "Time"
+      ) +
+  scale_color_manual(values = c("#CC5265","#528791"), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  scale_shape_manual(values = c(19, 17), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  guides(color = guide_legend(nrow = 2)) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+lma_mpa_plot
+
+ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+

@@ -469,6 +469,7 @@ data_hyd  %>%
 data_hyd  <- data_hyd  %>% 
   filter(!(week ==21 & tree == 2378), 
          !(week == 19 & tree == 2009 & time == "pd"),
+         !(week == 19 & tree == 2367 & time == "pd"),
          !(week == 15 & tree %in% c(2384, 2011) & time == "pd")) #this tree has something wrong with it! Tried to remove in processing script but that wasn't running. Trying here!
 
 # Assuming your dataset is called 'data'

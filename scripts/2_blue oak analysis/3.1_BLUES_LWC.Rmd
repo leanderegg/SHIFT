@@ -53,7 +53,8 @@ daat_wk21 <- data_og %>%
   filter(week == 21)
 unique(data_og$tree)
 ```
-look at it: 
+
+Look at it: 
 ```{r}
 data <- data_og %>% 
   mutate(tree_week = paste(tree, week, sep = "_")
@@ -2019,31 +2020,23 @@ marginal_r2
 ```
 - PD alone: 
 ```{r}
+library(lmerTest) #this gives you a p value!
+
 lma_mpa_df_pd <- lma_mpa_df %>% 
   filter(time == "pd")
 #just pds: 
 
 #just pds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
+#(1-lma|tree) just slope? 
+#(1|tree) #just 
+#(lma|tree) random slope and intercept
 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_mpa_df_pd, REML = T)
+m2
 #m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
-#summary(m2)
-MuMIn::r.squaredGLMM(m2)
-
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
-#summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-#R2 of model without the week term: 
-m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_pd, REML = F)
-MuMIn::r.squaredGLMM(m4)
-
+summary(m2)
 #Store the R-squared of the 'better' model
-marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
+marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
 marginal_r2_pd
 ```
 
@@ -2052,23 +2045,15 @@ marginal_r2_pd
 lma_mpa_df_md <- lma_mpa_df %>% 
   filter(time == "md")
 #just mds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_mpa_df_md, REML = T)
+
+library(lmerTest) #this gives you a p value
+
+summary(m2)
 MuMIn::r.squaredGLMM(m2)
 
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
-#summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-#R2 of model without the week term: 
-m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = lma_mpa_df_md, REML = F)
-#summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
 #Store the R-squared of the 'better' model
-marginal_r2_md <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
+marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
 marginal_r2_md
 ```
 
@@ -2209,6 +2194,118 @@ data_qudo_lma  %>%
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 ```
+
+#Combine Al:As scans and other scans to up our sample size: 
+
+```{r}
+library(lmerTest) #this gives you a p value
+
+lma_alas_df <- data_qudo_lma %>% select(time, water_potential, lma_g_cm2) %>% 
+  rename(mean_mpa = water_potential, 
+         lma_g_cm2_new = lma_g_cm2) %>% 
+  mutate(mean_mpa = -1*mean_mpa)
+
+lma_df <- bind_rows(lma_alas_df, 
+                         lma_mpa_df %>% 
+                           select(-week)) %>% 
+  filter(lma_g_cm2_new < 0.025)
+#PD alone: 
+
+lma_mpa_df_pd <- lma_df %>% 
+  filter(time == "pd")
+#just pds: 
+
+#just pds: 
+#(1-lma|tree) just slope? 
+#(1|tree) #just intercept
+
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_mpa_df_pd, REML = T)
+library(lmerTest) #this gives you a p value
+m2
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+marginal_r2_pd
+
+
+#For just MDs:
+
+lma_mpa_df_md <- lma_df %>% 
+  filter(time == "md")
+#just mds: 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_df, REML = T)
+
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+marginal_r2_md
+
+
+lma_mpa_plot <- lma_df %>% 
+  ggplot(aes(#y = water_potential, 
+             y =-1*mean_mpa,
+            x = lma_g_cm2_new,
+             color = as.factor(time),
+            shape = time
+             )) +
+  geom_point(alpha = 1, 
+            # aes (shape = site)
+             ) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -4.75, 
+           color = "#528791",
+           label = paste("R2 = ", marginal_r2_pd)) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -5, 
+           color = "#CC5265",
+           label = paste("R2 = ", marginal_r2_md)) +
+  theme(#legend.position="top",
+        legend.position= c(.85, .85),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+     # axis.title.x = element_blank(),
+    # axis.title.y = element_blank(),
+     legend.text = element_text(size = 14), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  geom_smooth(method = "lm", se = F,size = .5) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(#y= "Middays (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Mass per Area (g/cm2)", 
+      # color = "Week", 
+      # shape = "Time"
+      ) +
+  scale_color_manual(values = c("#CC5265","#528791"), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  scale_shape_manual(values = c(19, 17), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  guides(color = guide_legend(nrow = 2)) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+lma_mpa_plot
+
+ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+
 #----------------
 #Phenology timelines
 
