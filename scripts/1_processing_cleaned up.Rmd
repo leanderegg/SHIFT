@@ -316,7 +316,8 @@ lwa_new_df <- bind_rows(lwa_new_df2, entered_scans_all, entered_scans_all2) %>%
     date_wc %in% c("2022-05-25") ~ as.Date("2022-05-23"), 
     date_wc %in% c("2022-09-16") ~ as.Date("2022-09-15"), 
     TRUE ~ as.Date(date_wc))) %>% 
-  select(-week)
+  select(-week) %>% 
+  arrange(date_wc, tree)
 
 #these are problems ones to go back to!
 lwa_problems <- lwa_new_df %>% 
@@ -476,7 +477,8 @@ wc_lwa_df <- merge(wc_long_lwa_all2, lwa_new_df,
   mutate(lwa_g_cm2_new = sum_water_wt_g/sum_area_cm2, 
          lma_g_cm2_new = sum_dm_g/sum_area_cm2) %>% 
   select(-lwc_leaf, -mismatch_leaf) %>% 
-  distinct() #%>% 
+  distinct() %>% 
+  arrange(date_wc, tree) #%>% 
   #drop_na(species)
 
 #Visualize to see if it makes sense
@@ -559,10 +561,12 @@ plotly::ggplotly(wc_lwa_df  %>%
 ```{r}
 #remove obviously off values, make NA: 
 lwa_df <- wc_lwa_df %>% 
+ # select(-rep) %>% 
+  #distinct()
   
   #LWA new: any values with wrong areas and wrong summed masses
   mutate(lwa_g_cm2_new = case_when(
-        week %in% c(13) & tree %in% c(2009) & time %in% c("pd") ~ NA_real_, 
+        week %in% c(13) & tree %in% c(2009, 2370) & time %in% c("pd") ~ NA_real_, 
     date_wc %in% c("2022-04-04") & tree %in% c(2086) & time %in% c("md") ~ NA_real_, 
      date_wc %in% c("2022-03-08") & tree %in% c(2345) & time %in% c("md") ~ NA_real_, 
     date_wc %in% c("2022-03-08") & tree %in% c(2377) & time %in% c("md") ~ NA_real_, 
@@ -585,7 +589,7 @@ lwa_df <- wc_lwa_df %>%
 #LMA new: any values with wrong areas
   mutate(lma_g_cm2_new = case_when(
     lwc_wrong %in% c("off") ~ NA_real_,
-    week %in% c(13) & tree %in% c(2009) & time %in% c("pd") ~ NA_real_, 
+    week %in% c(13) & tree %in% c(2009, 2370) & time %in% c("pd") ~ NA_real_, 
     date_wc %in% c("2022-04-04") & tree %in% c(2086) & time %in% c("md") ~ NA_real_, 
      date_wc %in% c("2022-03-08") & tree %in% c(2345) & time %in% c("md") ~ NA_real_, 
     date_wc %in% c("2022-03-08") & tree %in% c(2377) & time %in% c("md") ~ NA_real_, 
@@ -677,7 +681,7 @@ plotly::ggplotly(lwa_df %>%
              #shape = lwc_wrong, 
              label = tree)) +
   geom_point()+
-  facet_wrap(~week))
+  facet_wrap(~week*date))
 
 ##These actually all look good now! Yay! lwc_wrong also doesn't stand out as supppper wierd except in the plot comparing lwc_new to our older lwc_bulk, so we'll keep them in for now.
 ```
@@ -921,7 +925,7 @@ plotly::ggplotly(wp_wc_df3  %>%
 
 
 plotly::ggplotly(wp_wc_df3  %>% 
-                   #filter(time == "md") %>% 
+                   filter(week == 17 & tree %in% c(2009:2030)) %>% 
   ggplot(aes(y = mean_mpa, 
              x = lwa_g_cm2_new, 
              color = species, 
@@ -929,11 +933,12 @@ plotly::ggplotly(wp_wc_df3  %>%
              label = tree),
              tooltip = c("tree", "species", "time")) +
   geom_point() +
-    facet_wrap(~week, scales = "free")
+    geom_line(aes(group = tree)) +
+    facet_wrap(~week*date, scales = "free")
   )
 
 plotly::ggplotly(wp_wc_df3  %>% 
-                   #filter(time == "md") %>% 
+                 #week == 17) %>% 
   ggplot(aes(y = mean_mpa, 
              x = lwc_mean, 
              color = species, 
@@ -941,7 +946,7 @@ plotly::ggplotly(wp_wc_df3  %>%
              label = tree),
              tooltip = c("tree", "species", "time")) +
   geom_point() +
-    facet_wrap(~week, scales = "free")
+    facet_wrap(~week*date, scales = "free")
   )
 
 write.csv(wp_wc_df3, here::here("processed-data", "wp_wc_df.csv"))
@@ -1417,6 +1422,7 @@ analysis_bothspp_df <- wp_wc_rwc_alas_df %>%
   tree %in% c(2347) & week %in% c(15) & time %in% c('md') ~ NA_real_,
   tree %in% c(2370) & week %in% c(15) & time %in% c('md') ~ NA_real_,
   TRUE ~ as.numeric(lwc_mean))) %>% 
+  filter(!(tree %in% 2012)) %>% #this tree doesn't actually exist
   filter(!(week == 17 & tree %in% c(2010, 2379))) #%>% #these trees have something wrong too
 # filter(!(species %in% c("live oak") & week %in% c(14, 15, 33))) %>%  #these weeks only had 2 trees collected with both PD and MD live oaks; remove!
  # filter(!week %in% c(9)) #this week has v low sample sizes, lets just not use!

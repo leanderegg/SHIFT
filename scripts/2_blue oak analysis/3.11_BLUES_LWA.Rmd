@@ -469,6 +469,7 @@ data_hyd  %>%
 data_hyd  <- data_hyd  %>% 
   filter(!(week ==21 & tree == 2378), 
          !(week == 19 & tree == 2009 & time == "pd"),
+         !(week == 17 & tree == 2009 & time == "pd"),
          !(week == 19 & tree == 2367 & time == "pd"),
          !(week == 15 & tree %in% c(2384, 2011) & time == "pd")) #this tree has something wrong with it! Tried to remove in processing script but that wasn't running. Trying here!
 
@@ -550,7 +551,7 @@ sampled_tree_ids <- sample(unique(week_data$tree), size = n_sample_trees, replac
  
 #to look at any specific weeks that are acting weird
 hyd_bs_slopes <- bootstrapped_slopes_df %>%
-  filter(week == 19)
+  filter(week == 17)
 
 summary_df_hyd %>% 
   ggplot(aes(x = week)) +

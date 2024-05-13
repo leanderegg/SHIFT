@@ -161,8 +161,11 @@ data <- filtered_data  %>%
   filter(#time_season == "before leafout", 
          week %in% c(10:17)) %>% 
   distinct() %>% 
-  drop_na(water_potential, lwc_mean) 
+  drop_na(water_potential, lwc_mean)
+```
 
+
+```{r}
 num_unique_trees <- length(unique(data$tree))
 cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 
@@ -170,7 +173,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 # Make sure 'data' is properly loaded before proceeding
 
 # Define the number of bootstrap iterations
-n_iterations <- 10
+n_iterations <- 1000
 
 # Number of random trees to sample
 n_sample_trees <- 40  # Adjust as needed

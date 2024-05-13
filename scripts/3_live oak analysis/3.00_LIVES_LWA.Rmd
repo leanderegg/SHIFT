@@ -15,6 +15,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(tidyverse)
 library(boot)
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
+
+datver
 ```
 
 ```{r}
@@ -28,7 +30,8 @@ data_quag_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp"
     week  < 17 ~ "before leafout", 
     week >= 17 ~ "after leafout", 
     TRUE ~ as.character("none")
-  )) 
+  )) %>% 
+  filter(!(week == 29 & tree == 2354 & time == "pd"))
 
 data_og <- data_quag_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
@@ -289,7 +292,7 @@ ggplot(aes(y = water_potential,
   geom_smooth(method = "lm", se = F)
 
 # Define the number of bootstrap iterations
-n_iterations <- 9
+n_iterations <- 4
 
 # Create an empty dataframe to store results
 final_df_space <- data.frame(week = integer(), mean_slope = numeric(), lower_bound = numeric(), upper_bound = numeric())
@@ -319,8 +322,8 @@ for (x in unique_weeks) {
   
   # Step 4: Calculate the mean slope and 95% CI
   mean_slope <- mean(slopes)
-  lower_bound <- quantile(slopes, 0.025)
-  upper_bound <- quantile(slopes, 0.975)
+  lower_bound <- quantile(slopes, 0.025, na.rm = T)
+  upper_bound <- quantile(slopes, 0.975, na.rm = T)
   
   # Step 5: Store the results in the final dataframe
   final_df_space <- bind_rows(final_df_space, data.frame(week = x, mean_slope = mean_slope, lower_bound = lower_bound, upper_bound = upper_bound))
@@ -371,7 +374,7 @@ df_all_groups <- data %>%
 df_grey <- df_all_groups
 
 df_1 <- df_all_groups %>% 
-  filter(week %in% c('10'))
+  filter(week %in% c('29'))
 
 df_2 <- df_all_groups %>% 
   filter(week %in% c('19'))
@@ -437,7 +440,7 @@ nice_hydration_layered <- ggplot() +
   ) +
    xlim(.5,2) +
   scale_x_reverse()
-nice_hydration_layered
+plotly::ggplotly(nice_hydration_layered + aes(label = tree))
 
 data_og %>% 
   ggplot(aes(y = lwa_g_cm2_new, x = week)) +
@@ -778,7 +781,7 @@ wk_all_long_mpa <- wk_all_wide %>%
 wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwa_g_cm2_new) %>% 
   distinct() %>% 
  # select(-lwa_g_cm2_new_NA, -water_potential_NA) %>% 
-  group_by(tree, week, time) %>% 
+  group_by(tree, week, time, site) %>% 
   summarise(lwa_g_cm2_new = mean(lwa_g_cm2_new, na.rm = T), 
             water_potential = mean(water_potential, na.rm = T))
 ```
