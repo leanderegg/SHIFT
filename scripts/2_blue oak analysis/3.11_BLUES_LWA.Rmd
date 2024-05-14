@@ -293,6 +293,89 @@ time_boot_df %>%
 
 #SPACE: 
 
+####***Slopes, MD, NOT Centered
+
+Get slopes from random effects: 
+
+NOTE: this includes site random effect, which the centered version does not need. 
+
+```{r}
+data <- data_og %>% 
+  filter(time == "md") %>% 
+  select(tree, week, water_potential, lwa_g_cm2_new, site) %>% 
+  distinct() %>% 
+  drop_na(lwa_g_cm2_new, water_potential)
+
+space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|tree) + (1|site), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod_4)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwa_g_cm2_new`, 
+         -lwa_g_cm2_new) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod_4)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwa_g_cm2_new`)%>% 
+  select(-`(Intercept)`, 
+         -lwa_g_cm2_new) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+final_df_space_se <- ran_df_week_4 
+
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope - space") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+space_slope
+```
+
+
 ```{r}
 data <- data_og %>% 
   filter(time == "md") %>% 
@@ -628,8 +711,7 @@ dataversion <- paste0("Data_", datver)
 ```{r, echo=F}
 wc_qudo_df <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
-  distinct() %>% 
-  filter(!(week == 33))
+  distinct()
 
 wc_qudo_df %>% 
   group_by(week, time) %>% 
@@ -665,9 +747,7 @@ wc_qudo_df %>%
   labs(y = "MPa counts") +
   color_fill
 ```
-A: week 17, 21, 29, 10. 
 
-IMPORTANT: NO MIDDAYS FOR WEEK 14!
 
 #Timeline
 
@@ -753,20 +833,6 @@ plotly::ggplotly(ggplot() +
 
 ```
 
-###DATA
-```{r, warning = F}
-wk_all <- wc_qudo_df %>% 
-  mutate(site = as.factor(site))
-
-#Any instances where there are duplicates? 
-wk_all_dupes <- wk_all %>% 
-  #select(tree, week, time, water_potential) %>% 
-  group_by(tree, week, time) %>% 
-  filter(n() > 1)
-
-#NO, yay!
-```
-
 
 ```{r, warning = F}
 #I think everything below here is unesessary? 
@@ -809,6 +875,19 @@ wk_all_dupes <- wk_all %>%
 #             water_potential = mean(water_potential, na.rm = T))
 ```
 
+###DATA
+```{r, warning = F}
+wk_all <- wc_qudo_df %>% 
+  mutate(site = as.factor(site))
+
+#Any instances where there are duplicates? 
+wk_all_dupes <- wk_all %>% 
+  #select(tree, week, time, water_potential) %>% 
+  group_by(tree, week, time) %>% 
+  filter(n() > 1)
+
+#NO, yay!
+```
 Slopes of the formula: 
 
 ```{r, warning=T}
@@ -899,9 +978,9 @@ wc_wk_centered_df <- wk_all %>%
   group_by(week) %>% 
   mutate(mean_lwa_g_cm2_new = mean(lwa_g_cm2_new, na.rm = T)) %>% 
   ungroup() %>% 
-  mutate(lwa_g_cm2_new_centered = lwa_g_cm2_new - mean_lwa_g_cm2_new)
-  # mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) %>% 
-  # filter(lwa_g_cm2_new_centered < 4)
+  mutate(lwa_g_cm2_new_centered = lwa_g_cm2_new - mean_lwa_g_cm2_new) %>% 
+  mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) %>%
+  filter(lwa_g_cm2_new_centered < 4)
 ```
 
 
@@ -997,16 +1076,16 @@ Centered lwa_g_cm2_new:
 space_df <- wc_wk_centered_df %>% 
   drop_na()
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week) + (1|tree), data = space_df, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week), data = space_df, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new_centered  + (lwa_g_cm2_new_centered|week) + (1|tree) + (1|site), data = space_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new_centered  + (lwa_g_cm2_new_centered|week) + (1|site), data = space_df,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
 ```
 
-YES
+NO
 
 lwa_g_cm2_new uncentered:
 
@@ -1014,23 +1093,109 @@ lwa_g_cm2_new uncentered:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|tree), data = space_df_nosite, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new  + (lwa_g_cm2_new|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new  + (lwa_g_cm2_new|week) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week)  + (1|site), data =  wc_wk_centered_df, REML = T)
 
 space_mod_df <- broom.mixed::tidy(space_mod)
 ```
-YES
+NO
+
+Which weeks are significant?
+
+```{r}
+unique(wc_wk_centered_df$week)
+
+#week 10: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 10)
+
+space_mod <- lm(water_potential ~ lwa_g_cm2_new, data =  wk,  REML = T)
+summary(space_mod)
+#p < 0.005
+
+#week 14: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 14)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#p = 0.0271
+
+#week 15: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 15)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#p < 0.005
+
+#week 17: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 17)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 19: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 19)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 21: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 21)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 29: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 29)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 37: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 37)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new  + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+```
 
 ###Slopes, bootsrapped: 
 
-```{r}
+```{r, eval=F}
 space_slopes <- final_df_all %>% 
    filter(!week %in% c(9)) %>% 
   filter(analysis == "space") %>% 
@@ -1070,24 +1235,6 @@ space_slopes
 
 
 #TIME
-
-```{r}
-wc_qudo_df %>% 
-  #filter(!week %in% c(9, 18, 19)) %>% 
-  drop_na(week) %>% 
-  ggplot(aes(y = lwa_g_cm2_new, 
-             x = as.factor(week), 
-             #x = date,
-            # color = as.factor(week), 
-             fill = time)) +
-  geom_boxplot() +
- # facet_wrap(~time) +
-  color_many +
-  color_fill +
-  labs(y = "lwa_g_cm2_new", 
-       x = "Week", 
-       fill = "Time")
-```
 
 ```{r, echo=FALSE, warning = F}
 time <- wc_qudo_df %>% 
@@ -1567,9 +1714,64 @@ hyd_slopes
 ```
 
 ####Space
+####***Space
+
+```{r}
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+ ggplot(aes(color= as.factor(week))
+    )  + 
+  #  geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
+  #         xmin = -Inf, xmax = Inf), 
+  #         fill = "#969696",
+  #         alpha = .01, 
+  #         color = NA) +
+  # geom_hline(aes(yintercept = 880.5797), color = "#525252") +
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = " ") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+  #                   ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  color_week_assigned+
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2)) #+
+space_slope
+```
+
 
 Bootstrapped: 
-```{r}
+```{r,eval = F}
 space_slope_bs <-  final_df_all %>% 
    #filter(!week %in% c(9, 18)) %>% 
   filter(analysis == "space") %>% 
@@ -1840,7 +2042,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope_bs, NULL, time_summary, NULL, hyd_slopes,
+combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary, NULL, hyd_slopes,
                                            # NULL, pv_slope,
                                    nrow = 1, 
                                   rel_widths = c(1, -.02, 1, -.02, 1 # , -.02 , .5

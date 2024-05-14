@@ -104,7 +104,12 @@ pv_new_kk_df <- pv_new_kk_raw %>%
 Combine: 
 ```{r}
 pv_new_df <- bind_rows(pv_new_kk_df, pv_new_rr_df) %>% 
-  filter(!(rehydrated %in% c("no")))
+  filter(!(rehydrated %in% c("no"))) %>% 
+  mutate(date = case_when(
+    date %in% c("2022-04-01") ~ as.Date("2022-03-30"), 
+    date %in% c("2022-04-07") ~ as.Date("2022-04-05"), 
+    TRUE ~ as.Date(date)
+  ))
 
 unique(pv_new_df$date)
 
@@ -116,7 +121,7 @@ unique(pv_new_df$unique_id)
 ```{r, warning = F, echo=FALSE, fig.height=5, fig.width=7}
 #scaled
 pv_nice <- pv_new_df %>% 
-  filter(!(date %in% c("2022-04-01", "2022-04-05")), 
+  filter(#!(date %in% c("2022-04-01", "2022-04-05")), 
          lwa < 0.05) %>% 
   ggplot(aes(y = water_potential, 
             # x = lwc_mean_centered, 
@@ -166,7 +171,7 @@ pv_nice
 pv_nice <- pv_new_df %>% 
   group_by(unique_id) %>% 
   filter(lwc < 2.1) %>% 
-  filter(!(date %in% c("2022-04-01", "2022-04-05")), #these are weird? 
+  filter(#!(date %in% c("2022-04-01", "2022-04-05")), #these are weird? 
          lwc < 2.25) %>% 
   ggplot(aes(y = water_potential, 
             # x = lwc_mean_centered, 
@@ -503,9 +508,11 @@ unique(pv_new_df$unique_id)
 ```
 
 ###2022-03-30
+
+####6 trees
 ```{r}
 data <- pv_new_df %>% 
-  filter(date %in% c("2022-03-30")) %>% 
+  filter(date %in% c("2022-03-30", "2022-04-01")) %>% 
   distinct() %>% 
   drop_na(water_potential, lwc) %>% 
   mutate(tree = unique_id)
@@ -522,7 +529,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 4  # Adjust as needed
+n_sample_trees <- 6  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -591,10 +598,13 @@ mean_slope_220330 = tbootstrapped_slopes_df_before %>%
   distinct()
 mean_slope_220330
 ```
-###2022-04-07
+
+###2022-04-05
+
+####3 trees
 ```{r}
 data <- pv_new_df %>% 
-  filter(date %in% c("2022-04-07")) %>% 
+  filter(date %in% c("2022-04-07", "2022-04-05")) %>% 
   distinct() %>% 
   drop_na(water_potential, lwc) %>% 
   mutate(tree = unique_id)
@@ -675,12 +685,14 @@ summary(tbootstrapped_slopes_df_before)
 
 mean_slope_220407 = tbootstrapped_slopes_df_before %>% 
   mutate(mean_slope = mean(mean, na.rm = T),
-         pre_post = "2022-04-07") %>% 
+         pre_post = "2022-04-05") %>% 
   select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
   distinct()
 mean_slope_220407 
 ```
 ###2022-05-24
+
+####6 trees
 ```{r}
 data <- pv_new_df %>% 
   filter(date %in% c("2022-05-24")) %>% 
@@ -770,6 +782,8 @@ mean_slope_220504 = tbootstrapped_slopes_df_before %>%
 mean_slope_220504
 ```
 ###2023-07-27
+
+####13 trees
 ```{r}
 data <- pv_new_df %>% 
   filter(date %in% c("2023-07-27")) %>% 
@@ -1081,7 +1095,7 @@ space_slope
 ###2022-03-30
 ```{r}
 data <- pv_new_df %>% 
-  filter(date %in% c("2022-03-30")) %>% 
+  filter(date %in% c("2022-03-30", "2022-04-01")) %>% 
   distinct() %>% 
   drop_na(water_potential, lwa) %>% 
   mutate(tree = unique_id)
@@ -1170,7 +1184,7 @@ mean_slope_220330
 ###2022-04-07
 ```{r}
 data <- pv_new_df %>% 
-  filter(date %in% c("2022-04-07")) %>% 
+  filter(date %in% c("2022-04-07", "2022-04-05")) %>% 
   distinct() %>% 
   drop_na(water_potential, lwa) %>% 
   mutate(tree = unique_id)
