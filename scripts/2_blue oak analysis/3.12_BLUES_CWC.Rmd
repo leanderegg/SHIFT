@@ -44,7 +44,7 @@ dataversion <- paste0("Data_", datver)
 #DATA
 
 ```{r}
-data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>%  
+data_og_cwc <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv")), show_col_types = F) %>%  
   filter(species %in% c("blue oak")) %>% 
   select(tree, week, water_potential, cwc, time_season, time, site, date_wp) %>% 
   mutate(water_potential = -1*water_potential) %>% 
@@ -61,7 +61,7 @@ data_og <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".csv"))
 
 ##TIME:
 ```{r}
-data_all <- data_og %>% 
+data_all <- data_og_cwc %>% 
   filter(time == "md") 
 
 # Filter for trees measured "before leafout"
@@ -140,17 +140,19 @@ plotly::ggplotly(filtered_data %>%
 Pull 40 trees, get mean slope for those 40, do 1000x. 
 
 
-###Before leafout: 
+
 ```{r}
+###Before leafout: 
+
 data <- filtered_data  %>% 
-  filter(time_season == "before leafout", 
-         !(week == 9)) %>% 
+  filter(time_season == "before leafout") %>% 
   distinct() %>% 
   drop_na(water_potential, cwc) %>% 
   group_by(tree) %>% 
   mutate(COUNT = n()) %>% 
   filter(!(COUNT == 1)) %>% 
   select(-COUNT)
+data
 
 num_unique_trees <- length(unique(data$tree))
 cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
@@ -230,10 +232,10 @@ mean_slope_before = tbootstrapped_slopes_df_before %>%
   select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
   distinct()
 mean_slope_before
-```
+
 
 ###After leafout: 
-```{r}
+
 data <- common_trees_data %>% 
   filter(time_season == "after leafout") %>% 
   select(tree, week, water_potential, cwc) %>% 
@@ -322,17 +324,15 @@ mean_slope_after = tbootstrapped_slopes_df_after %>%
   select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
   distinct()
 mean_slope_after
-```
 
-```{r}
 #Combining before and after: 
+
+
 cwc_time_boot_df <- bind_rows(mean_slope_before, mean_slope_after) %>% 
   select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
   distinct() %>% 
   mutate(analysis = "time, ind. tree")
-```
 
-```{r}
 cwc_time_boot_df %>% 
   group_by(pre_post) %>% 
   mutate(tree_mean = mean(mean_slope, na.rm = T)) %>% 
@@ -354,15 +354,64 @@ Get slopes from random effects:
 NOTE: this includes site random effect, which the centered version does not need. 
 
 ```{r}
-data <- data_og %>% 
+space_nice <- data_og_cwc %>% 
+  filter(time == "md") %>% 
+  drop_na(site) %>% 
+  ggplot(aes(y = water_potential, 
+            # x = cwc_centered, 
+            x = cwc,
+             #color = tree_factor
+             color = as.factor(week)
+             )) +
+  geom_point(alpha = 1, 
+            # aes (shape = site)
+             ) +
+  theme(legend.position="none",
+       # legend.position= c(.7, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+     # axis.title = element_text(size = 16),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+      axis.title.x = element_blank(),
+     axis.title.y = element_text(size = 20), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_smooth(method = "lm", se = F) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(y= "Middays (MPa)", 
+       x = "Leaf Water Content", 
+       color = "Week", 
+       shape = "Site") +
+  color_many_2 +
+  #color_week_all +
+  guides(color = guide_legend(nrow = 2))
+space_nice
+```
+
+
+```{r}
+data <- data_og_cwc %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, cwc, site) %>% 
   distinct() %>% 
   drop_na(cwc, water_potential)
 
-space_mod_4 <- lmer(water_potential ~ cwc + (cwc|week) + (1|tree) + (1|site), data =  data , REML = T)
+#HOW MANY trees? 
 
-space_mod_df_4 <- broom.mixed::tidy(space_mod)
+data %>% 
+  drop_na(water_potential, cwc) %>% 
+  group_by(week, site) %>% 
+  count()
+
+#model without site: 
+space_mod_4 <- lmer(water_potential ~ cwc + (cwc|week), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod_4)
 #space_mod_df
 
 ran_list3 <- coef(space_mod_4)
@@ -430,32 +479,7 @@ space_slope
 ```
 
 
-```{r}
-data <- data_og %>% 
-  filter(time == "md") %>% 
-  select(tree, week, water_potential, cwc) %>% 
-  distinct() %>% 
-  drop_na(cwc, water_potential)
-
-head(data)
-
-data %>% 
-ggplot(aes(y = water_potential, 
-           x = cwc, 
-           color = as.factor(week))) +
-  geom_point(alpha = .5) +
-  geom_smooth(method = "lm", se = F)
-
-#HOW MANY trees? 
-
-data %>% 
-  drop_na(water_potential, cwc) %>% 
-  group_by(week) %>% 
-  count()
-```
-Cant actually filter by trees that were in all weeks, because none were actually sampled in all weeks. Maybe just ignore? 
-
-```{r}
+```{r, eval = F}
 # Define the number of bootstrap iterations
 n_iterations <- 1000
 
@@ -500,10 +524,7 @@ for (x in unique_weeks) {
 
 # Print the final dataframe
 print(cwc_final_df_space)
-```
 
-
-```{r}
 cwc_final_df_space %>% 
   ggplot(aes(x = week)) +
    geom_segment(aes(y= lower_bound, 
@@ -548,7 +569,7 @@ final_df_all_cwc %>% write_csv(here::here("processed-data", "bootstrapped_df_cwc
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_qudo_df <- data_og %>% 
+wc_qudo_df <- data_og_cwc %>% 
   drop_na(time)
 
 wc_lm_df <- wc_qudo_df %>% 
@@ -980,13 +1001,16 @@ ran_df_week_4 %>%
 #Which weeks are significant?
 
 ```{r}
-mod <- lmer(water_potential ~ cwc + (cwc|week) + (1|site), data =wc_wk_centered_df %>% 
+mod <- lmer(water_potential ~ cwc*week + (1|site), data =wc_wk_centered_df %>% 
               mutate(week = as.factor(week)))
 
 anova(mod)
 
 library("lmerTest")
 summary(mod)
+
+library(emmeans)
+emmeans(mod, list(pairwise ~ week), adjust = "tukey")
 ```
 
 ```{r}
@@ -1001,6 +1025,16 @@ wk <- wc_wk_centered_df %>%
 space_mod <- lmer(water_potential ~ cwc + (1|site), data =  wk,  REML = T)
 summary(space_mod)
 #not sig
+
+#week 12: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 12)
+
+space_mod <- lmer(water_potential ~ cwc + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#p = 0.0386
 
 #week 14: 
 wk <- wc_wk_centered_df %>% 
@@ -1651,7 +1685,7 @@ write_csv(cwc_mods, here::here("processed-data", "model results", "cwc_mods.csv"
 
 ```{r}
 #scaled
-space_nice_2 <- data_og %>% 
+space_nice_2 <- data_og_cwc %>% 
   filter(time == "md", 
          week %in% c(14, 19, 20, 37)) %>% 
   select(tree, week, water_potential, cwc) %>% 
@@ -1700,9 +1734,7 @@ space_nice_2
 
 #Slopes: 
 
-####Space
-
-####***Space
+####***Space - SE
 
 ```{r}
 space_slope <- final_df_space_se %>% 
@@ -1757,8 +1789,7 @@ space_slope <- final_df_space_se %>%
 space_slope
 ```
 
-
-
+#######Space - BS
 ```{r, eval = F}
 space_slope <-  final_df_all_cwc%>% 
    filter(!week %in% c(9)) %>% 
@@ -1871,7 +1902,7 @@ time_summary
 
 ```{r}
 #scaled
-space_nice_1 <- data_og %>% 
+space_nice_1 <- data_og_cwc %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, cwc) %>% 
   distinct() %>% 
@@ -1922,7 +1953,7 @@ space_nice_1
 #####Time:
 
 ```{r}
-time_1 <- data_og %>% 
+time_1 <- data_og_cwc %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -1976,7 +2007,7 @@ time_1
 ######Legend:
 
 ```{r}
-legend_plot <- data_og %>% 
+legend_plot <- data_og_cwc %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"

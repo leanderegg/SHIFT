@@ -45,21 +45,18 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
   filter(!(week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006))) %>%  #trees from this week seem wrong. 
   filter(!(week ==21 & tree == 2378)) #something is wrong with this tree, very similar LWA for PD and MD; one is probable wrong!
 
-data_og <- data_qudo_raw %>% 
+data_og_lwa <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site, date_wp) %>% 
   distinct() %>% 
  # filter(week == 15) %>% 
-  arrange(tree, week, time)
-
-data_wk33 <- data_og %>% 
-  filter(week == 33)
-unique(data_og$tree)
+  arrange(tree, week, time) %>% 
+  mutate(site = as.factor(site))
 ```
 
 
 #TIME:
 ```{r}
-data_all <- data_og %>% 
+data_all <- data_og_lwa %>% 
   filter(time == "md") 
 
 # Filter for trees measured "before leafout"
@@ -275,9 +272,7 @@ time_boot_df <- bind_rows(mean_slope_before, mean_slope_after) %>%
   select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
   distinct() %>% 
   mutate(analysis = "time, ind. tree")
-```
 
-```{r}
 time_boot_df %>% 
   group_by(pre_post) %>% 
   mutate(tree_mean = mean(mean_slope, na.rm = T)) %>% 
@@ -300,18 +295,27 @@ Get slopes from random effects:
 NOTE: this includes site random effect, which the centered version does not need. 
 
 ```{r}
-data <- data_og %>% 
+data <- data_og_lwa %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, site) %>% 
   distinct() %>% 
-  drop_na(lwa_g_cm2_new, water_potential)
+  drop_na(lwa_g_cm2_new, water_potential, site)
 
-space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|tree) + (1|site), data =  data , REML = T)
+space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
+
+space_mod_3 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week)  + (1|site), data =  data , REML = T)
+
+anova(space_mod_3, space_mod_4)
+```
+
+Don't include site: 
+```{r}
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
 
 space_mod_df_4 <- broom.mixed::tidy(space_mod)
 #space_mod_df
 
-ran_list3 <- coef(space_mod_4)
+ran_list3 <- coef(space_mod)
 
 #ran_list2 <- coef(m_wk_rand)
 
@@ -321,7 +325,77 @@ ran_df_4 <- as.data.frame(ran_list3[['week']])%>%
          -lwa_g_cm2_new) %>%
   select(-`(Intercept)`)
 
-ran_err_4 <- arm::se.ranef(space_mod_4)
+ran_err_4 <- arm::se.ranef(space_mod)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwa_g_cm2_new`)%>% 
+  select(-`(Intercept)`, 
+         -lwa_g_cm2_new) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+final_df_space_se <- ran_df_week_4 
+
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope - space") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+space_slope
+```
+Include site: 
+```{r}
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|site), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwa_g_cm2_new`, 
+         -lwa_g_cm2_new) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod)
 
 ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
   mutate(std.error = `(Intercept)`, 
@@ -377,7 +451,21 @@ space_slope
 
 
 ```{r}
-data <- data_og %>% 
+mod <- lmer(water_potential ~ lwa_g_cm2_new*week + (1|site), data = data %>% 
+              mutate(week = as.factor(week)))
+
+anova(mod)
+
+library("lmerTest")
+summary(mod)
+
+library(emmeans)
+emmeans(mod, list(pairwise ~ week), adjust = "tukey")
+```
+
+
+```{r}
+data <- data_og_lwa %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, lwa_g_cm2_new) %>% 
   distinct() %>% 
@@ -451,7 +539,7 @@ final_df_space %>%
 #HYDRATION: 
 
 ```{r}
-data_hyd <- data_og %>% 
+data_hyd <- data_og_lwa %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time) %>%
   drop_na(lwa_g_cm2_new, water_potential) %>% 
   group_by(tree, week) %>%
@@ -709,21 +797,21 @@ dataversion <- paste0("Data_", datver)
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_qudo_df <- data_qudo_raw %>% 
+data_og_lwa <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
   distinct()
 
-wc_qudo_df %>% 
+data_og_lwa %>% 
   group_by(week, time) %>% 
   summarise(n = n())
 
-wc_lm_df <- wc_qudo_df %>% 
+wc_lm_df <- data_og_lwa %>% 
   filter(week > 17)
 ```
 
 From what weeks do we have the most trees?
 ```{r, echo=F}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   select(week, time, tree, lwa_g_cm2_new) %>% 
   drop_na(lwa_g_cm2_new) %>% 
   unique() %>% 
@@ -735,7 +823,7 @@ wc_qudo_df %>%
   labs(y = "lwa_g_cm2_new counts") +
   color_fill
 
-wc_qudo_df %>% 
+data_og_lwa %>% 
     select(week, time, tree, water_potential) %>% 
   drop_na(water_potential) %>% 
  # unique() %>% 
@@ -752,14 +840,14 @@ wc_qudo_df %>%
 #Timeline
 
 ```{r, fig.height=.75, fig.width=6}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   filter(time == "md") %>% 
   drop_na(water_potential) %>% 
   #ggplot(aes(x = week, y = 0, color = mean(water_potential, na.rm = T)))+
   ggplot(aes(x = week, y = 0, color = water_potential))+
   geom_hline(yintercept = 0) +
   geom_point(size = 5) +
-  geom_point(data= wc_qudo_df %>% 
+  geom_point(data= data_og_lwa %>% 
                filter(week %in% c(10, 12, 14,15, 17, 18, 19, 21, 37)), 
            pch=21, 
            size=5, 
@@ -789,7 +877,7 @@ MPa ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (1|wk)
 
 look at it: 
 ```{r}
-data <- data_og %>% 
+data <- data_og_lwa %>% 
   mutate(tree_week = paste(tree, week, sep = "_")
   ) %>% 
   mutate(water_potential = water_potential)
@@ -836,7 +924,7 @@ plotly::ggplotly(ggplot() +
 
 ```{r, warning = F}
 #I think everything below here is unesessary? 
-# wk_all_wide <- wk_all %>% 
+# wk_all_wide <- data_og_lwa%>% 
 #   #drop_na(date_wp) %>% 
 #   pivot_wider(names_from=time, 
 #               values_from = c(lwa_g_cm2_new, water_potential)) %>% 
@@ -877,11 +965,8 @@ plotly::ggplotly(ggplot() +
 
 ###DATA
 ```{r, warning = F}
-wk_all <- wc_qudo_df %>% 
-  mutate(site = as.factor(site))
-
 #Any instances where there are duplicates? 
-wk_all_dupes <- wk_all %>% 
+wk_all_dupes <- data_og_lwa%>% 
   #select(tree, week, time, water_potential) %>% 
   group_by(tree, week, time) %>% 
   filter(n() > 1)
@@ -891,13 +976,13 @@ wk_all_dupes <- wk_all %>%
 Slopes of the formula: 
 
 ```{r, warning=T}
-m_wk_rand <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = wk_all )
+m_wk_rand <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = data_og_lwa)
 ```
 
 Should we include site? 
 
 ```{r, include = F}
-wk_all_sites <- wk_all %>% 
+wk_all_sites <- data_og_lwa%>% 
   drop_na(site)
 
 m_wk_rand_nosite <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = wk_all_sites, REML = T)
@@ -970,7 +1055,7 @@ ggsave(here("figures", "qudo figures", "LWA", "nice_hydration_slopes_bs_inds"), 
 ###Midday: 
 
 ```{r, warning = F}
-wc_wk_centered_df <- wk_all %>% 
+wc_wk_centered_df <- data_og_lwa %>% 
   filter(!week %in% c(9)) %>% 
   #filter(lwa_g_cm2_new > .44) %>% 
   mutate(water_potential = water_potential) %>% 
@@ -979,8 +1064,7 @@ wc_wk_centered_df <- wk_all %>%
   mutate(mean_lwa_g_cm2_new = mean(lwa_g_cm2_new, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(lwa_g_cm2_new_centered = lwa_g_cm2_new - mean_lwa_g_cm2_new) %>% 
-  mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) %>%
-  filter(lwa_g_cm2_new_centered < 4)
+  mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) 
 ```
 
 
@@ -1085,7 +1169,7 @@ space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new_centered  + (lwa_g_cm2_ne
 anova(space_mod, space_mod_site)
 ```
 
-NO
+YES
 
 lwa_g_cm2_new uncentered:
 
@@ -1105,7 +1189,7 @@ space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_cent
 
 space_mod_df <- broom.mixed::tidy(space_mod)
 ```
-NO
+YES
 
 Which weeks are significant?
 
@@ -1237,7 +1321,7 @@ space_slopes
 #TIME
 
 ```{r, echo=FALSE, warning = F}
-time <- wc_qudo_df %>% 
+time <- data_og_lwa %>% 
   drop_na(week) %>% 
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
@@ -1283,7 +1367,7 @@ ggsave(here("figures", "qudo figures", "LWA", "nice_time"), time, device = "jpg"
 
 
 ```{r, echo=FALSE}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   filter(time == "pd") %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2_new, 
@@ -1303,7 +1387,7 @@ wc_qudo_df %>%
 ####All time
 
 ```{r}
-wc_qudo_md_df <- wc_qudo_df %>% 
+wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md")
   
 time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = wc_qudo_md_df)
@@ -1320,7 +1404,7 @@ time_season_mod_df <- broom::tidy(time_season_mod)
 
 ####Just linear: 
 ```{r}
-lin_wc_qudo_md_df <- wc_qudo_df %>% 
+lin_wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md") %>% 
   filter(time_season == "after leafout")
   
@@ -1336,7 +1420,7 @@ MuMIn::r.squaredGLMM(lin_time_mod)
 ####Before leafout: 
 
 ```{r}
-bef_wc_qudo_md_df <- wc_qudo_df %>% 
+bef_wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md") %>% 
   #filter(time_season == "before leafout") %>% 
   filter(week <= 17) %>% 
@@ -1434,7 +1518,7 @@ library(gridExtra)
 #####Hydration
 
 ```{r}
-wk_figs <-data_og %>% 
+wk_figs <-data_og_lwa %>% 
   group_by(tree, week) %>% 
   filter(n() == 2) %>% 
   filter(week %in% c(10, 12, 14, 15, 17, 19, 21, 29, 33, 37), 
@@ -1607,7 +1691,7 @@ space_nice_1
 #####Time:
 
 ```{r}
-time_1 <- wc_qudo_df %>% 
+time_1 <- data_og_lwa %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"

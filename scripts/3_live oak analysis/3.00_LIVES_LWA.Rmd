@@ -7,7 +7,6 @@ output:
   word_document: default
 ---
 
-#*BOOTSTRAPPING*
 #Setup
 
 ```{r setup, include=FALSE}
@@ -19,6 +18,7 @@ source(here::here("scripts", "scripts_functions", "figure_info.R"))
 datver
 ```
 
+#DATA: 
 ```{r}
 data_quag_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp",datver,".csv")), show_col_types = FALSE) %>% 
   filter(species == "live oak") %>% 
@@ -33,17 +33,17 @@ data_quag_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp"
   )) %>% 
   filter(!(week == 29 & tree == 2354 & time == "pd"))
 
-data_og <- data_quag_raw %>% 
+data_og_quag_lwa <- data_quag_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
   distinct()
 
-unique(data_og$tree)
+unique(data_og_quag_lwa$tree)
 ```
 
-
+#*BOOTSTRAPPING & SE*
 #TIME:
 ```{r}
-data_all <- data_og %>% 
+data_all <- data_og_quag_lwa %>% 
   filter(time == "md") 
 
 # Filter for trees measured "before leafout"
@@ -275,8 +275,99 @@ time_boot_df %>%
 
 #SPACE: 
 
+####***Slopes, MD, NOT Centered
+
+Get slopes from random effects: 
+
+NOTE: this includes site random effect, which the centered version does not need. 
+
+```{r}
+data <- data_og_quag_lwa %>% 
+  filter(time == "md") %>% 
+  select(tree, week, water_potential, lwa_g_cm2_new, site) %>% 
+  distinct() %>% 
+  drop_na(lwa_g_cm2_new, water_potential, site)
+
+space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
+
+space_mod_3 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week)  + (1|site), data =  data , REML = T)
+
+anova(space_mod_3, space_mod_4)
+```
+
+Don't include site: 
+```{r}
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwa_g_cm2_new`, 
+         -lwa_g_cm2_new) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwa_g_cm2_new`)%>% 
+  select(-`(Intercept)`, 
+         -lwa_g_cm2_new) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+final_df_space_se <- ran_df_week_4 
+
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope - space") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+space_slope
+```
+
 ```{r, eval = F}
-data <- data_og %>% 
+data <- data_og_quag_lwa %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, lwa_g_cm2_new) %>% 
   distinct() %>% 
@@ -350,7 +441,7 @@ final_df_space %>%
 #HYDRATION: 
 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwa %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time) %>%
   drop_na(lwa_g_cm2_new, water_potential) %>% 
   group_by(tree, week) %>%
@@ -442,7 +533,7 @@ nice_hydration_layered <- ggplot() +
   scale_x_reverse()
 plotly::ggplotly(nice_hydration_layered + aes(label = tree))
 
-data_og %>% 
+data_og_quag_lwa %>% 
   ggplot(aes(y = lwa_g_cm2_new, x = week)) +
   geom_point()+
   facet_wrap(~time)
@@ -2492,99 +2583,35 @@ hyd_slopes
 ```
 
 ####Space
+####***Space
 
-Bootstrapped: 
 ```{r}
-space_slope_bs <-  final_df_all %>% 
-   #filter(!week %in% c(9, 18)) %>% 
-  filter(analysis == "space") %>% 
- # mutate(week = as.numeric(week)) %>% 
-   ggplot(aes(color= as.factor(week))
-    ) + 
-  geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
-    geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
-  geom_point(aes(y = lwr, x = as.factor(week)), size = 1) +
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+ ggplot(aes(color= as.factor(week))
+    )  + 
+  #  geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
+  #         xmin = -Inf, xmax = Inf), 
+  #         fill = "#969696",
+  #         alpha = .01, 
+  #         color = NA) +
+  # geom_hline(aes(yintercept = 880.5797), color = "#525252") +
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
   #geom_line(aes(group = week, y = week, x = upr)) +
   geom_segment(aes(y= lwr, 
                    yend = upr, 
-                   x = as.factor(week), 
-                   xend = as.factor(week), 
-                   color = as.factor(week)))+
+                   x = week, 
+                   xend = week, 
+                   color = week))+
   labs(x = "Week", 
        color = "Week", 
        y = " ") +
-  theme(legend.position="none",
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 15),
-      axis.title.x = element_blank(),
-     axis.text = element_text(size = 12),
-     legend.key=element_blank(), 
-     legend.text = element_text(size = 13), 
-    # legend.title = element_text(size = 16),
-    legend.title = element_blank(),
-     legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8)
-    ) +
-  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
-                      # seq(10, 30, by = 1)
-  #                   ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
-  color_week_assigned+
- # color_many_2 +
-  guides(color = guide_legend(nrow = 2)) #+
-  #ylim(-8, 35)
- # scale_x_reverse()
-space_slope_bs
-```
-
-SE: 
-
-```{r}
-space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|tree), data =  data_og, REML = T)
-
-space_mod_df_4 <- broom.mixed::tidy(space_mod)
-#space_mod_df
-
-ran_list3 <- coef(space_mod_4)
-
-#ran_list2 <- coef(m_wk_rand)
-
-ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
-  mutate(estimate = `(Intercept)`, 
-         slope = `lwa_g_cm2_new`, 
-         -lwa_g_cm2_new) %>%
-  select(-`(Intercept)`)
-
-ran_err_4 <- arm::se.ranef(space_mod_4)
-
-ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
-  mutate(std.error = `(Intercept)`, 
-         std.error.slope = `lwa_g_cm2_new`)%>% 
-  select(-`(Intercept)`, 
-         -lwa_g_cm2_new) %>% 
-  tibble::rownames_to_column("week")
-
-ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
-  #select(-`1:10`) %>% 
-  data_frame()
-
-
-space_slope <- ran_df_week_4 %>% 
-  #mutate(week = as.numeric(week)) %>% 
-  mutate(upr = slope + 1.96*(std.error.slope), 
-         lwr = slope - 1.96*(std.error.slope)) %>% 
-  ggplot(aes(color= as.factor(week))) + 
-  geom_point(aes(y = slope ,x = as.factor(week)), size =2) +
-  geom_point(aes(y = upr, x = as.factor(week)), size = 1) +
-  geom_point(aes(y = lwr, x = as.factor(week)), size = 1) +
-  geom_segment(aes(y= lwr, 
-                   yend = upr, 
-                   x = as.factor(week), 
-                   xend = as.factor(week), 
-                   color = as.factor(week)))+
   theme(legend.position="none",
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
@@ -2597,20 +2624,20 @@ space_slope <- ran_df_week_4 %>%
     # legend.title = element_text(size = 16),
     legend.title = element_blank(),
      legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8)
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
     ) +
-  # scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
-  #                 #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
-  #                     # seq(10, 30, by = 1)
-  #                    ) +
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+  #                   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  color_week_assigned +
+  color_week_assigned+
  # color_many_2 +
- # guides(color = guide_legend(nrow = 2)) +
-  ylim(-20, 35)
- # scale_x_reverse()
+  guides(color = guide_legend(nrow = 2)) #+
 space_slope
 ```
+
 ####Time
 
 BS:
@@ -2820,7 +2847,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope_bs, time_summary, hyd_slopes, 
+combined_slopes_wide <- cowplot::plot_grid(space_slope, time_summary, hyd_slopes, 
                                    nrow = 1, 
                                   # rel_heights = c(.15, 1, .3), 
                                    rel_widths = c(1, 1, 1)
