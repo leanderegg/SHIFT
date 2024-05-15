@@ -954,20 +954,40 @@ write.csv(wp_wc_df3, here::here("processed-data", "wp_wc_df.csv"))
 
 #####RWC:
 
+
+Merge those. MPa and LWC are repeated because they align with SWC leaves and stems of different years. 
+
+For moving on in combining, we'll just use Year 0 Leaves, should give us a df that is still one row per LWC and MPa per date/time combo 
+
 ```{r}
 rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) 
 
-rwc_df_spp <- merge(rwc_df_raw, trees_sites_df, all = T) 
-
 rwc_df <- rwc_df_raw %>% 
-  mutate(year = case_when(
+  mutate(tree = case_when(
+    tree %in% c(2364, 2361) ~ 2360, 
+    tree %in% c(2083) ~ 2383, 
+    tree %in% c(2081) ~ 2381, 
+    tree %in% c(2078) ~ 2378, 
+    TRUE ~ as.numeric(tree)
+  )) %>% 
+  mutate(date = case_when(
+    date %in% c("2022-04-11", "2022-04-12", "2022-04-14") ~ as.Date("2022-04-12"), 
+    date %in% c("2022-05-03", "2022-05-04", "2022-05-09") ~ as.Date("2022-05-03"),
+    date %in% c("2022-05-24", "2022-05-25", "2022-05-27") ~ as.Date("2022-05-25"),
+    date %in% c("2022-07-27", "2022-07-28") ~ as.Date("2022-07-27"),
+     date %in% c("2022-09-12", "2022-09-15") ~ as.Date("2022-09-15"),
+    TRUE ~ as.Date(date)
+  )) %>% 
+  mutate(year_rwc = case_when(
+    date %in% c("2022-04-11") ~ 1, #assume we didn't know 
     year %in% c(NA_real_) ~ 0, #assume no year listed is year 0
+    year %in% c(3) ~ 1, #assume year 3 is just year 1
     TRUE ~ as.numeric(year)
   )) %>% 
   mutate(week_rwc_link = case_when(
     week %in% c(22) ~ 21, #no mpas for week 22 (prob becuase of week split in week function), so make that 21
     TRUE ~ as.numeric(week))) %>% 
-  group_by(tree, date, type, year) %>% 
+  group_by(tree, date, type, year_rwc) %>% 
 #remove absurd values -- issue with wet leaves having drops on them? 
   mutate(swc_per_dry_g = case_when(
     swc_per_dry_g > 5 ~ NA_real_, 
@@ -983,20 +1003,10 @@ rwc_df <- rwc_df_raw %>%
          type_rwc = type) %>% 
   select(-date) %>% 
   distinct() %>% 
-  select(mean_swc_per_dry_g, mean_swc_g, tree, date_rwc, year,type_rwc, week_rwc_link,
+  select(mean_swc_per_dry_g, mean_swc_g, tree, date_rwc, year_rwc , type_rwc, week_rwc_link,
          ) %>% 
-  as.data.frame()
-```
-
-###RWC + WC + WP:
-
-Merge those. MPa and LWC are repeated because they align with SWC leaves and stems of different years. 
-
-For moving on in combining, we'll just use Year 0 Leaves, should give us a df that is still one row per LWC and MPa per date/time combo 
-
-```{r}
-wp_wc_rwc_df_all <- merge(wp_wc_df2, rwc_df,
-                    by = c("tree", "week_rwc_link"),
+  as.data.frame() %>% 
+    merge(wp_wc_df2, by = c("tree", "week_rwc_link"),
                     all = T
                     ) %>% 
   mutate(type_rwc = case_when(
@@ -1006,14 +1016,35 @@ wp_wc_rwc_df_all <- merge(wp_wc_df2, rwc_df,
   )) %>% 
   distinct() %>% 
   mutate(week_wp = week) %>% 
+  group_by(tree) %>% 
+  fill(c("species"), .direction = "downup") %>% 
+  drop_na(species) %>% 
+  filter(!(mean_swc_per_dry_g > 2 & species %in% c("live oak"))) %>% 
+  mutate(year_rwc = as.factor(year_rwc))  %>% 
   mutate(year_rwc = case_when(
-    year %in% c(NA) ~ 0, 
-    TRUE ~ as.numeric(year)
-  )) %>% 
-  select(-year)
+    date %in% c("2022-03-15") ~ "1", #assume we didn't know 
+    year_rwc %in% c(NA_real_) ~ "0", #assume no year listed is year 0
+    year_rwc %in% c("3") ~ "1", #assume year 3 is just year 1
+    TRUE ~ as.factor(year_rwc)
+  )) 
 
+wp_wc_rwc_df_all <- rwc_df
+rwc_df %>% 
+  filter(type == "leaf") %>% 
+  group_by(tree, date_rwc, year_rwc) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = date_rwc, 
+             color = year_rwc)) +
+  geom_point() +
+  facet_wrap(~species)
+
+unique(rwc_all_df$date_rwc)
+```
+
+```{r}
 wp_wc_rwc_df <- wp_wc_rwc_df_all %>% 
-  filter(!(year_rwc %in% c(1) & type_rwc %in% c("leaf")), 
+  filter(!(year_rwc %in% c(1) & type_rwc %in% c("leaf") & species %in% ("blue oak")), #ignore any year 1 blues for now
         !(type_rwc %in% c("stem")))
 
 wp_wc_rwc_df_all %>% 
@@ -1284,7 +1315,7 @@ lwa_mismatched <- lwa_data %>%
 
 Combine full dataset with tree information: 
 
-This iwll have duplicates, since there are multiple years for Al:As measurements
+This will have duplicates, since there are multiple years for Al:As measurements
 ```{r}
 wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>% 
   dplyr::group_by(tree, time, week) %>%
@@ -1336,12 +1367,6 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>%
   # select( -week_rwc_link, -alas_measured, -mpa_mean, -tree_factor, -dm_bulk_g, -wm_bulk_g, -sum_water_wt_g, -sum_dm_g, -bulk_or_individual_leaf, -sum_area_cm2, -type_rwc, -year_rwc, -week_wp, -mean_swc_g, -ldmc, -rwc, -lwa_g_cm2, -ldm_g, -year_alas, -mean_swc_per_dry_g, - mean_mpa, -lma_g_cm2, -alas_cm2_per_mm2, -lwa_g_cm2_new, -date_wc, -lwc_new) %>% 
 select(tree, week, date_wp, time, site, plot,  order(colnames(.))) %>% 
   distinct() 
-
-investigating <-wp_wc_rwc_alas_df  %>% 
-  filter(week == 29) %>% 
-  distinct()
-
-unique(investigating_wk10$tree)
 ```
 
 
@@ -1352,6 +1377,83 @@ unique(investigating_wk10$tree)
 write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
 ```
 
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
+  select(tree, species, week_alas_link, mean_swc_per_dry_g, lma_g_cm2, type_rwc, type, year_alas, year_rwc) %>% 
+  filter(year_alas %in% c(0, 1)) %>% 
+  filter(year_rwc %in% c(0, 1))  %>% 
+  drop_na(mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species, year_alas
+             ) %>% 
+  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) 
+
+lma_plot_quag <- lma_plot_df 
+  filter(species %in% c("live oak")) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+               shape = as.factor(year_alas), 
+             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 43, 
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+        axis.title.x = element_text(size = 20), 
+        axis.text.x = element_text(size = 20), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+```
 
 ####Dataset for analysis of LWC, MPA, LWA for manuscript:
 
