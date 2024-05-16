@@ -638,10 +638,23 @@ lwa_df <- wc_lwa_df %>%
     TRUE ~ as.numeric(week)
   )) %>% 
   mutate(date = date_wc) %>% 
-  mutate(date = case_when(
+#when we didn't measure exactly on the same day, but want predawns and middays to overlap, change the dates (need to do this for MPas too)
+  mutate(date = case_when( 
     date %in% c("2022-05-25") ~ as.Date("2022-05-23"), 
+    date %in% c("2022-04-27") ~ as.Date("2022-04-25"), 
     date %in% c("2022-09-16") ~ as.Date("2022-09-15"), 
-    TRUE ~ as.Date(date)))
+    TRUE ~ as.Date(date))) %>% 
+  mutate(tree = as.numeric(tree), 
+         tree = case_when(
+     tree == 2127 ~ 2327, #weirdly named trees
+     tree == 2309 ~ 2379, 
+     tree == 2353 ~ 2352, 
+     tree == 2374 ~ 2376, 
+     tree == 2364 ~ 2360, 
+     tree == 2004 & date %in% c("2022-07-19") ~ 2005,
+     tree == 2014 & date %in% c("2022-09-15") ~ 2013,
+     species %in% c("ARCA") & site %in% c("Cucu Mesa") ~ 12,
+     TRUE ~ as.numeric(tree)))
 
 investigating_wk10 <- lwa_df %>% 
   filter(week == 10) %>% 
@@ -698,19 +711,26 @@ lwa_df_37 <- lwa_df %>%
 #Read in raw water potential data, and change weird trees: 
 wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv")), show_col_types = FALSE)  %>%
   select(-...1) %>% 
+#weirdly named trees
   mutate(tree = as.numeric(tree), 
          tree = case_when(
-     tree == 2127 ~ 2327, #weirdly named trees
+     tree == 2127 ~ 2327, 
      tree == 2309 ~ 2379, 
      tree == 2353 ~ 2352, 
+     tree == 2374 ~ 2376, 
+     tree == 2364 ~ 2360, 
+     tree == 2004 & date %in% c("2022-07-19") ~ 2005,
+     tree == 2014 & date %in% c("2022-09-15") ~ 2013,
      species %in% c("ARCA") & site %in% c("Cucu Mesa") ~ 12,
      TRUE ~ as.numeric(tree)),
   date_wp = date) %>% 
   select(-tag, -plot_number, -date ) %>% 
+#when we didn't measure exactly on the same day, but want predawns and middays to overlap, change the dates (need to do this for LWC too)
   mutate(date_wp = case_when(
     date_wp %in% c("2022-05-25") ~ as.Date("2022-05-23"),  
    # date_wp %in% c("2022-03-25") ~ as.Date("2022-03-23"), 
     date_wp %in% c("2022-09-16") ~ as.Date("2022-09-15"), 
+   date_wp %in% c("2022-04-27") ~ as.Date("2022-04-25"), 
     TRUE ~ as.Date(date_wp))) %>% 
   distinct()
 ```
@@ -719,6 +739,7 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
 ```{r}
 unique(wp_df$plot)
 unique(wp_df$site)
+
 #LL and MiddleEarth
 plotly::ggplotly(wp_df %>% 
                    filter(plot == "MiddleEarth") %>% 
@@ -728,7 +749,7 @@ plotly::ggplotly(wp_df %>%
   geom_point() + 
   facet_wrap(~as.factor(date_wp)))
 
-
+#Hobbiton
 plotly::ggplotly(wp_df %>% 
                    filter(plot == "Hobbiton") %>% 
                    ggplot(aes(y = mpa, 
@@ -772,16 +793,25 @@ plotly::ggplotly(wp_df %>%
   geom_point() + 
   facet_wrap(~as.factor(date_wp)))
 
-#LL and MiddleEarth
+#Cucu, low
 plotly::ggplotly(wp_df %>% 
-                   filter(plot == "Low") %>% 
+                   filter(plot == "Low" & site == "Cucu Mesa") %>% 
                    ggplot(aes(y = mpa, 
                      x = as.factor(tree), 
                      color = time)) +
   geom_point() + 
   facet_wrap(~as.factor(date_wp)))
 
-#LL and MiddleEarth
+#Piney
+plotly::ggplotly(wp_df %>% 
+                   filter(site == "PineNeedle") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Chamise
 plotly::ggplotly(wp_df %>% 
                    filter(site == "Chamise") %>% 
                    ggplot(aes(y = mpa, 
@@ -794,27 +824,176 @@ plotly::ggplotly(wp_df %>%
 Remove outliers from individual mpa measurements: 
 ```{r}
 wp_df_2 <- wp_df %>% 
+  
 #MiddleEarth
   filter(!(tree %in% c(2354) & date_wp %in% c("2022-02-28") & time %in% c("md") & mpa %in% c(2.63, 0.962))) %>% 
   filter(!(tree %in% c(2377) & date_wp %in% c("2022-02-28") & time %in% c("md") & mpa %in% c(2.71))) %>% 
-  
   filter(!(tree %in% c(2352, 3454) & date_wp %in% c("2022-03-08") & time %in% c("md") & mpa %in% c(3.5, 2.9))) %>% 
   filter(!(tree %in% c(3454) & date_wp %in% c("2022-03-08") & time %in% c("pd") & mpa > 2)) %>% 
   filter(!(tree %in% c(2366) & date_wp %in% c("2022-03-08") & time %in% c("md") & mpa == 3)) %>% 
   filter(!(tree %in% c(2376) & date_wp %in% c("2022-03-08") & time %in% c("md") & mpa %in% c(4.306)))%>% 
   filter(!(tree %in% c(2377) & date_wp %in% c("2022-03-08") & time %in% c("pd"))) %>% #notes say these were hard to read and they're insanely high
   filter(!(tree %in% c(2380) & date_wp %in% c("2022-03-08") & time %in% c("pd") & mpa < .6)) %>%
-  
   filter(!(tree %in% c(2365) & date_wp %in% c("2022-03-15") & time %in% c("pd") & mpa < .5)) %>% 
+  filter(!(tree %in% c(2365) & date_wp %in% c("2022-03-25") & time %in% c("pd") & mpa > 2)) %>% #notes say PDs were weird because taken eve of next day
+  filter(!(tree %in% c(2377) & date_wp %in% c("2022-03-25") & time %in% c("md") & mpa >= 2.55)) %>% #notes say these were "old leaves ugly"
+  filter(!(tree %in% c(2377) & date_wp %in% c("2022-04-11") & time %in% c("pd") & mpa == 0.3 )) %>% 
+  filter(!(tree %in% c(2354) & date_wp %in% c("2022-04-13") & time %in% c("md") & mpa > 3.5)) %>% #super negative relative to all other measurements
+  #filter(!(tree %in% c(2379) & date_wp %in% c("2022-04-13") & time %in% c("md") & mpa > 3)) %>% #mpas are split around 2 and around 3; not notes which to trust. Take average? 
+  filter(!(tree %in% c(2352) & date_wp %in% c("2022-05-09") & time %in% c("pd") & mpa > 3 )) %>% #1/5 pds is >3, rest are < 2
+  filter(!(tree %in% c(2376) & date_wp %in% c("2022-08-18") & time %in% c("pd") & mpa > 3)) %>% 
+  filter(!(tree %in% c(2354) & date_wp %in% c("2022-09-15") & time %in% c("pd") & mpa == 2.9)) %>% 
   
-  filter(!(tree %in% c(2365) & date_wp %in% c("2022-03-23") & time %in% c("pd") & mpa > 2)) %>% #notes say PDs were weird because taken eve of next day
-  filter(!(tree %in% c(2377) & date_wp %in% c("2022-03-23") & time %in% c("md") & mpa >= 2.55)) %>% #notes say these were "old leaves ugly"
-  filter(!(tree %in% c() & date_wp %in% c() & time %in% c() & mpa == )) %>% 
-  filter(!(tree %in% c() & date_wp %in% c() & time %in% c() & mpa == )) %>% 
-  filter(!(tree %in% c() & date_wp %in% c() & time %in% c() & mpa == )) %>% 
+#Hobbiton:
+   filter(!(tree %in% c(2347) & date_wp %in% c("2022-02-28") & time %in% c("pd") & mpa > 2 )) %>% 
+  filter(!(tree %in% c(2347) & date_wp %in% c("2022-03-08") & time %in% c("md") & mpa > 3 )) %>% 
+   filter(!(tree %in% c(2346) & date_wp %in% c("2022-03-15") & time %in% c("pd") & mpa > 3 )) %>% 
+   filter(!(tree %in% c(2347) & date_wp %in% c("2022-03-15") & time %in% c("md") & mpa > 3 )) %>% 
+  mutate(time = case_when(
+    tree %in% c(2345) & date_wp %in% c("2022-03-25") & mpa %in% c(1.800, 2.700, 3.100, 3.450) ~ "md", 
+    tree %in% c(2345) & date_wp %in% c("2022-03-25") & mpa %in% c(1.850, 2.050, 1.300, 1.500, 2.500, 2.400, 2.4500) ~ "pd", #predawn and middays entered in wrong spot? 
+    TRUE ~ as.character(time))
+  ) %>% 
+  filter(!(tree %in% c(2301) & date_wp %in% c("2022-04-04") & time %in% c("pd") & mpa > 3)) %>%
+  filter(!(tree %in% c(2345) & date_wp %in% c("2022-08-18") & time %in% c("pd") & mpa > 3)) %>% #note says these were y0 and they're also WAY more negative than the middays. 
+
+#Weathertop
+  filter(!(tree %in% c(2381) & date_wp %in% c("2022-03-02") & time %in% c("md") & mpa > 2)) %>%
+  filter(!(tree %in% c(2381) & date_wp %in% c("2022-03-02") & time %in% c("md") & mpa < .5)) %>%
+  filter(!(tree %in% c(2381) & date_wp %in% c("2022-03-15") & time %in% c("md") & mpa < .5)) %>%
+    filter(!(tree %in% c(2371) & date_wp %in% c("2022-03-30") & time %in% c("pd") & mpa < .5)) %>%
+  filter(!(tree %in% c(2384) & date_wp %in% c("2022-04-06") & time %in% c("md") & mpa > 2.5)) %>% #notes say "injured leaf" and "? broke"
+  filter(!(tree %in% c(2382) & date_wp %in% c("2022-04-11") & time %in% c("pd") & mpa > 2 )) %>% #way more neg than MDs, and we did a ton of reps likely due to such weird values
+  filter(!(tree %in% c(2010) & date_wp %in% c("2022-07-09") & time %in% c("md") & mpa == 3.00)) %>%
+  filter(!(tree %in% c(2383) & date_wp %in% c("2022-09-15") & time %in% c("pd") & mpa < 0.4 )) %>%
+
+#ridge
+  filter(!(tree %in% c(2331) & date_wp %in% c("2022-07-19") & time %in% c("pd") & mpa > 3)) %>%
+    
+#Cucu, high
+  filter(!(tree %in% c(2006) & date_wp %in% c("2022-09-15") & time %in% c("pd") & mpa > 3)) %>%
   
+#Cucu, low
+  filter(!(tree %in% c(2015) & date_wp %in% c("2022-07-09") & time %in% c("pd") & mpa > 4 )) %>%
+  filter(!(tree %in% c(2012) & date_wp %in% c("2022-05-23") & time %in% c("md") & mpa < 2.7 )) %>%
   
+#Piney (In general a LOT of variation in PDs and MDs at Piney, probable because of the Y1 vs. Y0 differences, which are not well noted except in the notebooks)
+  filter(!(tree %in% c(2086) & date_wp %in% c("2022-04-04") & time %in% c("md"))) %>% #not sure what this tree is, we didnt seen to collect middays at Piney on this day; just predawns. Are we missing a sheet with the Piney middays? 
+  filter(!(tree %in% c(2089) & date_wp %in% c("2022-04-27") & time %in% c("md") & mpa < 2 )) %>%
+  filter(!(tree %in% c(2092) & date_wp %in% c("2022-05-23") & time %in% c("md") & mpa < 2 )) %>%
+  filter(!(tree %in% c(2092) & date_wp %in% c("2022-09-15") & time %in% c("pd") & mpa > 1.5)) %>%
+  
+#Chamise: 
+  filter(!(tree %in% c(2026) & date_wp %in% c("2022-04-04") & time %in% c("md") & mpa > 3.4 )) %>%
+  filter(!(tree %in% c(2029) & date_wp %in% c("2022-05-09") & time %in% c("pd") & mpa > 2))
 ```
+
+```{r}
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "MiddleEarth") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Hobbiton
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "Hobbiton") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Rohan
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "Rohan") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Weathertop
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "Weathertop") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#LL and MiddleEarth
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "Ridge") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#CUCU
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "High") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+
+#Cucu, low
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(plot == "Low" & site == "Cucu Mesa") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Piney
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(site == "PineNeedle") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+#Chamise
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(site == "Chamise") %>% 
+                   ggplot(aes(y = mpa, 
+                     x = as.factor(tree), 
+                     color = time)) +
+  geom_point() + 
+  facet_wrap(~as.factor(date_wp)))
+
+mean_nona <- mean(x, rm.na = T)
+#Pivot wider to view: 
+wp_df2_wider <- wp_df_2 %>% 
+  select(site, week, time, mpa, tree, date_wp) %>% 
+                   pivot_wider(names_from = "time", 
+                               values_from = "mpa", 
+                               values_fn = function(x) mean(x, na.rm = TRUE)) %>% 
+  filter(tree > 100)
+
+plotly::ggplotly(wp_df2_wider %>%  
+                   ggplot(aes(y = md, 
+                     x = pd, 
+                     color = site, 
+                     label = tree
+                     )) +
+  geom_point() + 
+    geom_abline() +
+  facet_wrap(~as.factor(week)))
+#all PDs are less negative than MDs, thats good!!
+
+#write out to send to Lee: 
+write_csv(wp_df_2, here::here("processed-data", "wp_cleanedup_20240516.csv"))
+```
+
 
 1) Checked on these WP and LWC, and they seem correct (e.g. no good reason to think they're outliers, ):
 
@@ -838,7 +1017,7 @@ unique(lwa_df$date_wc)
 ######*REMOVING MPA OUTLIERS: 
 ```{r}
 #Merge water potential data with the dataset we made above that has the rescanned LMA and LWA for LWC leaves; rep is one per tree/week time to MPa will also need to be summarized similarly.
-wp_mean_df <- wp_df %>% 
+wp_mean_df <- wp_df_2 %>% 
   group_by(tree, week, time, date_wp) %>% 
   mutate(mean_mpa = mean(mpa, na.rm = T)) %>% 
   select(-mpa) %>% 
@@ -850,7 +1029,10 @@ wp_mean_df <- wp_df %>%
 wp_wc_df2 <- merge(wp_mean_df, lwa_df, 
                   by = c("tree","time", "species", "site", "plot", "date"), 
                   all = T) %>% 
-  mutate(week = week(date)) %>% 
+  mutate(week = case_when(
+    date %in% c("2022-03-30") ~ 14, 
+    TRUE ~ week(date))) %>% 
+  #mutate(week = week(date)) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
   mutate(sum_water_wt_g = case_when(
@@ -875,7 +1057,7 @@ wp_wc_df2 <- merge(wp_mean_df, lwa_df,
   filter(!(week %in% c(37) & tree %in% c(2086) & time %in% c("pd"))) %>% 
   filter(!(week %in% c(21) & tree %in% c(2343) & time %in% c("pd"))) %>% 
   filter(!(week %in% c(17) & tree %in% c(2089, 2093, 2091) & time %in% c("md"))) %>%
-    filter(!(week %in% c(19) & tree %in% c(2023, 2029, 2092, 2345) & time %in% c("md"))) %>% #somrhi
+  filter(!(week %in% c(19) & tree %in% c(2023, 2029, 2092, 2345) & time %in% c("md"))) %>% #somrhi
   filter(!(week %in% c(19) & tree %in% c(2022, 2030, 2023) & time %in% c("pd"))) %>%
   filter(!(week %in% c(19) & tree %in% c(2384) & time %in% c("pd"))) %>% #lwa is <0, must be wrong
   select(-rep) %>% 
