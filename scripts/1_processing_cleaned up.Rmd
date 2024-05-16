@@ -1003,27 +1003,14 @@ write_csv(wp_df_2, here::here("processed-data", "wp_cleanedup_20240516.csv"))
 write_csv(wp_df2_wider, here::here("processed-data", "wp_wide_cleanedup_20240516.csv"))
 ```
 
-
-1) Checked on these WP and LWC, and they seem correct (e.g. no good reason to think they're outliers, ):
-
-
-2) CHECK THESE ENVELOPES: 
-filter(week %in% c(15) & tree %in% c(2087, 2088, 2090, 2085, 2093)) - UPDATE: dry weights were entered wrong.
-filter(week %in% c(29) & tree %in% c(2370, 2086, 2028)) #pd LWC too high
-filter(week %in% c(21) & tree %in% c(2343)) #pd LWC too high
-
-3) 
-Values that were weird so removed: 
-filter(week %in% c(19) & tree %in% c(2089)): two bulk dry weights entered (0.5982 and 1.3073)
-
-
 ####WC + WP, LWA
 ######*REMOVING MPA OUTLIERS: 
 ```{r}
 #Merge water potential data with the dataset we made above that has the rescanned LMA and LWA for LWC leaves; rep is one per tree/week time to MPa will also need to be summarized similarly.
 wp_mean_df <- wp_df_2 %>% 
   group_by(tree, week, time, date_wp) %>% 
-  mutate(mean_mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(mean_mpa = mean(mpa, na.rm = T), 
+         sd_mpa = sd(mpa, na.rm = T)) %>% 
   select(-mpa) %>% 
   distinct() %>% 
   mutate(date = date_wp) %>% 
