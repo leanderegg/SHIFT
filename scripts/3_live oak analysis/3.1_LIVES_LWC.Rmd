@@ -36,15 +36,16 @@ data_quag_raw <- read_csv(here::here("processed-data", paste0("analysis_bothspp"
     TRUE ~ as.character("none")
   )) %>% 
   select(-plot) %>% 
-  distinct() 
+  distinct() %>% 
+  filter(!(week == 33)) #only have 2 middays here
 
-data_og <- data_quag_raw %>% 
+data_og_quag_lwc_mean <- data_quag_raw %>% 
   select(tree, week, water_potential, lwc_mean, time_season, time, species, site) %>% 
   distinct()
 ```
 look at it: 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwc_mean %>% 
   mutate(tree_week = paste(tree, week, sep = "_")
   ) %>% 
   mutate(water_potential = water_potential)
@@ -89,7 +90,7 @@ plotly::ggplotly(ggplot() +
 
 #TIME:
 ```{r}
-data_all <- data_og %>% 
+data_all <- data_og_quag_lwc_mean %>% 
   filter(time == "md") 
 
 # Filter for trees measured "before leafout"
@@ -131,8 +132,8 @@ plotly::ggplotly(filtered_data %>%
 Pull 14 trees, get mean slope for those 40, do 1000x. 
 
 
-###Before leafout: 
 ```{r}
+###Before leafout: 
 data <- filtered_data  %>% 
   filter(#time_season == "before leafout", 
          week %in% c(10:17)) %>% 
@@ -217,10 +218,10 @@ mean_slope_before = tbootstrapped_slopes_df_before %>%
   select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
   distinct()
 mean_slope_before
-```
+
 
 ###After leafout: 
-```{r}
+
 data <- common_trees_data %>% 
    filter(week %in% c(18:40)) %>% 
  # filter(time_season == "after leafout") %>% 
@@ -303,17 +304,13 @@ mean_slope_after = tbootstrapped_slopes_df_after %>%
   select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
   distinct()
 mean_slope_after
-```
 
-```{r}
 #Combining before and after: 
 time_boot_df <- bind_rows(mean_slope_before, mean_slope_after) %>% 
   select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
   distinct() %>% 
   mutate(analysis = "time, ind. tree")
-```
 
-```{r}
 time_boot_df %>% 
   group_by(pre_post) %>% 
   mutate(tree_mean = mean(mean_slope, na.rm = T)) %>% 
@@ -328,26 +325,99 @@ time_boot_df %>%
 ```
 
 #SPACE: 
+####***Slopes, MD, NOT Centered
+
+Get slopes from random effects: 
+
+NOTE: this includes site random effect, which the centered version does not need. 
 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwc_mean %>% 
   filter(time == "md") %>% 
-  select(tree, week, water_potential, lwc_mean) %>% 
+  select(tree, week, water_potential, lwc_mean, site) %>% 
   distinct() %>% 
-  drop_na(lwc_mean, water_potential)
+  drop_na(lwc_mean, water_potential, site)
 
+space_mod_4 <- lmer(water_potential ~ lwc_mean + (lwc_mean|week), data =  data , REML = T)
 
-#How many trees did we sample in each week? 
-data %>% 
-  #group_by(week) %>% 
-  #summarise() %>% 
-  count(as.factor(week))
+space_mod_3 <- lmer(water_potential ~ lwc_mean + (lwc_mean|week)  + (1|site), data =  data , REML = T)
 
-data %>% 
-  filter(!(week == c(15, 33)))
+anova(space_mod_3, space_mod_4)
 ```
 
+Don't include site: 
 ```{r}
+space_mod <- lmer(water_potential ~ lwc_mean + (lwc_mean|week), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwc_mean`, 
+         -lwc_mean) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwc_mean`)%>% 
+  select(-`(Intercept)`, 
+         -lwc_mean) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+final_df_space_se <- ran_df_week_4 
+
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope - space") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+space_slope
+```
+
+BS:
+```{r, eval = F}
 data %>% 
 ggplot(aes(y = water_potential, 
            x = lwc_mean, 
@@ -414,7 +484,7 @@ final_df_space %>%
 #HYDRATION: 
 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwc_mean %>% 
   select(tree, week, water_potential, lwc_mean, time) %>%
   drop_na(lwc_mean, water_potential) %>% 
   group_by(tree, week) %>%
@@ -500,10 +570,6 @@ nice_hydration_layered <- ggplot() +
 nice_hydration_layered
 ```
 
-
-
-
-Pull X trees, get mean slope for those X, do 1000x. 
 ```{r}
 #How many trees did we sample in each week? 
 data %>% 
@@ -513,9 +579,10 @@ data %>%
   mutate(trees = n/2)
 ```
 
+Pull X trees, get mean slope for those X, do 1000x. 
 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwc_mean %>% 
   select(tree, week, water_potential, lwc_mean, time) %>%
   drop_na(lwc_mean, water_potential) %>% 
   group_by(tree, week) %>%
@@ -687,21 +754,17 @@ dataversion <- paste0("Data_", datver)
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_quag_df <- data_quag_raw %>% 
-  select(tree, week, water_potential, lwc_mean, time_season, time, species, site) %>% 
-  distinct()
-
-wc_quag_df %>% 
+data_og_quag_lwc_mean %>% 
   group_by(week, time) %>% 
   summarise(n = n())
 
-wc_lm_df <- wc_quag_df %>% 
+wc_lm_df <- data_og_quag_lwc_mean %>% 
   filter(week > 17)
 ```
 
 From what weeks do we have the most trees?
 ```{r, echo=F}
-wc_quag_df %>% 
+data_og_quag_lwc_mean %>% 
   select(week, time, tree, lwc_mean) %>% 
   drop_na(lwc_mean) %>% 
   unique() %>% 
@@ -713,7 +776,7 @@ wc_quag_df %>%
   labs(y = "lwc_mean counts") +
   color_fill
 
-wc_quag_df %>% 
+data_og_quag_lwc_mean %>% 
     select(week, time, tree, water_potential) %>% 
   drop_na(water_potential) %>% 
  # unique() %>% 
@@ -732,14 +795,14 @@ IMPORTANT: NO MIDDAYS FOR WEEK 14!
 #Timeline
 
 ```{r, fig.height=.75, fig.width=6}
-wc_quag_df %>% 
+data_og_quag_lwc_mean %>% 
   filter(time == "md") %>% 
   drop_na(water_potential) %>% 
   #ggplot(aes(x = week, y = 0, color = mean(water_potential, na.rm = T)))+
   ggplot(aes(x = week, y = 0, color = water_potential))+
   geom_hline(yintercept = 0) +
   geom_point(size = 5) +
-  geom_point(data= wc_quag_df %>% 
+  geom_point(data= data_og_quag_lwc_mean %>% 
                filter(week %in% c(10, 12, 14,15, 17, 18, 19, 21, 37)), 
            pch=21, 
            size=5, 
@@ -767,7 +830,7 @@ final_df_all
 
 look at it: 
 ```{r}
-data <- data_og %>% 
+data <- data_og_quag_lwc_mean %>% 
   mutate(tree_week = paste(tree, week, sep = "_")
   ) %>% 
   mutate(water_potential = water_potential) 
@@ -813,7 +876,7 @@ MPa ~ lwc_mean + (lwc_mean|tree) + (1|wk)
 
 ###DATA
 ```{r, warning = F}
-wk_all <- wc_quag_df %>% 
+wk_all <- data_og_quag_lwc_mean %>% 
   mutate(site = as.factor(site))
 
 #Any instances where there are duplicates? 
@@ -825,47 +888,6 @@ wk_all_dupes <- wk_all %>%
 #NO, yay!
 ```
 
-
-```{r, warning = F}
-#I think everything below here is unesessary? 
-# wk_all_wide <- wk_all %>% 
-#   #drop_na(date_wp) %>% 
-#   pivot_wider(names_from=time, 
-#               values_from = c(lwc_mean, water_potential)) %>% 
-#     dplyr::group_by(tree, week) %>%
-#   fill(c(lwc_mean_md, lwc_mean_pd, water_potential_pd, water_potential_md), .direction = "downup") %>%
-#   dplyr::ungroup()%>% 
-#  # select(-date_wp) %>% 
-#   distinct()
-# 
-# wk_all_long_lwc_mean <- wk_all_wide %>% 
-#   drop_na(lwc_mean_pd, lwc_mean_md, water_potential_md, water_potential_pd) %>% 
-#   select(-water_potential_md, -water_potential_pd) %>% 
-#   mutate(pd = lwc_mean_pd, 
-#          md = lwc_mean_md) %>% 
-#   pivot_longer(cols = c(pd, md), 
-#                names_to = "time", 
-#                values_to = "lwc_mean") %>% 
-#   select(-lwc_mean_pd, -lwc_mean_md)
-# 
-# wk_all_long_mpa <- wk_all_wide %>% 
-#   drop_na(lwc_mean_pd, lwc_mean_md, water_potential_md, water_potential_pd) %>% 
-#   select(-lwc_mean_md, -lwc_mean_pd) %>% 
-#   mutate(pd = water_potential_pd, 
-#          md = water_potential_md) %>% 
-#   pivot_longer(cols = c(pd, md), 
-#                names_to = "time", 
-#                values_to = "water_potential") %>% 
-#   select(-water_potential_pd, -water_potential_md)
-# 
-# wk_all_long <- merge(wk_all_long_mpa, wk_all_long_lwc_mean) %>% 
-#   distinct() %>% 
-#  # select(-lwc_mean_NA, -water_potential_NA) %>% 
-#   group_by(tree, week, time, site
-#            ) %>% 
-#   summarise(lwc_mean = mean(lwc_mean, na.rm = T), 
-#             water_potential = mean(water_potential, na.rm = T))
-```
 
 Slopes of the formula: 
 
@@ -949,7 +971,7 @@ ggsave(here::here("figures", "quag figures", "LWC", "nice_hydration_slopes_bs_in
 ###Midday: 
 
 ```{r, warning = F}
-wc_wk_centered_df <- wk_all %>% 
+wc_wk_centered_df <- data_og_quag_lwc_mean %>% 
   filter(!week %in% c(9)) %>% 
   #filter(lwc_mean > .44) %>% 
   mutate(water_potential = water_potential) %>% 
@@ -1055,10 +1077,10 @@ Centered lwc_mean:
 space_df <- wc_wk_centered_df %>% 
   drop_na()
 
-space_mod <- lmer(water_potential ~ lwc_mean_centered + (lwc_mean_centered|week) + (1|tree), data = space_df, REML = T)
+space_mod <- lmer(water_potential ~ lwc_mean_centered + (lwc_mean_centered|week) , data = space_df, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwc_mean_centered  + (lwc_mean_centered|week) + (1|tree) + (1|site), data = space_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwc_mean_centered  + (lwc_mean_centered|week)  + (1|site), data = space_df,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -1072,65 +1094,26 @@ lwc_mean uncentered:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwc_mean + (lwc_mean|week) + (1|tree), data = space_df_nosite, REML = T)
+space_mod <- lmer(water_potential ~ lwc_mean + (lwc_mean|week) , data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwc_mean  + (lwc_mean|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwc_mean  + (lwc_mean|week) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
 
-space_mod <- lmer(water_potential ~ lwc_mean_centered + (lwc_mean_centered|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
+space_mod <- lmer(water_potential ~ lwc_mean_centered + (lwc_mean_centered|week), data =  wc_wk_centered_df, REML = T)
 
+summary(space_mod)
 space_mod_df <- broom.mixed::tidy(space_mod)
+
 ```
 YES
-
-###Slopes, bootsrapped: 
-
-```{r}
-space_slopes <- final_df_all %>% 
-   filter(!week %in% c(9)) %>% 
-  filter(analysis == "space") %>% 
-   mutate(week = as.factor(week)) %>% 
-  ggplot(aes(color= week)
-    ) + 
-  geom_point(aes(y = slope ,x = week), size =2) +
-    geom_point(aes(y = upr, x = week), size = 1) +
-  geom_point(aes(y = lwr, x = week), size = 1) +
-  #geom_line(aes(group = week, y = week, x = upr)) +
-  geom_segment(aes(y= lwr, 
-                   yend = upr, 
-                   x = week, 
-                   xend = week, 
-                   color = week))+
-  labs(x = "Week", 
-       color = "Week", 
-       y = "Slope - space") +
-  theme(legend.position="none",
-      strip.background = element_blank(),
-      strip.text.x = element_text(size = 12),
-      plot.title = element_text(size=13),
-      axis.title.y = element_text(size = 16),
-      axis.title.x = element_blank(),
-     axis.text = element_text(size = 12),
-     legend.key=element_blank(), 
-     legend.text = element_text(size = 13), 
-     legend.title = element_text(size = 16),
-     legend.margin=margin(0,0,0,0),
-      legend.box.margin=margin(-5,-8,-8,-8)
-    ) +
-  geom_hline(yintercept = 0, linetype="dotted") + 
-    color_many_2 +
-  guides(color = guide_legend(nrow = 2))
-space_slopes
-```
-
 
 #TIME
 
 ```{r}
-wc_quag_df %>% 
+data_og_quag_lwc_mean %>% 
   #filter(!week %in% c(9, 18, 19)) %>% 
   drop_na(week) %>% 
   ggplot(aes(y = lwc_mean, 
@@ -1148,7 +1131,7 @@ wc_quag_df %>%
 ```
 
 ```{r, echo=FALSE, warning = F}
-time <- wc_quag_df %>% 
+time <- data_og_quag_lwc_mean %>% 
   drop_na(week) %>% 
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
@@ -1191,30 +1174,11 @@ time
 ggsave(here::here("figures", "quag figures", "LWC", "nice_time"), time, device = "jpg", width = 4, height = 2, dpi = 300)
 ```
 
-
-
-```{r, echo=FALSE}
-wc_quag_df %>% 
-  filter(time == "pd") %>% 
-  ggplot(aes(y = water_potential, 
-             x = lwc_mean, 
-             color = as.factor(tree), 
-             show.legend = FALSE)) +
-  geom_point(aes(size = week), 
-             alpha = .2)+
-  geom_smooth(method = "lm", se = F) +
- # theme(legend.position = "none") +
-  labs(x = "lwc_mean", 
-       y = "Predawn MPa") +
-  color_very_many +
-  theme(legend.position = "none")
-```
-
 ###Models: 
 ####All time
 
 ```{r}
-wc_quag_md_df <- wc_quag_df %>% 
+wc_quag_md_df <- data_og_quag_lwc_mean %>% 
   filter(time == "md")
   
 time_mod <- lmer(water_potential ~ lwc_mean + (1|week) + (lwc_mean|tree), data = wc_quag_md_df)
@@ -1225,6 +1189,8 @@ time_season_mod <- lmer(water_potential ~ lwc_mean + time_season + (1|week) + (l
 
 time_season_mod_int <- lmer(water_potential ~ lwc_mean*time_season + (1|week) + (lwc_mean|tree), data = wc_quag_md_df)
 
+summary(time_season_mod_int)
+
 time_season_mod_df <- broom::tidy(time_season_mod)
 ```
 
@@ -1232,7 +1198,7 @@ time_season_mod_df <- broom::tidy(time_season_mod)
 ####Just linear: 
 Not high enough sample size for 'before leafout' time period; just do the full model with the time period included. 
 ```{r}
-# lin_wc_quag_md_df <- wc_quag_df %>% 
+# lin_wc_quag_md_df <- data_og_quag_lwc_mean %>% 
 #   filter(time == "md") %>% 
 #   filter(time_season == "after leafout")
 #   
@@ -1249,7 +1215,7 @@ Not high enough sample size for 'before leafout' time period; just do the full m
 
 Not high enough sample size. 
 ```{r}
-# bef_wc_quag_md_df <- wc_quag_df %>% 
+# bef_wc_quag_md_df <- data_og_quag_lwc_mean %>% 
 #   filter(time == "md") %>% 
 #   #filter(time_season == "before leafout") %>% 
 #   filter(week <= 17) %>% 
@@ -1348,7 +1314,7 @@ library(gridExtra)
 #####Hydration
 
 ```{r}
-wk_figs <-data_og %>% 
+wk_figs <-data_og_quag_lwc_mean %>% 
   group_by(tree, week) %>% 
   filter(n() == 2) %>% 
   filter(week %in% c(10, 12, 14, 15, 17, 19, 21, 29, 33, 37), 
@@ -1473,13 +1439,14 @@ nice_hydration_layered_1
 
 ```{r}
 #scaled
-space_nice_1 <- wc_wk_centered_df %>% 
+space_nice_1 <- data_og_quag_lwc_mean %>% 
+  filter(time == "md") %>% 
   drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
             x = lwc_mean,
              color = as.factor(week)
              )) +
-  geom_point(alpha = .5, 
+  geom_point(alpha = 1, 
             # aes (shape = site)
              ) +
   theme(legend.position="none",
@@ -1521,7 +1488,7 @@ space_nice_1
 #####Time:
 
 ```{r}
-time_1 <- wc_quag_df %>% 
+time_1 <- data_og_quag_lwc_mean %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -1624,6 +1591,61 @@ hyd_slopes <- final_df_all %>%
   theme(legend.position = "none") +
   color_week_assigned
 hyd_slopes
+```
+
+####***Space
+
+```{r}
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+ ggplot(aes(color= as.factor(week))
+    )  + 
+  #  geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
+  #         xmin = -Inf, xmax = Inf), 
+  #         fill = "#969696",
+  #         alpha = .01, 
+  #         color = NA) +
+  # geom_hline(aes(yintercept = 880.5797), color = "#525252") +
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = " ") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+  #                   ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  color_week_assigned+
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2)) #+
+space_slope
 ```
 
 ####Space
@@ -1729,8 +1751,6 @@ ggplot(aes(color = time_season)) +
 time_summary
 ```
 
-
-
 ######Legend:
 
 ```{r}
@@ -1783,7 +1803,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope_bs, NULL, time_summary, NULL, hyd_slopes,
+combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary, NULL, hyd_slopes,
                                            # NULL, pv_slope,
                                    nrow = 1, 
                                   rel_widths = c(1, -.02, 1, -.02, 1 #, -.02, .5
@@ -1857,9 +1877,8 @@ ggplot2::ggsave(here::here("figures", "quag figures", "LWC", "combined_plots_all
 ##USE THIS ONE: 
 #lma_plot <- data_qudo_raw %>% 
 lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
-  filter(year_alas %in% c(0), 
-         year_rwc %in% c(0))
-
+  filter(year_alas %in% c(0)) %>% 
+  filter(year_rwc %in% c(0))
 
 lma_plot <- lma_plot_df  %>% 
    # select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link, year_alas,year_rwc) %>% 
@@ -1952,7 +1971,107 @@ lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
 
 ggsave(here("figures", "quag figures", "lma_long_plot"), lma_swc_plot, device = "jpeg", width = 6, height = 1.75, dpi = 300)
 ```
- 
+
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
+  filter(!(year_alas %in% c(0))) %>%  
+    filter(!(year_rwc %in% c(0))) %>% 
+  filter(species %in% c("live oak"))
+
+lma_plot <- lma_plot_df  %>% 
+   # select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link, year_alas,year_rwc) %>% 
+  drop_na(mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species#, year_alas, year_rwc
+             ) %>% 
+  # mutate(mean_swc_per_dry_g  = scale(mean_swc_per_dry_g), 
+  #        lma_g_cm2 = scale(lma_g_cm2)) %>% 
+ # select(mean_swc_per_dry_g, lma_g_cm2, species, week, year_alas) %>% 
+  mutate(#lma_all = lma_g_cm2_new,
+         lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)
+        # year_rwc = as.factor(year_rwc), 
+       #  year_alas = as.factor(year_alas)
+       )  %>% 
+  #filter(lma_g_cm2 < 0.08) %>% 
+  # select(week, #species, 
+  #        year_alas, 
+  #        lma_g_cm2,
+  #         mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+ # filter(week %in% c(10, 11, 13, 14, 17, 21, 29, 37, 40)) %>% 
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+              #  shape = year_alas, 
+             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+             #color = species
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 43, 
+           #  line_type = year_alas,
+             #color = species
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+            # shape = year_rwc, 
+             #color = species
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             #color = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+        axis.title.x = element_text(size = 20), 
+        axis.text.x = element_text(size = 20), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+
+
+ggsave(here("figures", "quag figures", "lma_long_plot_y1"), lma_swc_plot, device = "jpeg", width = 6, height = 1.75, dpi = 300)
+```
+
+
 #LMA by MPa: 
 
 #Stats
@@ -1967,82 +2086,46 @@ quag_lma_mpa_df <- read_csv(here::here("processed-data", "wp_wc_df.csv")) %>%
   mutate(week = as.factor(week)) %>% 
   drop_na(lma_g_cm2_new, time, tree, mean_mpa) 
 
-#How much does WP relate to LMA, accounting for time (pd or md) and week? 
+#PD alone: 
 
-#
-###Model with random slopes and intercepts per tree, with lma_g_cm2_new and time (week as the fixed effect. 
-m1 <- lmer(mean_mpa ~ lma_g_cm2_new + time + week + (1|tree) + (lma_g_cm2_new|tree), data = quag_lma_mpa_df, REML = F)
-summary(m1)
-MuMIn::r.squaredGLMM(m1) #0.8329473
-
-m2 <- lm(mean_mpa ~ time + week + (1|tree) + (lma_g_cm2_new|tree), data = quag_lma_mpa_df, REML = F)
-summary(m2)
-MuMIn::r.squaredGLMM(m2) #0.8322236 
-
-#compare mods: 
-anova(m1, m2) #m1 is slightly better
-
-#Store the R-squared of the 'better' model
-marginal_r2 <- round(MuMIn::r.squaredGLMM(m1)[1], digits = 3)
-marginal_r2
-```
-- PD alone: 
-```{r}
-quag_lma_mpa_df_pd <- quag_lma_mpa_df %>% 
+quag_lma_mpa_df_pd <- lma_mpa_df %>% 
   filter(time == "pd")
 #just pds: 
 
-#just pds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
 
-#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = quag_lma_mpa_df_pd, REML = F)
-#summary(m2)
+#(1-lma|tree) just slope? 
+#(1|tree) #just intercept
+
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_pd, REML = T)
+library(lmerTest) #this gives you a p value
+m2
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
 MuMIn::r.squaredGLMM(m2)
 
-
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
-#summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-m4 <- lmer(mean_mpa ~ lma_g_cm2_new + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_pd, REML = F)
-#summary(m4)
-
 #Store the R-squared of the 'better' model
-marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
-marginal_r2_pd
-```
+quag_marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_pd
 
-- For just MDs:
-```{r}
-quag_lma_mpa_df_md <- quag_lma_mpa_df %>% 
+
+#For just MDs:
+
+quag_lma_mpa_df_md <- lma_mpa_df %>% 
   filter(time == "md")
 #just mds: 
-m2 <- lmer(mean_mpa ~ lma_g_cm2_new + week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_md, REML = T)
+
+library(lmerTest) #this gives you a p value
+
+summary(m2)
 MuMIn::r.squaredGLMM(m2)
 
-m3 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
-summary(m3)
-MuMIn::r.squaredGLMM(m3)
-
-#does lma tell us more than week does? Or does just knowing the week tell us more? 
-anova(m2, m3) #LMA does not contribute significantly to predicting MPa
-
-
-m4 <- lmer(mean_mpa ~ week + (lma_g_cm2_new|tree), data = quag_lma_mpa_df_md, REML = F)
-
 #Store the R-squared of the 'better' model
-marginal_r2_md <- round(MuMIn::r.squaredGLMM(m4)[1], digits = 3)
-marginal_r2_md
-```
+quag_marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_md
 
-
-```{r}
 #PLot!
-lma_mpa_plot <- quag_lma_mpa_df %>% 
+lma_mpa_plot_new <- quag_lma_mpa_df %>% 
   ggplot(aes(#y = water_potential, 
              y =-1*mean_mpa,
             x = lma_g_cm2_new,
@@ -2056,12 +2139,12 @@ lma_mpa_plot <- quag_lma_mpa_df %>%
            x = .010, 
            y = -4.75, 
            color = "#528791",
-           label = paste("R2 = ", marginal_r2_pd)) +
+           label = paste("R2 = ", quag_marginal_r2_pd)) +
   annotate(geom = "text", 
            x = .010, 
            y = -5, 
            color = "#CC5265",
-           label = paste("R2 = ", marginal_r2_md)) +
+           label = paste("R2 = ", quag_marginal_r2_md)) +
   theme(#legend.position="top",
         legend.position= c(.87, .87),
       strip.background = element_blank(),
@@ -2097,9 +2180,9 @@ lma_mpa_plot <- quag_lma_mpa_df %>%
   guides(color = guide_legend(nrow = 2)) +
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
-lma_mpa_plot
+lma_mpa_plot_new
 
-ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot_new"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
 ```
 
 Using LMA from Al:As: 
@@ -2152,3 +2235,115 @@ data_quag_lma  %>%
   #scale_x_reverse() +
 scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
 ```
+
+#USE THIS:Combine Al:As scans and other scans to up our sample size: 
+
+```{r}
+library(lmerTest) #this gives you a p value
+
+lma_alas_quag <- data_quag_lma %>% select(time, water_potential, lma_g_cm2) %>% 
+  rename(mean_mpa = water_potential, 
+         lma_g_cm2_new = lma_g_cm2) %>% 
+  mutate(mean_mpa = -1*mean_mpa)
+
+lma_quag_df <- bind_rows(lma_alas_quag, 
+                         quag_lma_mpa_df %>% 
+                           select(-week)) %>% 
+  filter(lma_g_cm2_new < 0.025)
+#PD alone: 
+
+quag_lma_mpa_df_pd <- lma_quag_df %>% 
+  filter(time == "pd")
+#just pds: 
+
+#just pds: 
+#(1-lma|tree) just slope? 
+#(1|tree) #just intercept
+
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = quag_lma_mpa_df_pd, REML = T)
+library(lmerTest) #this gives you a p value
+m2
+#m2 <- lm(mean_mpa ~ lma_g_cm2_new + week, data = lma_mpa_df_pd, REML = F)
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+quag_marginal_r2_pd <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_pd
+
+
+#For just MDs:
+
+quag_lma_mpa_df_md <- lma_quag_df %>% 
+  filter(time == "md")
+#just mds: 
+m2 <- lmer(mean_mpa ~ lma_g_cm2_new + (1|tree), data = lma_quag_df, REML = T)
+
+summary(m2)
+MuMIn::r.squaredGLMM(m2)
+
+#Store the R-squared of the 'better' model
+quag_marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
+quag_marginal_r2_md
+
+
+lma_mpa_plot <- lma_quag_df %>% 
+  ggplot(aes(#y = water_potential, 
+             y =-1*mean_mpa,
+            x = lma_g_cm2_new,
+             color = as.factor(time),
+            shape = time
+             )) +
+  geom_point(alpha = 1, 
+            # aes (shape = site)
+             ) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -5.25, 
+           color = "#528791",
+           label = paste("R2 = ", quag_marginal_r2_pd)) +
+  annotate(geom = "text", 
+           x = .01, 
+           y = -5.5, 
+           color = "#CC5265",
+           label = paste("R2 = ", quag_marginal_r2_md)) +
+  theme(#legend.position="top",
+        legend.position= c(.9, .2),
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title = element_text(size = 16),
+     axis.text.y = element_text(size = 12),
+     axis.text.x = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+     legend.key=element_blank(), 
+     # axis.title.x = element_blank(),
+    # axis.title.y = element_blank(),
+     legend.text = element_text(size = 14), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  geom_smooth(method = "lm", se = F,size = .5) + 
+ # geom_vline(xintercept = 0, linetype = "dotted") +
+  labs(#y= "Middays (MPa)", 
+       y = "Water Potential (MPa)",
+       x = "Leaf Mass per Area (g/cm2)", 
+      # color = "Week", 
+      # shape = "Time"
+      ) +
+  scale_color_manual(values = c("#CC5265","#528791"), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  scale_shape_manual(values = c(19, 17), 
+                     name = "Time", 
+                     labels = c("Midday", "Predawn")) +
+  guides(color = guide_legend(nrow = 2)) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1))
+lma_mpa_plot
+
+ggsave(here("figures", "quag figures", "LWC", "lma_mpa_plot"), lma_mpa_plot, device = "jpg", width = 6, height = 4, dpi = 300)
+```
+

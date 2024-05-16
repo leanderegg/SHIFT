@@ -1461,31 +1461,51 @@ wc_alldates_md <- rbind(wc_long_md_228,
 ############### NEW 2022-05-09 (Week 19) MD Dry Weights ##################
 #______________________________________________________________
 
-
+#get a df without week 19 so we're not messing with the full data: 
 wc_alldates_md_noweek19 <- wc_alldates_md %>% 
-  mutate(md_bulk_dry = case_when(
-    week == 19 ~ NA_real_, 
-    TRUE ~ as.numeric(md_bulk_dry)
-  ))
+  filter(!(week == 19))
 
+#get a df thats just week 19: 
+wc_alldates_md_week19 <- wc_alldates_md %>% 
+  filter(week == 19) %>% 
+  select(-md_bulk_dry)
+# mutate(md_bulk_dry = case_when(
+#   week == 19 ~ NA_real_, 
+#   TRUE ~ as.numeric(md_bulk_dry)
+# ))
+
+#umdated week 19 weights:
 wc_alldates_md_reweighed_week19 <- read_csv(here::here("data", "week19_reweighed_dry_masses.csv")) %>% 
   clean_names() %>% 
   filter(pd_md == "md") %>% 
   mutate(md_bulk_dry = dm_3, 
          tree = tree_id) %>% 
   select(tree, md_bulk_dry,) %>% 
-  mutate(week = as.numeric(19))
+  mutate(week = as.numeric(19), 
+         tree = case_when(
+           tree %in% c("CUCU ARCA") ~ 12, 
+           tree %in% c("CUCU LEU") ~ 20, 
+           tree %in% c("LL LEU") ~ 21, 
+           TRUE ~ as.numeric(tree))) %>% 
+  mutate(tree = case_when(
+    tree == 1475 ~ 1478, 
+    tree == 2083 ~ 2383,
+    TRUE ~ as.numeric(tree)
+  ))
 
-wc_alldates_md2 <- merge(wc_alldates_md_reweighed_week19, wc_alldates_md_noweek19, 
-                         by = c("week", "tree"), all = T) %>% 
+#combine the old just week19 df with the new weights:
+wc_alldates_newweek19 <- merge(wc_alldates_md_reweighed_week19, wc_alldates_md_week19, 
+                               by = c("week", "tree"), all = T) %>% 
+  mutate(tree = as.numeric(tree))
+
+wc_alldates_md2 <- bind_rows(wc_alldates_newweek19, wc_alldates_md_noweek19) %>% 
   distinct() %>% 
-  mutate(md_bulk_dry = case_when(
-    week %in% c(19) & md_bulk_dry.y %in% c(NA) ~ as.numeric(md_bulk_dry.x), 
-    TRUE ~ as.numeric(md_bulk_dry.y)
-  )) %>% 
-  select(-md_bulk_dry.x, -md_bulk_dry.y) %>% 
-  mutate(difference = md_bulk_dry - md_bulk_wet)
-
+  # mutate(md_bulk_dry = case_when(
+  #   week %in% c(19) & md_bulk_dry.y %in% c(NA) ~ as.numeric(md_bulk_dry.x), 
+  #   TRUE ~ as.numeric(md_bulk_dry.y)
+  # )) %>% 
+  # select(-md_bulk_dry.x, -md_bulk_dry.y) %>% 
+  mutate(difference = md_bulk_dry - md_bulk_wet) 
 
 #______________________________________________________________
 ############### PREDAWNS #######################################
@@ -2772,30 +2792,50 @@ wc_alldates_pd <- rbind(
 ############### NEW 2022-05-09 (Week 19) PD Dry Weights ##################
 #______________________________________________________________
 
-
+#get a df without week 19 so we're not messing with the full data: 
 wc_alldates_pd_noweek19 <- wc_alldates_pd %>% 
-  mutate(pd_bulk_dry = case_when(
-    week == 19 ~ NA_real_, 
-    TRUE ~ as.numeric(pd_bulk_dry)
-  ))
+  filter(!(week == 19))
 
+#get a df thats just week 19: 
+wc_alldates_pd_week19 <- wc_alldates_pd %>% 
+  filter(week == 19) %>% 
+  select(-pd_bulk_dry)
+  # mutate(pd_bulk_dry = case_when(
+  #   week == 19 ~ NA_real_, 
+  #   TRUE ~ as.numeric(pd_bulk_dry)
+  # ))
+
+#updated week 19 weights:
 wc_alldates_pd_reweighed_week19 <- read_csv(here::here("data", "week19_reweighed_dry_masses.csv")) %>% 
   clean_names() %>% 
   filter(pd_md == "pd") %>% 
   mutate(pd_bulk_dry = dm_3, 
          tree = tree_id) %>% 
-  select(tree, pd_bulk_dry,) %>% 
-  mutate(week = as.numeric(19))
+  mutate(week = as.numeric(19), 
+         tree = case_when(
+           tree %in% c("CUCU ARCA") ~ 12, 
+           tree %in% c("CUCU LEU") ~ 20, 
+           tree %in% c("LL LEU") ~ 21, 
+           TRUE ~ as.numeric(tree))) %>% 
+  mutate(tree = case_when(
+    tree == 1475 ~ 1478, 
+    tree == 2083 ~ 2383,
+    TRUE ~ as.numeric(tree)
+  ))
 
-wc_alldates_pd2 <- merge(wc_alldates_pd_reweighed_week19, wc_alldates_pd_noweek19, 
+#combine the old just week19 df with the new weights:
+wc_alldates_newweek19 <- merge(wc_alldates_pd_reweighed_week19, wc_alldates_pd_week19, 
                          by = c("week", "tree"), all = T) %>% 
+  mutate(tree = as.numeric(tree))
+
+wc_alldates_pd2 <- bind_rows(wc_alldates_newweek19, wc_alldates_pd_noweek19) %>% 
   distinct() %>% 
-  mutate(pd_bulk_dry = case_when(
-    week %in% c(19) & pd_bulk_dry.y %in% c(NA) ~ as.numeric(pd_bulk_dry.x), 
-    TRUE ~ as.numeric(pd_bulk_dry.y)
-  )) %>% 
-  select(-pd_bulk_dry.x, -pd_bulk_dry.y) %>% 
-  mutate(difference = pd_bulk_dry - pd_bulk_wet)
+  # mutate(pd_bulk_dry = case_when(
+  #   week %in% c(19) & pd_bulk_dry.y %in% c(NA) ~ as.numeric(pd_bulk_dry.x), 
+  #   TRUE ~ as.numeric(pd_bulk_dry.y)
+  # )) %>% 
+ # select(-pd_bulk_dry.x, -pd_bulk_dry.y) %>% 
+  mutate(difference = pd_bulk_dry - pd_bulk_wet) 
 
 #______________________________________________________________
 ############### ALL up to 8-18 (combine md + pd) #######################
@@ -2875,7 +2915,7 @@ wc_alldates <- merge(wc_alldates_pd2, wc_alldates_md2, all = T, by = c(#"date",
           "ww_g_md"
           ) %>% 
   #select(-time) %>% 
-  arrange("week", "date_pd","tree", "rep")
+  arrange("week", "date_pd","tree", "rep") 
 
 ####That is currently very wide, so make longer: 
 
@@ -2952,7 +2992,7 @@ wc_alldates_longer_bulk <- wc_alldates %>%
   filter(time == time_date) %>% 
   distinct() %>% 
   select(-time_date) %>% 
-  mutate(rep = 1)
+  mutate(rep = 1) 
 
 #Individual leaves: 
 wc_alldates_longer_leaf <- wc_alldates %>% 
@@ -2983,7 +3023,7 @@ wc_alldates_longer_leaf <- wc_alldates %>%
   select(tree, plot, week, site, lwc_leaf, time, time_date, date, rep, species) %>% 
   filter(time == time_date) %>% 
   distinct() %>% 
-  select(-time_date)
+  select(-time_date)  
 
 #Dry weights, BULK (need this for lwa measures)
 wc_alldates_longer_masses_dw <- wc_alldates %>% 
@@ -3054,7 +3094,7 @@ wc_alldates_longer_masses_ww <- wc_alldates %>%
   filter(time == time_date) %>% 
   distinct() %>% 
   select(-time_date) %>% 
-  mutate(rep = 1)
+  mutate(rep = 1)  
 
 
 #Dry weights, LEAF (need this for lwa measures)
@@ -3123,7 +3163,7 @@ wc_alldates_longer_masses_ww_leaf <- wc_alldates %>%
   select(tree, plot, week, site, wm_leaf_g, time, time_date, date, rep, species) %>% 
   filter(time == time_date) %>% 
   distinct() %>% 
-  select(-time_date)
+  select(-time_date)  
 
 #Combine those: 
 
@@ -3250,8 +3290,8 @@ dupes_wc912 <- wc912_trees %>%
 
 wc_all  <- bind_rows(wc912_trees, wc_alldates_longer_all )  %>% 
   mutate(time  = case_when(
-    time %in% c("PD") ~ "pd", 
-    time %in% c("MD") ~ "md", 
+    time %in% c("PD", "pd") ~ "pd", 
+    time %in% c("MD", "md") ~ "md", 
     TRUE ~"NA"
   ), 
   tree = case_when(
@@ -3274,10 +3314,13 @@ wc_all  <- bind_rows(wc912_trees, wc_alldates_longer_all )  %>%
   distinct() %>% 
   #select(tree, date_wc, time, lwc_bulk, lwc_leaf, rep) %>% 
   ungroup() %>% 
-  group_by(tree, time, week, date) %>% 
+
+#The below code was being used to get rid of rows where we had wm but not dm for some things, but I'm second guessing that now since it seems to remove a LOT of rows that would otherwise be good. Assuming for the time being that WM were weighed separately, and DM were weighed all together. 
+ # group_by(tree, time, week, date) %>% 
  # fill(c(dm_bulk_g, wm_bulk_g, lwc_bulk), .direction = "downup") %>% 
-  filter(!(is.na(dm_leaf_g) & !is.na(wm_leaf_g)) &  # Keep rows where dm_leaf_g is not missing while wm_leaf_g is not missing
-           !(!is.na(dm_leaf_g) & is.na(wm_leaf_g))) %>% 
+ # filter(!(is.na(dm_leaf_g) & !is.na(wm_leaf_g)) &  # Keep rows where dm_leaf_g is not missing while wm_leaf_g is not missing
+ #          !(!is.na(dm_leaf_g) & is.na(wm_leaf_g))) %>% 
+  
   distinct() %>% 
   ungroup() %>% 
   group_by(tree, week, time) %>% 
@@ -3288,7 +3331,10 @@ wc_all  <- bind_rows(wc912_trees, wc_alldates_longer_all )  %>%
  # filter(week == 13) %>% 
   #select(-dw_g_md, -dw_g_pd, -ww_g_md, -ww_g_pd, -pd_bulk_dry, -pd_bulk_wet, -md_bulk_dry, -md_bulk_wet) %>% 
   distinct %>% 
-  arrange(tree, week, time)
+  arrange(tree, week, time) # %>% 
+  #filter(date %in% c("2022-03-30"))
+
+
 
 
 #write csv: ####

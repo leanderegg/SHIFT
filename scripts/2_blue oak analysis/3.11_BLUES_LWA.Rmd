@@ -45,21 +45,18 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
   filter(!(week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006))) %>%  #trees from this week seem wrong. 
   filter(!(week ==21 & tree == 2378)) #something is wrong with this tree, very similar LWA for PD and MD; one is probable wrong!
 
-data_og <- data_qudo_raw %>% 
+data_og_lwa <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site, date_wp) %>% 
   distinct() %>% 
  # filter(week == 15) %>% 
-  arrange(tree, week, time)
-
-data_wk33 <- data_og %>% 
-  filter(week == 33)
-unique(data_og$tree)
+  arrange(tree, week, time) %>% 
+  mutate(site = as.factor(site))
 ```
 
 
 #TIME:
 ```{r}
-data_all <- data_og %>% 
+data_all <- data_og_lwa %>% 
   filter(time == "md") 
 
 # Filter for trees measured "before leafout"
@@ -275,9 +272,7 @@ time_boot_df <- bind_rows(mean_slope_before, mean_slope_after) %>%
   select(pre_post, mean_slope, lower_bound, upper_bound) %>% 
   distinct() %>% 
   mutate(analysis = "time, ind. tree")
-```
 
-```{r}
 time_boot_df %>% 
   group_by(pre_post) %>% 
   mutate(tree_mean = mean(mean_slope, na.rm = T)) %>% 
@@ -293,8 +288,114 @@ time_boot_df %>%
 
 #SPACE: 
 
+####***Slopes, MD, NOT Centered
+
+Get slopes from random effects: 
+
+NOTE: this includes site random effect, which the centered version does not need. 
+
 ```{r}
-data <- data_og %>% 
+data <- data_og_lwa %>% 
+  filter(time == "md") %>% 
+  select(tree, week, water_potential, lwa_g_cm2_new, site) %>% 
+  distinct() %>% 
+  drop_na(lwa_g_cm2_new, water_potential, site)
+
+space_mod_4 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
+
+space_mod_3 <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week)  + (1|site), data =  data , REML = T)
+
+anova(space_mod_3, space_mod_4)
+```
+
+Don't include site: 
+```{r}
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data =  data , REML = T)
+
+space_mod_df_4 <- broom.mixed::tidy(space_mod)
+#space_mod_df
+
+ran_list3 <- coef(space_mod)
+
+#ran_list2 <- coef(m_wk_rand)
+
+ran_df_4 <- as.data.frame(ran_list3[['week']])%>% 
+  mutate(estimate = `(Intercept)`, 
+         slope = `lwa_g_cm2_new`, 
+         -lwa_g_cm2_new) %>%
+  select(-`(Intercept)`)
+
+ran_err_4 <- arm::se.ranef(space_mod)
+
+ran_err_df_4 <- as.data.frame(ran_err_4[['week']]) %>% 
+  mutate(std.error = `(Intercept)`, 
+         std.error.slope = `lwa_g_cm2_new`)%>% 
+  select(-`(Intercept)`, 
+         -lwa_g_cm2_new) %>% 
+  tibble::rownames_to_column("week")
+
+ran_df_week_4 <- bind_cols(ran_df_4, ran_err_df_4) %>% 
+  #select(-`1:10`) %>% 
+  data_frame()
+
+final_df_space_se <- ran_df_week_4 
+
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + (std.error.slope), 
+         lwr = slope - (std.error.slope)) %>% 
+  ggplot(aes(color= week)
+    ) + 
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = "Slope - space") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_text(size = 16),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+     legend.title = element_text(size = 16),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8)
+    ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+    color_many_2 +
+  guides(color = guide_legend(nrow = 2))
+space_slope
+```
+
+
+```{r}
+mod <- lmer(water_potential ~ lwa_g_cm2_new*week + (1|site), data = data %>% 
+              mutate(week = as.factor(week)))
+
+anova(mod)
+
+library("lmerTest")
+summary(mod)
+
+library(emmeans)
+emmeans(mod, list(pairwise ~ week), adjust = "tukey")
+```
+
+
+```{r}
+data <- data_og_lwa %>% 
   filter(time == "md") %>% 
   select(tree, week, water_potential, lwa_g_cm2_new) %>% 
   distinct() %>% 
@@ -368,7 +469,7 @@ final_df_space %>%
 #HYDRATION: 
 
 ```{r}
-data_hyd <- data_og %>% 
+data_hyd <- data_og_lwa %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time) %>%
   drop_na(lwa_g_cm2_new, water_potential) %>% 
   group_by(tree, week) %>%
@@ -469,6 +570,8 @@ data_hyd  %>%
 data_hyd  <- data_hyd  %>% 
   filter(!(week ==21 & tree == 2378), 
          !(week == 19 & tree == 2009 & time == "pd"),
+         !(week == 17 & tree == 2009 & time == "pd"),
+         !(week == 19 & tree == 2367 & time == "pd"),
          !(week == 15 & tree %in% c(2384, 2011) & time == "pd")) #this tree has something wrong with it! Tried to remove in processing script but that wasn't running. Trying here!
 
 # Assuming your dataset is called 'data'
@@ -549,7 +652,7 @@ sampled_tree_ids <- sample(unique(week_data$tree), size = n_sample_trees, replac
  
 #to look at any specific weeks that are acting weird
 hyd_bs_slopes <- bootstrapped_slopes_df %>%
-  filter(week == 19)
+  filter(week == 17)
 
 summary_df_hyd %>% 
   ggplot(aes(x = week)) +
@@ -624,22 +727,21 @@ dataversion <- paste0("Data_", datver)
 #Data wrangling: 
 
 ```{r, echo=F}
-wc_qudo_df <- data_qudo_raw %>% 
+data_og_lwa <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwa_g_cm2_new, time_season, time, species, site) %>% 
-  distinct() %>% 
-  filter(!(week == 33))
+  distinct()
 
-wc_qudo_df %>% 
+data_og_lwa %>% 
   group_by(week, time) %>% 
   summarise(n = n())
 
-wc_lm_df <- wc_qudo_df %>% 
+wc_lm_df <- data_og_lwa %>% 
   filter(week > 17)
 ```
 
 From what weeks do we have the most trees?
 ```{r, echo=F}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   select(week, time, tree, lwa_g_cm2_new) %>% 
   drop_na(lwa_g_cm2_new) %>% 
   unique() %>% 
@@ -651,7 +753,7 @@ wc_qudo_df %>%
   labs(y = "lwa_g_cm2_new counts") +
   color_fill
 
-wc_qudo_df %>% 
+data_og_lwa %>% 
     select(week, time, tree, water_potential) %>% 
   drop_na(water_potential) %>% 
  # unique() %>% 
@@ -663,21 +765,19 @@ wc_qudo_df %>%
   labs(y = "MPa counts") +
   color_fill
 ```
-A: week 17, 21, 29, 10. 
 
-IMPORTANT: NO MIDDAYS FOR WEEK 14!
 
 #Timeline
 
 ```{r, fig.height=.75, fig.width=6}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   filter(time == "md") %>% 
   drop_na(water_potential) %>% 
   #ggplot(aes(x = week, y = 0, color = mean(water_potential, na.rm = T)))+
   ggplot(aes(x = week, y = 0, color = water_potential))+
   geom_hline(yintercept = 0) +
   geom_point(size = 5) +
-  geom_point(data= wc_qudo_df %>% 
+  geom_point(data= data_og_lwa %>% 
                filter(week %in% c(10, 12, 14,15, 17, 18, 19, 21, 37)), 
            pch=21, 
            size=5, 
@@ -707,7 +807,7 @@ MPa ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (1|wk)
 
 look at it: 
 ```{r}
-data <- data_og %>% 
+data <- data_og_lwa %>% 
   mutate(tree_week = paste(tree, week, sep = "_")
   ) %>% 
   mutate(water_potential = water_potential)
@@ -751,24 +851,10 @@ plotly::ggplotly(ggplot() +
 
 ```
 
-###DATA
-```{r, warning = F}
-wk_all <- wc_qudo_df %>% 
-  mutate(site = as.factor(site))
-
-#Any instances where there are duplicates? 
-wk_all_dupes <- wk_all %>% 
-  #select(tree, week, time, water_potential) %>% 
-  group_by(tree, week, time) %>% 
-  filter(n() > 1)
-
-#NO, yay!
-```
-
 
 ```{r, warning = F}
 #I think everything below here is unesessary? 
-# wk_all_wide <- wk_all %>% 
+# wk_all_wide <- data_og_lwa%>% 
 #   #drop_na(date_wp) %>% 
 #   pivot_wider(names_from=time, 
 #               values_from = c(lwa_g_cm2_new, water_potential)) %>% 
@@ -807,16 +893,26 @@ wk_all_dupes <- wk_all %>%
 #             water_potential = mean(water_potential, na.rm = T))
 ```
 
+###DATA
+```{r, warning = F}
+#Any instances where there are duplicates? 
+wk_all_dupes <- data_og_lwa%>% 
+  #select(tree, week, time, water_potential) %>% 
+  group_by(tree, week, time) %>% 
+  filter(n() > 1)
+
+#NO, yay!
+```
 Slopes of the formula: 
 
 ```{r, warning=T}
-m_wk_rand <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = wk_all )
+m_wk_rand <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = data_og_lwa)
 ```
 
 Should we include site? 
 
 ```{r, include = F}
-wk_all_sites <- wk_all %>% 
+wk_all_sites <- data_og_lwa%>% 
   drop_na(site)
 
 m_wk_rand_nosite <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|tree) + (lwa_g_cm2_new|week), data = wk_all_sites, REML = T)
@@ -889,7 +985,7 @@ ggsave(here("figures", "qudo figures", "LWA", "nice_hydration_slopes_bs_inds"), 
 ###Midday: 
 
 ```{r, warning = F}
-wc_wk_centered_df <- wk_all %>% 
+wc_wk_centered_df <- data_og_lwa %>% 
   filter(!week %in% c(9)) %>% 
   #filter(lwa_g_cm2_new > .44) %>% 
   mutate(water_potential = water_potential) %>% 
@@ -897,9 +993,8 @@ wc_wk_centered_df <- wk_all %>%
   group_by(week) %>% 
   mutate(mean_lwa_g_cm2_new = mean(lwa_g_cm2_new, na.rm = T)) %>% 
   ungroup() %>% 
-  mutate(lwa_g_cm2_new_centered = lwa_g_cm2_new - mean_lwa_g_cm2_new)
-  # mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) %>% 
-  # filter(lwa_g_cm2_new_centered < 4)
+  mutate(lwa_g_cm2_new_centered = lwa_g_cm2_new - mean_lwa_g_cm2_new) %>% 
+  mutate(lwa_g_cm2_new_centered = scale(lwa_g_cm2_new,  scale=FALSE)) 
 ```
 
 
@@ -995,10 +1090,10 @@ Centered lwa_g_cm2_new:
 space_df <- wc_wk_centered_df %>% 
   drop_na()
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week) + (1|tree), data = space_df, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week), data = space_df, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new_centered  + (lwa_g_cm2_new_centered|week) + (1|tree) + (1|site), data = space_df,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new_centered  + (lwa_g_cm2_new_centered|week) + (1|site), data = space_df,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
@@ -1012,23 +1107,109 @@ lwa_g_cm2_new uncentered:
 space_df_nosite <- wc_wk_centered_df %>% 
   drop_na(site)
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week) + (1|tree), data = space_df_nosite, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (lwa_g_cm2_new|week), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
-space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new  + (lwa_g_cm2_new|week) + (1|tree) + (1|site), data = space_df_nosite,  REML = T)
+space_mod_site <- lmer(water_potential ~ lwa_g_cm2_new  + (lwa_g_cm2_new|week) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
 anova(space_mod, space_mod_site)
 
-space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week) + (1|tree) + (1|site), data =  wc_wk_centered_df, REML = T)
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new_centered + (lwa_g_cm2_new_centered|week)  + (1|site), data =  wc_wk_centered_df, REML = T)
 
 space_mod_df <- broom.mixed::tidy(space_mod)
 ```
 YES
 
-###Slopes, bootsrapped: 
+Which weeks are significant?
 
 ```{r}
+unique(wc_wk_centered_df$week)
+
+#week 10: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 10)
+
+space_mod <- lm(water_potential ~ lwa_g_cm2_new, data =  wk,  REML = T)
+summary(space_mod)
+#p < 0.005
+
+#week 14: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 14)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#p = 0.0271
+
+#week 15: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 15)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#p < 0.005
+
+#week 17: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 17)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 19: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 19)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 21: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 21)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 29: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 29)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+
+#week 37: 
+wk <- wc_wk_centered_df %>% 
+  drop_na(site) %>% 
+  mutate(week = as.factor(week)) %>% 
+  filter(week == 37)
+
+space_mod <- lmer(water_potential ~ lwa_g_cm2_new  + (1|site), data =  wk,  REML = T)
+summary(space_mod)
+#not sig
+```
+
+###Slopes, bootsrapped: 
+
+```{r, eval=F}
 space_slopes <- final_df_all %>% 
    filter(!week %in% c(9)) %>% 
   filter(analysis == "space") %>% 
@@ -1069,26 +1250,8 @@ space_slopes
 
 #TIME
 
-```{r}
-wc_qudo_df %>% 
-  #filter(!week %in% c(9, 18, 19)) %>% 
-  drop_na(week) %>% 
-  ggplot(aes(y = lwa_g_cm2_new, 
-             x = as.factor(week), 
-             #x = date,
-            # color = as.factor(week), 
-             fill = time)) +
-  geom_boxplot() +
- # facet_wrap(~time) +
-  color_many +
-  color_fill +
-  labs(y = "lwa_g_cm2_new", 
-       x = "Week", 
-       fill = "Time")
-```
-
 ```{r, echo=FALSE, warning = F}
-time <- wc_qudo_df %>% 
+time <- data_og_lwa %>% 
   drop_na(week) %>% 
  # filter(time == "md") %>% 
   ggplot(aes(y = water_potential, 
@@ -1134,7 +1297,7 @@ ggsave(here("figures", "qudo figures", "LWA", "nice_time"), time, device = "jpg"
 
 
 ```{r, echo=FALSE}
-wc_qudo_df %>% 
+data_og_lwa %>% 
   filter(time == "pd") %>% 
   ggplot(aes(y = water_potential, 
              x = lwa_g_cm2_new, 
@@ -1154,7 +1317,7 @@ wc_qudo_df %>%
 ####All time
 
 ```{r}
-wc_qudo_md_df <- wc_qudo_df %>% 
+wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md")
   
 time_mod <- lmer(water_potential ~ lwa_g_cm2_new + (1|week) + (lwa_g_cm2_new|tree), data = wc_qudo_md_df)
@@ -1171,7 +1334,7 @@ time_season_mod_df <- broom::tidy(time_season_mod)
 
 ####Just linear: 
 ```{r}
-lin_wc_qudo_md_df <- wc_qudo_df %>% 
+lin_wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md") %>% 
   filter(time_season == "after leafout")
   
@@ -1187,7 +1350,7 @@ MuMIn::r.squaredGLMM(lin_time_mod)
 ####Before leafout: 
 
 ```{r}
-bef_wc_qudo_md_df <- wc_qudo_df %>% 
+bef_wc_qudo_md_df <- data_og_lwa %>% 
   filter(time == "md") %>% 
   #filter(time_season == "before leafout") %>% 
   filter(week <= 17) %>% 
@@ -1285,7 +1448,7 @@ library(gridExtra)
 #####Hydration
 
 ```{r}
-wk_figs <-data_og %>% 
+wk_figs <-data_og_lwa %>% 
   group_by(tree, week) %>% 
   filter(n() == 2) %>% 
   filter(week %in% c(10, 12, 14, 15, 17, 19, 21, 29, 33, 37), 
@@ -1458,7 +1621,7 @@ space_nice_1
 #####Time:
 
 ```{r}
-time_1 <- wc_qudo_df %>% 
+time_1 <- data_og_lwa %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -1565,9 +1728,64 @@ hyd_slopes
 ```
 
 ####Space
+####***Space
+
+```{r}
+space_slope <- final_df_space_se %>% 
+  mutate(week = as.factor(week)) %>% 
+ # filter(week %in% c(14, 17, 21, 29)) %>% 
+ # filter(term == "lwc_mean") %>% 
+  mutate(upr = slope + 1.96*(std.error.slope), 
+         lwr = slope - 1.96*(std.error.slope)) %>% 
+ ggplot(aes(color= as.factor(week))
+    )  + 
+  #  geom_rect(aes(ymin = 701.6674, ymax = 1074.701, 
+  #         xmin = -Inf, xmax = Inf), 
+  #         fill = "#969696",
+  #         alpha = .01, 
+  #         color = NA) +
+  # geom_hline(aes(yintercept = 880.5797), color = "#525252") +
+  geom_point(aes(y = slope ,x = week), size =2) +
+    geom_point(aes(y = upr, x = week), size = 1) +
+  geom_point(aes(y = lwr, x = week), size = 1) +
+  #geom_line(aes(group = week, y = week, x = upr)) +
+  geom_segment(aes(y= lwr, 
+                   yend = upr, 
+                   x = week, 
+                   xend = week, 
+                   color = week))+
+  labs(x = "Week", 
+       color = "Week", 
+       y = " ") +
+  theme(legend.position="none",
+      strip.background = element_blank(),
+      strip.text.x = element_text(size = 12),
+      plot.title = element_text(size=13),
+      axis.title.y = element_blank(),
+      axis.title.x = element_blank(),
+     axis.text = element_text(size = 12),
+     legend.key=element_blank(), 
+     legend.text = element_text(size = 13), 
+    # legend.title = element_text(size = 16),
+    legend.title = element_blank(),
+     legend.margin=margin(0,0,0,0),
+      legend.box.margin=margin(-5,-8,-8,-8),
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    ) +
+  #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
+                  #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
+                      # seq(10, 30, by = 1)
+  #                   ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  color_week_assigned+
+ # color_many_2 +
+  guides(color = guide_legend(nrow = 2)) #+
+space_slope
+```
+
 
 Bootstrapped: 
-```{r}
+```{r,eval = F}
 space_slope_bs <-  final_df_all %>% 
    #filter(!week %in% c(9, 18)) %>% 
   filter(analysis == "space") %>% 
@@ -1838,7 +2056,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope_bs, NULL, time_summary, NULL, hyd_slopes,
+combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary, NULL, hyd_slopes,
                                            # NULL, pv_slope,
                                    nrow = 1, 
                                   rel_widths = c(1, -.02, 1, -.02, 1 # , -.02 , .5
