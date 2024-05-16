@@ -37,7 +37,7 @@ wpwc315 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx
   mutate(date = mdy("03-15-2022")) 
 
 #Date: 323 WP + LWC
-wpwc323 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="325-327 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
+wpwc323 <- read_excel(here(dataversion,"WP_WC", "SHIFT data collection 2022.xlsx"), sheet="323 WP + LWC", skip=5, na = "NA") %>% clean_names()  %>% 
   mutate(date = mdy("03-23-2022")) 
 
 #Date: 325 WP + LWC
@@ -804,6 +804,10 @@ wp_ad <- bind_rows(wp_ad_no915, wpwc915_new) %>%
 
 write.csv(wp_ad, here("processed-data", paste0("wp_alldates_long_",datver,".csv")))
 
+
+
+
+#-------***--------
 dlookr::diagnose(wp_ad)
 
 unique(wp_ad$tag)
