@@ -617,6 +617,10 @@ lwa_df <- wc_lwa_df %>%
      tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_,
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
      tree %in% c(2370) & week %in% c(29) & time %in% c("md") ~ NA_real_,
+      tree %in% c(2331) & week %in% c(15) & time %in% c("pd") ~ NA_real_,
+    tree %in% c(2091) & week %in% c(19) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2354) & week %in% c(15) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2345) & week %in% c(10) & time %in% c("md") ~ NA_real_, 
     TRUE ~ as.numeric(lwc_new)
   )) %>% 
   
@@ -629,6 +633,11 @@ lwa_df <- wc_lwa_df %>%
      tree %in% c(2382) & week %in% c(19) & time %in% c('pd')~ NA_real_,
     tree %in% c(2343) & week %in% c(15) & time %in% c('md') ~ NA_real_,
       tree %in% c(2370) & week %in% c(29) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2331) & week %in% c(15) & time %in% c("pd") ~ NA_real_,
+    tree %in% c(2091) & week %in% c(19) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2354) & week %in% c(15) & time %in% c("md") ~ NA_real_,
+    tree %in% c(2345) & week %in% c(10) & time %in% c("md") ~ NA_real_, 
+    
     TRUE ~ as.numeric(lwc_bulk)
   )) %>% 
   select(-mismatch_bulk, -lwc_wrong) %>% 
@@ -654,7 +663,10 @@ lwa_df <- wc_lwa_df %>%
      tree == 2004 & date %in% c("2022-07-19") ~ 2005,
      tree == 2014 & date %in% c("2022-09-15") ~ 2013,
      species %in% c("ARCA") & site %in% c("Cucu Mesa") ~ 12,
-     TRUE ~ as.numeric(tree)))
+     TRUE ~ as.numeric(tree))) %>% 
+  mutate(week = case_when(
+    date %in% c("2022-03-30") ~ 14, #this was being listed as week 13, but I think it should actually be 14 based on 4/4 and 4/6 samplings having some midday trees that correspond to the predawns measured on this day. 
+    TRUE ~ week(date))) 
 
 investigating_wk10 <- lwa_df %>% 
   filter(week == 10) %>% 
@@ -700,12 +712,6 @@ plotly::ggplotly(lwa_df %>%
 ```
 
 
-```{r}
-lwa_df_37 <- lwa_df %>% 
-  filter(week == 37 & lwa_g_cm2_new > 0.015)
-```
-
-
 ###WP:
 ```{r}
 #Read in raw water potential data, and change weird trees: 
@@ -733,12 +739,8 @@ wp_df <- read_csv(here("processed-data", paste0("wp_alldates_long_",datver,".csv
    date_wp %in% c("2022-04-27") ~ as.Date("2022-04-25"), 
     TRUE ~ as.Date(date_wp))) %>% 
   distinct()
-```
 
-
-```{r}
-unique(wp_df$plot)
-unique(wp_df$site)
+#Look at it to see what measurements are oddballs: 
 
 #LL and MiddleEarth
 plotly::ggplotly(wp_df %>% 
@@ -885,7 +887,12 @@ wp_df_2 <- wp_df %>%
   
 #Chamise: 
   filter(!(tree %in% c(2026) & date_wp %in% c("2022-04-04") & time %in% c("md") & mpa > 3.4 )) %>%
-  filter(!(tree %in% c(2029) & date_wp %in% c("2022-05-09") & time %in% c("pd") & mpa > 2))
+  filter(!(tree %in% c(2029) & date_wp %in% c("2022-05-09") & time %in% c("pd") & mpa > 2)) %>%
+  mutate(date_wp = ymd(date_wp)) %>% 
+  mutate(week = case_when(
+    date_wp %in% c("2022-03-30") ~ 14, #this was being listed as week 13, but I think it should actually be 14 based on 4/4 and 4/6 samplings having some midday trees that correspond to the predawns measured on this day. 
+    TRUE ~ week(date_wp))) %>% 
+  arrange(date_wp, tree, time)
 ```
 
 ```{r}
@@ -973,7 +980,7 @@ plotly::ggplotly(wp_df_2 %>%
 mean_nona <- mean(x, rm.na = T)
 #Pivot wider to view: 
 wp_df2_wider <- wp_df_2 %>% 
-  select(site, week, time, mpa, tree, date_wp) %>% 
+  select(site, week, time, mpa, tree) %>% 
                    pivot_wider(names_from = "time", 
                                values_from = "mpa", 
                                values_fn = function(x) mean(x, na.rm = TRUE)) %>% 
@@ -992,6 +999,8 @@ plotly::ggplotly(wp_df2_wider %>%
 
 #write out to send to Lee: 
 write_csv(wp_df_2, here::here("processed-data", "wp_cleanedup_20240516.csv"))
+#write out to send to Lee: 
+write_csv(wp_df2_wider, here::here("processed-data", "wp_wide_cleanedup_20240516.csv"))
 ```
 
 
@@ -1007,11 +1016,6 @@ filter(week %in% c(21) & tree %in% c(2343)) #pd LWC too high
 Values that were weird so removed: 
 filter(week %in% c(19) & tree %in% c(2089)): two bulk dry weights entered (0.5982 and 1.3073)
 
-```{r}
-unique(wp_df$date_wp)
-
-unique(lwa_df$date_wc)
-```
 
 ####WC + WP, LWA
 ######*REMOVING MPA OUTLIERS: 
@@ -1029,9 +1033,9 @@ wp_mean_df <- wp_df_2 %>%
 wp_wc_df2 <- merge(wp_mean_df, lwa_df, 
                   by = c("tree","time", "species", "site", "plot", "date"), 
                   all = T) %>% 
-  mutate(week = case_when(
-    date %in% c("2022-03-30") ~ 14, 
-    TRUE ~ week(date))) %>% 
+  # mutate(week = case_when(
+  #   date %in% c("2022-03-30") ~ 14, #this was being listed as week 13, but I think it should actually be 14 based on 4/4 and 4/6 samplings having some midday trees that correspond to the predawns measured on this day. 
+  #   TRUE ~ week(date))) %>% 
   #mutate(week = week(date)) %>% 
   filter(species != "ARCA", 
          species != "LEU") %>% 
