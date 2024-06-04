@@ -1,0 +1,348 @@
+---
+title: "rwc"
+author: "Indra Boving"
+date: "2024-06-02"
+output: html_document
+---
+
+##Setup
+
+```{r setup, include=FALSE}
+library(data.table)
+library(janitor)
+library(here)
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(gridExtra)
+#library(calecopal)
+library(rstatix)
+library(plotly)
+
+select = dplyr::select
+ 
+#source("http://goo.gl/UUyEzD") #outlier KD (original function)
+
+source(here::here("scripts","scripts_functions", "figure_info.R")) #if making pretty figs 
+```
+
+
+```{r}
+rwc_df <- read_csv(here::here("processed-data", "rwc_2022.csv"))
+
+plotly::ggplotly(rwc_df %>% 
+  filter(type == "leaf") %>% 
+ # group_by(tree, date_rwc, year_rwc) %>% 
+  #mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = date_rwc, 
+             color = year_rwc,
+             label = tree
+             )) +
+  geom_point() +
+  facet_wrap(~species))
+
+plotly::ggplotly(rwc_df %>% 
+  filter(type == "leaf") %>% 
+  group_by(tree, date_rwc, year_rwc) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, 
+             x = date_rwc, 
+             color = year_rwc,
+             label = tree
+             )) +
+  geom_point() +
+  facet_wrap(~species))
+
+plotly::ggplotly(rwc_df %>% 
+  filter(type == "leaf") %>% 
+  group_by(species, date_rwc) %>% 
+  mutate(mean_swc_spp = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(species, date_rwc, year_rwc) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ggplot() +
+  geom_point(aes(y = mean_swc_per_dry_g, 
+             x = date_rwc, 
+             color = year_rwc,
+             label = tree
+             )) +
+    geom_point(aes(y = mean_swc_spp, 
+             x = date_rwc, 
+             label = tree, 
+             color = "mean"
+             ),color = "purple") +
+    
+  facet_wrap(~species))
+
+
+plotly::ggplotly(rwc_df %>% 
+  filter(type == "leaf") %>% 
+  group_by(species, date_rwc) %>% 
+  mutate(mean_swc_spp = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(species, date_rwc, year_rwc) %>% 
+  mutate(mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) %>% 
+  ggplot() +
+  geom_point(aes(y = mean_swc_per_dry_g, 
+             x = date_rwc, 
+             color = as.factor(year_rwc),
+             label = tree
+             ),
+             shape = 17,
+             size = 3,)+
+    geom_line(aes(x = date_rwc, 
+             y =mean_swc_spp, 
+            # linetype = year_rwc, 
+             group = species,
+             color = "Mean Across Both Years"
+             #color = species
+             )) +
+    geom_point(aes(y = mean_swc_spp, 
+             x = date_rwc, 
+             label = tree, 
+             color = "Mean Across Both Years"
+             ),shape = 17,
+             size = 3,) +
+    geom_line(aes(x = date_rwc, 
+             y =mean_swc_spp, 
+            # linetype = year_rwc, 
+             group = as.factor(species),
+             color = "Mean Across Both Years"
+             #color = species
+             )) +
+    geom_line(aes(x = date_rwc, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species,
+             color = year_rwc,
+             #color = species
+             )) +
+  facet_wrap(~species)) #+
+ # scale_color_manual(values = c("lightgrey", "darkgrey", "black")))
+```
+
+
+```{r}
+rwc_df %>% 
+ggplot() +
+geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+            # shape = year_rwc, 
+             #color = species
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             #color = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 20), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank()
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+
+
+# ggsave(here("figures", "figures", "lma_long_plot_all"), lma_swc_plot, device = "jpeg", width = 6, height = 1.75, dpi = 300)
+```
+
+```{r}
+wp_wc_rwc_df <- wp_wc_rwc_df_all %>% 
+  filter(!(year_rwc %in% c(1) & type_rwc %in% c("leaf") & species %in% ("blue oak")), #ignore any year 1 blues for now
+        !(type_rwc %in% c("stem")))
+
+wp_wc_rwc_df_all %>% 
+  filter(mean_swc_per_dry_g < 3, 
+         mean_swc_per_dry_g > .3, 
+         !year_rwc == 3) %>% 
+  mutate(growth_words = case_when(
+    year_rwc == 0 ~ "new growth",
+    year_rwc == 1 ~ "previous year growth", 
+    year_rwc %in% c(2, 3) ~ "old growth", 
+    TRUE ~ as.character(year_rwc)
+  )) %>% 
+  ggplot(aes(y = mean_swc_per_dry_g, x = mean_mpa, color = type_rwc)) +
+  geom_jitter(alpha = .3) +
+  facet_wrap(~growth_words) +
+  geom_smooth(method = "lm", se = F)+
+  color_leaves_stems +
+  labs(y = "Saturated Water Content (g wet/g dry)", 
+       x = "Water Potential (MPa)")
+
+swc_fig_SI <- wp_wc_rwc_df_all %>% 
+  mutate(date_rwc = case_when(
+    date_rwc %in% c("2022-04-11", "2022-04-14") ~ as.Date("2022-04-12"),
+    date_rwc %in% c("2022-05-23", "2022-05-27") ~ as.Date("2022-05-25"),
+    date_rwc %in% c("2022-09-12") ~ as.Date("2022-09-15"),
+    TRUE ~ as.Date(date_rwc)
+  )) %>% 
+  mutate(species = case_when(
+    species %in% c("live oak") ~ ("Q. agrifolia"),
+    species %in% c("blue oak") ~ ("Q. douglassii"),
+    TRUE ~ as.character(species)
+  )) %>% 
+  filter(mean_swc_per_dry_g < 3, 
+         mean_swc_per_dry_g > .3, 
+         !year_rwc == 3, 
+         year_rwc %in% c(0,1), 
+         type_rwc == "leaf", 
+         #time == "md"
+         ) %>% 
+  drop_na(week) %>% 
+  # mutate(growth_words = case_when(
+  #   year == 0 ~ "new growth",
+  #   year == 1 ~ "previous year growth", 
+  #   year %in% c(2, 3) ~ "old growth", 
+  #   TRUE ~ as.character(year)
+  # )) %>% 
+  ggplot(aes(x = mean_swc_per_dry_g, 
+             y = -1*mean_mpa, 
+             color = as.factor(date_rwc), 
+            # shape = as.factor(year_rwc)
+            # shape = time
+             )) +
+  geom_jitter(alpha = 1) + 
+  theme(
+   # legend.position = c(.8, .2),
+   # legend.position = "none",
+  strip.background = element_blank(),
+  legend.key = element_rect(fill = NA),
+  #strip.text.y = element_blank(), 
+   strip.text.x = element_text(size = 16), 
+  # axis.text.y = element_text(size = 12), 
+   axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+  #axis.ticks.y = element_blank(), 
+   axis.title.y = element_text(size = 16),
+   axis.title.x = element_text(size = 16),
+ # axis.title.y = element_blank(),
+  legend.title = element_text(size = 16), 
+  legend.text = element_text(size = 13), 
+  plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+# legend.position = "none"
+  ) +
+ # geom_smooth(method = "lm", se = F)+
+ # facet_wrap(~growth_words) +
+  #geom_smooth(method = "lm", se = F)+
+  color_many +
+  #color_leaves_stems +
+  labs(x = "Saturated Water Content (g wet/g dry)", 
+       y  = "Water Potential (MPa)", 
+       color = "Date", 
+       shape = "Tissue Age") +
+  facet_wrap(~species, scales = "free")
+swc_fig_SI
+
+ggsave(here("figures", "SI Figures", "swc_fig_SI"), swc_fig_SI, device = "jpg", width = 9, height = 5, dpi = 300)
+```
+
+
+```{r, fig.height=2, fig.width=6}
+##USE THIS ONE: 
+#lma_plot <- data_qudo_raw %>% 
+lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
+  select(tree, species, week_alas_link, mean_swc_per_dry_g, lma_g_cm2, type_rwc, type, year_alas, year_rwc) %>% 
+  filter(year_alas %in% c(0, 1)) %>% 
+  filter(year_rwc %in% c(0, 1))  %>% 
+  drop_na(mean_swc_per_dry_g) %>% 
+  distinct() %>% 
+  mutate(week_alas_link = case_when(
+    week_alas_link %in% c(11) ~ 10, 
+    week_alas_link %in% c(13) ~ 14, 
+    TRUE ~ as.numeric(week_alas_link)
+  )) %>% 
+    group_by(week_alas_link, species, year_alas
+             ) %>% 
+  mutate(lma_g_cm2 = mean(lma_g_cm2, na.rm = T), 
+         mean_swc_per_dry_g = mean(mean_swc_per_dry_g, na.rm = T)) 
+
+lma_plot_quag <- lma_plot_df %>%  
+  filter(species %in% c("live oak")) %>% 
+  distinct() %>% 
+  drop_na(lma_g_cm2)  %>%
+  ggplot() +
+  geom_point(aes(x = week_alas_link, 
+               shape = as.factor(year_alas), 
+             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+
+             ),
+             size = 3) +
+  geom_line(aes(x = week_alas_link, 
+             y = lma_g_cm2 * 43, 
+             )) +
+  geom_point(aes(x = week_alas_link, 
+             y = mean_swc_per_dry_g, 
+             color = "darkgrey",
+             ),
+                shape = 17,
+             size = 3,
+            color = "darkgrey") +
+  geom_line(aes(x = week_alas_link, 
+             y =mean_swc_per_dry_g, 
+            # linetype = year_rwc, 
+             group = species
+             ),
+            color = "darkgrey") +
+  scale_x_continuous(breaks = c(10, 14, 21, 29, 37)) +
+  labs(y = "LMA (g/cm2)", 
+       x = "Week") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank(), 
+        axis.title.x = element_text(size = 20), 
+        axis.text.x = element_text(size = 20), 
+       # axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       # axis.text.x = element_text(hjust=.5, size= 20)
+        )
+lma_plot
+
+y.grob <- textGrob("SWC (g)", 
+                   gp=gpar(col="#525252", 
+                           fontsize=20), 
+                   rot=90)
+
+y.grob2 <- textGrob("LMA (g/cm2)", 
+                   gp=gpar(col="black", 
+                           fontsize=20), 
+                   rot=90)
+
+lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
+                            right = y.grob, 
+                            left = y.grob2,
+                            #bottom = x.grob1),
+                            heights = c(1, 0), 
+                            widths = c(1.5, 0)))
+```

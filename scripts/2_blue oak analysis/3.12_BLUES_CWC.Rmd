@@ -1736,9 +1736,31 @@ space_nice_2
 
 ####***Space - SE
 
+
 ```{r}
-space_slope <- final_df_space_se %>% 
-  mutate(week = as.factor(week)) %>% 
+space_slope_df <- final_df_space_se%>%  
+  mutate(week = case_when(
+        week %in% c(10) ~ "2022-03-08",
+        week %in% c(10) ~  "2022-03-15", 
+        week %in% c(12) ~  "2022-03-25",
+        week %in% c(14) ~  "2022-04-04",
+        week %in% c(15) ~  "2022-04-11",
+        week %in% c(17) ~  "2022-04-25", 
+        week %in% c(18) ~ "2022-05-04",
+        week %in% c(19) ~  "2022-05-09",
+        week %in% c(21) ~  "2022-05-23",
+        week %in% c(29) ~  "2022-07-19",
+        week %in% c(33) ~  "2022-08-18",
+        week %in% c(37) ~  "2022-09-15")) %>% 
+  mutate(week = format(as.Date(week), "%m-%d")) %>% 
+  mutate(week = as.factor(week))
+
+unique(space_slope_df$week)
+```
+
+
+```{r}
+space_slope <- space_slope_df %>% 
  # filter(week %in% c(14, 17, 21, 29)) %>% 
  # filter(term == "lwc_mean") %>% 
   mutate(upr = slope + 1.96*(std.error.slope), 
@@ -1751,7 +1773,7 @@ space_slope <- final_df_space_se %>%
   #         alpha = .01, 
   #         color = NA) +
   # geom_hline(aes(yintercept = 880.5797), color = "#525252") +
-  geom_point(aes(y = slope ,x = week), size =2) +
+  geom_point(aes(y = slope ,x = week), size =3) +
     geom_point(aes(y = upr, x = week), size = 1) +
   geom_point(aes(y = lwr, x = week), size = 1) +
   #geom_line(aes(group = week, y = week, x = upr)) +
@@ -1776,15 +1798,44 @@ space_slope <- final_df_space_se %>%
     legend.title = element_blank(),
      legend.margin=margin(0,0,0,0),
       legend.box.margin=margin(-5,-8,-8,-8),
-    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+    plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt"),
+     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=.25)
     ) +
+  geom_hline(yintercept = 0, linetype="dotted") + 
+  scale_color_manual(values = c("9" ="#122241",
+                                                     "03-08" = "#48578E", #week 10
+                                                    "03-15" = "#48578E", #10
+                                                    # "11" = "#122451", 
+                                                     "03-23" = "#165E6F", #12
+                                                     "03-25" = "#165E6F", #12
+                                                     "03-30" = "#B6D0E2", #14
+                                                     "04-04" = "#B6D0E2", #14
+                                                     "04-06" = "#B6D0E2", #14
+                                                     #"13" = "#B6D0E2", 
+                                                     "04-13" = "#729684", 
+                                                     "04-11" = "#729684", 
+                                                    # "16" = "#8E9D68", 
+                                                     "04-27" = "#8E9D30", #17
+                                                     "04-25" = "#8E9D30", #17
+                                                       "05-04" = "#D7B110", #18
+                                                     "05-09" = "#D9C000", #19
+                                                    # "20" = "#F8A63A" ,
+                                                    # "21" = "#F8A63A" ,
+                                                     "05-23" = "#EC7E28", #21
+                                                     "07-19" = "#CC5210", #29
+                                                     "08-18"= "#E97B6E", #33
+                                                    # "37" = "#b33b72",
+                                                     "09-15" = "#CC5265" #37
+                                                     #"39" = "#862d46" 
+                                                    # "39" = "#C969A1"
+                                                   #  "37" = "#b33b72",
+                                                   #  "39" = "#893843"
+                                                    )) +
   #scale_x_continuous(breaks = c(10, 12, 14,15, 17, 19, 21, 29, 33, 37)
                   #   breaks = c(37, 33, 29, 21, 19, 17, 15, 14, 12, 10)
                       # seq(10, 30, by = 1)
   #                   ) +
   geom_hline(yintercept = 0, linetype="dotted") + 
-  color_week_assigned+
- # color_many_2 +
   guides(color = guide_legend(nrow = 2)) #+
 space_slope
 ```
@@ -2007,7 +2058,22 @@ time_1
 ######Legend:
 
 ```{r}
-legend_plot <- data_og_cwc %>% 
+legend_plot <- data_og_cwc  %>% 
+  add_row(date_wp = as.Date("2022-05-03"), time = "md", cwc = .05, water_potential = -.3) %>% 
+  filter(date_wp %in% c("2022-03-08",
+         "2022-03-15", 
+         "2022-03-25",
+         "2022-04-04",
+         "2022-04-11",
+         "2022-04-25", 
+         "2022-05-04",
+         "2022-05-09",
+         "2022-05-23",
+         "2022-07-19",
+         "2022-08-18",
+         "2022-09-15")) %>%
+  mutate(week = format(as.Date(date_wp), "%m-%d"))  %>% 
+  drop_na(site) %>% 
   mutate(time = case_when(
     time == "md" ~ "Midday", 
     time == "pd" ~ "Predawn"
@@ -2021,7 +2087,7 @@ legend_plot <- data_og_cwc %>%
             # shape = as.factor(time),
              )) +
   geom_point() +
-  theme(legend.position="top",
+  theme(legend.position="right",
        # legend.position= c(.7, .2),
       strip.background = element_blank(),
       strip.text.x = element_text(size = 12),
@@ -2033,15 +2099,43 @@ legend_plot <- data_og_cwc %>%
      axis.title.y = element_blank(),
      legend.text = element_text(size = 13), 
      legend.title = element_text(size = 16),
-     legend.margin=margin(0,0,0,0),
+     legend.margin=margin(0,.2,.2,.2),
     legend.box.margin=margin(-5,-8,-8,-8)
     ) +
   geom_smooth(method = "lm", se = F, size = .5) + 
-  labs(color = "Week", 
+  labs(color = "Month-Day", 
        shape = "Time") +
-  color_week_assigned +
+  scale_color_manual(values = c("9" ="#122241",
+                                                     "03-08" = "#122241", #week 10
+                                                   # "03-15" = "#48578E", #10
+                                                    # "11" = "#122451", 
+                                                     "03-23" = "#165E6F", #12
+                                                     "03-25" = "#165E6F", #12
+                                                     "03-30" = "#B6D0E2", #14
+                                                     "04-04" = "#B6D0E2", #14
+                                                     "04-06" = "#B6D0E2", #14
+                                                     #"13" = "#B6D0E2", 
+                                                     "04-13" = "#729684", 
+                                                     "04-11" = "#729684", 
+                                                    # "16" = "#8E9D68", 
+                                                     "04-27" = "#8E9D30", #17
+                                                     "04-25" = "#8E9D30", #17
+                                                    "05-04" = "#D7B110", #18
+                                                     "05-09" = "#D9C000", #19
+                                                    # "20" = "#F8A63A" ,
+                                                    # "21" = "#F8A63A" ,
+                                                     "05-23" = "#EC7E28", #21
+                                                     "07-19" = "#CC5210", #29
+                                                     "08-18"= "#E97B6E", #33
+                                                    # "37" = "#b33b72",
+                                                     "09-15" = "#CC5265" #37
+                                                     #"39" = "#862d46" 
+                                                    # "39" = "#C969A1"
+                                                   #  "37" = "#b33b72",
+                                                   #  "39" = "#893843"
+                                                    )) #+
  # ylim(0,2) +
-  guides(color = guide_legend(nrow = 2))
+  #guides(color = guide_legend(nrow = 1))
 legend_plot
 
 legend_scatterplots <- cowplot::get_legend(legend_plot)
@@ -2066,7 +2160,7 @@ combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary,
                                    nrow = 1, 
                                   rel_widths = c(1, -.005, 1  #, -.02, .5
                                                  ), 
-                                  labels = c("B", "", "D"#,"", "G"
+                                  labels = c("C", "", "D"#,"", "G"
                                              ),
                                   label_x = .1,
                                   #hjust= c(3, 0, 3),
@@ -2095,7 +2189,7 @@ x.grob2 <- textGrob("Canopy Water Content (g/cm2)",
 
 combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, NULL, 
                                       time_1,
-                                   labels=c("A","", "C"),
+                                   labels=c("A","", "B"),
                                    label_x = .1,
                                    label_y = .98,
                                    nrow = 1,
@@ -2104,15 +2198,17 @@ combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, NULL,
                                    ) 
 combined_plots_wide_nolegend
 
-combined_plots_wide <- cowplot::plot_grid(legend_scatterplots,
-                                      combined_plots_wide_nolegend,
-                                          nrow = 2, 
-                                          rel_heights = c(.2, 1))
+combined_plots_wide <- cowplot::plot_grid(combined_plots_wide_nolegend,
+                                      legend_scatterplots,
+                                          nrow = 1, 
+                                          rel_heights = c(1, 1))
 
-combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_plots_wide, 
+combined_plots_wide_labels <- grid.arrange(arrangeGrob(combined_plots_wide_nolegend,
                                 left = y.grob2, 
                                 bottom = x.grob2,
+                               # right = legend_scatterplots,
                                 heights = c(1, 0)))
+combined_plots_wide_labels 
 
 combined_plots_all <- cowplot::plot_grid(
   combined_plots_wide_labels, 
@@ -2122,5 +2218,11 @@ combined_plots_all <- cowplot::plot_grid(
 
 combined_plots_all
 
-ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combined_plots_all, device = "jpg", width = 8, height = 7, dpi = 300)
+combined_plots_all_legend <- grid.arrange(arrangeGrob(combined_plots_all,
+                                right = legend_scatterplots,
+                                heights = c(1, 0), 
+                                widths = c(1, .02)))
+combined_plots_all_legend
+
+ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combined_plots_all_legend, device = "jpg", width = 10, height = 7, dpi = 300)
 ```

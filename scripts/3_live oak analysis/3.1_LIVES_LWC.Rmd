@@ -1877,8 +1877,10 @@ ggplot2::ggsave(here::here("figures", "quag figures", "LWC", "combined_plots_all
 ##USE THIS ONE: 
 #lma_plot <- data_qudo_raw %>% 
 lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
-  filter(year_alas %in% c(0)) %>% 
-  filter(year_rwc %in% c(0))
+  filter(year_alas %in% c(1)) %>% 
+  filter(year_rwc %in% c(1))
+
+unique(lma_plot_df$date_rwc)
 
 lma_plot <- lma_plot_df  %>% 
    # select(mean_swc_per_dry_g, lma_g_cm2, species, week, week_alas_link, year_alas,year_rwc) %>% 
@@ -1912,12 +1914,12 @@ lma_plot <- lma_plot_df  %>%
   ggplot() +
   geom_point(aes(x = week_alas_link, 
               #  shape = year_alas, 
-             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+             y = lma_g_cm2  * 34, #need a scaling factor to bring lma up to swc
              #color = species
              ),
              size = 3) +
   geom_line(aes(x = week_alas_link, 
-             y = lma_g_cm2 * 43, 
+             y = lma_g_cm2 * 34, 
            #  line_type = year_alas,
              #color = species
              )) +
@@ -1942,8 +1944,8 @@ lma_plot <- lma_plot_df  %>%
        x = "Week") +
   theme(legend.position = "none",
         axis.title.y = element_blank(), 
-        axis.title.x = element_text(size = 20), 
-        axis.text.x = element_text(size = 20), 
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(), 
        # axis.title.x = element_blank(), 
         axis.text.y = element_blank(),
         axis.ticks = element_blank(), 
@@ -1959,6 +1961,7 @@ y.grob <- textGrob("SWC (g)",
 y.grob2 <- textGrob("LMA (g/cm2)", 
                    gp=gpar(col="black", 
                            fontsize=20), 
+                  
                    rot=90)
 
 lma_swc_plot <- grid.arrange(arrangeGrob(lma_plot,
@@ -1976,8 +1979,8 @@ ggsave(here("figures", "quag figures", "lma_long_plot"), lma_swc_plot, device = 
 ##USE THIS ONE: 
 #lma_plot <- data_qudo_raw %>% 
 lma_plot_df <- read_csv(here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) %>% 
-  filter(!(year_alas %in% c(0))) %>%  
-    filter(!(year_rwc %in% c(0))) %>% 
+ # filter(!(year_alas %in% c(0))) %>%  
+ #   filter(!(year_rwc %in% c(0))) %>% 
   filter(species %in% c("live oak"))
 
 lma_plot <- lma_plot_df  %>% 
@@ -2011,12 +2014,12 @@ lma_plot <- lma_plot_df  %>%
   ggplot() +
   geom_point(aes(x = week_alas_link, 
               #  shape = year_alas, 
-             y = lma_g_cm2  * 43, #need a scaling factor to bring lma up to swc
+             y = lma_g_cm2  * 37, #need a scaling factor to bring lma up to swc
              #color = species
              ),
              size = 3) +
   geom_line(aes(x = week_alas_link, 
-             y = lma_g_cm2 * 43, 
+             y = lma_g_cm2 * 37, 
            #  line_type = year_alas,
              #color = species
              )) +
@@ -2041,7 +2044,7 @@ lma_plot <- lma_plot_df  %>%
        x = "Week") +
   theme(legend.position = "none",
         axis.title.y = element_blank(), 
-        axis.title.x = element_text(size = 20), 
+        axis.title.x = element_blank(),
         axis.text.x = element_text(size = 20), 
        # axis.title.x = element_blank(), 
         axis.text.y = element_blank(),
