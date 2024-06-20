@@ -2226,3 +2226,14 @@ combined_plots_all_legend
 
 ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combined_plots_all_legend, device = "jpg", width = 10, height = 7, dpi = 300)
 ```
+
+#-----------------
+
+#dCWC
+
+```{r}
+
+data_og_cwc %>% 
+  mutate(d_cwc = )
+```
+
