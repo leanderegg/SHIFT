@@ -2233,7 +2233,30 @@ ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combin
 
 ```{r}
 
-data_og_cwc %>% 
-  mutate(d_cwc = )
+data_dcwc <- data_og_cwc %>% 
+  mutate(week = as.character(week)) %>% 
+  pivot_wider(names_from = week, 
+              values_from = c(cwc, water_potential)
+              ) %>% 
+  select(-date_wp, -time_season) %>% 
+  group_by(tree, time) %>% 
+  fill(c(3:25), .direction = "downup") %>% 
+  distinct() %>% 
+  ungroup() %>% 
+  group_by(tree) %>% 
+  fill(c(4:11), .direction = "downup") %>% 
+  filter(time == "md") %>%#just middays for now! 
+  mutate(week10_12 = cwc_10-cwc_12,
+         week12_14 = cwc_12-cwc_14,
+         week14_15 = cwc_14-cwc_15,
+         week15_17 = cwc_15-cwc_17,
+         week17_18 = cwc_17-cwc_18,
+         week18_19 = cwc_18-cwc_19,
+         week19_21 = cwc_19-cwc_21,
+         week21_33 = cwc_21-cwc_33,
+         week33_37 = cwc_33-cwc_37,
+         )
+
+data_dcwc 
 ```
 
