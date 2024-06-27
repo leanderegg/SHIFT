@@ -692,8 +692,11 @@ nice_hydration_layered <- ggplot() +
 
 nice_hydration_layered
 
-#Pull X trees, get mean slope for those X, do 1000x. 
+#Pull X trees, get mean slope for those X, do 1000x.
+```
 
+
+```{r, eval = T}
 data %>% 
   #group_by(week) %>% 
   #summarise() %>% 
@@ -943,9 +946,7 @@ wc_qudo_df %>%
 
 
 #Bootsrapped dataset: 
-```{r}
-final_df_all
-```
+
 
 #HYDRATION
 
@@ -1134,7 +1135,7 @@ ggsave(here("figures", "qudo figures", "LWC", "nice_hydration_slopes_bs_inds"), 
 ###Midday: 
 
 ```{r, warning = F}
-wc_wk_centered_df <- wk_all %>% 
+data_og_lwc <- wk_all %>% 
   filter(!week %in% c(9)) %>% 
   #filter(lwc_mean > .44) %>% 
   mutate(water_potential = water_potential) %>% 
@@ -1150,7 +1151,7 @@ wc_wk_centered_df <- wk_all %>%
 
 ```{r, warning = F, echo=FALSE}
 #scaled
-space_nice <- wc_wk_centered_df %>% 
+space_nice <- data_og_lwc %>% 
   #drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
             # x = lwc_mean_centered, 
@@ -1192,7 +1193,7 @@ ggsave(here("figures", "qudo figures", "LWC", "nice_space"), space_nice, device 
 
 ```{r, warning = F, echo=FALSE}
 #scaled
-space_nice_centered <- wc_wk_centered_df %>% 
+space_nice_centered <- data_og_lwc %>% 
   #drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
              x = lwc_mean_centered, 
@@ -1235,21 +1236,24 @@ ggsave(here("figures", "qudo figures", "LWC", "nice_space_centered"), space_nice
 Do we need to include site here? 
 
 ```{r}
-space_df_nosite <- wc_wk_centered_df %>% 
+space_df_nosite <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week))
 
-space_mod <- lmer(water_potential ~ lwc_mean + (lwc_mean|week), data = space_df_nosite, REML = T)
+space_mod1 <- lmer(water_potential ~ lwc_mean + (lwc_mean|week), data = space_df_nosite, REML = T)
 #summary(space_mod)
 
 space_mod_site <- lmer(water_potential ~ lwc_mean + (lwc_mean|week) + (1|site), data = space_df_nosite,  REML = T)
 #summary(space_mod_site)
 
-anova(space_mod, space_mod_site)
+anova(space_mod1, space_mod_site)
 
-space_mod_df <- broom.mixed::tidy(space_mod)
+space_mod_df <- broom.mixed::tidy(space_mod1)
 
 space_mod_df
+
+space_mod_df <- broom.mixed::glance(space_mod1)
+
 
 library("lmerTest")
 summary(space_mod)
@@ -1259,7 +1263,7 @@ Which weeks are significant?
 
 ```{r}
 #week 10: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 10)
@@ -1272,7 +1276,7 @@ plot(space_mod)
 #p < 0.001
 
 #week 14: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 14)
@@ -1282,7 +1286,7 @@ summary(space_mod)
 #p = 0.0145
 
 #week 15: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 15)
@@ -1292,7 +1296,7 @@ summary(space_mod)
 #p < 0.001
 
 #week 17: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 17)
@@ -1302,7 +1306,7 @@ summary(space_mod)
 #not sig
 
 #week 19: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 19)
@@ -1312,7 +1316,7 @@ summary(space_mod)
 #p 0.0015
 
 #week 21: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 21)
@@ -1322,7 +1326,7 @@ summary(space_mod)
 #p = 0.009
 
 #week 29: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 29)
@@ -1332,7 +1336,7 @@ summary(space_mod)
 #p = 0.029
 
 #week 33: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 33)
@@ -1343,7 +1347,7 @@ summary(space_mod)
 
 
 #week 37: 
-wk <- wc_wk_centered_df %>% 
+wk <- data_og_lwc %>% 
   drop_na(site) %>% 
   mutate(week = as.factor(week)) %>% 
   filter(week == 37)
@@ -1356,7 +1360,7 @@ YES
 
 ###Slopes, bootsrapped: 
 
-```{r}
+```{r, eval = F}
 space_slopes <- final_df_all %>% 
    filter(!week %in% c(9)) %>% 
   filter(analysis == "space") %>% 
@@ -1557,7 +1561,7 @@ ggsave(here("figures", "qudo figures", "LWC", "time_summary_slopes_boot_tree"), 
 glanced mods
 
 ```{r}
-glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod) 
+glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod1) 
                        %>% mutate(mod = "space"),
                        hyd_glance <-  broom.mixed::glance(m_wk_rand) 
                        %>% mutate(mod = "hyd"),
@@ -1565,7 +1569,7 @@ glance_df <- bind_rows(space_glance <- broom.mixed::glance(space_mod)
                        %>% mutate(mod = "time"),
                        time_glance <- broom.mixed::glance(time_season_mod)
                        %>% mutate(mod = "interaction"),
-                       as_data_frame(r.squaredGLMM(space_mod)) 
+                       as_data_frame(r.squaredGLMM(space_mod1)) 
                        %>% mutate(mod = "space"),
                        as_data_frame(r.squaredGLMM(m_wk_rand)) 
                        %>% mutate(mod = "hyd"),
@@ -1749,7 +1753,7 @@ nice_hydration_layered_1
 
 ```{r}
 #scaled
-space_nice_1 <- wc_wk_centered_df %>% 
+space_nice_1 <- data_og_lwc %>% 
   drop_na(site) %>% 
   ggplot(aes(y = water_potential, 
             x = lwc_mean,
@@ -2497,6 +2501,12 @@ marginal_r2_md <- round(MuMIn::r.squaredGLMM(m2)[1], digits = 3)
 marginal_r2_md
 ```
 
+```{r}
+lma_mpa_df %>% 
+  drop_na(lma_g_cm2_new, mean_mpa)
+
+unique(lma_mpa_df$tree)
+```
 
 ```{r}
 #PLot!

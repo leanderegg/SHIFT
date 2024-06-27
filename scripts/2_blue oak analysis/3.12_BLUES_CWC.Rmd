@@ -2155,7 +2155,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary,
+combined_slopes_wide <- cowplot::plot_grid(time_summary, NULL, space_slope, 
                                            # NULL, pv_slope,
                                    nrow = 1, 
                                   rel_widths = c(1, -.005, 1  #, -.02, .5
@@ -2163,7 +2163,7 @@ combined_slopes_wide <- cowplot::plot_grid(space_slope, NULL, time_summary,
                                   labels = c("C", "", "D"#,"", "G"
                                              ),
                                   label_x = .1,
-                                  hjust= c(.5, 0, 0),
+                                  hjust= c(0, 0, 0),
                                   label_y = .98
                                   # rel_heights = c(.15, 1, .3), 
                                    #rel_widths = c(1, 1, 1), 
@@ -2187,8 +2187,10 @@ x.grob2 <- textGrob("Canopy Water Content (g/cm2)",
                            fontsize=15))
 
 
-combined_plots_wide_nolegend <- cowplot::plot_grid(space_nice_1, NULL, 
+combined_plots_wide_nolegend <- cowplot::plot_grid(
                                       time_1,
+                                      NULL, 
+                                      space_nice_1, 
                                    labels=c("A","", "B"),
                                    label_x = .1,
                                    label_y = .98,
@@ -2230,6 +2232,98 @@ ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combin
 #-----------------
 
 #dCWC
+
+Are there patterns in spatial dCWC that map onto MPa? 
+
+```{r}
+dcwc_space <- tbootstrapped_slopes_df_after %>% 
+  select(tree, slope) %>% 
+  distinct()
+
+dcwc_df <- merge(dcwc_space, data_og_cwc, by = c("tree"))
+
+plotly::ggplotly(dcwc_df %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_point() + 
+                   geom_smooth(method = "lm") +
+                   facet_wrap(~week, scales = "free")
+                 )
+
+dcwc_df %>% 
+  filter(week > 19) %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_smooth(method = "lm") +
+                   geom_point() + 
+                   facet_wrap(~date_wp, scales = "free") +
+  scale_color_manual(values = c("#C969A1","#165E6F")) +
+  labs(y = "dCWC", 
+       x = "Water Potential", 
+       color = "Time")
+```
+
+
+```{r}
+#predawns, week 37
+dcwc_pd <- dcwc_df %>% 
+  filter(time == "pd", 
+         week == "37")
+
+
+m1 <- lm(slope ~ water_potential, data = dcwc_pd)
+summary(m1)
+anova(m1)
+plot(m1)
+```
+
+
+```{r}
+#predawns, week 33
+dcwc_pd <- dcwc_df %>% 
+  filter(time == "pd", 
+         week == "33")
+
+m1 <- lm(slope ~ water_potential, data = dcwc_pd)
+summary(m1)
+anova(m1)
+plot(m1)
+```
+
+
+```{r}
+#middays, week 37
+dcwc_md <- dcwc_df %>% 
+  filter(time == "md", 
+         week == "37")
+
+
+m1 <- lm(slope ~ water_potential, data = dcwc_md)
+summary(m1)
+anova(m1)
+
+plot(m1)
+```
+
+
+```{r}
+#predawns, week 33
+dcwc_md <- dcwc_df %>% 
+  filter(time == "md", 
+         week == "33")
+
+m1 <- lm(slope ~ log(-1*water_potential), data = dcwc_md)
+summary(m1)
+anova(m1)
+
+plot(m1)
+```
+
+#-----------------
+
+#UNUSED for now!
 
 ```{r}
 
