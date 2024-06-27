@@ -1576,6 +1576,8 @@ select(tree, week, date_wp, time, site, plot,  order(colnames(.))) %>%
 write.csv(wp_wc_rwc_alas_df, here("processed-data", paste0("wp_wc_rwc_",datver,".csv"))) 
 ```
 
+
+
 ####Dataset for analysis of LWC, MPA, LWA for manuscript:
 
 ######*REMOVING GENERAL OUTLIERS:
