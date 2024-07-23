@@ -251,11 +251,11 @@ latlon.ll <- SpatialPointsDataFrame(coords = data.frame(trees$longitude, trees$l
 #latlon.utm <- spTransform(latlon.ll, CRSobj = crs(sedg_hillshade2))
 ```
 
-#End of season PDs (for fig. 1)
+#***End of season PDs (for fig. 1)
 ```{r}
 pds <- latlon.ll@data  %>% 
   filter(week %in% c(29:37), 
-         species == "blue oak"
+        # species == "blue oak"
          ) %>% 
   group_by(tree) %>% 
   mutate(pd_mpa = mean(pd_mpa, na.rm = T)) %>% 
@@ -272,6 +272,10 @@ pal_md <- colorNumeric(c( "#122451",
                           
                                   ), domain = c(c(0,4)))
 
+shapes = c(5, 6) # base R plotting symbols (http://www.statmethods.net/advgraphs/parameters.html)
+iconFiles = pchIcons(shapes, 40, 40, col = c(pal_md), lwd = 4)
+
+
 whole_map <- leaflet(pds) %>% 
   addTiles()  %>% 
   addPolygons(data=boundary, 
@@ -281,12 +285,32 @@ whole_map <- leaflet(pds) %>%
     color = "black", 
     opacity = 1,
     weight = 2) %>% 
-  addCircleMarkers(radius = 5,
+  addCircleMarkers(
+    data = pds %>% filter(species.x == "blue oak"),
+    radius = 6,
+    #color = "black",
+    weight = 1,
+    color = ~pal_md(pd_mpa),
+   # fill = "red",
+    stroke = TRUE,
+    fillOpacity = 0.5) %>%
+  addCircleMarkers(
+    data = pds %>% filter(species.x == "live oak"),
+    radius = 4,
     color = ~ pal_md(pd_mpa),
-    stroke = FALSE, 
-    fillOpacity = 0.5) %>% 
+    stroke = FALSE,
+    fillOpacity = 0.5) %>%
+  # addTiles() %>%
+  # addMarkers(
+  #   data = pds,
+  #   icon = ~ icons(iconUrl = iconFiles[species.x])) %>% 
+  # # addMarkers(#radius = 5,
+  # #   color = ~ pal_md(pd_mpa),
+  # #   stroke = FALSE, 
+  # #   fillOpacity = 0.5) %>% 
     addProviderTiles("Esri.WorldTopoMap") %>%
-  addLegend("bottomright", pal = pal_md, values = ~pd_mpa,
+  addLegend("bottomleft", 
+            pal = pal_md, values = ~pd_mpa,
     title = "MPa",
     labFormat = labelFormat(prefix = "-"),
     opacity = 1
@@ -298,7 +322,6 @@ whole_map <- leaflet(pds) %>%
 
 whole_map
 ```
-
 
 #MPa
 
@@ -363,7 +386,7 @@ pal_md <- colorNumeric(c( "#122451",
 
 late_mds <- leaflet(wk33_mds) %>% 
   addTiles() %>% 
-  addCircleMarkers( radius = 5,
+  addCircleMarkers(radius = 5,
     color = ~ pal_md(md_mpa),
     stroke = FALSE, fillOpacity = 0.5) %>% 
    addProviderTiles("Esri.WorldTopoMap") %>% 

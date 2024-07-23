@@ -1438,6 +1438,12 @@ nice_hydration_layered_1
 #####Space
 
 ```{r}
+unique(data_og_quag_lwc_mean$week)
+
+```
+
+
+```{r}
 #scaled
 space_nice_1 <- data_og_quag_lwc_mean %>% 
   filter(time == "md") %>% 
