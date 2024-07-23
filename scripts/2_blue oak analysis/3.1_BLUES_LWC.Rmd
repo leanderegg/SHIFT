@@ -40,10 +40,11 @@ data_qudo_raw <- read_csv(here::here("processed-data", paste0("analysis",datver,
   distinct() %>% 
   filter(!(week == 19 & time == "pd" & water_potential < -2))
 
-data_og_lwc <- data_qudo_raw %>% 
+data_og_lwc_1 <- data_qudo_raw %>% 
   select(tree, week, water_potential, lwc_mean, time_season, time, species, site, date_wp) %>% 
   distinct() 
   
+
 
 #take a look at the counts for each week: 
 data_og_lwc%>% 
@@ -1618,7 +1619,7 @@ library(gridExtra)
 #####Hydration
 
 ```{r}
-wk_figs <-data_og_lwc %>% 
+wk_figs <-data_og_lwc_1 %>% 
   group_by(tree, week) %>% 
   filter(n() == 2) %>% 
   filter(week %in% c(10, 12, 14, 15, 17, 19, 21, 29, 33, 37), 
@@ -2359,7 +2360,7 @@ x.grob1 <- textGrob("Time",
                    gp=gpar(fontface="bold", #col="blue", 
                            fontsize=15))
 
-combined_slopes_wide <- cowplot::plot_grid( hyd_slopes, NULL, time_summary, NULL,space_slope,  
+combined_slopes_wide <- cowplot::plot_grid(hyd_slopes , NULL, time_summary, NULL,space_slope,  
                                            # NULL, pv_slope,
                                    nrow = 1, 
                                   rel_widths = c(1, -.02, 1, -.02, 1 #, -.02, .5
