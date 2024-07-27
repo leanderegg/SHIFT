@@ -1563,7 +1563,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>%
   distinct() %>% 
   drop_na(time) %>% 
   arrange(tree, week, date_wc, time) %>% 
-  mutate(swc_per_dry_g_mean = mean_swc_per_dry_g) %>% 
+  #mutate(swc_per_dry_g_mean = mean_swc_per_dry_g) %>% 
     mutate(mpa_mean = mean_mpa) %>% 
   # select( -week_rwc_link, -alas_measured, -mpa_mean, -tree_factor, -dm_bulk_g, -wm_bulk_g, -sum_water_wt_g, -sum_dm_g, -bulk_or_individual_leaf, -sum_area_cm2, -type_rwc, -year_rwc, -week_wp, -mean_swc_g, -ldmc, -rwc, -lwa_g_cm2, -ldm_g, -year_alas, -mean_swc_per_dry_g, - mean_mpa, -lma_g_cm2, -alas_cm2_per_mm2, -lwa_g_cm2_new, -date_wc, -lwc_new) %>% 
 select(tree, week, date_wp, time, site, plot,  order(colnames(.))) %>% 
