@@ -52,6 +52,11 @@ data_og_cwc <- read_csv(here("processed-data", paste0("cwc_analysis",datver,".cs
    # filter(!tree %in% c(2012, 2011)) %>% 
   filter(!(tree %in% c(2346))) %>% #this tree seems to have a problem with post-leafout cwc - all 0s - likely becuase the canopy was too small to see. 
   filter(!week %in% c(11, 9)) #week 11 only has 9 midday measurements and acts really odd (2022-03-15), 9 just had 3 measurements 
+
+data_og_cwc%>% 
+  filter(time == "md") %>% 
+  group_by(week) %>% 
+  summarise(n = n())
 ```
 
 
@@ -164,7 +169,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 42  # Adjust as needed based on the number of unique trees
+n_sample_trees <- 10  # Adjust as needed based on the number of unique trees
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -256,7 +261,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 39  # Adjust as needed
+n_sample_trees <- 10  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
@@ -2231,8 +2236,528 @@ ggsave(here("figures", "qudo figures", "CWC", "combined_plots_all_qudo"), combin
 
 #-----------------
 
-#dCWC
+#dCWC (change in CWC over time)
 
+Whole after leaf expansion: 
+```{r}
+###dcwc leafout: 
+
+data <- filtered_data  %>% 
+  filter(time_season == "after leafout") %>% 
+  distinct() %>% 
+  drop_na(water_potential, cwc) %>% 
+  group_by(tree) %>% 
+  mutate(COUNT = n()) %>% 
+  filter(!(COUNT == 1)) %>% 
+  select(-COUNT)
+data
+
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded dcwc proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 10
+
+# Number of random trees to sample
+n_sample_trees <- 10  # Adjust as needed based on the number of unique trees
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(week ~ cwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_dcwc <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_dcwc)
+
+summary(tbootstrapped_slopes_df_dcwc)
+
+mean_slope_dcwc = tbootstrapped_slopes_df_dcwc %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "dcwc leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_dcwc
+
+dcwc_space <- tbootstrapped_slopes_df_dcwc %>% 
+  select(tree, slope) %>% 
+  distinct()
+
+dcwc_df <- merge(dcwc_space, data_og_cwc)
+
+plotly::ggplotly(dcwc_df %>% 
+                   ggplot(aes(y = slope, 
+                              x = week, 
+                              color = time)) +
+                   geom_point() + 
+                   geom_smooth(method = "lm") +
+                   facet_wrap(~week, scales = "free")
+                 )
+
+dcwc_df %>% 
+  filter(week > 19) %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_smooth(method = "lm") +
+                   geom_point() + 
+                   facet_wrap(~date_wp, scales = "free") +
+  scale_color_manual(values = c("#C969A1","#165E6F")) +
+  labs(y = "dCWC", 
+       x = "Water Potential (MPa)", 
+       color = "Time")
+```
+Early season: 
+
+```{r}
+###dcwc leafout: 
+
+data <- filtered_data  %>% 
+  filter(time_season == "before leafout") %>% 
+  distinct() %>% 
+  drop_na(water_potential, cwc) %>% 
+  group_by(tree) %>% 
+  mutate(COUNT = n()) %>% 
+  filter(!(COUNT == 1)) %>% 
+  select(-COUNT)
+data
+
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded dcwc proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 10
+
+# Number of random trees to sample
+n_sample_trees <- 10  # Adjust as needed based on the number of unique trees
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(week ~ cwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_dcwc <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_dcwc)
+
+summary(tbootstrapped_slopes_df_dcwc)
+
+mean_slope_dcwc = tbootstrapped_slopes_df_dcwc %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "dcwc leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_dcwc
+
+dcwc_space <- tbootstrapped_slopes_df_dcwc %>% 
+  select(tree, slope) %>% 
+  distinct()
+
+dcwc_df <- merge(dcwc_space, data_og_cwc)
+
+plotly::ggplotly(dcwc_df %>% 
+                   ggplot(aes(y = slope, 
+                              x = week, 
+                              color = time)) +
+                   geom_point() + 
+                   geom_smooth(method = "lm") +
+                   facet_wrap(~week, scales = "free")
+                 )
+
+dcwc_df %>% 
+  filter(week > 19) %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_smooth(method = "lm") +
+                   geom_point() + 
+                   facet_wrap(~date_wp, scales = "free") +
+  scale_color_manual(values = c("#C969A1","#165E6F")) +
+  labs(y = "dCWC", 
+       x = "Water Potential (MPa)", 
+       color = "Time")
+```
+Just May (week 18-21)
+```{r}
+###dcwc leafout: 
+
+data <- filtered_data  %>% 
+  filter(week %in% c(18:21)) %>% 
+  distinct() %>% 
+  drop_na(water_potential, cwc) %>% 
+  group_by(tree) %>% 
+  mutate(COUNT = n()) %>% 
+  filter(!(COUNT == 1)) %>% 
+  select(-COUNT)
+data
+
+data %>% 
+  ggplot(aes(y = cwc, 
+             x = week, 
+             color = as.factor(tree))) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = F)
+```
+
+
+```{r}
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded dcwc proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 10
+
+# Number of random trees to sample
+n_sample_trees <- 10  # Adjust as needed based on the number of unique trees
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(week ~ cwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_dcwc <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_dcwc)
+
+summary(tbootstrapped_slopes_df_dcwc)
+
+mean_slope_dcwc = tbootstrapped_slopes_df_dcwc %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "dcwc leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_dcwc
+
+dcwc_space <- tbootstrapped_slopes_df_dcwc %>% 
+  select(tree, slope) %>% 
+  distinct() %>% 
+  filter(slope < 1000) %>% 
+  filter(slope > -1000)
+
+
+dcwc_df <- merge(dcwc_space, data_og_cwc)
+
+plotly::ggplotly(dcwc_df %>% 
+                   ggplot(aes(y = slope, 
+                              x = week, 
+                              color = time)) +
+                   geom_point() + 
+                   geom_smooth(method = "lm") +
+                   facet_wrap(~week, scales = "free")
+                 )
+
+dcwc_df %>% 
+  filter(week > 19) %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_smooth(method = "lm") +
+                   geom_point() + 
+                   facet_wrap(~date_wp, scales = "free") +
+  scale_color_manual(values = c("#C969A1","#165E6F")) +
+  labs(y = "dCWC", 
+       x = "Water Potential (MPa)", 
+       color = "Time")
+#What is sig? 
+
+####Just MD: 
+df <- dcwc_df %>% 
+  filter(time == "md") %>% 
+  mutate(date_wp = as.factor(date_wp))
+
+m1 <- lmer(water_potential ~ slope*date_wp + (1|tree), data = df)
+summary(m1)
+
+####Just PD: 
+df_pd <- dcwc_df %>% 
+  filter(time == "md") %>% 
+  mutate(date_wp = as.factor(date_wp))
+
+m2 <- lmer(water_potential ~ slope*date_wp + (1|tree), data = df_pd)
+summary(m2)
+```
+Just June/July (29-33)
+
+```{r}
+###dcwc leafout: 
+
+data <- filtered_data  %>% 
+  filter(week %in% c(29:40)) %>% 
+  distinct() %>% 
+  drop_na(water_potential, cwc) %>% 
+  group_by(tree) %>% 
+  mutate(COUNT = n()) %>% 
+  filter(!(COUNT == 1)) %>% 
+  select(-COUNT)
+data
+
+num_unique_trees <- length(unique(data$tree))
+cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
+
+# Assuming your dataset is called 'data'
+# Make sure 'data' is properly loaded dcwc proceeding
+
+# Define the number of bootstrap iterations
+n_iterations <- 5
+
+# Number of random trees to sample
+n_sample_trees <- 5  # Adjust as needed based on the number of unique trees
+
+# Create an empty data frame to store bootstrapped slopes
+bootstrapped_slopes_df <- data.frame()
+
+# Function to calculate the slope for a specific tree within each iteration
+calculate_slope_for_tree <- function(tree_data) {
+  model <- lm(week ~ cwc, data = tree_data)
+  return(coef(model)[2])  # Extract the slope coefficient
+}
+
+#Do the bootstrapping: 
+
+ for (i in 1:n_iterations) {
+   
+# Randomly sample 'n_sample_trees' trees from your dataset
+sampled_tree_ids <- sample(unique(data$tree), size = n_sample_trees, replace = TRUE)
+
+# Iterate through each sampled tree and perform bootstrapping separately
+      for (tree_id in sampled_tree_ids) {
+        
+        tree_data <- data %>%
+          filter(tree == tree_id)
+        
+        # Initialize a container to store slopes for each iteration
+        slopes <- vector("double", length = 1)
+      
+          # Calculate the slope for the bootstrapped sample
+          slopes[] <- calculate_slope_for_tree(tree_data)
+        
+        # Store the bootstrapped slopes for this tree in the data frame
+        bootstrapped_slopes_df <- bind_rows(
+          bootstrapped_slopes_df,
+          data.frame(
+            tree = tree_id,
+            slope = slopes, 
+            round = i
+          ) 
+        ) 
+      }
+ }
+
+        ci_values <- bootstrapped_slopes_df %>%
+        group_by(round) %>% 
+        drop_na(slope) %>%
+       mutate(
+          mean_slope_round = mean(slope, na.rm = T)
+        ) %>% 
+          ungroup() %>% 
+          mutate(mean = mean(mean_slope_round, na.rm = T),
+          lower_bound = quantile(mean_slope_round, 0.025, na.rm = TRUE),
+          upper_bound = quantile(mean_slope_round, 0.975, na.rm = TRUE))
+          
+        
+        # Merge the CI values back into the original dataframe
+      tbootstrapped_slopes_df_dcwc <- ci_values 
+      
+# Print the updated dataframe with CI values
+print(tbootstrapped_slopes_df_dcwc)
+
+summary(tbootstrapped_slopes_df_dcwc)
+
+mean_slope_dcwc = tbootstrapped_slopes_df_dcwc %>% 
+  mutate(mean_slope = mean(mean, na.rm = T),
+         pre_post = "dcwc leafout") %>% 
+  select(mean_slope, lower_bound, upper_bound, pre_post) %>% 
+  distinct()
+mean_slope_dcwc
+
+dcwc_space <- tbootstrapped_slopes_df_dcwc %>% 
+  select(tree, slope) %>% 
+  distinct() %>% 
+  filter(slope < 1000) %>% 
+  filter(slope > -1000)
+
+
+dcwc_df <- merge(dcwc_space, data_og_cwc)
+
+plotly::ggplotly(dcwc_df %>% 
+                   ggplot(aes(y = slope, 
+                              x = week, 
+                              color = time)) +
+                   geom_point() + 
+                   geom_smooth(method = "lm") +
+                   facet_wrap(~week, scales = "free")
+                 )
+
+dcwc_df %>% 
+  filter(week > 19) %>% 
+                   ggplot(aes(y = slope, 
+                              x = water_potential, 
+                              color = time)) +
+                   geom_smooth(method = "lm") +
+                   geom_point() + 
+                   facet_wrap(~date_wp, scales = "free") +
+  scale_color_manual(values = c("#C969A1","#165E6F")) +
+  labs(y = "dCWC", 
+       x = "Water Potential (MPa)", 
+       color = "Time")
+```
+####Psi ~ CWC as dCWC: 
 Are there patterns in spatial dCWC that map onto MPa? 
 
 ```{r}
