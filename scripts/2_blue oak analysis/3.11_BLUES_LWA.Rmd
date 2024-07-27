@@ -51,6 +51,11 @@ data_og_lwa <- data_qudo_raw %>%
  # filter(week == 15) %>% 
   arrange(tree, week, time) %>% 
   mutate(site = as.factor(site))
+
+#take a look at the counts for each week: 
+data_og_lwa %>% 
+  group_by(week, time) %>% 
+  summarise(n = n())
 ```
 
 
@@ -110,7 +115,7 @@ cat("Number of unique trees in the dataset:", num_unique_trees, "\n")
 n_iterations <- 1000
 
 # Number of random trees to sample
-n_sample_trees <- 42  # Adjust as needed
+n_sample_trees <- 40  # Adjust as needed
 
 # Create an empty data frame to store bootstrapped slopes
 bootstrapped_slopes_df <- data.frame()
