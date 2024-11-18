@@ -1910,6 +1910,113 @@ weeks_cwc <- mpa_cwc_all %>%
 write.csv(mpa_cwc_all, here("processed-data", paste0("cwc_analysis",datver,".csv")))
 ```
 
+For figuring out WTF is up with the dates: 
+
+```{r}
+mpa_cwc_dates <- merge(wp_df%>% mutate(date = date_wp), 
+                       cwc_raw %>% mutate(date = date_shift), all = T
+                       )
+
+write.csv(mpa_cwc_dates, here("processed-data", paste0("mpa_cwc_dates",datver,".csv")))
+```
+
+#TIMELINE: 
+```{r, fig.height=5, fig.width=6}
+wc_qudo_df <- read_csv(here::here("processed-data", paste0("analysis",datver,".csv")), show_col_types = FALSE) %>% 
+ # filter(species == "live oak") %>% 
+  distinct() %>% 
+ # group_by(week, time) %>% 
+ # filter(n() >= 10) %>% #only run on weeks where we have a decent number of samples
+#  ungroup() %>% 
+#  filter(!week == 21) %>% #this week doesn't have very many samples,
+  mutate(time_season = case_when(
+    week  <= 17 ~ "before leafout", 
+    week > 17 ~ "after leafout", 
+    TRUE ~ as.character("none")
+  )) %>% 
+  select(-plot) %>% 
+  distinct() %>% 
+  filter(!(week == 19 & time == "pd" & water_potential < -2))%>% 
+  filter(!(week == 11)) %>% 
+  drop_na(water_potential) 
+
+wc_qudo_df%>% 
+  ggplot(aes(x = week, y = water_potential, color = water_potential))+
+  geom_hline(yintercept = 0) + 
+  geom_point(size = 5) +
+  facet_wrap(~time) + 
+  color_grad_rev +
+  labs(color = "Water Potential 
+       (MPa)")+
+  theme(legend.position = "right", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+       legend.title.align = -.5,
+       legend.direction = "vertical",
+       legend.key.size = unit(1, "cm")
+        )
+
+timeline_df <- wc_qudo_df %>% 
+ # select(week, date_wp, time) %>% 
+  mutate(date_wp = as.character(date_wp)) %>% 
+  mutate(date_new = case_when(
+    date_wp %in% c("2022-03-15") ~ "2022-03-08",
+    date_wp %in% c("2022-03-23") ~ "2022-03-25",
+    date_wp %in% c("2022-03-30","2022-04-06") ~ "2022-04-04",
+    date_wp %in% c("2022-04-13") ~ "2022-04-11",
+    date_wp %in% c("2022-04-27") ~ "2022-04-25",
+    date_wp %in% c("2022-05-04") ~ "2022-05-09",
+    date_wp %in% c("2022-05-23") ~ "2022-05-25",
+    TRUE ~ as.character(date_wp)
+  )) %>% 
+  mutate(date_new = ymd(date_new)) %>% 
+  select(date_new, week, water_potential, time) %>% 
+  distinct()
+
+mpa_cwc_dates
+
+
+```
+
+
+```{r, fig.height=5, fig.width=20}
+# timeline_plot <- mpa_cwc_dates %>% 
+#   #drop_na(water_potential) %>% 
+#   filter(time == "md") %>% 
+  ggplot() +
+  geom_hline(yintercept = 0) +
+  geom_point(aes(x = date, 
+             y = 0, 
+             color = mpa),
+             data = mpa_cwc_dates %>% drop_na(mpa) %>% filter(time == "md"), 
+             size = 10,
+             pch=21, 
+           size=10) +
+    geom_point(aes(x = date,
+             y = 0),
+              data = mpa_cwc_dates %>% drop_na(cwc),
+           pch=21,
+           size=10,
+           stroke=2,
+           colour="black") +
+  color_grad_rev+
+  ylim(-.25, +.25)  + 
+  theme(legend.position = "none", 
+        axis.title.y = element_blank(), 
+        axis.title.x = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5, size= 20)
+        ) +
+scale_x_date(date_labels = '%b. %d', 
+             breaks = as.Date(mpa_cwc_dates$date))
+timeline_plot
+
+#ggsave(here("figures", "timeline_plot"), timeline_plot, device = "jpg", width = 12, height = 2, dpi = 300)
+```
+
 
 For Jean: 
 ```{r, eval = F}

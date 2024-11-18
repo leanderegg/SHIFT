@@ -1,0 +1,719 @@
+---
+title: "Untitled"
+author: "Indra Boving"
+date: "2023-01-24"
+output: html_document
+---
+
+#Setup:
+```{r}
+library(lubridate)
+library(here)
+#source("http://goo.gl/UUyEzD") #outlierKD
+#install.packages("bigleaf")
+library(plantecophys)
+library(bigleaf)
+here = here::here
+library(tidyverse)
+rename = dplyr::rename
+library(dplyr)
+summarise = dplyr::summarise
+```
+
+#Read in data:
+
+```{r}
+hobo_data <- read_csv(here::here("data", "Chamise2_2023_0.csv"), show_col_types = FALSE, skip = 1) %>%
+    dplyr::rename(date_time = 'Date Time, GMT-07:00') %>% 
+    rename(temp = 3) %>% 
+    rename(relative_humidity = 4) %>% 
+   select(1:4) %>% 
+  mutate(temp = (temp - 32)*5/9) %>% 
+  mutate(pa = bigleaf::pressure.from.elevation(
+  elev = 502.92,
+  temp, #convert temp to C
+  VPD = NULL,
+  constants = bigleaf::bigleaf.constants())) %>% 
+  mutate(vpd_kpa = plantecophys::RHtoVPD(relative_humidity, temp, Pa = pa), 
+         tree_id = as.factor(tree_id)) %>% 
+  select(-1) %>% 
+  mutate(date_time = mdy_hm(date_time)) %>% 
+ # drop_na(date_time)%>% 
+  mutate(hour = hour(date_time), 
+         day = day(date_time)) %>% 
+  filter(hour %in% c(10:15)) 
+  
+#temp outliers: 
+hobo_outliers <- hobo_data  %>% 
+  group_by(day, tree_id) %>% 
+  rstatix::identify_outliers(relative_humidity)
+
+hobo_outs_out <- hobo_data %>% 
+  anti_join(hobo_outliers, by = c("date_time", "tree_id")) 
+
+#temp outliers: 
+hobo_outliers <- hobo_data  %>% 
+  group_by(day, tree_id) %>% 
+  rstatix::identify_outliers(temp)
+
+hobo_data_outs <- hobo_outs_out %>% 
+  anti_join(hobo_outliers, by = c("date_time", "tree_id")) 
+
+hobo_data_outs %>% 
+  ggplot() +
+  geom_point(aes(y = vpd_kpa, 
+             x = date_time))
+
+hobo_data_outs %>% 
+  ggplot() +
+  geom_point(aes(y = temp, 
+             x = date_time))
+
+hobo_data_outs %>% 
+  ggplot() +
+  geom_point(aes(y = relative_humidity, 
+             x = date_time))
+
+write.csv(hobo_data_outs, here::here("processed-data", "hobo_chamise_2023.csv"))
+```
+
+
+##Seedling data:
+```{r}
+##June HOBOS download: 
+
+# Set the file path
+file_path <- here::here("raw-data", "2023_data", "site_data", "Chamise2_2023_0.csv")
+
+# List all CSV files in the directory
+csv_files <- list.files(file_path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read, process, and return a modified dataframe with file name
+process_csv <- function(file_path) {
+  file_name <- sub(".csv$", "", basename(file_path))  # Extract file name without extension
+  df <- read.csv(file_path, header = T, skip = 1) %>%
+    dplyr::rename(date_time = Date.Time..GMT.07.00) %>% 
+    rename(temp = 3) %>% 
+    rename(relative_humidity = 4) %>%
+    mutate(file_name = file_name)
+  
+  # df <- df %>%
+  #   select(file_name, date_time, temp, relative_humidity)
+  
+  df
+}
+
+# Apply the function to each CSV file
+data_list <- lapply(csv_files, process_csv)
+
+# Combine processed dataframes into a single dataframe
+combined_df_seedlings <- dplyr::bind_rows(data_list) %>% 
+  mutate(id = case_when(
+    file_name %in% c("SUWANEE_SEGI_HOBO_7","SUWANEE_SEGI_HOBO_4") ~ "sun_suwanee", 
+    file_name %in% c("SUWANEE_SEGI_HOBO_11","SUWANEE_SEGI_HOBO_9") ~ "shade_suwanee", 
+    file_name %in% c("SUPILA_SEEDLING_3_CEDAR_REGEN", "SUPILA_SEEDLING1" ) ~ "sun_supila", 
+    file_name %in% c("FFS2_SEEDLING_4_UNDERLOG_FIR_REGEN","FFS2_SEEDLING5_SHADE_NEAR_CREEK") ~ "shade_ffs2", 
+    file_name %in% c("FFS2_SEEDLING_10_UNDERFIR_NEARCLIMBPILA", "FFS2_SEEDLING_8_UNDERLOG_CREEK") ~ "sun_ffs2", 
+    TRUE ~ as.character("unknown_sun_shade")
+  ))
+
+#view(csv_files)
+
+write_csv(combined_df_seedlings, here::here("processed-data", "seedling_hobo_combined.csv"))
+
+unique(combined_df_seedlings$file_name)
+```
+
+
+#SITE data
+
+```{r}
+##June HOBOS download: 
+
+# Set the file path
+file_path <- here::here("raw-data", "2023_data", "site_data", "HOBOS_mainsites_junedownload")
+
+# List all CSV files in the directory
+csv_files <- list.files(file_path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read, process, and return a modified dataframe with file name
+process_csv <- function(file_path) {
+  file_name <- sub(".csv$", "", basename(file_path))  # Extract file name without extension
+  df <- read.csv(file_path, header = T, skip = 1) %>%
+    dplyr::mutate(date_time = Date.Time..GMT.07.00) %>% 
+    rename(temp = 3) %>% 
+    rename(relative_humidity = 4) %>%
+    mutate(file_name = file_name)
+  
+  # df <- df %>%
+  #   select(file_name, date_time, temp, relative_humidity)
+  
+  df
+}
+
+# Apply the function to each CSV file
+data_list <- lapply(csv_files, process_csv)
+
+
+# Combine processed dataframes into a single dataframe
+combined_df_june1 <- dplyr::bind_rows(data_list) %>% 
+  mutate(date_time = mdy_hms(date_time)) %>% 
+  drop_na(date_time)
+
+#some failed to parse: 
+combined_df_nas <- combined_df_june1 %>% 
+  filter(is.na(date_time)) %>% 
+  mutate(date_time = mdy_hm(Date.Time..GMT.07.00)) 
+
+combined_df_june <- bind_rows(combined_df_june1, combined_df_nas)
+#unique(combined_df_june$date_time)
+
+#view(csv_files)
+
+#OCTOBER HOBO download:
+
+# Set the file path
+file_path <- here::here("raw-data", "2023_data", "site_data", "HOBOS_mainsites_octdownload")
+
+# List all CSV files in the directory
+csv_files <- list.files(file_path, pattern = "\\.csv$", full.names = TRUE)
+
+# Function to read, process, and return a modified dataframe with file name
+process_csv <- function(file_path) {
+  file_name <- sub(".csv$", "", basename(file_path))  # Extract file name without extension
+  df <- read.csv(file_path, header = T, skip = 1) %>%
+    dplyr::rename(date_time = Date.Time..GMT.07.00) %>% 
+    rename(temp = 3) %>% 
+    rename(relative_humidity = 4) %>%
+    mutate(file_name = file_name)
+  
+  # df <- df %>%
+  #   select(file_name, date_time, temp, relative_humidity)
+  
+  df
+}
+
+# Apply the function to each CSV file
+data_list <- lapply(csv_files, process_csv)
+
+# Combine processed dataframes into a single dataframe
+combined_df_oct <- dplyr::bind_rows(data_list) %>% 
+  mutate(date_time = mdy_hms(date_time))
+
+#unique(combined_df_oct$date_time)
+#view(csv_files)
+
+hobos_2023_all <- bind_rows(combined_df_oct, 
+               combined_df_june
+                ) %>% 
+  mutate(#date_time = mdy_hms(date_time), #parsing issue is the problem!
+         date = date(date_time), 
+         minute = minute(date_time), 
+         second = second(date_time), 
+         hour = hour(date_time), 
+         month = month(date), 
+         week = week(date), 
+         day = day(date)) %>% 
+  separate(file_name, into = c("site", "tree_id"), sep = "_", remove = FALSE)
+
+#add in tree_data:
+invent_long_raw_hobos <- read_csv( here::here("processed-data", "tree_info_20230227.csv")) %>% 
+  select(tree_id, species, avg_dbh, site, size_class)
+
+# tree_info <- read_csv(here::here("raw-data", "2023_data", "tree_info.csv"), show_col_types = FALSE) %>% 
+#   janitor::clean_names() %>% 
+#   select(size_class, tree_id, species, height_m, dbh_2023_we_measured) %>%
+#     mutate(tree_id = as.character(tree_id))
+
+hobo_all <- merge(invent_long_raw_hobos, hobos_2023_all, by = c("tree_id", "site"), all.y = T) %>% 
+  mutate(size = size_class) %>% 
+  select(date_time, size, size_class, hour, day, month, minute, tree_id, species, date_time, temp, relative_humidity, site) %>% 
+  drop_na(temp)
+
+hobo_failparse <- hobo_all %>% 
+  filter(is.na(date_time))
+```
+
+
+Look at it to see sunflecks, but it isn't working:
+
+```{r}
+
+hobo_all %>% 
+  filter(day == 11, 
+         month == 7,
+         hour %in% c(12, 13, 14, 15,16, 17)) %>% 
+  ggplot(aes(x = hour, 
+             y = temp, 
+             #color = size
+             )) +
+  geom_point()+
+  facet_wrap(~site) 
+```
+```{r}
+hobo_all %>% 
+  filter(day == 28, 
+         month == 7) %>% 
+  ggplot(aes(x = hour, 
+             y = relative_humidity, 
+             #color = size
+             )) +
+  geom_point()+
+  facet_wrap(~site) 
+
+hobo_all %>% 
+  filter(day == 11, 
+         month == 7,
+         hour %in% c(12, 13, 14, 15,16, 17)) %>% 
+  ggplot(aes(x = hour, 
+             y = relative_humidity, 
+             #color = size
+             )) +
+  geom_point()+
+  facet_wrap(~site) 
+```
+
+#Deal with sunflecks by removing outsliers between 12-4pm: 
+
+```{r}
+hobo_outliers <- hobo_all %>% 
+  filter(hour %in% c(12, 13, 14, 15, 16, 17)) %>% 
+  group_by(site, month, day, tree_id) %>% 
+  rstatix::identify_outliers(temp)
+
+hobo_outs_out <- hobo_all %>% 
+  anti_join(hobo_outliers, by = c("site","month","day","tree_id","date_time", "size")) 
+
+hobo_outs_out %>% 
+    filter(day == 11, 
+         month == 7,
+         hour %in% c(12, 13, 14, 15,16, 17)) %>% 
+  ggplot(aes(x = hour, 
+             y = temp, 
+             #color = size
+             )) +
+  geom_point()+
+  facet_wrap(~site)
+```
+
+Repeat with RH: 
+
+```{r}
+hobo_outliers <- hobo_outs_out %>% 
+  group_by(site, month, day, tree_id) %>% 
+  rstatix::identify_outliers(relative_humidity)
+
+hobo_outs_out2 <- hobo_outs_out %>% 
+  anti_join(hobo_outliers, by = c("site","month","day","tree_id","date_time", "size")) 
+
+hobo_outs_out2 %>% 
+    filter(day == 11, 
+         month == 7,
+         hour %in% c(11, 12, 13, 14, 15)) %>% 
+  ggplot(aes(x = hour, 
+             y = relative_humidity, 
+             #color = size
+             )) +
+  geom_point()+
+  facet_wrap(~site) 
+```
+#VPD: 
+
+Site info so we can get elevation: 
+
+```{r}
+#site_data <- read_csv(here("processed-data", "site_data.csv"))
+
+hobo_site_data <- hobo_outs_out2 %>% 
+  mutate(year = year(date_time)) %>% 
+  mutate(case_when(
+    site %in% c("CCRPIPO") ~ 1618.27,
+    site %in% c("FFS2") ~ 2134.21,
+    site %in% c("FFS5") ~ 2014.44,
+    site %in% c("UPLOG") ~ 2212.4,
+    site %in% c("SUPILA") ~ 2055.68,
+    site %in% c("LMCC") ~ 2055.68,
+  )) %>% 
+  mutate(species = case_when(
+    site %in% c("LMCC", "UPLOG", "FFS2", "LOGSEGI", "CCRPIPO") & 
+    year == 2022 ~ "ABCO", 
+    TRUE ~ as.character(species)
+  )) %>% 
+    mutate(species = case_when(
+    site %in% c("LMCC", "UPLOG","LOGSEGI") & 
+    year == 2023 ~ "ABCO", 
+    TRUE ~ as.character(species)
+  )) %>% 
+  mutate(temp = (temp - 32)*5/9) %>% 
+  mutate(pa = bigleaf::pressure.from.elevation(
+  elev,
+  temp, #convert temp to C
+  VPD = NULL,
+  constants = bigleaf.constants())) %>% 
+  mutate(vpd_kpa = RHtoVPD(relative_humidity, temp, Pa = pa), 
+         tree_id = as.factor(tree_id), 
+         site = as.factor(site), 
+         year = year(date_time)
+         #size = as.factor(size)
+         ) %>% 
+  select(site, elev, date_time, year, size_class, size, tree_id,species,  month, vpd_kpa, temp, relative_humidity) %>% 
+  mutate(date = date(date_time), 
+         week = week(date_time)) %>% 
+  mutate(species = case_when(
+    tree_id %in% c(1698) ~ "ABCO",
+    tree_id %in% c(1818) ~ "ABCO",
+    tree_id %in% c(2228) ~ "ABCO",
+    tree_id %in% c(5113) ~ "ABCO",
+    tree_id %in% c(7802) ~ "ABCO",
+    tree_id %in% c(5748) ~ "PILA",#check if this tree is big or small; maybe mislabled? Not in the invent data at SUPILA
+    TRUE ~ as.character(species)
+  )) %>% 
+  mutate(size_class = case_when(
+    tree_id %in% c(1698) ~ "Small", 
+    tree_id %in% c(1818) ~ "Big", 
+    tree_id %in% c(2228) ~ "Big",
+     tree_id %in% c(7802) ~ "Small",
+    tree_id %in% c(5113) ~ "Big",
+    tree_id %in% c(5748) ~ "Small", #check if this tree is big or small; maybe mislabled? Not in the invent data at SUPILA
+    TRUE ~ as.character(size_class)
+  )) %>% 
+  mutate(size = size_class)
+```
+
+
+```{r}
+hobo_midday_summary_month_treeid <- hobo_site_data %>% 
+  dplyr::group_by(site,month, tree_id, year) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            sd_vpd = sd(vpd_kpa))
+
+hobo_midday_summary_month_size <- hobo_site_data %>% 
+  dplyr::group_by(site,month,species, size) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            sd_vpd = sd(vpd_kpa)) %>% 
+  select(site, month, mean_temp, mean_vpd, mean_rh)
+
+hobo_midday_summary_month_size  %>% 
+  ggplot(aes(y = mean_vpd, 
+             x = month, 
+             color = site)) +
+  geom_point()
+
+```
+
+
+```{r}
+hobo_midday_summary_week_treeid <- hobo_site_data %>%
+ # filter(month %in% c(7,8)) %>% 
+  mutate(week = week(date_time)) %>% 
+  dplyr::group_by(site, tree_id, week) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            sd_vpd = sd(vpd_kpa)) %>% 
+  drop_na() %>% 
+  merge(hobo_site_data) %>% 
+  select(site,month, date_time, week, tree_id, mean_vpd, sd_vpd, mean_rh, sd_rh, mean_temp, sd_temp) %>% 
+  distinct()
+
+hobo_midday_summary_week_size <- hobo_site_data %>%
+ # filter(month %in% c(7,8)) %>% 
+  mutate(week = week(date_time)) %>% 
+  dplyr::group_by(site, size_class, species, week) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            sd_vpd = sd(vpd_kpa)) %>% 
+  drop_na() %>% 
+  merge(hobo_site_data) %>% 
+  select(site,month, date_time, week, species,size,  mean_vpd, sd_vpd, mean_rh, sd_rh, mean_temp, sd_temp) %>% 
+  distinct()
+
+
+hobo_midday_summary_date_size <- hobo_site_data %>%
+ # filter(month %in% c(7,8)) %>% 
+  dplyr::group_by(site, date, size, species) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+                   max_temp = max(temp),
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            min_rh = min(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            max_vpd = max(vpd_kpa),
+            sd_vpd = sd(vpd_kpa)) %>% 
+  #drop_na() %>% 
+  merge(hobo_site_data) %>% 
+  select(site, date, month, species, size,  mean_vpd, sd_vpd, max_vpd, mean_rh, sd_rh, min_rh, mean_temp, max_temp, elev, sd_temp) %>% 
+  distinct() %>% 
+  drop_na(site)
+
+#for including in analysis: 
+
+hobo_midday_summary_date_treeid <- hobo_site_data %>%
+ # filter(month %in% c(7,8)) %>% 
+  dplyr::group_by(site, date, tree_id, year) %>% 
+  dplyr::summarise(mean_temp = mean(temp), 
+            sd_temp = sd(temp),
+            mean_rh = mean(relative_humidity),
+            sd_rh = sd(relative_humidity), 
+            mean_vpd = mean(vpd_kpa), 
+            sd_vpd = sd(vpd_kpa)) %>% 
+  #drop_na() %>% 
+  merge(hobo_site_data) %>% 
+  select(site, month, tree_id, year, mean_vpd, sd_vpd, mean_rh, sd_rh, mean_temp, elev, sd_temp) %>% 
+  distinct() %>% 
+  drop_na(site)
+```
+#write_csv
+
+```{r}
+write_csv(hobo_midday_summary_date_treeid, here::here("processed-data", "nice-datasets", "2023_hobo_summaries.csv"))
+
+write_csv(hobo_midday_summary_date_size, here::here("processed-data", "nice-datasets", "2023_hobo_summaries_date.csv"))
+
+```
+
+
+
+#Table: 
+
+```{r}
+hobo_midday_summary_date
+```
+
+
+#NICE FIGURE
+
+Hottest days are between July and August, so lets just do those days: 
+
+- Also LMCC only has data starting June 7, so lets just use those days: 
+
+```{r, fig.height=3, fig.width=3}
+hobo_midday_summary_date$site <- reorder(hobo_midday_summary_date$site, hobo_midday_summary_date$mean_vpd)
+
+wet_to_dry <- levels(hobo_midday_summary_date$site)
+
+hobo_midday_summary_date$site <- reorder(hobo_midday_summary_date$site, hobo_midday_summary_date$elev)
+
+low_to_high <- levels(hobo_midday_summary_date$site)
+
+
+#vpd_boxplots <- hobo_site_data %>% 
+  vpd_boxplots <- hobo_midday_summary_date %>% 
+  filter(date > "2022-07-09") %>% 
+  ggplot(aes(y = mean_vpd, 
+             #y = vpd_kpa, 
+             x = site, 
+             fill = size), 
+        # color = "black"
+           ) +
+  geom_boxplot(alpha = .8)+
+ # geom_smooth() +
+  labs(y = "End of Summer VPD (kPa)", 
+       x = "", 
+       fill = "Size") +
+  color_fill_size +
+   theme(#legend.position = c(.15, .9), 
+         legend.position = c(.85, .9), 
+        legend.box = "black", 
+         axis.text = element_text(size = 42), 
+        axis.title = element_text(size = 50), 
+        legend.text = element_text(size = 40),
+        legend.title=element_text(size = 52),
+        plot.title = element_text(size = 52), 
+        #plot.margin = unit(c(0.5,0.5,0.5, 0), "cm")
+        legend.box.background=element_rect(fill="white", color="black"), 
+        legend.spacing.y=unit(0,"cm")
+        ) 
+vpd_boxplots 
+
+ggsave(here::here("figures", "environmental_data", "vpd_boxplots.jpg"), 
+        plot = vpd_boxplots, 
+       device = "jpg")
+```
+```{r, fig.height=3, fig.width=3}
+hobo_midday_summary_date$site <- reorder(hobo_midday_summary_date$site, hobo_midday_summary_date$mean_vpd)
+
+wet_to_dry <- levels(hobo_midday_summary_date$site)
+
+hobo_midday_summary_date$site <- reorder(hobo_midday_summary_date$site, hobo_midday_summary_date$elev)
+
+low_to_high <- levels(hobo_midday_summary_date$site)
+
+
+#vpd_boxplots <- hobo_site_data %>% 
+  vpd_boxplots <- hobo_midday_summary_date %>% 
+ # filter(date > "2022-07-09") %>% 
+  ggplot(aes(y = mean_vpd, 
+             #y = vpd_kpa, 
+             x = site, 
+             fill = size), 
+        # color = "black"
+           ) +
+  geom_boxplot(alpha = .8)+
+ # geom_smooth() +
+  labs(y = "End of Summer VPD (kPa)", 
+       x = "", 
+       fill = "Size") +
+  color_fill_size +
+     theme(legend.position = "top", 
+        legend.box.margin = margin(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size = 12),
+        strip.text.x = element_text(size = 10, 
+                                    margin = margin()),
+        panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+        panel.grid.major = element_blank(),  # Hide major gridlines
+        panel.grid.minor = element_blank(),# Hide minor gridlines
+        strip.background = element_rect(fill = "white")) +
+  scale_color_manual(values = c("black", "grey")) +
+  theme_minimal() + 
+  theme(panel.background = element_rect(fill='white', colour='black'), # Make background white and border black
+        panel.grid.major = element_blank(),  # Hide major gridlines
+        panel.grid.minor = element_blank(),# Hide minor gridlines
+        strip.background = element_rect(fill = "white"))
+vpd_boxplots 
+
+ggsave(here::here("figures", "environmental_data", "vpd_boxplots.jpg"), 
+        plot = vpd_boxplots, 
+       device = "jpg")
+```
+
+
+Lines: 
+
+```{r, fig.height=2, fig.width=7}
+hobo_site_data$site <- reorder(hobo_site_data$site, hobo_site_data$vpd_kpa)
+
+vpd_lines <- hobo_midday_summary_date %>% 
+  filter(date > "2022-07-09")  %>% 
+  #filter(week %in% c(28:32)) %>% 
+  ggplot(aes(y = mean_vpd, 
+             x = date, 
+             color = size)) +
+  geom_point()+
+  geom_smooth(se = F)+
+  facet_wrap(~site) +
+  geom_point(size = 2)+
+ # geom_smooth(method = "lm") +
+  labs(y = "VPD", 
+       x = "", 
+       fill = "Size", 
+       color = "Size") +
+  scale_color_manual(values = c("#004f63", "#62929a")) +
+  #color_line_size +
+   theme(legend.position = "top", 
+        #legend.box = "black", 
+         axis.text.y = element_text(size = 52), 
+         axis.text.x = element_text(size = 40, angle = 45, hjust = 1), 
+        axis.title = element_text(size = 70), 
+        legend.text = element_text(size = 50),
+        legend.title=element_text(size = 62),
+        plot.title = element_text(size = 62), 
+        strip.text = element_text(size = 60), 
+        #plot.margin = unit(c(0.5,0.5,0.5, 0), "cm")
+       # legend.box.background=element_rect(fill="white", color="black"), 
+       # legend.spacing.y=unit(0,"cm")
+        ) +
+  facet_wrap(~site, nrow = 1)
+vpd_lines 
+
+ggsave(here::here("figures", "environmental_data", "vpd_lines.jpg"), 
+        plot = vpd_lines, 
+       device = "jpg")
+```
+
+
+
+```{r, warning=FALSE}
+hobo_midday_summary_day %>% 
+  filter(week %in% c(28:32)) %>% 
+  ggplot(aes(y = mean_temp, 
+             x = day, 
+             color = size)) +
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~site)
+```
+```{r, warning=FALSE}
+hobo_midday_summary_week %>% 
+  filter(week %in% c(28:32)) %>% 
+  ggplot(aes(y = mean_rh, 
+             x = week, 
+             color = size)) +
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~site)
+```
+
+```{r}
+hobos_midday %>% 
+ ggplot(aes(y = temp, 
+      fill = size)) +
+  geom_boxplot() +
+  facet_wrap(~site)
+```
+```{r}
+hobos_midday %>% 
+  ggplot(aes(x = date_time, 
+      y = temp)) +
+  geom_point() +
+  geom_smooth(aes(color = site))
+```
+
+
+```{r}
+# hobo_files <- list.files(here("raw-data", "HOBOS_SEKI"),
+#                          pattern = ".csv$", recursive = TRUE, full.names = TRUE)
+# 
+# hobo_files <- list.files(here("raw-data", "HOBOS_SEKI"),
+#                          pattern = ".csv$", recursive = TRUE, full.names = TRUE)
+# 
+# col_names <- c("id", "#", "date_time", "temp", "rh") 
+# 
+# lst1 <- map(mget(hobo_files), ~ .x %>%
+#                    rename_all(~ col_names))
+# 
+# try1 <- try %>%
+#   purrr::map(~setNames(., col_names))
+# 
+# hobo_try2 <- map_dfc(hobo_files, read_csv, skip = 1, id = "id") %>% 
+#   rename(date_time = `Date Time, GMT-07:00`) %>% 
+#   rename(temp = 4, 
+#          rh = 5) %>% 
+#  # rename(temp = `Temp, °C (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
+#   rename(relative_humidity = `RH, % (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
+#   select(id, date_time, temp, relative_humidity) %>%
+#   mutate(id = str_remove(id,
+#                          "/Users/user/Desktop/github/SEKI_Data_Analysis_IB/raw-data/HOBOS_SEKI/"),
+#          id = str_remove(id, ".csv"))
+# 
+# hobo_try <- hobo_files %>% 
+#   map(read_csv) %>% 
+#   reduce(rbind)
+# 
+# hobo_data <- read_csv(hobo_files, skip = 1,
+#                           id = "id") %>% 
+#   rename(date_time = `Date Time, GMT-07:00`) %>% 
+#   rename(temp = 3) %>% 
+#  # rename(temp = `Temp, °C (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
+#   rename(relative_humidity = `RH, % (LGR S/N: 21445506, SEN S/N: 21445506)`) %>% 
+#   select(id, date_time, temp, relative_humidity) %>%
+#   mutate(id = str_remove(id,
+#                          "/Users/user/Desktop/github/SEKI_Data_Analysis_IB/raw-data/HOBOS_SEKI/"),
+#          id = str_remove(id, ".csv"))
+```
+

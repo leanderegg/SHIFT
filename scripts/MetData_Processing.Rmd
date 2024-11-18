@@ -36,11 +36,11 @@ require(lubridate)
 
 
 ```{r loading data, echo=FALSE}
-setwd("/Users/leeanderegg/Dropbox/Sedgwick/SHIFT2")
-TS <- read_xlsx(path = "./data/MetStationData/TS_Shire_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
+#setwd("/Users/leeanderegg/Dropbox/Sedgwick/SHIFT2")
+TS <- read_xlsx(path = here::here("data", "MetStationData", "TS_Shire_complete_2022-10-05.xlsx"),skip = 2)[,-c(7:8)]
 names(TS) <- c("datetime","rh","temp","pressure_atmos_kPa","PAR","precip_mm")
 
-RT <- read_xlsx("./data/MetStationData/RidgeTop_complete_2022-10-05.xlsx",skip = 2)[,-c(7:8)]
+RT <- read_xlsx(here::here("data", "MetStationData", "RidgeTop_complete_2022-10-05.xlsx"), skip = 2)[,-c(7:8)]
 names(RT) <- c("datetime","PAR","rh","temp","pressure_atmos_kPa","precip_mm")
 
 
@@ -70,3 +70,4 @@ just by eyeball, it looks like there are more measurements when RT has low PAR a
 
 ggplot(comb[which(month(comb$datetime)==5),], aes(x=time, y=PAR.ts)) + geom_point() + geom_point(aes(y=PAR.rt, col="blue"))
 ```
+
