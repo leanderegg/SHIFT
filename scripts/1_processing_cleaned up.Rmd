@@ -43,7 +43,7 @@ datver <- "20230724"
 dataversion <- paste0("Data_", datver)
 ```
 
-#---------------
+#------------------
 #Rerun processing:
 
 Run all scripts for processing to make sure those are updated: 
@@ -822,8 +822,25 @@ plotly::ggplotly(wp_df %>%
   geom_point() + 
   facet_wrap(~as.factor(date_wp)))
 ```
+```{r}
+plotly::ggplotly(wp_df %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                   mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+  facet_wrap(~date_wp*week, nrow = 5))
+```
 
 Remove outliers from individual mpa measurements: 
+
+######*REMOVING MPA OUTLIERS: 
 ```{r}
 wp_df_2 <- wp_df %>% 
   
@@ -893,6 +910,22 @@ wp_df_2 <- wp_df %>%
     date_wp %in% c("2022-03-30") ~ 14, #this was being listed as week 13, but I think it should actually be 14 based on 4/4 and 4/6 samplings having some midday trees that correspond to the predawns measured on this day. 
     TRUE ~ week(date_wp))) %>% 
   arrange(date_wp, tree, time)
+```
+
+```{r}
+plotly::ggplotly(wp_df_2 %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                   mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+  facet_wrap(~date_wp*week, nrow = 5))
 ```
 
 ```{r}
@@ -1013,7 +1046,8 @@ write_csv(wp_df2_wider, here::here("processed-data", "wp_wide_cleanedup_20240516
 ```
 
 ####WC + WP, LWA
-######*REMOVING MPA OUTLIERS: 
+
+
 ```{r}
 #Merge water potential data with the dataset we made above that has the rescanned LMA and LWA for LWC leaves; rep is one per tree/week time to MPa will also need to be summarized similarly.
 wp_mean_df <- wp_df_2 %>% 
@@ -1023,9 +1057,27 @@ wp_mean_df <- wp_df_2 %>%
   select(-mpa) %>% 
   distinct() %>% 
   mutate(date = date_wp) %>% 
-  ungroup() %>% 
-  select(-week)
+  ungroup() #%>% 
+ # select(-week)
 
+plotly::ggplotly(wp_mean_df %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                  # mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mean_mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+  ggtitle("Original, Just MPAs") +
+  facet_wrap(~date_wp*week, nrow = 5))
+```
+
+
+```{r}
 wp_wc_df2 <- merge(wp_mean_df, 
                    lwa_df %>% 
                      mutate(date = case_when(
@@ -1034,6 +1086,8 @@ wp_wc_df2 <- merge(wp_mean_df,
                      )), 
                   by = c("tree","time", "species", "site", "plot", "date"), 
                   all = T) %>% 
+  mutate(week = lubridate::week(date)) %>% 
+  select(-week.x, -week.y) %>% 
   # mutate(week = case_when(
   #   date %in% c("2022-03-30") ~ 14, #this was being listed as week 13, but I think it should actually be 14 based on 4/4 and 4/6 samplings having some midday trees that correspond to the predawns measured on this day. 
   #   TRUE ~ week(date))) %>% 
@@ -1057,15 +1111,27 @@ wp_wc_df2 <- merge(wp_mean_df,
     TRUE ~ as.numeric(lma_g_cm2_new)
   )) %>% 
   distinct() %>% 
+#deal with LWA outliers:
+  mutate(lwa_g_cm2_new = case_when(
+    week %in% c(19) & tree %in% c(2384) & time %in% c("pd") ~ NA,
+    week %in% c(19) & tree %in% c(2089) ~ NA,
+     week %in% c(14) & tree %in% c(2013, 2014, 2008, 2370) & time %in% c("md") ~ NA,
+    TRUE ~ as.numeric(lwa_g_cm2_new)
+  )) %>% 
+#LWA outliers are likely the same as the LWC outliers: 
+     mutate(lwc_bulk = case_when(
+    week %in% c(19) & tree %in% c(2384) & time %in% c("pd") ~ NA,
+    week %in% c(19) & tree %in% c(2089) ~ NA,
+     week %in% c(14) & tree %in% c(2013, 2014, 2008, 2370) & time %in% c("md") ~ NA,
+    TRUE ~ as.numeric(lwc_bulk))) %>% 
   #remove specific points that have issues: (if no comment, should track down later to see what is wrong!)
-  filter(!(week %in% c(19) & tree %in% c(2089))) %>% #two bulk dry weights entered (0.5982 and 1.3073)
-  filter(!(week %in% c(37) & tree %in% c(2086) & time %in% c("pd"))) %>% 
-  filter(!(week %in% c(14) & tree %in% c(2013, 2014, 2008, 2370) & time %in% c("md"))) %>% #LWC is weird for these, might have been mislabled? 2370 just had one mpa rep
-  filter(!(week %in% c(21) & tree %in% c(2343) & time %in% c("pd"))) %>% 
-  filter(!(week %in% c(17) & tree %in% c(2089, 2093, 2091) & time %in% c("md"))) %>%
-  filter(!(week %in% c(19) & tree %in% c(2023, 2029, 2092, 2345) & time %in% c("md"))) %>% #somrhi
-  filter(!(week %in% c(19) & tree %in% c(2022, 2030, 2023) & time %in% c("pd"))) %>%
-  filter(!(week %in% c(19) & tree %in% c(2384) & time %in% c("pd"))) %>% #lwa is <0, must be wrong
+ # filter(!(week %in% c(19) & tree %in% c(2089))) %>% #two bulk dry weights entered (0.5982 and 1.3073)
+#  filter(!(week %in% c(37) & tree %in% c(2086) & time %in% c("pd"))) %>% 
+ # filter(!(week %in% c(14) & tree %in% c(2013, 2014, 2008, 2370) & time %in% c("md"))) %>% #LWC is weird for these, might have been mislabled? 2370 just had one mpa rep
+#  filter(!(week %in% c(21) & tree %in% c(2343) & time %in% c("pd"))) %>% 
+ # filter(!(week %in% c(17) & tree %in% c(2089, 2093, 2091) & time %in% c("md"))) %>%
+##  filter(!(week %in% c(19) & tree %in% c(2022, 2030, 2023) & time %in% c("pd"))) %>%
+ # filter(!(week %in% c(19) & tree %in% c(2384) & time %in% c("pd"))) %>% #lwa is <0, must be wrong
   select(-rep) %>% 
   distinct() %>%
   filter(species != "ARCA", 
@@ -1161,7 +1227,27 @@ group_by(tree, week, time, date) %>%
   )) %>% 
     arrange(tree, week, time) %>% 
   ungroup()
+```
 
+```{r}
+plotly::ggplotly(wp_wc_df2 %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                  # mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mean_mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+    ggtitle("After adding LWC and LWA") +
+  facet_wrap(~date_wp*week, nrow = 5))
+```
+
+
+```{r}
 #there are some issues with week 37, where we dont have scans from trees measured 9/15 but we do for trees measured 
 wp_wc_wk37_probs <- wp_wc_df2 %>% 
   filter(week == 37) %>% 
@@ -1186,7 +1272,12 @@ wp_wc_probs <- wp_wc_df2 %>%
   group_by(tree, week, time) %>% 
   filter(n() > 2)
 
-wp_wc_df3 <- bind_rows(wp_wc_wk37, wp_wc_no_wk37)
+wp_wc_df3 <- bind_rows(wp_wc_wk37, wp_wc_no_wk37) %>% 
+  mutate(date_wp = case_when(
+    week %in% c(14) & time %in% c("md") & date_wp %in% c("<NA>", NA) ~ as.Date("2022-04-06"),
+    week %in% c(37) & time %in% c("md") & date_wp %in% c("<NA>", NA) ~ as.Date("2022-09-15"),
+    TRUE ~ as.Date(date_wp)
+   ))
 
 #Visualize: some measurements of LWA don't make sense
 plotly::ggplotly(wp_wc_df3 %>% 
@@ -1242,6 +1333,29 @@ plotly::ggplotly(wp_wc_df3  %>%
   )
 
 write.csv(wp_wc_df3, here::here("processed-data", "wp_wc_df.csv"))
+
+wp_wc_df3 %>% 
+  group_by(species, week, date_wp, time) %>% 
+  summarise(n = n()) %>% 
+  pivot_wider(
+    names_from = c(species),
+    values_from = c(n)
+  )
+
+plotly::ggplotly(wp_wc_df3 %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                  # mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mean_mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+    ggtitle("After ") +
+  facet_wrap(~date_wp*week, nrow = 5))
 ```
 
 #####RWC:
@@ -1254,7 +1368,7 @@ For moving on in combining, we'll just use Year 0 Leaves, should give us a df th
 ```{r}
 rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) 
 
-rwc_df <- rwc_df_raw %>% 
+rwc_df0 <- rwc_df_raw %>% 
   mutate(tree = case_when(
     tree %in% c(2364, 2361) ~ 2360, 
     tree %in% c(2083) ~ 2383, 
@@ -1268,7 +1382,7 @@ rwc_df <- rwc_df_raw %>%
     date %in% c("2022-05-03", "2022-05-04", "2022-05-09") ~ as.Date("2022-05-03"),
     date %in% c("2022-05-24", "2022-05-25", "2022-05-27") ~ as.Date("2022-05-25"),
     date %in% c("2022-07-27", "2022-07-28") ~ as.Date("2022-07-27"),
-     date %in% c("2022-09-12", "2022-09-15") ~ as.Date("2022-09-15"),
+    date %in% c("2022-09-12", "2022-09-15") ~ as.Date("2022-09-15"),
     TRUE ~ as.Date(date)
   )) %>% 
   mutate(year_rwc = case_when(
@@ -1298,10 +1412,10 @@ rwc_df <- rwc_df_raw %>%
   distinct() %>% 
   select(mean_swc_per_dry_g, mean_swc_g, tree, date_rwc, year_rwc , type_rwc, week_rwc_link,
          ) %>% 
-  as.data.frame() %>% 
+  as.data.frame() 
   
 #MERGE
-    merge(wp_wc_df3, by = c("tree", "week_rwc_link"),
+rwc_df <- merge(wp_wc_df3,rwc_df0, by = c("tree", "week_rwc_link"),
                     all = T
                     ) %>% 
   mutate(type_rwc = case_when(
@@ -1314,7 +1428,7 @@ rwc_df <- rwc_df_raw %>%
   group_by(tree) %>% 
   fill(c("species"), .direction = "downup") %>% 
   drop_na(species) %>% 
-  filter(!(mean_swc_per_dry_g > 2 & species %in% c("live oak"))) %>% 
+ # filter(!(mean_swc_per_dry_g > 2 & species %in% c("live oak"))) %>% #Doing this removes a whole date, not sure what was up there!
   mutate(year_rwc = as.factor(year_rwc))  %>% 
   mutate(date_rwc = case_when(
     date_rwc %in% c("2022-05-23") ~ as.Date("2022-05-25"), 
@@ -1331,6 +1445,22 @@ rwc_df <- rwc_df_raw %>%
 write_csv(rwc_df, here::here("processed-data", "rwc_2022.csv"))
 
 wp_wc_rwc_df_all <- rwc_df
+
+
+plotly::ggplotly(wp_wc_rwc_df_all %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                  # mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mean_mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+    ggtitle("After adding RWC") +
+  facet_wrap(~date_wp*week, nrow = 5))
 ```
 
 ###AL:As & inferred LWA: 
@@ -1459,6 +1589,22 @@ ggplot(aes(y = lwc_new,
   facet_wrap(~week) +
   geom_abline()
 #decent!
+```
+```{r}
+plotly::ggplotly(wp_wc_rwc_alas_df1 %>% 
+                   filter(species == "live oak"
+                          #week %in% c(12, 14, 15)
+                          ) %>% 
+                   group_by(tree, time, date_wp) %>% 
+                  # mutate(mpa = mean(mpa, na.rm = T)) %>% 
+  mutate(tree_num = as.numeric(tree)) %>% 
+  ggplot(aes(y =mean_mpa, 
+             x = as.character(tree), 
+             shape = species,
+             color = time)) +
+  geom_point(alpha = .3) + 
+    ggtitle("After adding Al:As") +
+  facet_wrap(~date_wp*week, nrow = 5))
 ```
 
 Lil looksie of new vs. old inferred LWA: 
@@ -1688,16 +1834,23 @@ analysis_df <- analysis_bothspp_df %>%
   filter(species %in% c("blue oak"))
   
 write.csv(analysis_df, here("processed-data", paste0("analysis",datver,".csv"))) 
+
+#just live oaks: 
+analysis_quag_df <- analysis_bothspp_df %>% 
+  filter(species %in% c("live oak"))
+  
+write.csv(analysis_quag_df, here("processed-data", paste0("analysis_quag",datver,".csv"))) 
 ```
 
 ```{r}
-plotly::ggplotly(analysis_df %>% 
-                   filter(species == "blue oak", 
+plotly::ggplotly(analysis_bothspp_df %>% 
+                   filter(species == "live oak", 
                           #week %in% c(12, 14, 15)
                           ) %>% 
   mutate(tree_num = as.numeric(tree)) %>% 
-  ggplot(aes(y = tree, 
+  ggplot(aes(y = water_potential, 
              x = tree, 
+             shape = species,
              color = time)) +
   geom_point(alpha = .3) + 
   facet_wrap(~date_wp*week, nrow = 5))
