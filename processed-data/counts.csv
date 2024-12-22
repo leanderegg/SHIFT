@@ -1,31 +1,31 @@
-"","week","time","n_lwa","n_lwc"
-"1",10,"measured both",8,19
-"2",10,"md",20,29
-"3",10,"pd",21,29
-"4",12,"measured both",6,7
-"5",12,"md",8,9
-"6",12,"pd",16,17
-"7",14,"measured both",23,30
-"8",14,"md",26,31
-"9",14,"pd",37,40
-"10",15,"measured both",14,15
-"11",15,"md",36,36
-"12",15,"pd",19,20
-"13",17,"measured both",30,32
-"14",17,"md",34,36
-"15",17,"pd",34,36
-"16",19,"measured both",18,20
-"17",19,"md",35,37
-"18",19,"pd",22,23
-"19",21,"measured both",26,30
-"20",21,"md",30,31
-"21",21,"pd",34,40
-"22",29,"measured both",30,30
-"23",29,"md",35,36
-"24",29,"pd",33,33
-"25",33,"measured both",13,13
-"26",33,"md",15,15
-"27",33,"pd",16,16
-"28",37,"measured both",24,28
-"29",37,"md",34,34
-"30",37,"pd",27,31
+"","week","time","species","n_lwa","n_lwc"
+"1",10,"measured both","blue oak",8,19
+"2",10,"md",NA,20,29
+"3",10,"pd",NA,21,29
+"4",12,"measured both","blue oak",6,7
+"5",12,"md",NA,8,9
+"6",12,"pd",NA,16,17
+"7",14,"measured both","blue oak",23,30
+"8",14,"md",NA,26,31
+"9",14,"pd",NA,37,40
+"10",15,"measured both","blue oak",14,15
+"11",15,"md",NA,36,36
+"12",15,"pd",NA,19,20
+"13",17,"measured both","blue oak",30,32
+"14",17,"md",NA,34,36
+"15",17,"pd",NA,34,36
+"16",19,"measured both","blue oak",18,20
+"17",19,"md",NA,35,37
+"18",19,"pd",NA,22,23
+"19",21,"measured both","blue oak",26,30
+"20",21,"md",NA,30,31
+"21",21,"pd",NA,34,40
+"22",29,"measured both","blue oak",30,30
+"23",29,"md",NA,35,36
+"24",29,"pd",NA,33,33
+"25",33,"measured both","blue oak",13,13
+"26",33,"md",NA,15,15
+"27",33,"pd",NA,16,16
+"28",37,"measured both","blue oak",24,28
+"29",37,"md",NA,34,34
+"30",37,"pd",NA,27,31

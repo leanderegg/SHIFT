@@ -912,6 +912,7 @@ wp_df_2 <- wp_df %>%
   arrange(date_wp, tree, time)
 ```
 
+Check that we didn't lose more MPas than planned: 
 ```{r}
 plotly::ggplotly(wp_df_2 %>% 
                    filter(species == "live oak"
@@ -925,6 +926,7 @@ plotly::ggplotly(wp_df_2 %>%
              shape = species,
              color = time)) +
   geom_point(alpha = .3) + 
+  ggtitle("After removing MPa outliers") +
   facet_wrap(~date_wp*week, nrow = 5))
 ```
 
@@ -1022,7 +1024,7 @@ plotly::ggplotly(wp_df_2 %>%
 mean_nona <- mean(x, rm.na = T)
 #Pivot wider to view: 
 wp_df2_wider <- wp_df_2 %>% 
-  select(site, week, time, mpa, tree) %>% 
+  select(site, week, time, mpa, tree, date_wp) %>% 
                    pivot_wider(names_from = "time", 
                                values_from = "mpa", 
                                values_fn = function(x) mean(x, na.rm = TRUE)) %>% 
@@ -1367,6 +1369,7 @@ For moving on in combining, we'll just use Year 0 Leaves, should give us a df th
 
 ```{r}
 rwc_df_raw <- read.csv(here("processed-data", paste0("rwc_alldates_",datver,".csv"))) 
+
 
 rwc_df0 <- rwc_df_raw %>% 
   mutate(tree = case_when(
@@ -1898,12 +1901,12 @@ counts <- merge(lwa_counts, lwc_counts,
 
 lwc_counts_paired <- analysis_df %>% 
   drop_na(lwc_mean) %>% 
-  select(lwc_mean, tree, time) %>% 
+  select(lwc_mean, tree, time, species) %>% 
   group_by(tree, week) %>% 
   filter(all(c("pd", "md") %in% time)) %>%
   ungroup() %>% 
   distinct() %>% 
-  group_by(week, time) %>% 
+  group_by(week, time, species) %>% 
   count() %>% 
   rename(n_lwc = n) %>% 
   filter(time == "md") %>% 
@@ -1911,19 +1914,19 @@ lwc_counts_paired <- analysis_df %>%
 
 lwa_counts_paired <- analysis_df %>% 
   drop_na(lwa_g_cm2_new) %>% 
-  select(lwa_g_cm2_new, tree, time) %>% 
+  select(lwa_g_cm2_new, tree, time, species) %>% 
   group_by(tree, week) %>% 
   filter(all(c("pd", "md") %in% time)) %>%
   ungroup() %>% 
   distinct() %>% 
-  group_by(week, time) %>% 
+  group_by(week, time, species) %>% 
   count() %>% 
   rename(n_lwa = n)%>% 
   filter(time == "md") %>% 
   select(-time)
 
 counts_paired <- merge(lwa_counts_paired, lwc_counts_paired, 
-                by = c("week", "time")) %>% 
+                by = c("week", "time", "species")) %>% 
   mutate(paired_or_all = "paired", 
          time = "measured both") 
 
@@ -2052,6 +2055,21 @@ mpa_cwc_all <- merge(cwc_raw_mpa, mpa_raw_cwc,
     TRUE ~ as.character("none")
   )) %>% 
   arrange(tree, week, time) %>% 
+#Dates below are so that the colors line up with the cwc outlines on the timeline; comment them out if we want to have the actual MPa dates (so that the points are offset from the outlines)
+  mutate(date_new = case_when(
+   # date_wp %in% c("2022-03-15") ~ "2022-03-08",#CWC also measured on March 15th, keep
+    date_wp %in% c("2022-03-15") ~ "2022-03-16", #overflight on 3/16
+    date_wp %in% c("2022-03-23", "2022-03-25") ~ "2022-03-22", #ok to combine these, CWC only measured on March 222, some MPas on March 23
+    date_wp %in% c("2022-03-30","2022-04-06","2022-04-04") ~ "2022-04-05", #CWC also measured on April 06, just use 04-04
+    date_wp %in% c("2022-04-13", "2022-04-11") ~ "2022-04-12", #CWC also measred on April 11, just keep 
+    date_wp %in% c("2022-04-20") ~ "2022-04-20", #
+    date_wp %in% c("2022-04-27", "2022-04-25") ~ "2022-04-29", #
+    date_wp %in% c("2022-05-04") ~ "2022-05-03",
+    date_wp %in% c("2022-05-09") ~ "2022-05-11",
+    date_wp %in% c("2022-05-09") ~ "2022-05-17", #might not have MPas?
+    date_wp %in% c("2022-05-23", "2022-05-25") ~ "2022-05-29",
+    TRUE ~ as.character(date_wp)
+  )) %>% 
   filter(tree > 1000) #remove shrubs
 
 #shift data from 2022-05-03 not used. Is there something about this date that would make it better than 2022-04-29?
