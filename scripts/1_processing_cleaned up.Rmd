@@ -369,7 +369,16 @@ wc_df <- read_csv(here("processed-data", paste0("wc_alldates_",datver,".csv")), 
   #filter(is.na(date_wc)) %>% 
   ungroup() %>% 
   #filter(!(week %in% 37 & tree %in% c(2382, 2383, 2384, 1478, 2015, 2012, 2006))) %>% #these have duplicates, need to look at envelopes. 
-  distinct() 
+  distinct() %>% 
+  mutate(wm_leaf_g = case_when(
+   wm_leaf_g %in% c(1.6180) ~ (0.1618),
+   TRUE ~ as.numeric(wm_leaf_g)
+  ),
+ lwc_leaf = case_when(
+   tree %in% c(2345) & week %in% c(10) & rep %in% c(2) & time %in% c("md")~ (0.96867),
+   TRUE ~ as.numeric(lwc_leaf )
+  )
+  )
 
 ###First the water weights (how much water is in bulk leaves). 
 
@@ -1021,7 +1030,7 @@ plotly::ggplotly(wp_df_2 %>%
   geom_point() + 
   facet_wrap(~as.factor(date_wp)*week))
 
-mean_nona <- mean(x, rm.na = T)
+
 #Pivot wider to view: 
 wp_df2_wider <- wp_df_2 %>% 
   select(site, week, time, mpa, tree, date_wp) %>% 
@@ -1684,7 +1693,7 @@ wp_wc_rwc_alas_df <- merge(trees_sites_df, wp_wc_rwc_alas_df1, all = T) %>%
   )) %>%
   filter(!(week == 18)) %>% #remove week 18 because mostly did middays and repeated most of those trees 4 days later on the 19
   mutate(tree = as.character(tree))  %>% 
-  dplyr::group_by(tree, week, time) %>% #combine years to get a year mean
+  dplyr::group_by(tree, week, time, type_rwc) %>% #combine years to get a year mean
   mutate(water_potential = mean(mean_mpa, na.rm = T), 
          ldmc_mean = mean(ldmc, na.rm = T),
          lma_g_cm2_mean= mean(lma_g_cm2, na.rm = T),

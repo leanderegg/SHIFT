@@ -141,10 +141,7 @@ wc_df_nona <-wc_df %>%
 
 ###New LWA:
 
-Note: Need to finish entering as of Jan 31, 2024
-
 Using total leaf masses (ww and dw) and total scan (sum of all individually scanned leaves, when that was relevant)
-
 
 Calculate LMA and see they make sense and if they dont then those are things we're missing. 
 
