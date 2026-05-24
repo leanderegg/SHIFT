@@ -135,7 +135,7 @@ mycolors.10
 
 color_many <- scale_color_manual(values = c(Cross_rev))
 
-cross_discrete =  MetBrewer::met.brewer(name="Cross", type="discrete")
+#cross_discrete =  MetBrewer::met.brewer(name="Cross", type="discrete")
 
 color_weeks <- scale_color_manual(values = cross_discrete)
   

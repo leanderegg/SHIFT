@@ -867,8 +867,7 @@ library(nlme)
 select = dplyr::select
 
 source(here::here("scripts", "scripts_functions", "figure_info.R"))
-
-#datver <- "20230724"
+datver <- "20231128"
 dataversion <- paste0("Data_", datver)
 ```
 
@@ -1750,6 +1749,143 @@ scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
   guides(color = "none")
 nice_hydration_layered_1
 ```
+###For presentation:
+
+```{r, fig.height=4, fig.width=5}
+wk_figs <-data_og_lwc_1 %>% 
+  group_by(tree, week) %>% 
+  filter(n() == 2) %>% 
+  filter(week %in% c(10, 12, 14, 15, 17, 19, 21, 29, 33, 37), 
+         #lwc_mean < 6, 
+        # lwc_mean > 0
+         ) %>% 
+  mutate(week_nice = case_when(
+    week == 10 ~ "Week 10", 
+    week == 12 ~ "Week 12", 
+    week == 14 ~ "Week 14", 
+    week == 15 ~ "Week 15", 
+    week == 17 ~ "Week 17", 
+    week == 19 ~ "Week 19", 
+    week == 21 ~ "Week 21", 
+    week == 29 ~ "Week 29",
+    week == 33 ~ "Week 33",
+    week == 37 ~ "Week 37"
+  )) %>% 
+  mutate(time = case_when(
+    time == "md" ~ "Midday", 
+    time == "pd" ~ "Predawn"
+  ))
+
+wk_figs_labels <-
+  data.frame(
+    label = c('10', '12', '14', '15', '17', '19', '21', '29', '33', '33'),
+    week_nice = c(
+      "Week 10",
+      "Week 12",
+       "Week 14",
+      "Week 15",
+      "Week 17",
+      "Week 19",
+      "Week 21",
+      "Week 29",
+      "Week 33",
+      "Week 37"
+    )
+  )
+
+df_all_groups <-  wk_figs %>% 
+  mutate(tree_week = paste(tree, week, sep = "_")
+  ) %>% 
+  mutate(water_potential = water_potential)
+  
+df_grey <- df_all_groups
+
+df_1 <- df_all_groups %>% 
+  filter(week %in% c('10'))
+
+df_2 <- df_all_groups %>% 
+  filter(week %in% c('14'))
+
+df_3 <- df_all_groups %>% 
+  filter(week %in% c('17'))
+
+df_4 <- df_all_groups %>% 
+  filter(week %in% c('37'))
+
+nice_hydration_layered_1 <- ggplot() +
+    geom_point(aes(y = water_potential, x = lwc_mean, shape = time),
+                size = 1,
+               data = df_grey, color = "grey") +
+    geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week), color = "grey", data = df_grey) +
+    geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_1"), 
+                size = 3,
+               data = df_1 ) +
+    geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_1"), 
+              data = df_1) +
+    # geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_2"),
+    #             size = 3,
+    #            data = df_2) +
+    # geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_2"),
+    #           data = df_2) +
+    #    geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_3"),
+    #             size = 3,
+    #            data = df_3) +
+    # geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_3"),
+    #           data = df_3
+    #           ) +
+    # geom_point(aes(y = water_potential, x = lwc_mean, shape = time, color = "df_4"),
+    #             size = 3,
+    #            data = df_4) +
+    # geom_line(aes(y = water_potential, x = lwc_mean, group = tree_week, color = "df_4"),
+    #           data = df_4
+    #           ) +
+    scale_colour_manual(name = 'Week', 
+        values =c("df_1" ="#48578E", 
+                   "df_2"="#B6D0E9",
+                   "df_3"="#8E9D30",
+                   "df_4"="#CC5265"
+                   ), 
+         labels = c('10',
+                    '14',
+                    '17',
+                    '37')) +
+    labs(y = "Water Potential (MPa)", 
+         #y = " ",
+       x = "Leaf Water Content (g)", 
+       color= "Week", 
+       shape = "Time"
+       #caption = "triangles = predawn, circles = midday"
+       ) +
+  theme(
+    legend.position = c(.8, .2),
+   # legend.position = "none",
+  strip.background = element_blank(),
+  legend.key = element_rect(fill = NA),
+  #strip.text.y = element_blank(), 
+  #strip.text.x = element_text(size = 16), 
+  # axis.text.y = element_text(size = 12), 
+   axis.text.x = element_text(size = 12), 
+   axis.text.y = element_text(size = 12),
+    # axis.text.x  = element_blank(),
+  #axis.ticks.y = element_blank(), 
+  #axis.title.y = element_blank()
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  legend.title = element_text(size = 16), 
+  legend.text = element_text(size = 13), 
+  plot.margin = unit(c(5.5, 5.5, 0, 5.5), units = "pt")
+# legend.position = "none"
+  ) +
+   #ylim(-5,0)+
+   #xlim(.5,2) +
+  #scale_x_reverse() +
+scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
+  guides(color = "none")
+nice_hydration_layered_1
+```
+
+
+
 #####Space
 
 ```{r}
